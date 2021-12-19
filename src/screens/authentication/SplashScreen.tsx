@@ -7,7 +7,6 @@ const SplashScreenContainer: FunctionComponent = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       navigation.navigate('Authentication');
-      
     },2500);
   });
 
