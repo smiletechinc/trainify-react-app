@@ -16,9 +16,10 @@ export const COLORS = {
   full_black: '#000000',
   dark_black: '#424347',
   medium_dark_blue: '#008EC1',
+  dark_grey: '#707070',
 };
 export const FONT_STYLES = {
-  font: Platform.OS === 'ios' ? 'Poppins' : 'Poppins',
+  font: Platform.OS === 'ios' ? 'System' : 'Poppins',
   line_height_16: 16,
   line_height_19: 19,
   line_height_20: 20,
@@ -30,6 +31,7 @@ export const FONT_STYLES = {
   line_height_17: 17,
   line_height_41: 41,
   line_height_42: 42,
+  line_height_46: 46,
   line_height_53: 53,
   line_height_36: 36,
   line_height_14: 14,

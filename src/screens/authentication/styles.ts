@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
  login_main_container: {
   flex: 1,
   alignItems: 'flex-start',
-  paddingTop: Platform.OS === 'ios' ?STATUS_BAR_HEIGHT + 24 : 24,
+  paddingTop: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT + 24 : 24,
+  backgroundColor: COLORS.white,
  },
  login_back_icon: {
   width: 18,

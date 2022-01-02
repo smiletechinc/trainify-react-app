@@ -11,7 +11,7 @@ const SplashScreenContainer: FunctionComponent = ({ navigation }) => {
   
   useEffect(() => {
     setTimeout(() => {
-      // navigation.navigate('LandingScreen');
+      navigation.navigate('LandingScreen');
     },2500);
   });
 
