@@ -26,7 +26,7 @@ const LandingScreenContainer: FunctionComponent = ({ navigation }) => {
           buttonType={"PRIMARY"}
           onPress={()=>{
             // console.log()
-            navigation.navigate('Authentication')
+            navigation.navigate('Signin');
           }}
           buttonTextStyles={{
             fontWeight: 'bold',
@@ -37,6 +37,7 @@ const LandingScreenContainer: FunctionComponent = ({ navigation }) => {
           buttonType={"PRIMARY"}
           onPress={()=>{
             // console.log()
+            navigation.navigate('Signup');
           }}
           buttonStyles={{
             marginTop: 29,

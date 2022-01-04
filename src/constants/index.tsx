@@ -38,6 +38,7 @@ export const FONT_STYLES = {
   line_height_12: 12,
   font_size_44: 44,
   font_size_10: 10,
+  font_size_11: 11,
   font_size_14: 14,
   font_size_16: 16,
   font_size_18: 18,
