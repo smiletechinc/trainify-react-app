@@ -11,7 +11,7 @@ import styles from '../styles';
 
 const rightRoundedArrow = require('../../../assets/images/right-rounded-arrow.png');
 
-const SigninFooter: FunctionComponent = ({ navigation }) => {
+const SigninFooter: FunctionComponent = (props) => {
   return(
     <View>
       <View
@@ -35,7 +35,7 @@ const SigninFooter: FunctionComponent = ({ navigation }) => {
           delayPressIn={0}
           activeOpacity={0.8}
           onPress={() => {
-            console.log('pressed.')
+            props.onPress();
           }}
         >
           <Image source={rightRoundedArrow} style={{width: 77, height: 77}}/>

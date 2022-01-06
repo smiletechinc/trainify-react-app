@@ -1,17 +1,14 @@
 import React, { FunctionComponent } from 'react';
 import { Text, TouchableOpacity, View, Image } from 'react-native';
-
 // Constants.
 import { COLORS } from '../../../constants';
-
-
 // Custom Styles
 import globalStyles from '../../../global-styles';
 import styles from '../styles';
 
 const rightRoundedArrow = require('../../../assets/images/right-rounded-arrow.png');
 
-const SigninFooter: FunctionComponent = ({ navigation }) => {
+const SignupFooter: FunctionComponent = ({ navigation }) => {
   return(
     <View>
       <View
@@ -33,7 +30,7 @@ const SigninFooter: FunctionComponent = ({ navigation }) => {
           delayPressIn={0}
           activeOpacity={0.8}
           onPress={() => {
-            console.log('pressed.')
+            // onPress();
           }}
         >
           <Image source={rightRoundedArrow} style={{width: 77, height: 77}}/>
@@ -54,4 +51,4 @@ const SigninFooter: FunctionComponent = ({ navigation }) => {
   )
 };
 
-export default SigninFooter;
+export default SignupFooter;

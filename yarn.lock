@@ -5526,6 +5526,11 @@ react-native-gesture-handler@^2.1.0:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-google-pay@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-google-pay/-/react-native-google-pay-2.1.0.tgz#84d5cda9f2bb1d9484b3a0d1ebd9c2754b5f6425"
+  integrity sha512-MAz0pKx3tZLkdhEteG/p1eZMO9I6MREth3TZnxw/puAg90vFQVP6e26dIph5IJlIhaXEOdchFZDHnioHf48gUA==
+
 react-native-iphone-x-helper@^1.0.3:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"

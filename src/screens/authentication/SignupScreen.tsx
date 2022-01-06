@@ -66,7 +66,11 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
             }}
           />
           
-          <SignupFooterComponent />
+          <SignupFooterComponent 
+            onPress={()=>{
+              console.log('pressed.');
+            }}
+          />
         </View>
 
       </KeyboardAwareScrollView>
