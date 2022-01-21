@@ -9,6 +9,8 @@ import { COLORS } from '../../../constants';
 import globalStyles from '../../../global-styles';
 import styles from '../styles';
 
+import { PrimaryButton } from './buttons';
+
 const rightRoundedArrow = require('../../../assets/images/right-rounded-arrow.png');
 
 const SigninFooter: FunctionComponent = (props) => {
@@ -35,15 +37,21 @@ const SigninFooter: FunctionComponent = (props) => {
           marginTop: 29,
         }}
       >
-        <TouchableOpacity
+        {/* <TouchableOpacity
           delayPressIn={0}
           activeOpacity={0.8}
           onPress={() => {
-            props.onPress();
+            props.signupScreenOnPress();
           }}
         >
           <Image source={rightRoundedArrow} style={{width: 77, height: 77}}/>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+<View style={{width:'100%'}}>
+        <PrimaryButton title='Sign In' onPress={props.signupScreenOnPress} />
+      </View>
+
+
       </View>
       <View
         style={{
@@ -52,7 +60,9 @@ const SigninFooter: FunctionComponent = (props) => {
           alignItems: 'center',
         }}
       >
-        <TouchableOpacity>
+        <TouchableOpacity
+         onPress={props.signupScreenOnPress}
+        >
           <Text>Don't have an account? <Text style={{color: COLORS.medium_dark_blue}}>Signup</Text></Text>
         </TouchableOpacity>
       </View>

@@ -13,6 +13,8 @@ import SigninFooterComponent from './components/SigninFooterComponent';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 
+import { PrimaryButton } from './components/buttons';
+
 const signinMainImage = require('../../assets/images/signin-main-image.png');
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
@@ -110,14 +112,19 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
               marginTop: 29,
             }}
           />
-          
+
           <SigninFooterComponent 
             onPress={() => {
               // console.log('pressed')
               // isGooglePayAvailable();
             }}
             forgorPasswordOnPress={()=>{
-              navigation.navigate('ResetPassword');
+              // navigation.navigate('ResetPassword');
+            }}
+
+            signupScreenOnPress={()=>{
+              // console.log()
+              navigation.navigate('Signup');
             }}
           />
         </View>
