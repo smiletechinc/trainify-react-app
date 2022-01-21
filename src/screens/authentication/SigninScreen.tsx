@@ -70,7 +70,7 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
         bounces={false}
         
       >
-        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+        {/* <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
@@ -79,7 +79,7 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
           >
 
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <AutoHeightImage 
             source={signinMainImage}
