@@ -20,7 +20,11 @@ const SigninFooter: FunctionComponent = (props) => {
         <TouchableOpacity>
           <Text style={[globalStyles.small, globalStyles.bold]}>Remember me</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={()=>{
+            props.forgorPasswordOnPress();
+          }}
+        >
           <Text style={[globalStyles.small, globalStyles.bold]}>Forgot password</Text>
         </TouchableOpacity>
       </View>

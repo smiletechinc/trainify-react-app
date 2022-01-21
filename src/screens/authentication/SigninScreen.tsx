@@ -114,7 +114,10 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
           <SigninFooterComponent 
             onPress={() => {
               // console.log('pressed')
-              isGooglePayAvailable();
+              // isGooglePayAvailable();
+            }}
+            forgorPasswordOnPress={()=>{
+              navigation.navigate('ResetPassword');
             }}
           />
         </View>

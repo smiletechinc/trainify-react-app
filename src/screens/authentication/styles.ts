@@ -33,6 +33,16 @@ const styles = StyleSheet.create({
     marginTop: 11,
     paddingRight: 24,
   },
+  // Reset password styles.
+  reset_password_text: {
+    color: COLORS.medium_dark_blue,
+    marginTop: 16,
+  },
+  reset_password_details: {
+    color: COLORS.medium_grey,
+    fontWeight: '600',
+    marginTop: 7,
+  }
 
 });
 export default styles;

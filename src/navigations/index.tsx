@@ -7,6 +7,7 @@ import SigninScreen from '../screens/authentication/SigninScreen';
 import SignupScreen from '../screens/authentication/SignupScreen';
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import SplashScreen from '../screens/authentication/SplashScreen';
+import ResetPasswordContainer from '../screens/authentication/ResetPassword';
 
 const AppStack = createNativeStackNavigator();
 
@@ -28,6 +29,10 @@ function AppContainer() {
       <AppStack.Screen
         name="LandingScreen"
         component={LandingScreenContainer}
+      />
+      <AppStack.Screen
+        name="ResetPassword"
+        component={ResetPasswordContainer}
       />
       
       </AppStack.Navigator>
