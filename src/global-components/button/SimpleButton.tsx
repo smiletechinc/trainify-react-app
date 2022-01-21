@@ -6,6 +6,13 @@ import {COLORS} from '../../constants';
 import {Metadata} from '../../types';
 
 const BUTTON_STYLES = {
+  AUTHENTICATION: {
+    textStyles: {color: COLORS.white},
+    buttonStyles: {
+      backgroundColor: COLORS.medium_dark_blue,
+    },
+  },
+
   PRIMARY: {
     textStyles: {color: COLORS.dark_black},
     buttonStyles: {
@@ -28,7 +35,7 @@ const BUTTON_STYLES = {
   },
 };
 type Props = {
-  buttonType: 'PRIMARY' | 'DISABLED' | 'SOCIAL' | 'SECONDARY';
+  buttonType: 'PRIMARY' | 'DISABLED' | 'SOCIAL' | 'SECONDARY' | 'AUTHENTICATION';
   buttonText: string;
   disabled?: boolean;
   loading?: boolean;
@@ -70,7 +77,7 @@ const SimpleButton: FunctionComponent<Props> = function SimpleButton(props) {
     >
       {leftComponent || null}
       {loading ? (
-        <ActivityIndicator animating={true} size="large" color={COLORS.black} />
+        <ActivityIndicator animating={true} size="large" color={COLORS.dark_black} />
       ) : (
         <Text
           style={[

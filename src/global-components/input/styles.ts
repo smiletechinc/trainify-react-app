@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: COLORS.dark_grey,
+    borderColor: COLORS.black_25,
     height: 46,
     paddingLeft: 21,
     backgroundColor: COLORS.white,

@@ -27,7 +27,11 @@ const ResetPasswordFooterContainer: FunctionComponent = (props) => {
             // 
           }}
           buttonType="SECONDARY"
-
+          buttonStyles={{
+            height: 46,
+            backgroundColor: COLORS.medium_dark_blue,
+            borderRadius: 20,
+          }}
         />
       </View>
     </View>

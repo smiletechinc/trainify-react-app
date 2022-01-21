@@ -18,6 +18,7 @@ export const COLORS = {
   medium_dark_blue: '#008EC1',
   dark_grey: '#707070',
   medium_grey: '#ADADAD',
+  black_25: '#252525',
 };
 export const FONT_STYLES = {
   font: Platform.OS === 'ios' ? 'System' : 'Poppins',

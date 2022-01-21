@@ -2,11 +2,10 @@ import React, { FunctionComponent } from 'react';
 import { Text, TouchableOpacity, View, Image } from 'react-native';
 // Constants.
 import { COLORS } from '../../../constants';
+import { SimpleButton } from '../../../global-components/button';
 // Custom Styles
 import globalStyles from '../../../global-styles';
 import styles from '../styles';
-
-const rightRoundedArrow = require('../../../assets/images/right-rounded-arrow.png');
 
 const SignupFooter: FunctionComponent = ({ navigation }) => {
   return(
@@ -26,15 +25,18 @@ const SignupFooter: FunctionComponent = ({ navigation }) => {
           marginTop: 29,
         }}
       >
-        <TouchableOpacity
-          delayPressIn={0}
-          activeOpacity={0.8}
+        <SimpleButton 
+          buttonText="Next"
+          buttonType="AUTHENTICATION"
           onPress={() => {
-            // onPress();
+            // console.log('pressed');
           }}
-        >
-          <Image source={rightRoundedArrow} style={{width: 77, height: 77}}/>
-        </TouchableOpacity>
+          buttonStyles={{
+            height: 46,
+            borderRadius: 20,
+          }}
+
+        />
       </View>
       <View
         style={{
