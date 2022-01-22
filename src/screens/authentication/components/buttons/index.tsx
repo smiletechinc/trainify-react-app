@@ -1,7 +1,7 @@
-import PrimaryButton from './colors_app_primary_button';
-import SecondaryButton from './colors_app_secondary_button';
-import TextButton from './colors_app_text_button';
-import IconButton from './colors_icon_button';
+import PrimaryButton from './trainify_primary_button';
+import SecondaryButton from './trainify_secondary_button';
+import TextButton from './trainify_text_button';
+import IconButton from './trainify_icon_button';
 
 export {
     PrimaryButton,

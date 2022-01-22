@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
-import {COLORS} from './../../../../constants';
+import {COLORS} from '../../../../constants';
 
 type PrimaryButtonProps = {
   title: string;
