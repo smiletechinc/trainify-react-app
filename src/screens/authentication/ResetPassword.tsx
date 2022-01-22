@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform } from 'react-native';
+import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform, Alert } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { GooglePay } from 'react-native-google-pay';
@@ -8,6 +8,7 @@ import { GooglePay } from 'react-native-google-pay';
 import { COLORS, SCREEN_WIDTH } from '../../constants';
 import {TextInput} from '../../global-components/input';
 import ResetPasswordFooterComponent from './components/ResetPasswordFooter';
+import {resetPasswordService} from './../../services/authenticationServices'
 
 // Custom Styles
 import globalStyles from '../../global-styles';
@@ -18,6 +19,22 @@ const signinMainImage = require('../../assets/images/signin-main-image.png');
 const ResetPasswordContainer: FunctionComponent = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
  
+  const authenticationSuccess = () => {
+      Alert.alert("Trainify", `Reset password email sent.`)
+  }
+  
+  const authenticationFailure = (error) => {
+    if(error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert("Trainify", errorMessage)
+    }
+  }
+  
+  const proceedToResetPassword = () => {
+    resetPasswordService(email, authenticationSuccess, authenticationFailure );
+  }
+
   return(
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView
@@ -55,10 +72,8 @@ const ResetPasswordContainer: FunctionComponent = ({ navigation }) => {
           />
           
           <ResetPasswordFooterComponent
-            onPress={() => {
-              // console.log('pressed')
-              // isGooglePayAvailable();
-            }}
+          proceedToResetPassword={proceedToResetPassword}
+            onPress={proceedToResetPassword}
           />
         </View>
 

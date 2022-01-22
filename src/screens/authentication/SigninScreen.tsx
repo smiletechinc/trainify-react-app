@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform } from 'react-native';
+import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform, Alert } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { GooglePay } from 'react-native-google-pay';
@@ -13,15 +13,81 @@ import SigninFooterComponent from './components/SigninFooterComponent';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 
-import { PrimaryButton } from './components/buttons';
-
 const signinMainImage = require('../../assets/images/signin-main-image.png');
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
-const SigninContainer: FunctionComponent = ({ navigation }) => {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StackActions, NavigationActions } from 'react-navigation';
+
+import {signInService} from './../../services/authenticationServices'
+
+type Props = {
+  navigation?: any;
+  route?: any;
+}
+
+const SigninContainer: FunctionComponent<Props> = (props) => {
+
+  const {navigation, route} = props;
+
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  const goToHomePage = () => {
+    navigation.navigate('HomeScreen');
+    //     const resetAction = StackActions.reset({
+//   index: 0, // <-- currect active route from actions array
+//   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
+// });
+
+//   navigation.dispatch(resetAction);
+}
+
+const authenticationSuccess = (userCredential?:any) => {
+  if (userCredential) {
+    const user = userCredential.user;
+    Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
+    goToHomePage()
+  }
+}
+
+const authenticationFailure = (error) => {
+  if(error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    Alert.alert("Trainify", errorMessage)
+  }
+}
+
+const proceedToLogin = () => {
+  const authObject = {
+    email,
+    password,
+  }
+  signInService(authObject, authenticationSuccess, authenticationFailure );
+}
+
+  // const proceedToLogin = () => {
+  //   if(app){
+  //     const auth = getAuth();
+  //     signInWithEmailAndPassword(auth, email, password)
+  //     .then((userCredential) => {
+  //     // Signed in
+  //     const user = userCredential.user;
+  //     Alert.alert("Trainify", "You've logged in successfully")
+  //     goToHomePage()
+  
+  //   })
+  //   .catch((error) => {
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     Alert.alert("Trainify", errorMessage)
+  //   });
+  //   }
+ 
+  // } 
+
   const requestData = {
     cardPaymentMethod: {
       tokenizationSpecification: {
@@ -118,12 +184,12 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
               // console.log('pressed')
               // isGooglePayAvailable();
             }}
+            proceedToLogin={proceedToLogin}
             forgorPasswordOnPress={()=>{
-              // navigation.navigate('ResetPassword');
+              navigation.navigate('ResetPassword');
             }}
 
             signupScreenOnPress={()=>{
-              // console.log()
               navigation.navigate('Signup');
             }}
           />

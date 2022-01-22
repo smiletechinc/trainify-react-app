@@ -9,11 +9,19 @@ import { COLORS } from '../../../constants';
 import globalStyles from '../../../global-styles';
 import styles from '../styles';
 
-import { PrimaryButton } from './buttons';
+import { PrimaryButton } from './../../../components/buttons';
 
 const rightRoundedArrow = require('../../../assets/images/right-rounded-arrow.png');
 
+type Props = {
+  proceedToLogin: any;
+  signupScreenOnPress: any;
+  forgorPasswordOnPress: any;
+}
+
 const SigninFooter: FunctionComponent = (props) => {
+  const {proceedToLogin, signupScreenOnPress,forgorPasswordOnPress} = props;
+
   return(
     <View>
       <View
@@ -24,7 +32,7 @@ const SigninFooter: FunctionComponent = (props) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={()=>{
-            props.forgorPasswordOnPress();
+            forgorPasswordOnPress();
           }}
         >
           <Text style={[globalStyles.small, globalStyles.bold]}>Forgot password</Text>
@@ -48,7 +56,7 @@ const SigninFooter: FunctionComponent = (props) => {
         </TouchableOpacity> */}
 
 <View style={{width:'100%'}}>
-        <PrimaryButton title='Sign In' onPress={props.signupScreenOnPress} />
+        <PrimaryButton title='Sign In' onPress={proceedToLogin} />
       </View>
 
 
@@ -61,7 +69,7 @@ const SigninFooter: FunctionComponent = (props) => {
         }}
       >
         <TouchableOpacity
-         onPress={props.signupScreenOnPress}
+         onPress={signupScreenOnPress}
         >
           <Text>Don't have an account? <Text style={{color: COLORS.medium_dark_blue}}>Signup</Text></Text>
         </TouchableOpacity>

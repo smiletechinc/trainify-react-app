@@ -11,7 +11,13 @@ import styles from '../styles';
 
 const rightRoundedArrow = require('../../../assets/images/right-rounded-arrow.png');
 
-const ResetPasswordFooterContainer: FunctionComponent = (props) => {
+type Props = {
+  proceedToResetPassword: any;
+}
+
+const ResetPasswordFooterContainer: FunctionComponent<Props> = (props) => {
+  const { proceedToResetPassword } = props;
+
   return(
     <View>
       <View
@@ -23,9 +29,7 @@ const ResetPasswordFooterContainer: FunctionComponent = (props) => {
       >
         <SimpleButton
           buttonText="Reset Password"
-          onPress={()=>{
-            // 
-          }}
+          onPress={proceedToResetPassword}
           buttonType="SECONDARY"
           buttonStyles={{
             height: 46,
