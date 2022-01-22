@@ -8,6 +8,7 @@ import { COLORS, SCREEN_WIDTH } from '../../constants';
 import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
 import AppUserItem from './components/AppUserItem';
+import SubscriptionItem from './components/SubscriptionItem';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
@@ -16,11 +17,11 @@ import { SimpleButton } from '../../global-components/button';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 
-const PaymentPlanContainer: FunctionComponent = ({ navigation }) => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-  
+const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
+  const [playerSelected, setPlayerSelected] = useState<number>(0);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
+  const proceedToSignup = route.params.proceedToSignup;
+
   return(
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView
@@ -47,12 +48,69 @@ const PaymentPlanContainer: FunctionComponent = ({ navigation }) => {
               width={163}
             />
           </View>
-          <Text style={[globalStyles.h1, {color: COLORS.dark_black, marginTop: 16, lineHeight: 30, fontWeight: '600'}]}>WHO’S USING THE APP?</Text>
-          <AppUserItem />
+          <View>
+            <Text style={[globalStyles.h1, {color: COLORS.dark_black, marginTop: 16, lineHeight: 30, fontWeight: '600'}]}>WHO’S USING THE APP?</Text>
+            <AppUserItem
+              leftText="Coach"
+              onPress={()=>{
+                setPlayerSelected(0);
+              }}
+              isSelected = {playerSelected === 0 ? true : false}
+            />
+            <AppUserItem
+              leftText="Player Self Tracking"
+              onPress={()=>{
+                setPlayerSelected(1);
+              }}
+              isSelected = {playerSelected === 1 ? true : false}
+            />
+            <AppUserItem
+              leftText="Parent for Child Tracking"
+              onPress={()=>{
+                setPlayerSelected(2);
+              }}
+              isSelected = {playerSelected === 2 ? true : false}
+            />
+          </View>
+          <View>
+            <Text style={[globalStyles.h1, {color: COLORS.dark_black, marginTop: 47, lineHeight: 30, fontWeight: '600'}]}>SUBSCRIPTION TIERS</Text>
+            
+            <SubscriptionItem
+              leftText="Basic"
+              price="$74.99/yr"
+              isSelected = {subscriptionPlan === 0 ? true : false}
+              onPress={() => {
+                setSubscriptionPlan(0);
+              }}
+            />
+            <SubscriptionItem
+              leftText="Silver"
+              price="$74.99/yr"
+              isSelected = {subscriptionPlan === 1 ? true : false}
+              onPress={() => {
+                setSubscriptionPlan(1);
+              }}
+            />
+            <SubscriptionItem
+              leftText="Platinum"
+              price="$74.99/yr"
+              isSelected = {subscriptionPlan === 2 ? true : false}
+              onPress={() => {
+                setSubscriptionPlan(2);
+              }}
+            />
+          </View>
           
-          <SignupFooterComponent 
+          <SimpleButton
+            buttonText="Submit"
+            buttonType="AUTHENTICATION"
             onPress={()=>{
-              console.log('pressed.');
+              if(proceedToSignup) {
+                proceedToSignup();
+              }
+            }}
+            buttonStyles={{
+              marginTop: 33,
             }}
           />
         </View>

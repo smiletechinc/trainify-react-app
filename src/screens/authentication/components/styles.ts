@@ -2,6 +2,53 @@ import {StyleSheet, Platform} from 'react-native';
 import {SCREEN_WIDTH, COLORS, SCREEN_HEIGHT, STATUS_BAR_HEIGHT} from '../../../constants';
 
 const styles = StyleSheet.create({
+  // Subscription Item Styles
+  subscription_item_main: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    height: 46,
+    width: SCREEN_WIDTH * 0.9,
+    borderRadius: 25,
+    marginTop: 13,
+    paddingLeft: 21,
+    paddingRight: 22,
+  },
+  price_selected: {
+    color: COLORS.white,
+    fontWeight: '600',
+  },
+  price_unselected: {
+    color: COLORS.full_black,
+    fontWeight: '600',
+  },
+  // App User Item Styles.
+  app_user_item_main: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: COLORS.dark_grey,
+    height: 46,
+    width: SCREEN_WIDTH * 0.9,
+    borderRadius: 25,
+    marginTop: 13,
+    paddingLeft: 21,
+    paddingRight: 14,
+  },
+  left_text: {
+    color: COLORS.full_black,
+    fontWeight: '600',
+  },
+  right_check_box: {
+    width: 24,
+    height: 24,
+    borderRadius: 24 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: isSelected ? COLORS.medium_dark_blue : 'transparent',
+  },
   // Playing styles.
   playing_style_main: {
     marginTop: 16,
