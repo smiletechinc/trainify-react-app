@@ -56,6 +56,7 @@ const SimpleButton: FunctionComponent<Props> = function SimpleButton(props) {
     buttonTextStyles,
     loading,
     leftComponent,
+    right_component,
   } = props;
 
   return (
@@ -89,6 +90,7 @@ const SimpleButton: FunctionComponent<Props> = function SimpleButton(props) {
           {buttonText}
         </Text>
       )}
+      {right_component || null}
     </TouchableOpacity>
   );
 };

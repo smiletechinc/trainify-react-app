@@ -7,7 +7,7 @@ import { SimpleButton } from '../../../global-components/button';
 import globalStyles from '../../../global-styles';
 import styles from '../styles';
 
-const SignupFooter: FunctionComponent = ({ navigation }) => {
+const SignupFooter: FunctionComponent = (props) => {
   return(
     <View>
       <View
@@ -29,6 +29,8 @@ const SignupFooter: FunctionComponent = ({ navigation }) => {
           buttonText="Next"
           buttonType="AUTHENTICATION"
           onPress={() => {
+            props.onPress();
+            // props.navigation.navigate('PaymentPlan');
             // console.log('pressed');
           }}
           buttonStyles={{

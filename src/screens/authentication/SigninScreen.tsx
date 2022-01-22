@@ -119,7 +119,7 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
               // isGooglePayAvailable();
             }}
             forgorPasswordOnPress={()=>{
-              // navigation.navigate('ResetPassword');
+              navigation.navigate('ResetPassword');
             }}
 
             signupScreenOnPress={()=>{

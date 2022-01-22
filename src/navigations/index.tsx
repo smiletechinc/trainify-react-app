@@ -8,6 +8,8 @@ import SignupScreen from '../screens/authentication/SignupScreen';
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import SplashScreen from '../screens/authentication/SplashScreen';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
+import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
+
 
 const AppStack = createNativeStackNavigator();
 
@@ -33,6 +35,10 @@ function AppContainer() {
       <AppStack.Screen
         name="ResetPassword"
         component={ResetPasswordContainer}
+      />
+      <AppStack.Screen
+        name="PaymentPlan"
+        component={PaymentPlanContainer}
       />
       
       </AppStack.Navigator>

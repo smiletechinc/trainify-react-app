@@ -179,7 +179,7 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
           
           <SignupFooterComponent 
             onPress={()=>{
-              console.log('pressed.');
+              navigation.navigate('PaymentPlan')
             }}
           />
         </View>
