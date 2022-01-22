@@ -7,7 +7,16 @@ import { SimpleButton } from '../../../global-components/button';
 import globalStyles from '../../../global-styles';
 import styles from '../styles';
 
-const SignupFooter: FunctionComponent = ({ navigation }) => {
+type Props = {
+  proceedToSignup:any;
+  navigation:any;
+  onPress:any
+}
+
+const SignupFooter: FunctionComponent<Props> = (props) => {
+
+  const {proceedToSignup, onPress, navigation} = props
+
   return(
     <View>
       <View
@@ -28,9 +37,7 @@ const SignupFooter: FunctionComponent = ({ navigation }) => {
         <SimpleButton 
           buttonText="Next"
           buttonType="AUTHENTICATION"
-          onPress={() => {
-            // console.log('pressed');
-          }}
+          onPress={onPress}
           buttonStyles={{
             height: 46,
             borderRadius: 20,
@@ -45,7 +52,7 @@ const SignupFooter: FunctionComponent = ({ navigation }) => {
           alignItems: 'center',
         }}
       >
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {navigation.goBack()}} >
           <Text>Already have an account? <Text style={{color: COLORS.medium_dark_blue}}>Signin</Text></Text>
         </TouchableOpacity>
       </View>
