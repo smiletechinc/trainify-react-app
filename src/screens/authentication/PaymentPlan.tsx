@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// const PaymentRequest = require('react-native-payments').PaymentRequest;
 
 // Custom UI components.
 import { COLORS, SCREEN_WIDTH } from '../../constants';
@@ -21,6 +22,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
   const proceedToSignup = route.params.proceedToSignup;
+  // cd
 
   return(
     <View style={styles.login_main_container}>

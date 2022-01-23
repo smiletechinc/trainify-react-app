@@ -5,6 +5,7 @@ import SplashScreen from '../screens/authentication/SplashScreen';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
 import HomeScreen from './home/trainify_home_screen';
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
+import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
 
 export {
     SigninScreen,
@@ -14,4 +15,5 @@ export {
     ResetPasswordContainer,
     HomeScreen,
     PaymentPlanContainer,
+    LanguageScreenContainer
 }
