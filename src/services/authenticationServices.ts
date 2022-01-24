@@ -74,7 +74,7 @@ export const resetPasswordService = (email:string, onSuccess?:any, onFailure?:an
 
 export const registerUserService = (userObject:UserObject, onSuccess?:any, onFailure?:any) => {
     const branch = `/users/${userObject.id}`
-console.log('Branch: ', branch)
+    console.log('Branch: ', branch)
     if (db) {
         set(ref(db, branch), userObject)
         .then((user) => {

@@ -18,8 +18,6 @@ import {signUpService, signInService, registerUserService} from './../../service
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 
-
-
 const SigninContainer: FunctionComponent = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -33,7 +31,7 @@ const SigninContainer: FunctionComponent = ({ navigation }) => {
 
 const proceedToRegister = (user) => {
   const id = user.uid;
-  const userObject:UserObject = {
+  const userObject: UserObject = {
     id,
     email,
     height,
@@ -185,7 +183,7 @@ const proceedToSignup = () => {
             value={height}
             placeholder="height"
             placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
+            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setHeight(value);
             }}
@@ -200,7 +198,7 @@ const proceedToSignup = () => {
             value={birthday}
             placeholder="Birthday"
             placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
+            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setBirthday(value);
             }}
@@ -215,7 +213,7 @@ const proceedToSignup = () => {
             value={location}
             placeholder="Location"
             placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
+            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setLocation(value);
             }}
@@ -230,7 +228,7 @@ const proceedToSignup = () => {
             value={rating}
             placeholder="Rating"
             placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
+            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setRating(value);
             }}
@@ -245,7 +243,7 @@ const proceedToSignup = () => {
             value={nationality}
             placeholder="Nationality"
             placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
+            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setNationality(value);
             }}
@@ -258,8 +256,12 @@ const proceedToSignup = () => {
           />
           
           <SignupFooterComponent
-          navigation={navigation}
-            onPress={proceedToSignup}
+            navigation={navigation}
+            isButtonDisabled = {email !== '' && password !== '' ? false : true}
+            // onPress={proceedToSignup}
+            onPress={()=>{
+              navigation.navigate('PaymentPlan', {proceedToSignup,})
+            }}
             proceedToSignup={proceedToSignup}
           />
         </View>
