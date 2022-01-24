@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
-import {SplashScreen, HomeScreen, SigninScreen, SignupScreen, LandingScreenContainer, ResetPasswordContainer} from '../screens';
+import {SplashScreen, HomeScreen, SigninScreen, SignupScreen, LandingScreenContainer, ResetPasswordContainer, PaymentPlanContainer, LanguageScreenContainer} from '../screens';
 const AppStack = createNativeStackNavigator();
 
 function AppContainer() {
@@ -30,8 +30,17 @@ function AppContainer() {
         component={ResetPasswordContainer}
       />
       <AppStack.Screen
-      name="HomeScreen"
-      component={HomeScreen} />
+        name="PaymentPlan"
+        component={PaymentPlanContainer}
+      />
+      <AppStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+      />
+      <AppStack.Screen
+        name="LanguageScreen"
+        component={LanguageScreenContainer}
+      />
       
       </AppStack.Navigator>
     </NavigationContainer>

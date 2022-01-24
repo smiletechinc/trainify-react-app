@@ -15,7 +15,7 @@ type Props = {
 
 const SignupFooter: FunctionComponent<Props> = (props) => {
 
-  const {proceedToSignup, onPress, navigation} = props
+  const {proceedToSignup, onPress, navigation, isButtonDisabled} = props
 
   return(
     <View>
@@ -36,7 +36,7 @@ const SignupFooter: FunctionComponent<Props> = (props) => {
       >
         <SimpleButton 
           buttonText="Next"
-          buttonType="AUTHENTICATION"
+          buttonType=  {isButtonDisabled ? "DISABLED" : "AUTHENTICATION"}
           onPress={onPress}
           buttonStyles={{
             height: 46,

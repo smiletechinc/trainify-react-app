@@ -37,6 +37,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TrainyfyApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TrainyfyApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TrainyfyApp/main.m; sourceTree = "<group>"; };
+		1833E77C279CC720009B142C /* TrainyfyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TrainyfyApp.entitlements; path = TrainyfyApp/TrainyfyApp.entitlements; sourceTree = "<group>"; };
 		5301128B786E8BE8FAB4B250 /* libPods-TrainyfyApp-TrainyfyAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrainyfyApp-TrainyfyAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		56078A9B347225BD123D605C /* Pods-TrainyfyApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrainyfyApp.release.xcconfig"; path = "Target Support Files/Pods-TrainyfyApp/Pods-TrainyfyApp.release.xcconfig"; sourceTree = "<group>"; };
 		6C83A162558A50F155CAE9E0 /* Pods-TrainyfyApp-TrainyfyAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrainyfyApp-TrainyfyAppTests.debug.xcconfig"; path = "Target Support Files/Pods-TrainyfyApp-TrainyfyAppTests/Pods-TrainyfyApp-TrainyfyAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -86,6 +87,7 @@
 		13B07FAE1A68108700A75B9A /* TrainyfyApp */ = {
 			isa = PBXGroup;
 			children = (
+				1833E77C279CC720009B142C /* TrainyfyApp.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -114,7 +116,6 @@
 				6C83A162558A50F155CAE9E0 /* Pods-TrainyfyApp-TrainyfyAppTests.debug.xcconfig */,
 				92269605E111DDA5EDDBAC50 /* Pods-TrainyfyApp-TrainyfyAppTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -484,7 +485,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C48PH5S3RG;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -510,6 +513,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
