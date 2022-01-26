@@ -93,11 +93,3 @@ export const registerUserService = (userObject:UserObject, onSuccess?:any, onFai
             onFailure(error);
         }
 }
-
-export const addBalance = (accountNumber, amount, currency) => {
-    db.ref('/balance').push({
-        account: accountNumber,
-        balance: amount,
-        currency: currency
-    });
-}

@@ -32,8 +32,6 @@
 			<dict>
 				<key>NSAllowsArbitraryLoads</key>
 				<false/>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
 			</dict>
 		</dict>
 	</dict>
