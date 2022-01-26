@@ -15,6 +15,8 @@ const styles = StyleSheet.create({
   },
   input_container: {
     color: COLORS.dark_black,
+    width:'100%',
+    height:'100%'
   },
 });
 export default styles;
