@@ -47,7 +47,7 @@ const SigninContainer: FunctionComponent<Props> = (props) => {
 const authenticationSuccess = (userCredential?:any) => {
   if (userCredential) {
     const user = userCredential.user;
-    Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
+    // Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
     goToHomePage()
   }
 }
