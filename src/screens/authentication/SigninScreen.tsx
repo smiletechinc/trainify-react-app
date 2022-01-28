@@ -68,26 +68,6 @@ const proceedToLogin = () => {
   signInService(authObject, authenticationSuccess, authenticationFailure );
 }
 
-  // const proceedToLogin = () => {
-  //   if(app){
-  //     const auth = getAuth();
-  //     signInWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     Alert.alert("Trainify", "You've logged in successfully")
-  //     goToHomePage()
-  
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     Alert.alert("Trainify", errorMessage)
-  //   });
-  //   }
- 
-  // } 
-
   const requestData = {
     cardPaymentMethod: {
       tokenizationSpecification: {

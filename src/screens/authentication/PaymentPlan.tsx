@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -23,6 +23,10 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
   const proceedToSignup = route.params.proceedToSignup;
   // cd
+
+  useEffect(() => {
+alert(subscriptionPlan);
+  },[subscriptionPlan]);
 
   return(
     <View style={styles.login_main_container}>
@@ -76,17 +80,18 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
           </View>
           <View>
             <Text style={[globalStyles.h1, {color: COLORS.dark_black, marginTop: 47, lineHeight: 30, fontWeight: '600'}]}>SUBSCRIPTION TIERS</Text>
-            
+
             <SubscriptionItem
-              leftText="Basic"
-              price="$74.99/yr"
+              leftText="Free"
+              price="0 PKR"
               isSelected = {subscriptionPlan === 0 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(0);
               }}
             />
+
             <SubscriptionItem
-              leftText="Silver"
+              leftText="Basic"
               price="$74.99/yr"
               isSelected = {subscriptionPlan === 1 ? true : false}
               onPress={() => {
@@ -94,11 +99,19 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
               }}
             />
             <SubscriptionItem
-              leftText="Platinum"
+              leftText="Silver"
               price="$74.99/yr"
               isSelected = {subscriptionPlan === 2 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(2);
+              }}
+            />
+            <SubscriptionItem
+              leftText="Platinum"
+              price="$74.99/yr"
+              isSelected = {subscriptionPlan === 3 ? true : false}
+              onPress={() => {
+                setSubscriptionPlan(3);
               }}
             />
           </View>
