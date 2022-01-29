@@ -6,11 +6,22 @@ import globalStyles from '../../global-styles';
 import styles from './styles';
 
 const profileIcon = require('../../assets/images/profile-icon.png');
+const backIcon = require('../../assets/images/back-icon.png');
 
-const SimpleHeader: FunctionComponent = ({ navigation }) => {
-  // const navigation = useNavigation();  
+type Props = {
+  text: string;
+}
+const HeaderWithText: FunctionComponent<Props> = (props) => {
+  // const navigation = useNavigation();
+  const {text} = props;
   return(
-    <View style={styles.header_main_view}>
+    <View style={styles.header_with_text_main_view}>
+      <View>
+        <Image source={backIcon} style={{width: 20, height: 20}}/>
+      </View>
+      <View>
+        <Text style={[globalStyles.regular, {fontWeight: '600', fontSize: 15, color: COLORS.dark_black}]}>{text}</Text>
+      </View>
       <View
         style={{
           flexDirection: 'row',
@@ -23,4 +34,4 @@ const SimpleHeader: FunctionComponent = ({ navigation }) => {
     </View>
   )
 };
-export default SimpleHeader;
+export default HeaderWithText;

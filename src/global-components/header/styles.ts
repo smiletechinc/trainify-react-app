@@ -11,5 +11,13 @@ const styles = StyleSheet.create({
     height: 29,
     marginLeft: 5
   },
+
+  // Header with text styles.
+  header_with_text_main_view: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    alignItems: 'center',
+  },
 });
 export default styles;

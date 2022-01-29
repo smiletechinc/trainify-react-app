@@ -4,6 +4,8 @@ import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import SplashScreen from '../screens/authentication/SplashScreen';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
 import HomeScreen from './main-app/home';
+import ServePracticeContainer from './main-app/home/ServePractice';
+
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
 
@@ -15,5 +17,6 @@ export {
     ResetPasswordContainer,
     HomeScreen,
     PaymentPlanContainer,
-    LanguageScreenContainer
+    LanguageScreenContainer,
+    ServePracticeContainer
 }

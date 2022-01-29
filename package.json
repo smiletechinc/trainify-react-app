@@ -13,6 +13,8 @@
     "@react-navigation/material-bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
+    "@types/react": "^17.0.38",
+    "@types/react-native": "^0.66.15",
     "firebase": "^9.6.4",
     "react": "17.0.2",
     "react-native": "0.66.4",
