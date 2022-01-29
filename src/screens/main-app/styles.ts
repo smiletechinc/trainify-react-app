@@ -19,6 +19,14 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.5,
     textAlign: 'right',
   },
+  // Service Practice styles.
+  main_view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 15 : 15,
+    paddingHorizontal: SCREEN_WIDTH * 0.05,
+  },
   record_and_upload_text: {
     position: 'absolute',
     bottom: 7,
@@ -28,6 +36,12 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     width: (SCREEN_WIDTH * 0.9 / 2) - 43,
     textAlign: 'center',
-  }
-});
+  },
+  video_duration_text: {
+    marginTop: 5 + STATUS_BAR_HEIGHT,
+    textAlign: 'center',
+    color: COLORS.white,
+    fontSize: 20,
+  },
+  });
 export default styles;

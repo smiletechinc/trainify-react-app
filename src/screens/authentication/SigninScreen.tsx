@@ -31,8 +31,8 @@ const SigninContainer: FunctionComponent<Props> = (props) => {
 
   const {navigation, route} = props;
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('Testing@gmail.com');
+  const [password, setPassword] = useState<string>('123456');
 
   const goToHomePage = () => {
     navigation.navigate('HomeScreen');

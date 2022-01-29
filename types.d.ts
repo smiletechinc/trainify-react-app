@@ -4,12 +4,12 @@ declare type Color = {
     code: string,
 }
 
-type AuthObject = {
+export type AuthObject = {
     email:string;
     password:string;
 };
 
-type UserObject = {
+export type UserObject = {
     id:string;
     email:string;
     playerstyle:string;
@@ -21,7 +21,7 @@ type UserObject = {
     nationality:string;
 }
 
-type ErrorObject = {
+export type ErrorObject = {
     code?: string;
     message: string, 
 }

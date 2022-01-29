@@ -1,6 +1,7 @@
 import { db, app } from './../config/db';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
+import {UserObject, ErrorObject, AuthObject} from '../../types';
 
 export const signInService = (authObject:AuthObject, onSuccess?:any,onFailure?:any) => {
     const {email, password} = authObject;
