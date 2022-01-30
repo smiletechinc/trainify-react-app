@@ -10,22 +10,29 @@ const backIcon = require('../../assets/images/back-icon.png');
 
 type Props = {
   text: string;
+  hideProfileSection?: boolean;
+  navigation: any;
 }
 const HeaderWithText: FunctionComponent<Props> = (props) => {
   // const navigation = useNavigation();
-  const {text} = props;
+  const {text, hideProfileSection, navigation} = props;
   return(
     <View style={styles.header_with_text_main_view}>
-      <View>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
         <Image source={backIcon} style={{width: 20, height: 20}}/>
-      </View>
-      <View>
-        <Text style={[globalStyles.regular, {fontWeight: '600', fontSize: 15, color: COLORS.dark_black}]}>{text}</Text>
+      </TouchableOpacity>
+      <View style={{flex: 1}}>
+        <Text style={[globalStyles.regular, styles.text]}>{text}</Text>
       </View>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          display: hideProfileSection ? 'none' : 'flex',
         }}
       >
         <Text style={[globalStyles.medium, {color: COLORS.light_blue, fontWeight: '600'}]}>Hello, </Text>

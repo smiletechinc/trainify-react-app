@@ -43,5 +43,26 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 20,
   },
-  });
+
+  // Upload Service styles
+  upload_icon_view: {
+    width: 144,
+    height: 144,
+    borderRadius: 144 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.dark_grey,
+  },
+  upload_icon: {
+    width: 50,
+    height: 50,
+  },
+  upload_serve_scroll_view : {
+    paddingBottom: 20,
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 export default styles;

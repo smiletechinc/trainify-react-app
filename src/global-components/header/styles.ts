@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import { COLORS } from '../../constants';
 
 const styles = StyleSheet.create({
   header_main_view: {
@@ -18,6 +19,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     alignItems: 'center',
+  },
+  text: {
+    fontWeight: '600',
+    fontSize: 15,
+    color: COLORS.dark_black,
+    textAlign: 'center',
   },
 });
 export default styles;

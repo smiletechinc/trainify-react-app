@@ -5,6 +5,8 @@ import SplashScreen from '../screens/authentication/SplashScreen';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
 import HomeScreen from './main-app/home';
 import ServePracticeContainer from './main-app/home/ServePractice';
+import RecordPracticeContainer from './main-app/home/RecordService';
+import UploadPracticeContainer from './main-app/home/UploadServe';
 
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
@@ -18,5 +20,7 @@ export {
     HomeScreen,
     PaymentPlanContainer,
     LanguageScreenContainer,
-    ServePracticeContainer
+    ServePracticeContainer,
+    RecordPracticeContainer,
+    UploadPracticeContainer,
 }

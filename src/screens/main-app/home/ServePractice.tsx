@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 
 import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../constants';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
-import VideoRecorder from 'react-native-beautiful-video-recorder';
+// import VideoRecorder from 'react-native-beautiful-video-recorder';
 
 import styles from '../styles';
 import globalStyles from '../../../global-styles';
@@ -13,22 +13,20 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const recordIcon = require('../../../assets/images/record-icon.png');
-const uploadIcon = require('../../../assets/images/upload-icon.png');
+const uploadIcon = require('../../../assets/images/upload-service.png');
 const analysisIcon = require('../../../assets/images/analysis-icon.png');
 
 const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
   // const navigation = useNavigation();
-  const [videoRecorder, setVideoRecorder] = useState(null);
-  const [showVideoRecorder, setShowVideoRecorder] = useState<boolean>(false);
   useEffect(() => {
   });
-  const start = () => {
-    // 30 seconds
-    setShowVideoRecorder(true);
-    videoRecorder.open({ maxLength: 5 },(data) => {
-      console.log('captured data', data);
-    });
-  }
+  // const start = () => {
+  //   // 30 seconds
+  //   setShowVideoRecorder(true);
+  //   videoRecorder.open({ maxLength: 5 },(data) => {
+  //     console.log('captured data', data);
+  //   });
+  // }
   
   
     return(
@@ -41,6 +39,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
         >
           <HeaderWithText
             text = "Serve Practice"
+            navigation={navigation}
           />
           <View
             style={{flexDirection: 'row', marginTop: 60,}}
@@ -49,8 +48,8 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
-                start();
+                // navigation.navigate('RecordPractice');
+                navigation.navigate('UploadPractice');
               }}
             >
               <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -64,7 +63,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
                 marginLeft: 23,
               }}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
+                navigation.navigate('RecordPractice');
               }}
             >
               <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -116,7 +115,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={{height: 400}}>
-          <VideoRecorder
+          {/* <VideoRecorder
             ref={(ref) => { setVideoRecorder(ref); }}
             cameraOptions={{}}
             durationTextStyle={styles.video_duration_text}
@@ -124,7 +123,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               bottom: SCREEN_HEIGHT - STATUS_BAR_HEIGHT - 10,
               left: (SCREEN_WIDTH / 2) - 23,
             }}
-          />
+          /> */}
         </View>
         </KeyboardAwareScrollView>
         
