@@ -15,18 +15,196 @@ import SubscriptionItem from './components/SubscriptionItem';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 import { SimpleButton } from '../../global-components/button';
+import { trainProducts, membershipProduct } from './products';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
+
+import RNIap, {
+  InAppPurchase,
+  Product,
+  ProductPurchase,
+  PurchaseError,
+  acknowledgePurchaseAndroid,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+  SubscriptionPurchase,
+} from 'react-native-iap';
+
+const itemSkus =
+  Platform.select({
+    ios: trainProducts,
+    android: [
+      ...trainProducts,
+      // ...androidStaticTestProducts,
+    ],
+  }) || [];
+
+  const itemSubs =
+  Platform.select({
+    ios: [membershipProduct],
+    android: [membershipProduct],
+  }) || [];
+
+let purchaseUpdateSubscription;
+let purchaseErrorSubscription;
 
 const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
   const proceedToSignup = route.params.proceedToSignup;
-  // cd
+  const [products, setProducts] = useState([]);
+  const [productList, setProductList] = useState([]);
+  const [coursePurchaseInProgress, setCoursePurchaseInProgress] = useState(false);
 
   useEffect(() => {
-alert(subscriptionPlan);
-  },[subscriptionPlan]);
+    proceedForApplePay();
+    return(()=>{
+      removeApplePay();
+    })
+  },[]);
+
+  async function proceedForApplePay()  {
+    getItems();
+    try {
+      const result = await RNIap.initConnection();
+      console.log('connection is => ', result);
+      // await RNIap.consumeAllItemsAndroid();
+    } catch (err) {
+      console.log('error in cdm => ', err);
+    }
+
+    purchaseUpdateSubscription = purchaseUpdatedListener(
+      async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        console.log('purchase');
+        if (purchase.productId === membershipProduct) {
+          await this.finishMembershipPurchase(purchase);
+        } else {
+          await this.finishCoursePurchase(purchase);
+        }
+      },
+    );
+
+    purchaseErrorSubscription = purchaseErrorListener(async (error: PurchaseError) => {
+      setCoursePurchaseInProgress(false);
+
+      if (error.code === 'E_USER_CANCELLED') return;
+
+      if (error.code === 'E_ALREADY_OWNED') {
+        // @TODO When Android subscriptions fixed:
+        // Check if user already has a subscription in owned products
+        // If so, retry creating  membership on YI servers
+        // const subscriptions = await RNIap.getSubscriptions(itemSubs);
+        return;
+      }
+
+      alert(`${JSON.stringify(error)}, IAP purchaseErrorListener`);
+    });
+
+  }
+
+  async function removeApplePay() {
+    if (purchaseUpdateSubscription) {
+      purchaseUpdateSubscription.remove();
+      purchaseUpdateSubscription = null;
+    }
+    if (purchaseErrorSubscription) {
+      purchaseErrorSubscription.remove();
+      purchaseErrorSubscription = null;
+    }
+  }
+
+  async function getItems() {
+    try {
+      const products: Product[] = await RNIap.getProducts(itemSkus);
+      console.log('Products', products);
+      setProductList(products);
+      // requestPurchase(itemSkus[0]);
+    } catch (err) {
+      console.log('getItems || purchase error => ', err);
+    }
+  };
+
+  async function getSubscriptions() {
+    try {
+      const products = await RNIap.getSubscriptions(itemSubs);
+      console.log('Products => ', products);
+      setProductList(products)
+    } catch (err) {
+      console.log('getSubscriptions error => ', err);
+    }
+  };
+
+  async function getAvailablePurchases() {
+    try {
+      const purchases = await RNIap.getAvailablePurchases();
+      console.info('Available purchases => ', purchases);
+      if (purchases && purchases.length > 0) {
+        this.setState({
+          availableItemsMessage: `Got ${purchases.length} items.`,
+          receipt: purchases[0].transactionReceipt,
+        });
+      }
+    } catch (err) {
+      console.warn(err.code, err.message);
+      console.log('getAvailablePurchases error => ', err);
+    }
+  };
+
+  // async function requestPurchase (sku, onSuccess: () => void) {
+  //   console.log('sku', sku);
+  //   try {
+  //     const dangerouslyFinishTransactionAutomatically = false;
+  //     RNIap.requestPurchase(sku, dangerouslyFinishTransactionAutomatically).then((res) => {
+  //       alert(`Purchase success, ${res}`);
+  //     }
+        
+  //     )
+  //   } catch (err) {
+  //     alert(`requestPurchase error => , ${err}`);
+  //   }
+  // };
+
+  async function requestPurchase (sku)  {
+    try {
+      RNIap.requestPurchase(sku);
+    } catch (err) {
+      console.log('requestPurchase error => ', err);
+    }
+  };
+
+  async function requestSubscription (sku) {
+    try {
+      await getItems();
+      await RNIap.requestSubscription(sku);
+    } catch (err) {
+      alert(err.toLocaleString());
+    }
+  };
+
+  function purchaseConfirmed() {
+    //you can code here for what changes you want to do in db on purchase successfull
+  };
+
+  const onSuccess = () => {
+    alert('successfully puchased');
+  };
+
+  function proceedToPurchase() {
+    RNIap.getProducts(trainProducts)
+    .then(success => {
+      let product = success[0];
+      alert(JSON.stringify(success));
+      RNIap.requestPurchase(product.productId)
+      .then(ok => {
+        alert('requested to purchase');
+      })
+      .catch(error => {
+        alert(error); 
+      }) 
+    })
+    .catch(error => {
+       alert(error); })
+  }
 
   return(
     <View style={styles.login_main_container}>
@@ -87,6 +265,8 @@ alert(subscriptionPlan);
               isSelected = {subscriptionPlan === 0 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(0);
+                // requestPurchase('free_trainify');
+                proceedToPurchase();
               }}
             />
 
@@ -96,6 +276,8 @@ alert(subscriptionPlan);
               isSelected = {subscriptionPlan === 1 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(1);
+                // requestPurchase('free_trainify');
+                proceedToPurchase();
               }}
             />
             <SubscriptionItem
@@ -104,6 +286,8 @@ alert(subscriptionPlan);
               isSelected = {subscriptionPlan === 2 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(2);
+                // requestPurchase('free_trainify');
+                proceedToPurchase();
               }}
             />
             <SubscriptionItem
@@ -112,6 +296,8 @@ alert(subscriptionPlan);
               isSelected = {subscriptionPlan === 3 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(3);
+                // requestPurchase('free_trainify');
+                proceedToPurchase();
               }}
             />
           </View>

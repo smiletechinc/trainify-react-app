@@ -9,6 +9,13 @@ type AuthObject = {
     password:string;
 };
 
+declare enum SubscriptionType{
+    FREE = 'FREE',
+    BASIC = 'BASIC',
+    SILVER = 'SILVER',
+    PLATINUM = 'PLATINUM',
+}
+
 type UserObject = {
     id:string;
     email:string;
@@ -19,6 +26,8 @@ type UserObject = {
     location:string;
     rating:string;
     nationality:string;
+    subscriptionType: string;
+    subscriptionStatus: string;
 }
 
 type ErrorObject = {

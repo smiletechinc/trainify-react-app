@@ -41,6 +41,8 @@ const proceedToRegister = (user) => {
     nationality,
     gender:'male',
     playerstyle : handStyle,
+    subscriptionType: 'Basic',
+    subscriptionStatus:'None',
   }
 
   registerUserService(userObject,registrationSuccess,authenticationFailure);
