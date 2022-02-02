@@ -31,8 +31,8 @@ const SigninContainer: FunctionComponent<Props> = (props) => {
 
   const {navigation, route} = props;
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('Testing@gmail.com');
+  const [password, setPassword] = useState<string>('123456');
 
   const goToHomePage = () => {
     navigation.navigate('HomeScreen');
@@ -47,7 +47,7 @@ const SigninContainer: FunctionComponent<Props> = (props) => {
 const authenticationSuccess = (userCredential?:any) => {
   if (userCredential) {
     const user = userCredential.user;
-    Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
+    // Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
     goToHomePage()
   }
 }

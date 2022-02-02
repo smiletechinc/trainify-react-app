@@ -3,7 +3,11 @@ import SignupScreen from '../screens/authentication/SignupScreen';
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import SplashScreen from '../screens/authentication/SplashScreen';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
-import HomeScreen from './home/trainify_home_screen';
+import HomeScreen from './main-app/home';
+import ServePracticeContainer from './main-app/home/ServePractice';
+import RecordPracticeContainer from './main-app/home/RecordService';
+import UploadPracticeContainer from './main-app/home/UploadServe';
+
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
 
@@ -15,5 +19,8 @@ export {
     ResetPasswordContainer,
     HomeScreen,
     PaymentPlanContainer,
-    LanguageScreenContainer
+    LanguageScreenContainer,
+    ServePracticeContainer,
+    RecordPracticeContainer,
+    UploadPracticeContainer,
 }
