@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 40,
     backgroundColor: COLORS.medium_dark_blue,
-    textColo: 'white'
+    color: 'white'
   },
 });
 
