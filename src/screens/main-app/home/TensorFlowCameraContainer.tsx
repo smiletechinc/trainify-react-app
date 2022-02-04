@@ -17,6 +17,15 @@ import { ExpoWebGLRenderingContext } from 'expo-gl';
 const CAM_WIDTH = Dimensions.get('window').width;
 const CAM_HEIGHT = Dimensions.get('window').height;
 const AUTO_RENDER = false;
+
+import styles_external from '../styles';
+import globalStyles from '../../../global-styles';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import { IconButton } from '../../../components/buttons'
+const recordIcon = require('../../../assets/images/record-icon.png');
+
 export default function TensorFlowCameraContainer() {
   const [isLoaded, setLoaded] = React.useState(false);
   const rafId = useRef<number | null>(null);
@@ -102,38 +111,38 @@ export default function TensorFlowCameraContainer() {
   //   </View>
   // </View>
   // } else
-  if (!isLoaded) {
+  // if (!isLoaded) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <View style={{flexDirection: 'column'}}>
+  //         <Text style={styles.text}>Open Camera to setup Tensor Flow</Text>
+  //         <Button title='Camera' onPress={() => {setupTensorflow();}}/>
+  //       </View>
+  //     </View>
+  //   );
+  // } else {
     return (
-      <View style={styles.container}>
-        <View style={{flexDirection: 'column'}}>
-          <Text style={styles.text}>Open Camera to setup Tensor Flow</Text>
-          <Button title='Camera' onPress={() => {setupTensorflow();}}/>
-        </View>
+      <SafeAreaView style={styles_external.main_view}>
+        <HeaderWithText
+          text = "RECORD LEFT-HANDED SERVE"
+          hideProfileSection = {true}
+          // navigation={navigation}
+        />
+             <View style={styles.cameraContainer}>
+        {isLoaded && camView()}
+        
       </View>
+      <IconButton icon={recordIcon} onPress={() => {setupTensorflow()}} />
+    </SafeAreaView>
+
+
     );
-  } else {
-    return (
-      <View style={styles.camera}>
-        {camView()}
-        {/* <Camera style={styles.camera} type={type}>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  setType(
-                    type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back
-                  );
-                }}>
-                <Text style={styles.text}> Flip </Text>
-              </TouchableOpacity>
-            </View>
-          </Camera> */}
-      </View>
-    );
-  }
+  // }
+
+  
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -156,20 +165,27 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   cameraContainer: {
+
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%',
-    backgroundColor: 'yellow',
+    height: '88%',
+    backgroundColor: 'black',
+    marginTop:16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth:1,
+    borderColor:'black',
+    borderStyle:'solid'
   },
   camera: {
-    width:200,
-    height:200,
+    width:'100%',
+    height:'100%',
     alignItems:'center',
 justifyContent:'center',
-    overflow: 'visible',
+    overflow: 'hidden',
     backgroundColor:'blue',
     // height: CAM_HEIGHT,
   },
@@ -187,5 +203,13 @@ justifyContent:'center',
   text: {
     fontSize: 18,
     color: 'white',
+  },
+  recordIcon: {
+    width: 60,
+    height: 60,
+    position:'absolute',
+    bottom:20,
+    left:12,
+    zIndex:1000,
   }
 });
