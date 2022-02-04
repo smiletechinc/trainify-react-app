@@ -64,6 +64,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               }}
               onPress={()=> {
                 navigation.navigate('RecordPractice');
+                // navigation.navigate('TensorFlowCameraContainer');
               }}
             >
               <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
