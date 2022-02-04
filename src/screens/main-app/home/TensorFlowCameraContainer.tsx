@@ -10,51 +10,26 @@ import {
 } from 'react-native';
 import {Camera} from 'expo-camera';
 // import * as tf from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-react-native';  // <-- This is important
 const tf = require('@tensorflow/tfjs');
 import {cameraWithTensors, decodeJpeg, fetch} from '@tensorflow/tfjs-react-native';
 const TensorCamera = cameraWithTensors(Camera);
 import { ExpoWebGLRenderingContext } from 'expo-gl';
-import * as posedetection from '@tensorflow-models/pose-detection';
-import Svg, { Circle } from 'react-native-svg';
+const CAM_WIDTH = Dimensions.get('window').width;
+const CAM_HEIGHT = Dimensions.get('window').height;
+const AUTO_RENDER = false;
+
 import styles_external from '../styles';
 import globalStyles from '../../../global-styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import { IconButton } from '../../../components/buttons'
-const recordIcon = require('../../../assets/images/icon_record_start.png');
-const stopIcon = require('../../../assets/images/icon_record_stop.png');
-
-const CAM_WIDTH = Dimensions.get('window').width;
-const CAM_HEIGHT = Dimensions.get('window').height;
-const AUTO_RENDER = false;
-const MIN_KEYPOINT_SCORE = 0.3;
-const IS_ANDROID = Platform.OS === 'android';
-const IS_IOS = Platform.OS === 'ios';
-const OUTPUT_TENSOR_WIDTH = 180;
-const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
-const CAM_PREVIEW_WIDTH = Dimensions.get('window').width;
-const CAM_PREVIEW_HEIGHT = CAM_PREVIEW_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
+const recordIcon = require('../../../assets/images/record-icon.png');
 
 export default function TensorFlowCameraContainer() {
   const [isLoaded, setLoaded] = React.useState(false);
   const rafId = useRef<number | null>(null);
   const [setup, setSetup] = useState(false);
-
-  const cameraRef = useRef(null);
-  const [tfReady, setTfReady] = useState(false);
-  const [model, setModel] = useState<posedetection.PoseDetector>();
-  const [poses, setPoses] = useState<posedetection.Pose[]>();
-  const [fps, setFps] = useState(0);
-
-  // const [skipFrameCount, setSkipFrameCount] = useState(0);
-  let skipFrameCount = 0;
-  const [totalServes, setTotalServes] = useState(0);
-  // const [cameraType, setCameraType] = useState<CameraType>(
-  //   Camera.Constants.Type.front
-  // );
-
   const handleCameraStream = async (
     images: IterableIterator<tf.Tensor3D>,
     updatePreview: () => void,
@@ -63,170 +38,35 @@ export default function TensorFlowCameraContainer() {
     const loop = async () => {
       // Get the tensor and run pose detection.
       const imageTensor = images.next().value as tf.Tensor3D;
-
-      console.log('imageTensor: ', imageTensor);
-
-      const startTs = Date.now();
-      const poses = await model!.estimatePoses(
-        imageTensor,
-        undefined,
-        Date.now()
-      );
-      
-console.log('poses: ', poses);
-
-      const latency = Date.now() - startTs;
-      setFps(Math.floor(1000 / latency));
-      setPoses(poses);
-      tf.dispose([imageTensor]);
-
-      if (rafId.current === 0) {
-        return;
-      }
-
       // Render camera preview manually when autorender=false.
       if (!AUTO_RENDER) {
         updatePreview();
         gl.endFrameEXP();
       }
-    rafId.current = requestAnimationFrame(loop);
+      rafId.current = requestAnimationFrame(loop);
     };
-
     loop();
   };
-
-const isPortrait = () => {
-  return true;
-};
-
-const getOutputTensorWidth = () => {
-  // On iOS landscape mode, switch width and height of the output tensor to
-  // get better result. Without this, the image stored in the output tensor
-  // would be stretched too much.
-  //
-  // Same for getOutputTensorHeight below.
-  return isPortrait() || IS_ANDROID
-    ? OUTPUT_TENSOR_WIDTH
-    : OUTPUT_TENSOR_HEIGHT;
-};
-
-const getOutputTensorHeight = () => {
-  return isPortrait() || IS_ANDROID
-    ? OUTPUT_TENSOR_HEIGHT
-    : OUTPUT_TENSOR_WIDTH;
-};
-
-  const renderPose = () => {
-    if (poses != null && poses.length > 0) {
-      const keypoints = poses[0].keypoints
-        .filter((k) => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
-        .map((k) => {
-          // Flip horizontally on android or when using back camera on iOS.
-          const flipX = IS_ANDROID;
-          const x = flipX ? getOutputTensorWidth() - k.x : k.x;
-          const y = k.y;
-          const cx =
-            (x / getOutputTensorWidth()) *
-            (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
-          const cy =
-            (y / getOutputTensorHeight()) *
-            (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
-          return (
-            <Circle
-              key={`skeletonkp_${k.name}`}
-              cx={cx}
-              cy={cy}
-              r='4'
-              strokeWidth='2'
-              fill='#00AA00'
-              stroke='white'
-            />
-          );
-        });
-
-      return <Svg style={styles.svg}>{keypoints}</Svg>;
-    } else {
-      return <View><Text>No data available</Text></View>;
-    }
-  };
-
   function init() {
     setSetup(true);
   }
  function setupTensorflow() {
-    //    let isMounted = true;
+       let isMounted = true;
+  console.log('tf...', tf);
 
-    //   (async () => {
-    //   await tf.ready().then((tf) => {
-    //     console.log('tf...', tf)
-    //     if (isMounted) {
-    //         setLoaded(true);
-    //     }
-    // });
-    // })();
+      (async () => {
+      await tf.ready().then((tf) => {
+        console.log('tf...', tf)
+        if (isMounted) {
+            setLoaded(true);
+        }
+    });
+    })();
 
-  
-    //   (async () => {
-    //     const model = posedetection.SupportedModels.BlazePose;
-    //     const detectorConfig = {
-    //       runtime: 'tfjs', // or 'tfjs'
-    //       modelType: 'full'
-    //     };
-    //     console.log('detectorConfig: ', detectorConfig);
-    //   const detector = await posedetection.createDetector(model, detectorConfig);
-    //   console.log('detector: ', detector);
-    //   setModel(detector);
-
-    //   // Ready!
-   
-    // })();
-    //   // const model = await posedetection.createDetector(
-    //   //   // posedetection.SupportedModels.MoveNet,
-    //   //   posedetection.SupportedModels.BlazePose,
-    //   //   detectorConfig
-    //   // );
-    //   setTfReady(true);
-    //   console.log('Model loaded!: ');
-
-    async function prepare() {
-      rafId.current = null;
-
-      // Set initial orientation.
-
-      // Camera permission.
-      await Camera.requestCameraPermissionsAsync();
-
-      // Wait for tfjs to initialize the backend.
-      await tf.ready();
-      setLoaded(true);
-
-      // Load movenet model.
-      // https://github.com/tensorflow/tfjs-models/tree/master/pose-detection
-
-      const model = posedetection.SupportedModels.BlazePose;
-      const detectorConfig = {
-        runtime: 'tfjs', // or 'tfjs'
-        modelType: 'full'
-      };
-
-      const detector = await posedetection.createDetector(model, detectorConfig);
-      // const model = await posedetection.createDetector(
-      //   // posedetection.SupportedModels.MoveNet,
-      //   posedetection.SupportedModels.BlazePose,
-      //   detectorConfig
-      // );
-
-      setModel(detector);
-      // Ready!
-      setTfReady(true);
-    }
-
-    prepare();
-
-}
-
-function stopTensorflow() {
-  setLoaded(false);
+  //   // (async () => {
+  //   //   const { status } = await Camera.requestPermissionsAsync();
+  //   //   setHasPermission(status === 'granted');
+  //   // })();
 }
   // useEffect(() => {
   //   let isMounted = true;
@@ -286,12 +126,12 @@ function stopTensorflow() {
         <HeaderWithText
           text = "RECORD LEFT-HANDED SERVE"
           hideProfileSection = {true}
-          // navigation={navigation}
+          navigation={navigation}
         />
              <View style={styles.cameraContainer}>
                <View>
-               {isLoaded && camView()}
-        {isLoaded && renderPose()}
+               {camView()}
+              {/* {isLoaded && renderPose()} */}
                </View>
 
                <IconButton styles={styles.recordIcon} icon={isLoaded ? stopIcon : recordIcon} onPress={() => {!isLoaded ? setupTensorflow() : stopTensorflow()} } transparent={true} />
@@ -349,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
 justifyContent:'center',
     overflow: 'hidden',
-    backgroundColor:'blue',
+    backgroundColor:'black',
     // height: CAM_HEIGHT,
   },
   buttonContainer: {
