@@ -1,16 +1,19 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Image } from "react-native";
+import {Metadata} from '../../types';
 
 type IconButtonProps = {
   onPress: any;
   icon: string;
+  transparent:boolean;
+  styles?: Metadata | undefined;
 }
 
 const IconButton: React.FunctionComponent<IconButtonProps> = ( props ) => {
-  const {onPress, icon} = props;
-
+  const {onPress, icon, transparent} = props;
+const overrrideStyles = props.styles;
     return(
-        <TouchableOpacity activeOpacity={0.5} onPress={onPress} style={styles.iconButtonContainer} >
+        <TouchableOpacity activeOpacity={0.5} onPress={onPress} style={[styles.iconButtonContainer, {opacity:transparent ? 1 : 0}, overrrideStyles]} >
           <Image source={icon}
                  style={styles.icon} /> 
         </TouchableOpacity>
@@ -20,19 +23,11 @@ const IconButton: React.FunctionComponent<IconButtonProps> = ( props ) => {
 const styles = StyleSheet.create({
     iconButtonContainer:{
         position: 'absolute',
-        width: 48,
-        height: 48,
         alignItems: 'center',
         justifyContent: 'center',
-        right: 32,
-        bottom: 32,
-        backgroundColor: '#009688',
-        borderRadius: 25,
       },
       icon: {
         resizeMode: 'cover',
-        width: 24,
-        height: 24,
       }
 });
 

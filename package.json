@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@mediapipe/pose": "^0.5.1635988162",
+    "@react-native-async-storage/async-storage": "^1.15.17",
     "@react-navigation/material-bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
@@ -47,6 +49,7 @@
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",
     "react-native-status-bar-height": "^2.6.0",
+    "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^9.0.0",
     "react-native-webview": "^11.16.0",
     "react-navigation": "^4.4.4"
