@@ -32,6 +32,17 @@ export default function TensorFlowCameraContainer({navigation, route}) {
   const [isLoaded, setLoaded] = React.useState(false);
   const rafId = useRef<number | null>(null);
   const [setup, setSetup] = useState(false);
+
+  useEffect(() => {
+    // Called when the app is unmounted.
+    return () => {
+      if (rafId.current != null && rafId.current !== 0) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = 0;
+      }
+    };
+  }, []);
+
   const handleCameraStream = async (
     images: IterableIterator<tf.Tensor3D>,
     updatePreview: () => void,
@@ -71,17 +82,11 @@ export default function TensorFlowCameraContainer({navigation, route}) {
   //   // })();
 }
 function stopTensorflow() {
-  let isMounted = true;
-console.log('tf...', tf);
-
- (async () => {
- await tf.disable().then((tf) => {
-   console.log('tf...', tf)
-   if (isMounted) {
-       setLoaded(true);
-   }
-});
-})();
+  if (rafId.current != null && rafId.current !== 0) {
+    cancelAnimationFrame(rafId.current);
+    rafId.current = 0;
+  }
+  setLoaded(false);
 
 //   // (async () => {
 //   //   const { status } = await Camera.requestPermissionsAsync();
@@ -211,7 +216,7 @@ justifyContent:'center',
     overflow: 'hidden',
     backgroundColor:'black',
     // height: CAM_HEIGHT,
-    zIndex:1000,
+    zIndex:10000,
   },
   buttonContainer: {
     flex: 1,

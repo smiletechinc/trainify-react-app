@@ -66,7 +66,8 @@ const registrationSuccess = (userCredential?:any) => {
 }
 
 const authenticationSuccess = (user?:any) => {
-  console.log("Signup: ", JSON.stringify(user));
+
+  Alert.alert("User signed-up successfully");
   if (user) {
     proceedToRegister(user);
   }
