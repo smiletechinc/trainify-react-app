@@ -24,9 +24,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import { IconButton } from '../../../components/buttons'
-const recordIcon = require('../../../assets/images/record-icon.png');
+const recordIcon = require('../../../assets/images/icon_record_start.png');
+const stopIcon = require('../../../assets/images/icon_record_stop.png');
 
-export default function TensorFlowCameraContainer() {
+export default function TensorFlowCameraContainer({navigation, route}) {
+  const {title} = route.params
   const [isLoaded, setLoaded] = React.useState(false);
   const rafId = useRef<number | null>(null);
   const [setup, setSetup] = useState(false);
@@ -68,6 +70,24 @@ export default function TensorFlowCameraContainer() {
   //   //   setHasPermission(status === 'granted');
   //   // })();
 }
+function stopTensorflow() {
+  let isMounted = true;
+console.log('tf...', tf);
+
+ (async () => {
+ await tf.disable().then((tf) => {
+   console.log('tf...', tf)
+   if (isMounted) {
+       setLoaded(true);
+   }
+});
+})();
+
+//   // (async () => {
+//   //   const { status } = await Camera.requestPermissionsAsync();
+//   //   setHasPermission(status === 'granted');
+//   // })();
+}
   // useEffect(() => {
   //   let isMounted = true;
   //   console.log('tf...', tf);
@@ -93,8 +113,8 @@ export default function TensorFlowCameraContainer() {
         type={Camera.Constants.Type.front}
         // zoom={0}
         // tensor related props
-        // cameraTextureHeight={CAM_HEIGHT}
-        // cameraTextureWidth={CAM_WIDTH}
+        cameraTextureHeight={CAM_HEIGHT}
+        cameraTextureWidth={CAM_WIDTH}
         resizeHeight={300}
         resizeWidth={300 * 0.75}
         resizeDepth={3}
@@ -124,7 +144,7 @@ export default function TensorFlowCameraContainer() {
     return (
       <SafeAreaView style={styles_external.main_view}>
         <HeaderWithText
-          text = "RECORD LEFT-HANDED SERVE"
+          text = {title}
           hideProfileSection = {true}
           navigation={navigation}
         />
@@ -191,6 +211,7 @@ justifyContent:'center',
     overflow: 'hidden',
     backgroundColor:'black',
     // height: CAM_HEIGHT,
+    zIndex:1000,
   },
   buttonContainer: {
     flex: 1,

@@ -49,11 +49,11 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               delayPressIn={0}
               onPress={()=> {
                 // navigation.navigate('RecordPractice');
-                navigation.navigate('UploadPractice');
+                navigation.navigate('TensorFlowCameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
               }}
             >
               <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record Right-Handed Serve</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record LEFT-Handed Serve</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -64,11 +64,11 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               }}
               onPress={()=> {
                 // navigation.navigate('RecordPractice');
-                navigation.navigate('TensorFlowCameraContainer');
+                navigation.navigate('TensorFlowCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
               }}
             >
               <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record Left-Handed Serve</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record RIGHT-Handed Serve</Text>
             </TouchableOpacity>
           </View>
 
@@ -79,11 +79,11 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
+                navigation.navigate('UploadPractice', {title:'Upload LEFT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload Right-Handed Serve</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload LEFT-Handed Serve</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -93,11 +93,11 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
                 marginLeft: 23,
               }}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
+                navigation.navigate('UploadPractice', {title:'Upload RIGHT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload Left-Handed Serve</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload RIGHT-Handed Serve</Text>
             </TouchableOpacity>
           </View>
 
