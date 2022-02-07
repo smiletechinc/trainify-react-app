@@ -55,7 +55,7 @@ const SigninFooter: FunctionComponent = (props) => {
           <Image source={rightRoundedArrow} style={{width: 77, height: 77}}/>
         </TouchableOpacity> */}
 
-<View style={{width:'100%'}}>
+      <View style={{width:'100%'}}>
         <PrimaryButton title='Sign In' onPress={proceedToLogin} />
       </View>
 
