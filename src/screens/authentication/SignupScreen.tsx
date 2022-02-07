@@ -16,6 +16,8 @@ import styles from './styles';
 import { StackActions, NavigationActions } from 'react-navigation';
 import {signUpService, signInService, registerUserService} from './../../services/authenticationServices';
 
+import { UserObject } from '../../types';
+
 const signupMainImage = require('../../assets/images/small-logo.png');
 
 const SigninContainer: FunctionComponent = ({ navigation }) => {
@@ -40,8 +42,8 @@ const proceedToRegister = (user) => {
     rating,
     nationality,
     gender:'male',
-    playerstyle : handStyle,
-  }
+    playerstyle : handStyle === 0 ? 'LeftHanded' : 'RightHanded'
+  };
 
   registerUserService(userObject,registrationSuccess,authenticationFailure);
 }

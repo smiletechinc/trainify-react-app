@@ -8,3 +8,16 @@ export type Metadata = {
 // export interface PatientReducer {
 //   healthData: Object;
 // }
+
+
+export type UserObject = {
+  id:string;
+  email:string;
+  gender:string;
+  height:string;
+  birthday:string;
+  location:string;
+  rating:string;
+  nationality:string;
+  playerstyle:string;
+}
