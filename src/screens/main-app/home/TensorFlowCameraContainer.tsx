@@ -24,9 +24,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import { IconButton } from '../../../components/buttons'
-const recordIcon = require('../../../assets/images/record-icon.png');
+const recordIcon = require('../../../assets/images/icon_record_start.png');
+const stopIcon = require('../../../assets/images/icon_record_stop.png');
 
-export default function TensorFlowCameraContainer() {
+export default function TensorFlowCameraContainer({navigation, route}) {
+  const {title} = route.params
   const [isLoaded, setLoaded] = React.useState(false);
   const rafId = useRef<number | null>(null);
   const [setup, setSetup] = useState(false);
@@ -68,6 +70,20 @@ export default function TensorFlowCameraContainer() {
   //   //   setHasPermission(status === 'granted');
   //   // })();
 }
+
+function stopTensorflow() {
+  if (rafId.current != null && rafId.current !== 0) {
+    cancelAnimationFrame(rafId.current);
+    rafId.current = 0;
+  }
+  setLoaded(false);
+
+//   // (async () => {
+//   //   const { status } = await Camera.requestPermissionsAsync();
+//   //   setHasPermission(status === 'granted');
+//   // })();
+}
+
   // useEffect(() => {
   //   let isMounted = true;
   //   console.log('tf...', tf);
@@ -121,27 +137,49 @@ export default function TensorFlowCameraContainer() {
   //     </View>
   //   );
   // } else {
-    return (
+    // return (
+    //   <SafeAreaView style={styles_external.main_view}>
+    //     <HeaderWithText
+    //       text = "RECORD LEFT-HANDED SERVE"
+    //       hideProfileSection = {true}
+    //       navigation={navigation}
+    //     />
+              
+    //          <View style={styles.cameraContainer}>
+    //     {isLoaded && camView()}
+    //     <View style={styles.buttonContainer}>
+    //   {/* <IconButton styles={styles.recordIconStyle}  icon={stopIcon} onPress={() => {setupTensorflow()}} transparent={false}/> */}
+    //   <IconButton styles={styles.recordIcon} icon={isLoaded ? stopIcon : recordIcon} onPress={() => {!isLoaded ? setupTensorflow() : stopTensorflow()} } transparent={true} />
+    //   </View>
+    //   </View>
+      
+    // </SafeAreaView>
+
+    // );
+
+        return (
       <SafeAreaView style={styles_external.main_view}>
         <HeaderWithText
-          text = "RECORD LEFT-HANDED SERVE"
+          text = {title}
           hideProfileSection = {true}
-          // navigation={navigation}
+          navigation={navigation}
         />
+              <View style={styles.cameraView} >
              <View style={styles.cameraContainer}>
-        {isLoaded && camView()}
-        
+               
+               {isLoaded && camView()}
+               </View>
+        <View style={styles.buttonContainer}>
+          <IconButton styles={styles.recordIcon} icon={isLoaded ? stopIcon : recordIcon} onPress={() => {!isLoaded ? setupTensorflow() : stopTensorflow()} } transparent={true} />
       </View>
-      <IconButton icon={recordIcon} onPress={() => {setupTensorflow()}} />
+      </View>
+      
     </SafeAreaView>
-
 
     );
   // }
-
   
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -165,7 +203,6 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   cameraContainer: {
-
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -180,18 +217,25 @@ const styles = StyleSheet.create({
     borderColor:'black',
     borderStyle:'solid'
   },
+  cameraView: {
+    display:'flex',
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+  },
   camera: {
     width:'100%',
     height:'100%',
     alignItems:'center',
-justifyContent:'center',
+    justifyContent:'center',
     overflow: 'hidden',
     backgroundColor:'blue',
     // height: CAM_HEIGHT,
+    zIndex: 500,
   },
   buttonContainer: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: 'blue',
     flexDirection: 'row',
     margin: 20,
   },
@@ -204,12 +248,18 @@ justifyContent:'center',
     fontSize: 18,
     color: 'white',
   },
+  recordIconStyle: {
+    width: 60,
+    height: 60,
+    position:'absolute',
+    bottom:36,
+    zIndex:1000,
+  },
   recordIcon: {
     width: 60,
     height: 60,
     position:'absolute',
-    bottom:20,
-    left:12,
+    bottom:108,
     zIndex:1000,
-  }
+  },
 });
