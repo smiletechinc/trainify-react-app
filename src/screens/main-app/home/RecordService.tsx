@@ -11,11 +11,14 @@ import styles from '../styles';
 import globalStyles from '../../../global-styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from './../../../context/auth-context';
 
 const recordIcon = require('../../../assets/images/record-icon.png');
 
 
 const RecordPracticeContainer: FunctionComponent = ({ navigation }) => {
+  const { authUser, setAuthUser: setUser } = React.useContext(AuthContext);
+  console.log('authUser : ', authUser);
   // const navigation = useNavigation();
   useEffect(() => {
   });

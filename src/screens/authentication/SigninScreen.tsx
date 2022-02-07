@@ -20,7 +20,10 @@ const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StackActions, NavigationActions } from 'react-navigation';
 
-import {signInService} from './../../services/authenticationServices'
+import {signInService, getUserWithIdService} from './../../services/authenticationServices'
+import { UserObject } from '../../types';
+import { AuthContext } from './../../context/auth-context';
+const backIcon = require('../../assets/images/back-icon.png');
 
 type Props = {
   navigation?: any;
@@ -28,27 +31,33 @@ type Props = {
 }
 
 const SigninContainer: FunctionComponent<Props> = (props) => {
+  const { authUser, setAuthUser, setAuthObject } = React.useContext(AuthContext);
 
   const {navigation, route} = props;
-
   const [email, setEmail] = useState<string>('Testing@gmail.com');
   const [password, setPassword] = useState<string>('123456');
 
-  const goToHomePage = () => {
+  const goToHomePage = (userObject) => {
+    const user: UserObject = userObject;
+    console.log('userObject : ', user);
+    setAuthUser(user);
     navigation.navigate('HomeScreen');
-    //     const resetAction = StackActions.reset({
-//   index: 0, // <-- currect active route from actions array
-//   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
-// });
+}
 
-//   navigation.dispatch(resetAction);
+const getUsrObject = (userCredential) => {
+  console.log('userCredential : ', userCredential);
+  let uid = userCredential.uid;
+  console.log('uid : ', uid);
+  getUserWithIdService(uid, goToHomePage, authenticationFailure)
 }
 
 const authenticationSuccess = (userCredential?:any) => {
   if (userCredential) {
+    setAuthObject(userCredential);
+    console.log('userCredential : ', userCredential);
     const user = userCredential.user;
     // Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
-    goToHomePage()
+    getUsrObject(userCredential);
   }
 }
 
@@ -136,20 +145,23 @@ const proceedToLogin = () => {
         bounces={false}
         
       >
-        {/* <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+
+        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
               navigation.goBack();
             }}
           >
+            <Image source={backIcon} style={{width: 32, height: 32}}/>
 
           </TouchableOpacity>
-        </View> */}
+          </View>
+
         <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <AutoHeightImage 
             source={signinMainImage}
-            width={SCREEN_WIDTH * 0.9}
+            width={SCREEN_WIDTH * 0.76}
           />
           <Text style={[globalStyles.title, globalStyles.bold, {color: COLORS.medium_dark_blue, marginTop: 16}]}>SIGN IN</Text>
           <TextInput
