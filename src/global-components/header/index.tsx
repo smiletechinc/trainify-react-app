@@ -4,10 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import {COLORS, SCREEN_WIDTH} from '../../constants';
 import globalStyles from '../../global-styles';
 import styles from './styles';
+import { AuthContext } from './../../context/auth-context';
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 
 const SimpleHeader: FunctionComponent = ({ navigation }) => {
+  const { authUser} = React.useContext(AuthContext);
+  console.log('authUser : ', authUser);
+  const {lastName} = authUser;
   // const navigation = useNavigation();  
   return(
     <View style={styles.header_main_view}>
@@ -17,7 +21,7 @@ const SimpleHeader: FunctionComponent = ({ navigation }) => {
           alignItems: 'center',
         }}
       >
-        <Text style={[globalStyles.medium, {color: COLORS.light_blue, fontWeight: '600'}]}>Hello, </Text>
+        <Text style={[globalStyles.medium, {color: COLORS.light_blue, fontWeight: '600'}]}>{lastName}, </Text>
         <Image source={profileIcon} style={styles.header_profile_icon} />
       </View>
     </View>

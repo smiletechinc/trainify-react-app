@@ -11,12 +11,15 @@ import styles from '../styles';
 import globalStyles from '../../../global-styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from './../../../context/auth-context';
 
 const recordIcon = require('../../../assets/images/record-icon.png');
 const uploadIcon = require('../../../assets/images/upload-service.png');
 const analysisIcon = require('../../../assets/images/analysis-icon.png');
 
 const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
+  const { authUser, setAuthUser } = React.useContext(AuthContext);
+  const {playerstyle} = authUser
   // const navigation = useNavigation();
   useEffect(() => {
   });
@@ -41,64 +44,69 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
             text = "Serve Practice"
             navigation={navigation}
           />
-          <View
-            style={{flexDirection: 'row', marginTop: 60,}}
-          >
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayPressIn={0}
-              onPress={()=> {
-                // navigation.navigate('RecordPractice');
-                navigation.navigate('UploadPractice');
-              }}
-            >
-              <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record Right-Handed Serve</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayPressIn={0}
-              style={{
-                marginLeft: 23,
-              }}
-              onPress={()=> {
-                navigation.navigate('RecordPractice');
-              }}
-            >
-              <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record Left-Handed Serve</Text>
-            </TouchableOpacity>
-          </View>
 
-          <View
+          {playerstyle === "LeftHanded" ? <View
             style={{flexDirection: 'row', marginTop: 28,}}
           >
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
+                navigation.navigate('UploadPractice', {title:'Upload LEFT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload Right-Handed Serve</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload LEFT-Handed Serve</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
+          activeOpacity={0.8}
+          delayPressIn={0}
+          style={{
+            marginLeft: 23,
+          }}
+          onPress={()=> {
+            // navigation.navigate('RecordPractice');
+            navigation.navigate('TensorFlowCameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
+          }}
+        >
+          <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
+          <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record LEFT-Handed Serve</Text>
+        </TouchableOpacity>
+
+          </View>
+        :
+        <View
+        style={{flexDirection: 'row', marginTop: 28,}}
+      >
+                    <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
-              style={{
-                marginLeft: 23,
-              }}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
+                navigation.navigate('UploadPractice', {title:'Upload RIGHT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload Left-Handed Serve</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Upload RIGHT-Handed Serve</Text>
             </TouchableOpacity>
-          </View>
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          delayPressIn={0}
+          style={{
+            marginLeft: 23,
+          }}
+          onPress={()=> {
+            // navigation.navigate('RecordPractice');
+            navigation.navigate('TensorFlowCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
+          }}
+        >
+          <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
+          <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Record RIGHT-Handed Serve</Text>
+        </TouchableOpacity>
+      </View>
+        }
 
           <View
             style={{flexDirection: 'row', marginTop: 18,}}

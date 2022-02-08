@@ -10,7 +10,7 @@ import UploadPracticeContainer from './main-app/home/UploadServe';
 
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
-
+import TensorFlowCameraContainer from './main-app/home/TensorFlowCameraContainer';
 export {
     SigninScreen,
     SignupScreen,
@@ -23,4 +23,5 @@ export {
     ServePracticeContainer,
     RecordPracticeContainer,
     UploadPracticeContainer,
+    TensorFlowCameraContainer,
 }

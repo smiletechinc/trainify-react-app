@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   // Playing styles.
   playing_style_main: {
-    marginTop: 16,
+    marginTop: 20,
     width: SCREEN_WIDTH * 0.9,
   },
   playing_style_horizontal_view: {

@@ -16,76 +16,86 @@ import styles from './styles';
 import { StackActions, NavigationActions } from 'react-navigation';
 import {signUpService, signInService, registerUserService} from './../../services/authenticationServices';
 
+import { UserObject } from '../../types';
+
 const signupMainImage = require('../../assets/images/small-logo.png');
+const backIcon = require('../../assets/images/back-icon.png');
 
 const SigninContainer: FunctionComponent = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [handStyle, setHandStyle] = useState<number>(0);
+  const [firstName, setFirstName] = useState<string>('');
+  const [middleName, setMiddleName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [height, setHeight] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [rating, setRating] = useState<string>('');
   const [nationality, setNationality] = useState<string>('');
 
-const proceedToRegister = (user) => {
-  const id = user.uid;
-  const userObject: UserObject = {
-    id,
-    email,
-    height,
-    birthday,
-    location,
-    rating,
-    nationality,
-    gender:'male',
-    playerstyle : handStyle,
+  const proceedForPayments = () => {
+    if (password === confirmPassword) {
+      const signupObject = {
+        email,
+        password,
+        firstName,
+        middleName,
+        lastName,
+        height,
+        birthday,
+        location,
+        rating,
+        nationality,
+        gender:'male',
+        playerstyle : handStyle === 0 ? 'LeftHanded' : 'RightHanded'
+      }
+
+      const authObject = {
+        email,
+        password,
+      }
+
+      navigation.navigate('PaymentPlan', {signupObject, authObject});
+    } else {
+      Alert.alert('Trainify', 'Password and Confirm password does not match');
+    }
   }
 
-  registerUserService(userObject,registrationSuccess,authenticationFailure);
-}
+const validateForInputs = () => {
 
-const goToHomePage = () => {
-  navigation.navigate('HomeScreen');
-  //     const resetAction = StackActions.reset({
-//   index: 0, // <-- currect active route from actions array
-//   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
-// });
-
-//   navigation.dispatch(resetAction);
-}
-
-const registrationSuccess = (userCredential?:any) => {
-  if (userCredential) {
-    const user = userCredential.user;
-    Alert.alert("Trainify", `You've signed up successfully.`)
-    goToHomePage();
+  if(email === '') {
+    return false;
   }
-
-}
-
-const authenticationSuccess = (user?:any) => {
-  console.log("Signup: ", JSON.stringify(user));
-  if (user) {
-    proceedToRegister(user);
+  if (password === '') {
+    return false;
   }
-}
-
-const authenticationFailure = (error) => {
-  if(error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    Alert.alert("Trainify", errorMessage)
+  if (confirmPassword === ''){
+    return false;
   }
-}
-
-const proceedToSignup = () => {
-  const authObject = {
-    email,
-    password,
+  if (firstName === '') {
+    return false;
   }
-  signUpService(authObject, authenticationSuccess, authenticationFailure );
+  if (lastName === '') {
+    return false;
+  }
+  if (height === ''){
+    return false;
+  }
+  if (birthday === '') {
+    return false;
+  }
+  if (location === ''){
+    return false;
+  }
+  if (rating === '') {
+    return false;
+  }
+  if (nationality === ''){
+    return false;
+  }
+  return true
 }
 
 //   const proceedToSignup = () => {
@@ -120,6 +130,7 @@ const proceedToSignup = () => {
               navigation.goBack();
             }}
           >
+            <Image source={backIcon} style={{width: 32, height: 32}}/>
 
           </TouchableOpacity>
         </View>
@@ -180,8 +191,53 @@ const proceedToSignup = () => {
             setHandStyle={setHandStyle}
           />
           <TextInput
+            value={firstName}
+            placeholder="First name"
+            placeholderTextColor={COLORS.dark_black}
+            // secureTextEntry={true}
+            onChangeText={(value: string) => {
+              setFirstName(value);
+            }}
+            inputStyles={{
+              fontWeight: 'bold',
+            }}
+            inputParentStyles={{
+              marginTop: 29,
+            }}
+          />
+          <TextInput
+            value={middleName}
+            placeholder="Middle name"
+            placeholderTextColor={COLORS.dark_black}
+            // secureTextEntry={true}
+            onChangeText={(value: string) => {
+              setMiddleName(value);
+            }}
+            inputStyles={{
+              fontWeight: 'bold',
+            }}
+            inputParentStyles={{
+              marginTop: 29,
+            }}
+          />
+          <TextInput
+            value={lastName}
+            placeholder="Last name"
+            placeholderTextColor={COLORS.dark_black}
+            // secureTextEntry={true}
+            onChangeText={(value: string) => {
+              setLastName(value);
+            }}
+            inputStyles={{
+              fontWeight: 'bold',
+            }}
+            inputParentStyles={{
+              marginTop: 29,
+            }}
+          />
+          <TextInput
             value={height}
-            placeholder="height"
+            placeholder="Height"
             placeholderTextColor={COLORS.dark_black}
             // secureTextEntry={true}
             onChangeText={(value: string) => {
@@ -257,12 +313,9 @@ const proceedToSignup = () => {
           
           <SignupFooterComponent
             navigation={navigation}
-            isButtonDisabled = {email !== '' && password !== '' ? false : true}
+            isButtonDisabled = {!validateForInputs()}
             // onPress={proceedToSignup}
-            onPress={()=>{
-              navigation.navigate('PaymentPlan', {proceedToSignup,})
-            }}
-            proceedToSignup={proceedToSignup}
+            onPress={proceedForPayments}
           />
         </View>
 
