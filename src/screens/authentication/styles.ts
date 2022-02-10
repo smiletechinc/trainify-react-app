@@ -21,11 +21,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   login_back_icon: {
-    width: 18,
-    height: 18,
-    borderRadius: 18 / 2,
-    borderWidth: 1,
-    borderColor: COLORS.medium_dark_blue,
+    width: 32,
+    height: 32,
   },
   login_forgot_view: {
     flexDirection: 'row',

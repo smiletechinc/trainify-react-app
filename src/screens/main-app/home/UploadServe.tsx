@@ -16,7 +16,8 @@ import { SimpleButton } from '../../../global-components/button';
 const uploadIcon = require('../../../assets/images/upload-icon.png');
 
 
-const UploadPracticeContainer: FunctionComponent = ({ navigation }) => {
+const UploadPracticeContainer: FunctionComponent = ({ navigation, route }) => {
+  const {title} = route.params
   // const navigation = useNavigation();
   useEffect(() => {
   });
@@ -28,7 +29,6 @@ const UploadPracticeContainer: FunctionComponent = ({ navigation }) => {
   //   });
   // }
   
-  
     return(
       <SafeAreaView style={styles.main_view}>
         <KeyboardAwareScrollView
@@ -36,7 +36,7 @@ const UploadPracticeContainer: FunctionComponent = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         >
           <HeaderWithText
-            text = "UPLOAD LEFT-HANDED SERVE"
+            text = {title}
             hideProfileSection = {true}
             navigation={navigation}
           />

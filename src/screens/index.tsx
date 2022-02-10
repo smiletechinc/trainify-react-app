@@ -10,11 +10,9 @@ import UploadPracticeContainer from './main-app/home/UploadServe';
 
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
-<<<<<<< Updated upstream
 
-=======
 import TensorFlowCameraContainer from '../../App1';
->>>>>>> Stashed changes
+
 export {
     SigninScreen,
     SignupScreen,
@@ -27,4 +25,5 @@ export {
     ServePracticeContainer,
     RecordPracticeContainer,
     UploadPracticeContainer,
+    TensorFlowCameraContainer,
 }

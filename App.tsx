@@ -18,12 +18,15 @@ import {
   View,
 } from 'react-native';
 import AppContainer from './src/navigations';
+import { AuthContextProvider } from './src/context/auth-context';
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={{flex: 1}}>
+      <AuthContextProvider>
       <AppContainer />
+      </AuthContextProvider>
     </View>
   );
 };

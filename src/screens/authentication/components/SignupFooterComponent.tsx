@@ -11,6 +11,7 @@ type Props = {
   proceedToSignup:any;
   navigation:any;
   onPress:any
+  isButtonDisabled:boolean;
 }
 
 const SignupFooter: FunctionComponent<Props> = (props) => {

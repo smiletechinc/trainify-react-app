@@ -1,6 +1,6 @@
 import { db, app } from './../config/db';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, get } from "firebase/database";
 import {UserObject, ErrorObject, AuthObject} from '../../types';
 
 export const signInService = (authObject:AuthObject, onSuccess?:any,onFailure?:any) => {
@@ -95,10 +95,30 @@ export const registerUserService = (userObject:UserObject, onSuccess?:any, onFai
         }
 }
 
-export const addBalance = (accountNumber, amount, currency) => {
-    db.ref('/balance').push({
-        account: accountNumber,
-        balance: amount,
-        currency: currency
+export const getUserWithIdService = (id: any, onSuccess?:any, onFailure?:any) => {
+  const branch = `/users/${id}`
+  console.log('Branch: ', branch)
+  if (db) {
+    get(ref(db, branch)).then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log('snapshot', snapshot);
+        onSuccess(snapshot.val());
+      } else {
+        console.log("No data available");
+        const error:ErrorObject = {
+          code:'404',
+          message: 'No data available'
+        }
+        onFailure(error);
+      }
+    }).catch((error) => {
+      console.error(error);
+      onFailure(error);
     });
+  } else {
+    const error:ErrorObject = {
+    message: 'Something went wrong while executing your request'
+  }
+  onFailure(error);
+}
 }

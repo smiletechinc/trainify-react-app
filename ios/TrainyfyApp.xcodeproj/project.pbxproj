@@ -12,7 +12,9 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		5AD44E6F6B02A7793A317841 /* libPods-TrainyfyApp-TrainyfyAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5301128B786E8BE8FAB4B250 /* libPods-TrainyfyApp-TrainyfyAppTests.a */; };
+		7BDCE9CEEF72D0521F896A00 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD0B176B1D6C7789EB5C26 /* ExpoModulesProvider.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8411CD045826744CF55FDB99 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D0B167E90F5315FEEE618E /* ExpoModulesProvider.swift */; };
 		BDAE34DCC79724FD0560B1C7 /* libPods-TrainyfyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 085F80F41EFD15B4365A6681 /* libPods-TrainyfyApp.a */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +32,7 @@
 		00E356EE1AD99517003FC87E /* TrainyfyAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainyfyAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* TrainyfyAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrainyfyAppTests.m; sourceTree = "<group>"; };
+		06D0B167E90F5315FEEE618E /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TrainyfyApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		085F80F41EFD15B4365A6681 /* libPods-TrainyfyApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrainyfyApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* TrainyfyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainyfyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = TrainyfyApp/AppDelegate.h; sourceTree = "<group>"; };
@@ -39,6 +42,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TrainyfyApp/main.m; sourceTree = "<group>"; };
 		1833E77C279CC720009B142C /* TrainyfyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TrainyfyApp.entitlements; path = TrainyfyApp/TrainyfyApp.entitlements; sourceTree = "<group>"; };
 		2504545ABA0F4E19AC1E2B09 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		29AD0B176B1D6C7789EB5C26 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TrainyfyApp-TrainyfyAppTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		3534718823E643D19330F5E0 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		36C1A2D18C5E4B39B791C22E /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		37F578A8AB6243708098DD21 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -124,6 +128,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3FE8EEA72AE8A30E9A60BA5A /* TrainyfyApp */ = {
+			isa = PBXGroup;
+			children = (
+				06D0B167E90F5315FEEE618E /* ExpoModulesProvider.swift */,
+			);
+			name = TrainyfyApp;
+			sourceTree = "<group>";
+		};
+		522FD29B2C86AA112238ECB0 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				3FE8EEA72AE8A30E9A60BA5A /* TrainyfyApp */,
+				9C5F671FE6030B5B992A21D6 /* TrainyfyAppTests */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		55CC3D0A59F4EF3030DA8A6C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -175,6 +196,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				55CC3D0A59F4EF3030DA8A6C /* Pods */,
 				5E5FDAE9B88E49CEB0CBDF7B /* Resources */,
+				522FD29B2C86AA112238ECB0 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -188,6 +210,14 @@
 				00E356EE1AD99517003FC87E /* TrainyfyAppTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9C5F671FE6030B5B992A21D6 /* TrainyfyAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				29AD0B176B1D6C7789EB5C26 /* ExpoModulesProvider.swift */,
+			);
+			name = TrainyfyAppTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -445,6 +475,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* TrainyfyAppTests.m in Sources */,
+				7BDCE9CEEF72D0521F896A00 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +485,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				8411CD045826744CF55FDB99 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,14 +558,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
-<<<<<<< Updated upstream
-				CURRENT_PROJECT_VERSION = 1;
-=======
+
 				CURRENT_PROJECT_VERSION = 6;
->>>>>>> Stashed changes
+
 				DEVELOPMENT_TEAM = C48PH5S3RG;
+
+
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -543,14 +576,13 @@
 					"-ObjC",
 					"-lc++",
 				);
-<<<<<<< Updated upstream
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-=======
+
+
 				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.tennisrandom;
->>>>>>> Stashed changes
 				PRODUCT_NAME = TrainyfyApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -562,13 +594,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
-<<<<<<< Updated upstream
-				CURRENT_PROJECT_VERSION = 1;
-=======
+
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = C48PH5S3RG;
->>>>>>> Stashed changes
+
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -578,13 +609,14 @@
 					"-ObjC",
 					"-lc++",
 				);
-<<<<<<< Updated upstream
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-=======
+
+
+
 				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.tennisrandom;
->>>>>>> Stashed changes
+
 				PRODUCT_NAME = TrainyfyApp;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -638,7 +670,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -697,7 +729,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",

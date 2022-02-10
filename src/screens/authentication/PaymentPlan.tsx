@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform } from 'react-native';
+import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform, Alert } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // const PaymentRequest = require('react-native-payments').PaymentRequest;
@@ -15,23 +15,24 @@ import SubscriptionItem from './components/SubscriptionItem';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 import { SimpleButton } from '../../global-components/button';
-<<<<<<< Updated upstream
-=======
+
 import { UserObject } from '../../types';
 
 import {signUpService, registerUserService} from './../../services/authenticationServices';
 
->>>>>>> Stashed changes
+
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 
 const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
+  const signupObject = route.params.signupObject;
+  const authObject = route.params.authObject;
+
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
-<<<<<<< Updated upstream
+
   const proceedToSignup = route.params.proceedToSignup;
-  // cd
-=======
+
 
   const proceedToRegister = (user) => {
     const id = user.uid;
@@ -82,9 +83,12 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   }
   
   const proceedToSignup = () => {
+
     // signUpService(authObject, authenticationSuccess, authenticationFailure );
   }
->>>>>>> Stashed changes
+
+    // signUpService(authObject, authenticationSuccess, authenticationFailure );
+  }
 
   return(
     <View style={styles.login_main_container}>
