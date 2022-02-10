@@ -15,14 +15,76 @@ import SubscriptionItem from './components/SubscriptionItem';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 import { SimpleButton } from '../../global-components/button';
+<<<<<<< Updated upstream
+=======
+import { UserObject } from '../../types';
+
+import {signUpService, registerUserService} from './../../services/authenticationServices';
+
+>>>>>>> Stashed changes
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 
 const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
+<<<<<<< Updated upstream
   const proceedToSignup = route.params.proceedToSignup;
   // cd
+=======
+
+  const proceedToRegister = (user) => {
+    const id = user.uid;
+    const userType = playerSelected === 0 ? "COACH" : playerSelected === 1 ? "SELF" : 'CHILDREN';
+    const subscriptionType = subscriptionPlan === 0 ? "COACH" : subscriptionPlan === 1 ? "SELF" : 'CHILDREN';
+    const userObject: UserObject = {
+      id,
+      userType,
+      email:signupObject.email,
+      firstName:signupObject.firstName,
+      middleName:signupObject.middleName,
+      lastName:signupObject.lastName,
+      height:signupObject.height,
+      birthday:signupObject.birthday,
+      location:signupObject.location,
+      rating:signupObject.rating,
+      nationality:signupObject.nationality,
+      gender:signupObject.gender,
+      playerstyle :signupObject.playerstyle,
+      paymentPlan: subscriptionType,
+    };
+  
+    // registerUserService(userObject,registrationSuccess,authenticationFailure);
+  }
+  
+  const goToLoginScreen = () => {
+      navigation.navigate('Signin');
+  }
+  
+  const registrationSuccess = (userCredential?:any) => {
+      Alert.alert("Trainify", `You've signed up successfully.`)
+      goToLoginScreen();
+  }
+  
+  const authenticationSuccess = (user?:any) => {
+    console.log("Signup: ", JSON.stringify(user));
+    if (user) {
+      proceedToRegister(user);
+    }
+  }
+  
+  const authenticationFailure = (error) => {
+    if(error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert("Trainify", errorMessage)
+    }
+  }
+  
+  const proceedToSignup = () => {
+    // signUpService(authObject, authenticationSuccess, authenticationFailure );
+  }
+>>>>>>> Stashed changes
 
   return(
     <View style={styles.login_main_container}>

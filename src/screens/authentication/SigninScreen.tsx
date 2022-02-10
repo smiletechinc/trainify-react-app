@@ -41,7 +41,16 @@ const SigninContainer: FunctionComponent<Props> = (props) => {
 //   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
 // });
 
+<<<<<<< Updated upstream
 //   navigation.dispatch(resetAction);
+=======
+const getUsrObject = (userCredential) => {
+  console.log('userCredential : ', userCredential);
+  let uid = userCredential.uid;
+  console.log('uid : ', uid);
+  navigation.navigate('HomeScreen'); // remove this line when backend would be working.
+  // getUserWithIdService(uid, goToHomePage, authenticationFailure)
+>>>>>>> Stashed changes
 }
 
 const authenticationSuccess = (userCredential?:any) => {
@@ -65,7 +74,8 @@ const proceedToLogin = () => {
     email,
     password,
   }
-  signInService(authObject, authenticationSuccess, authenticationFailure );
+  navigation.navigate('HomeScreen'); // remove this line when backend would be working.
+  // signInService(authObject, authenticationSuccess, authenticationFailure );
 }
 
   // const proceedToLogin = () => {

@@ -13,8 +13,12 @@ import PlayingStyle from './components/YourPlayingStyle';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 
+<<<<<<< Updated upstream
 import { StackActions, NavigationActions } from 'react-navigation';
 import {signUpService, signInService, registerUserService} from './../../services/authenticationServices';
+=======
+import { UserObject } from '../../types';
+>>>>>>> Stashed changes
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 

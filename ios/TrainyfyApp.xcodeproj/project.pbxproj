@@ -526,7 +526,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
+<<<<<<< Updated upstream
 				CURRENT_PROJECT_VERSION = 1;
+=======
+				CURRENT_PROJECT_VERSION = 6;
+>>>>>>> Stashed changes
 				DEVELOPMENT_TEAM = C48PH5S3RG;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
@@ -539,7 +543,11 @@
 					"-ObjC",
 					"-lc++",
 				);
+<<<<<<< Updated upstream
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.tennisrandom;
+>>>>>>> Stashed changes
 				PRODUCT_NAME = TrainyfyApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -554,7 +562,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
+<<<<<<< Updated upstream
 				CURRENT_PROJECT_VERSION = 1;
+=======
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = C48PH5S3RG;
+>>>>>>> Stashed changes
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -565,7 +578,11 @@
 					"-ObjC",
 					"-lc++",
 				);
+<<<<<<< Updated upstream
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.tennisrandom;
+>>>>>>> Stashed changes
 				PRODUCT_NAME = TrainyfyApp;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

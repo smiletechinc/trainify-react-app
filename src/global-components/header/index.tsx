@@ -8,6 +8,12 @@ import styles from './styles';
 const profileIcon = require('../../assets/images/profile-icon.png');
 
 const SimpleHeader: FunctionComponent = ({ navigation }) => {
+<<<<<<< Updated upstream
+=======
+  const { authUser} = React.useContext(AuthContext);
+  console.log('authUser : ', authUser);
+  const {lastName} = authUser ? authUser : "";
+>>>>>>> Stashed changes
   // const navigation = useNavigation();  
   return(
     <View style={styles.header_main_view}>

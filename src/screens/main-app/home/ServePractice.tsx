@@ -17,6 +17,11 @@ const uploadIcon = require('../../../assets/images/upload-service.png');
 const analysisIcon = require('../../../assets/images/analysis-icon.png');
 
 const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
+<<<<<<< Updated upstream
+=======
+  const { authUser, setAuthUser } = React.useContext(AuthContext);
+  const {playerstyle} = authUser ? authUser : "";
+>>>>>>> Stashed changes
   // const navigation = useNavigation();
   useEffect(() => {
   });

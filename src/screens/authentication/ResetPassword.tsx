@@ -32,7 +32,7 @@ const ResetPasswordContainer: FunctionComponent = ({ navigation }) => {
   }
   
   const proceedToResetPassword = () => {
-    resetPasswordService(email, authenticationSuccess, authenticationFailure );
+    // resetPasswordService(email, authenticationSuccess, authenticationFailure );
   }
 
   return(

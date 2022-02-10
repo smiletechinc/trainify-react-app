@@ -16,6 +16,12 @@ type Props = {
 const HeaderWithText: FunctionComponent<Props> = (props) => {
   // const navigation = useNavigation();
   const {text, hideProfileSection, navigation} = props;
+<<<<<<< Updated upstream
+=======
+  const { authUser, setAuthUser: setUser } = React.useContext(AuthContext);
+  const { lastName } = authUser ? authUser : "";
+
+>>>>>>> Stashed changes
   return(
     <View style={styles.header_with_text_main_view}>
       <TouchableOpacity
