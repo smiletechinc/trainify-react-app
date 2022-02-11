@@ -15,7 +15,8 @@ import {
   ServePracticeContainer,
   RecordPracticeContainer,
   UploadPracticeContainer,
-  TensorFlowCameraContainer
+  TensorFlowCameraContainer,
+  TensorCameraContainer
 } from '../screens';
 const AppStack = createNativeStackNavigator();
 
@@ -70,6 +71,10 @@ function AppContainer() {
       <AppStack.Screen
       name="TensorFlowCameraContainer"
       component={TensorFlowCameraContainer}
+      />
+      <AppStack.Screen
+      name="TensorCameraContainer"
+      component={TensorCameraContainer}
       />
       </AppStack.Navigator>
     </NavigationContainer>

@@ -12,6 +12,7 @@ import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
 
 import TensorFlowCameraContainer from '../../App1';
+import TensorCameraContainer from '../../App3';
 
 export {
     SigninScreen,
@@ -26,4 +27,5 @@ export {
     RecordPracticeContainer,
     UploadPracticeContainer,
     TensorFlowCameraContainer,
+    TensorCameraContainer,
 }

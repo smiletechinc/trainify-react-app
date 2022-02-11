@@ -24,6 +24,9 @@ PODS:
   - ExpoModulesCore (0.6.3):
     - React-Core
     - ReactCommon/turbomodule/core
+  - EXScreenOrientation (4.1.2):
+    - ExpoModulesCore
+    - React-Core
   - FBLazyVector (0.64.0)
   - FBReactNativeSpec (0.64.0):
     - RCT-Folly (= 2020.01.13.00)
@@ -362,6 +365,8 @@ PODS:
   - RNScreens (3.10.1):
     - React-Core
     - React-RCTImage
+  - RNSVG (12.1.1):
+    - React
   - RNVectorIcons (9.0.0):
     - React-Core
   - Yoga (1.14.0)
@@ -380,6 +385,7 @@ DEPENDENCIES:
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
+  - EXScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - Flipper (~> 0.75.1)
@@ -434,6 +440,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -477,6 +484,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core/ios"
+  EXScreenOrientation:
+    :path: "../node_modules/expo-screen-orientation/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -543,6 +552,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -562,8 +573,9 @@ SPEC CHECKSUMS:
   EXKeepAwake: bf48d7f740a5cd2befed6cf9a49911d385c6c47d
   Expo: 6ca1d5ca8c8264a7131a608afcd01561f79f1e6e
   ExpoModulesCore: d04e519b3e8e21523b195bb21a40144e30f1e163
+  EXScreenOrientation: ca9375ec57e5706128062867516da0b03a97ef64
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: 113aac2f665a2802ba47a30a649171c70f04aa16
+  FBReactNativeSpec: 633d937503c61669db58c93db764f4e1c9c2fb20
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
@@ -606,10 +618,11 @@ SPEC CHECKSUMS:
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: e5c7cab5f214503dcefd6b2b0cefb050e1f51c4a
   RNScreens: 522705f2e5c9d27efb17f24aceb2bf8335bc7b8e
+  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 0326c31ea7bf2b07b3be52ab6cf66f8bc9d433d3
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
