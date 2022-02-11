@@ -81,14 +81,8 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
       Alert.alert("Trainify", errorMessage)
     }
   }
-  
-  const proceedToSignup = () => {
 
     // signUpService(authObject, authenticationSuccess, authenticationFailure );
-  }
-
-    // signUpService(authObject, authenticationSuccess, authenticationFailure );
-  }
 
   return(
     <View style={styles.login_main_container}>
@@ -173,9 +167,9 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
             buttonText="Submit"
             buttonType="AUTHENTICATION"
             onPress={()=>{
-              if(proceedToSignup) {
-                proceedToSignup();
-              }
+              // if(proceedToSignup) {
+              //   // proceedToSignup();
+              // }
             }}
             buttonStyles={{
               marginTop: 33,
