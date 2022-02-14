@@ -102,7 +102,8 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
           onPress={()=> {
             // navigation.navigate('RecordPractice');
             // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-            navigation.navigate('CameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
+            navigation.navigate('UsamaCameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
+            
           }}
         >
           <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />

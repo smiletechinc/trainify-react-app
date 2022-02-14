@@ -395,7 +395,7 @@ setupTensorflow();
         .map((k) => {
           // Flip horizontally on android or when using back camera on iOS.
           const flipX =
-            IS_ANDROID || cameraType === Camera.Constants.Type.front;
+            IS_ANDROID || cameraType === Camera.Constants.Type.back;
           const x = flipX ? getOutputTensorWidth() - k.x : k.x;
           const y = k.y;
           const cx =
@@ -595,8 +595,10 @@ const styles = StyleSheet.create({
     justifyContent:'center',
   },
   camera: {
-    width:'100%',
-    height:'100%',
+    // width:'100%',
+    // height:'100%',
+    display:'flex',
+    flex:1,
     alignItems:'center',
     justifyContent:'center',
     overflow: 'hidden',

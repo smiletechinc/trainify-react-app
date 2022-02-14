@@ -46,7 +46,7 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
 
-export default function App() {
+export default function UsamaCameraContainer() {
   const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -63,6 +63,13 @@ export default function App() {
   const [cameraType, setCameraType] = useState<CameraType>(
     Camera.Constants.Type.back
   );
+
+  // For Serve Grading
+  let AGradeServe = 0;
+  let BGradeServe = 0;
+  let CGradeServe = 0;
+  let DGradeServe = 0;
+
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
@@ -78,17 +85,10 @@ export default function App() {
       var rightShoulder = keypoints.filter(function (item: any) {
         return item.name === "right_shoulder";
       });
-      // console.log('rightShoulder: ', rightShoulder[0].x, rightShoulder[0].y);
 
-      // Right Elbow
       var rightElbow = keypoints.filter(function (item: any) {
         return item.name === "right_elbow";
       });
-      // console.log('rightElbow: ', rightElbow[0].x , rightElbow[0].y);
-
-      console.log("Skip Frame Count: ", skipFrameCount);
-
-      // setServeType("Flata");
 
       if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         console.log("Elbow is above Shoulder");
@@ -99,21 +99,12 @@ export default function App() {
 
         for (let i = 0; i < keypoints.length; i++) {
           var temp = keypoints[i];
-          console.log("I am here");
+          // console.log("I am here");
           test_pose.push(temp.x);
           test_pose.push(temp.y);
           test_pose.push(temp.score);
           // console.log(temp.x, temp.y, temp.score);
         }
-
-        // console.log(test_pose);
-
-        // var rightShoulder = keypoints.filter(function (item: any) {
-        //   return item.name === "right_shoulder";
-        // });
-        // console.log("rightShoulder: ", rightShoulder[0].x, rightShoulder[0].y);
-
-        // let result = typeOfServeDetector.predict(poses).data();
 
         let x = tf.tensor([test_pose]).reshape([-1, 99]);
 
@@ -128,6 +119,23 @@ export default function App() {
         const index: number = arr.indexOf(max);
 
         console.log(index);
+
+        const serveToCheck = arr[index];
+
+        if (serveToCheck * 100 > 90) {
+          AGradeServe = AGradeServe + 1;
+        } else if (serveToCheck * 100 > 80) {
+          BGradeServe = BGradeServe + 1;
+        } else if (serveToCheck * 100 > 70) {
+          CGradeServe = CGradeServe + 1;
+        } else {
+          DGradeServe = DGradeServe + 1;
+        }
+
+        console.log("A Grade Serve: ", AGradeServe);
+        console.log("B Grade Serve: ", BGradeServe);
+        console.log("C Grade Serve: ", CGradeServe);
+        console.log("D Grade Serve: ", DGradeServe);
 
         if (index && index === 0) {
           console.log("Inside Flat");
@@ -150,7 +158,7 @@ export default function App() {
         // console.log(totalServesTemp);
       } else if (skipFrameCount > 0 && skipFrameCount < 10) {
         skipFrameCount = skipFrameCount + 1;
-        console.log(skipFrameCount);
+        // console.logc(skipFrameCount);
       } else {
         skipFrameCount = 0;
       }
@@ -181,17 +189,15 @@ export default function App() {
       if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         console.log("I am here");
 
-        let skipFrameCountTemp = skipFrameCount + 1;
-        setSkipFrameCount(skipFrameCountTemp);
+        skipFrameCount = skipFrameCount + 1;
 
         let totalServesTemp = totalServes + 1;
         setTotalServes(totalServesTemp);
         console.log(totalServesTemp);
       } else if (skipFrameCount > 0 && skipFrameCount < 60) {
-        let skipFrameCountTemp = skipFrameCount + 1;
-        setSkipFrameCount(skipFrameCountTemp);
+        skipFrameCount = skipFrameCount + 1;
       } else {
-        setSkipFrameCount(0);
+        skipFrameCount = 0;
       }
     }
   };
@@ -221,7 +227,7 @@ export default function App() {
       const model = posedetection.SupportedModels.BlazePose;
       const detectorConfig = {
         runtime: "tfjs", // or 'tfjs'
-        modelType: "lite",
+        modelType: "full",
       };
 
       const detector = await posedetection.createDetector(
@@ -330,6 +336,7 @@ export default function App() {
 
       // shotDetection(poses);
       serveTypeDetection(poses);
+      shotDetection(poses);
 
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
@@ -358,8 +365,7 @@ export default function App() {
         .filter((k) => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
         .map((k) => {
           // Flip horizontally on android or when using back camera on iOS.
-          const flipX =
-            IS_ANDROID || cameraType === Camera.Constants.Type.front;
+          const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
           const x = flipX ? getOutputTensorWidth() - k.x : k.x;
           const y = k.y;
           const cx =
@@ -390,7 +396,7 @@ export default function App() {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Type of Serve: {serveType}</Text>
+        <Text>fps: {fps}</Text>
       </View>
     );
   };
@@ -403,17 +409,17 @@ export default function App() {
       >
         <Text>
           Switch to{" "}
-          {cameraType === Camera.Constants.Type.front ? "back" : "front"} camera
+          {cameraType === Camera.Constants.Type.back ? "back" : "front"} camera
         </Text>
       </View>
     );
   };
 
   const handleSwitchCameraType = () => {
-    if (cameraType === Camera.Constants.Type.front) {
-      setCameraType(Camera.Constants.Type.back);
-    } else {
+    if (cameraType === Camera.Constants.Type.back) {
       setCameraType(Camera.Constants.Type.front);
+    } else {
+      setCameraType(Camera.Constants.Type.back);
     }
   };
 
@@ -467,7 +473,7 @@ export default function App() {
   if (!tfReady) {
     return (
       <View style={styles.loadingMsg}>
-        <Text>Processing live camera photages...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   } else {
@@ -540,7 +546,6 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
   },
   cameraTypeSwitcher: {
     position: "absolute",
@@ -552,7 +557,5 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
-
   },
 });
