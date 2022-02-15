@@ -13,7 +13,7 @@ import {
 import Svg, { Circle } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
-import { CounterContext } from "./src/context/counter-context";
+
 // import DataFrame from "dataframe-js";
 
 // tslint:disable-next-line: variable-name
@@ -46,9 +46,7 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
 
-export default function UsamaCameraContainer() {
-    const { increment, decrement, reset, count } = React.useContext(CounterContext);
-
+export default function CameraContainerNavigation() {
   const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -176,13 +174,13 @@ export default function UsamaCameraContainer() {
 
       // Right Shoulder
       var rightShoulder = keypoints.filter(function (item: any) {
-        return item.name === "left_shoulder";
+        return item.name === "right_shoulder";
       });
       // console.log('rightShoulder: ', rightShoulder[0].x, rightShoulder[0].y);
 
       // Right Elbow
       var rightElbow = keypoints.filter(function (item: any) {
-        return item.name === "left_elbow";
+        return item.name === "right_elbow";
       });
       // console.log('rightElbow: ', rightElbow[0].x , rightElbow[0].y);
 
@@ -195,9 +193,8 @@ export default function UsamaCameraContainer() {
 
         let totalServesTemp = totalServes + 1;
         setTotalServes(totalServesTemp);
-        increment();
         console.log(totalServesTemp);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 60) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -314,9 +311,7 @@ export default function UsamaCameraContainer() {
   useEffect(() => {
     // Called when the app is unmounted.
     return () => {
-      reset();
       if (rafId.current != null && rafId.current !== 0) {
-        reset();
         cancelAnimationFrame(rafId.current);
         rafId.current = 0;
       }
@@ -402,7 +397,6 @@ export default function UsamaCameraContainer() {
     return (
       <View style={styles.fpsContainer}>
         <Text>fps: {fps}</Text>
-        <Text>Total {count}</Text>
       </View>
     );
   };
@@ -415,14 +409,13 @@ export default function UsamaCameraContainer() {
       >
         <Text>
           Switch to{" "}
-          {cameraType === Camera.Constants.Type.back ? "front" : "back"} camera
+          {cameraType === Camera.Constants.Type.back ? "back" : "front"} camera
         </Text>
       </View>
     );
   };
 
   const handleSwitchCameraType = () => {
-
     if (cameraType === Camera.Constants.Type.back) {
       setCameraType(Camera.Constants.Type.front);
     } else {

@@ -16,6 +16,10 @@ const counterContextWrapper = (component?: React.Component) => ({
     initialCounterState.count -= 1;
     component?.setState({ context: counterContextWrapper(component) });
   },
+  reset: () => {
+    initialCounterState.count = 0;
+    component?.setState({ context: counterContextWrapper(component) });
+  },
 });
 
 type Context = ReturnType<typeof counterContextWrapper>;
