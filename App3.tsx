@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Platform, Alert } from "react-native";
 
 import { Camera } from "expo-camera";
 
@@ -13,7 +13,7 @@ import {
 import Svg, { Circle } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
-
+import { CounterContext } from "./src/context/counter-context";
 // import DataFrame from "dataframe-js";
 
 // tslint:disable-next-line: variable-name
@@ -46,7 +46,9 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
 
-export default function App() {
+export default function UsamaCameraContainer() {
+    const { increment, decrement, reset, count } = React.useContext(CounterContext);
+
   const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -63,6 +65,15 @@ export default function App() {
   const [cameraType, setCameraType] = useState<CameraType>(
     Camera.Constants.Type.back
   );
+
+  const [canAdd, setCanAdd] = useState(true);
+
+  // For Serve Grading
+  let AGradeServe = 0;
+  let BGradeServe = 0;
+  let CGradeServe = 0;
+  let DGradeServe = 0;
+
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
@@ -78,17 +89,10 @@ export default function App() {
       var rightShoulder = keypoints.filter(function (item: any) {
         return item.name === "right_shoulder";
       });
-      // console.log('rightShoulder: ', rightShoulder[0].x, rightShoulder[0].y);
 
-      // Right Elbow
       var rightElbow = keypoints.filter(function (item: any) {
         return item.name === "right_elbow";
       });
-      // console.log('rightElbow: ', rightElbow[0].x , rightElbow[0].y);
-
-      console.log("Skip Frame Count: ", skipFrameCount);
-
-      // setServeType("Flata");
 
       if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         console.log("Elbow is above Shoulder");
@@ -99,21 +103,12 @@ export default function App() {
 
         for (let i = 0; i < keypoints.length; i++) {
           var temp = keypoints[i];
-          console.log("I am here");
+          // console.log("I am here");
           test_pose.push(temp.x);
           test_pose.push(temp.y);
           test_pose.push(temp.score);
           // console.log(temp.x, temp.y, temp.score);
         }
-
-        // console.log(test_pose);
-
-        // var rightShoulder = keypoints.filter(function (item: any) {
-        //   return item.name === "right_shoulder";
-        // });
-        // console.log("rightShoulder: ", rightShoulder[0].x, rightShoulder[0].y);
-
-        // let result = typeOfServeDetector.predict(poses).data();
 
         let x = tf.tensor([test_pose]).reshape([-1, 99]);
 
@@ -128,6 +123,23 @@ export default function App() {
         const index: number = arr.indexOf(max);
 
         console.log(index);
+
+        const serveToCheck = arr[index];
+
+        if (serveToCheck * 100 > 90) {
+          AGradeServe = AGradeServe + 1;
+        } else if (serveToCheck * 100 > 80) {
+          BGradeServe = BGradeServe + 1;
+        } else if (serveToCheck * 100 > 70) {
+          CGradeServe = CGradeServe + 1;
+        } else {
+          DGradeServe = DGradeServe + 1;
+        }
+
+        console.log("A Grade Serve: ", AGradeServe);
+        console.log("B Grade Serve: ", BGradeServe);
+        console.log("C Grade Serve: ", CGradeServe);
+        console.log("D Grade Serve: ", DGradeServe);
 
         if (index && index === 0) {
           console.log("Inside Flat");
@@ -150,7 +162,7 @@ export default function App() {
         // console.log(totalServesTemp);
       } else if (skipFrameCount > 0 && skipFrameCount < 10) {
         skipFrameCount = skipFrameCount + 1;
-        console.log(skipFrameCount);
+        // console.logc(skipFrameCount);
       } else {
         skipFrameCount = 0;
       }
@@ -166,13 +178,13 @@ export default function App() {
 
       // Right Shoulder
       var rightShoulder = keypoints.filter(function (item: any) {
-        return item.name === "right_shoulder";
+        return item.name === "left_shoulder";
       });
       // console.log('rightShoulder: ', rightShoulder[0].x, rightShoulder[0].y);
 
       // Right Elbow
       var rightElbow = keypoints.filter(function (item: any) {
-        return item.name === "right_elbow";
+        return item.name === "left_elbow";
       });
       // console.log('rightElbow: ', rightElbow[0].x , rightElbow[0].y);
 
@@ -181,17 +193,23 @@ export default function App() {
       if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         console.log("I am here");
 
-        let skipFrameCountTemp = skipFrameCount + 1;
-        setSkipFrameCount(skipFrameCountTemp);
+        skipFrameCount = skipFrameCount + 1;
 
         let totalServesTemp = totalServes + 1;
         setTotalServes(totalServesTemp);
+        // Alert.alert(JSON.stringify(canAdd));
+        // Alert.alert(JSON.stringify(timerSeconds));
+        if (canAdd === true) {
+          Alert.alert("YES");
+          increment();
+          setCanAdd(false);
+          clearTimer(getDeadTime());
+        }
         console.log(totalServesTemp);
-      } else if (skipFrameCount > 0 && skipFrameCount < 60) {
-        let skipFrameCountTemp = skipFrameCount + 1;
-        setSkipFrameCount(skipFrameCountTemp);
+      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
+        skipFrameCount = skipFrameCount + 1;
       } else {
-        setSkipFrameCount(0);
+        skipFrameCount = 0;
       }
     }
   };
@@ -221,7 +239,7 @@ export default function App() {
       const model = posedetection.SupportedModels.BlazePose;
       const detectorConfig = {
         runtime: "tfjs", // or 'tfjs'
-        modelType: "lite",
+        modelType: "full",
       };
 
       const detector = await posedetection.createDetector(
@@ -305,7 +323,9 @@ export default function App() {
   useEffect(() => {
     // Called when the app is unmounted.
     return () => {
+      reset();
       if (rafId.current != null && rafId.current !== 0) {
+        reset();
         cancelAnimationFrame(rafId.current);
         rafId.current = 0;
       }
@@ -330,6 +350,7 @@ export default function App() {
 
       // shotDetection(poses);
       serveTypeDetection(poses);
+      shotDetection(poses);
 
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
@@ -358,8 +379,7 @@ export default function App() {
         .filter((k) => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
         .map((k) => {
           // Flip horizontally on android or when using back camera on iOS.
-          const flipX =
-            IS_ANDROID || cameraType === Camera.Constants.Type.front;
+          const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
           const x = flipX ? getOutputTensorWidth() - k.x : k.x;
           const y = k.y;
           const cx =
@@ -390,7 +410,11 @@ export default function App() {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Type of Serve: {serveType}</Text>
+        <Text>FPS: {fps}</Text>
+        <Text>Total {count}</Text>
+        <Text>Timer {timer}</Text>
+        <Text>Seconds {timerSeconds}</Text>
+        <Text>CanAdd { JSON.stringify(canAdd)}</Text>
       </View>
     );
   };
@@ -403,17 +427,18 @@ export default function App() {
       >
         <Text>
           Switch to{" "}
-          {cameraType === Camera.Constants.Type.front ? "back" : "front"} camera
+          {cameraType === Camera.Constants.Type.back ? "front" : "back"} camera
         </Text>
       </View>
     );
   };
 
   const handleSwitchCameraType = () => {
-    if (cameraType === Camera.Constants.Type.front) {
-      setCameraType(Camera.Constants.Type.back);
-    } else {
+
+    if (cameraType === Camera.Constants.Type.back) {
       setCameraType(Camera.Constants.Type.front);
+    } else {
+      setCameraType(Camera.Constants.Type.back);
     }
   };
 
@@ -464,10 +489,105 @@ export default function App() {
     }
   };
 
+
+/* Timer start*/
+const Ref = useRef(null);
+
+const [timer, setTimer] = useState('10000');
+const [timerSeconds, setSeconds] = useState(0);
+
+const getTimeRemaining = (e) => {
+  const total = Date.parse(e) - Date.parse(new Date());
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+  const hours = Math.floor((total / 1000 * 60 * 60) % 24);
+  return {
+      total, hours, minutes, seconds
+  };
+}
+
+
+const startTimer = (e) => {
+  let { total, hours, minutes, seconds } 
+              = getTimeRemaining(e);
+  if (total >= 0) {
+      // update the timer
+      // check if less than 10 then we need to 
+      // add '0' at the begining of the variable
+      // setTimer(
+      //     (hours > 9 ? hours : '0' + hours) + ':' +
+      //     (minutes > 9 ? minutes : '0' + minutes) + ':'
+      //     + (seconds > 9 ? seconds : '0' + seconds)
+      // )
+      // setTimer(JSON.stringify(total));
+      setSeconds(seconds);
+  }
+}
+
+
+const clearTimer = (e) => {
+  // If you adjust it you should also need to
+  // adjust the Endtime formula we are about
+  // to code next    
+  // setTimer('10000');
+  setSeconds(10);
+
+  // If you try to remove this line the 
+  // updating of timer Variable will be
+  // after 1000ms or 1sec
+  if (Ref.current) clearInterval(Ref.current);
+  const id = setInterval(() => {
+      startTimer(e);
+  }, 1000)
+  Ref.current = id;
+}
+
+const getDeadTime = () => {
+  let deadline = new Date();
+
+  // This is where you need to adjust if 
+  // you entend to add more time
+  deadline.setSeconds(deadline.getSeconds() + 10);
+  return deadline;
+}
+
+// We can use useEffect so that when the component
+// mount the timer will start as soon as possible
+
+// We put empty array to act as componentDid
+// mount only
+useEffect(() => {
+  clearTimer(getDeadTime());
+}, []);
+
+// Another way to call the clearTimer() to start
+// the countdown is via action event from the
+// button first we create function to be called
+// by the button 
+const onClickReset = () => {
+  clearTimer(getDeadTime());
+}
+/* Timer end */
+
+useEffect(()=> {
+  if (timerSeconds >= 2){
+    setCanAdd(false);
+  } else if (timerSeconds < 2) {
+    setCanAdd(true)
+    // Alert.alert('Can add.')
+  }
+},[timerSeconds])
+
+useEffect(() => {
+  if (tfReady) {
+    clearTimer(getDeadTime());
+  }
+}, [tfReady]);
+
   if (!tfReady) {
     return (
       <View style={styles.loadingMsg}>
-        <Text>Processing live camera photages...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   } else {
@@ -540,7 +660,6 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
   },
   cameraTypeSwitcher: {
     position: "absolute",
@@ -552,7 +671,5 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
-
   },
 });

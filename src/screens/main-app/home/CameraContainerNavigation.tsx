@@ -13,13 +13,7 @@ import {
 import Svg, { Circle } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
-import styles_external from '../styles';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
 
-import { IconButton } from '../../../components/buttons'
-const recordIcon = require('../../../assets/images/icon_record_start.png');
-const stopIcon = require('../../../assets/images/icon_record_stop.png');
 // import DataFrame from "dataframe-js";
 
 // tslint:disable-next-line: variable-name
@@ -27,9 +21,6 @@ const TensorCamera = cameraWithTensors(Camera);
 
 const IS_ANDROID = Platform.OS === "android";
 const IS_IOS = Platform.OS === "ios";
-
-const CAM_WIDTH = Dimensions.get('window').width;
-const CAM_HEIGHT = Dimensions.get('window').height;
 
 // Camera preview size.
 //
@@ -55,11 +46,8 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
 
-export default function CameraContainer({navigation, route}) {
-    const {title} = route.params
+export default function CameraContainerNavigation() {
   const cameraRef = useRef(null);
-  const [isLoading, setLoading] = React.useState(false);
-
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
   const [typeOfServeDetector, setTypeOfServeDetector] =
@@ -73,32 +61,21 @@ export default function CameraContainer({navigation, route}) {
   let skipFrameCount = 0;
   const [totalServes, setTotalServes] = useState(0);
   const [cameraType, setCameraType] = useState<CameraType>(
-    Camera.Constants.Type.front
+    Camera.Constants.Type.back
   );
+
+  // For Serve Grading
+  let AGradeServe = 0;
+  let BGradeServe = 0;
+  let CGradeServe = 0;
+  let DGradeServe = 0;
+
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
   // - 0: animation frame/loop has been canceled.
   // - >0: animation frame has been scheduled.
   const rafId = useRef<number | null>(null);
-
-function stopTensorflow() {
-  setTfReady(false);
-  setLoading(false);
-  
-  return () => {
-    if (rafId.current != null && rafId.current !== 0) {
-      cancelAnimationFrame(rafId.current);
-      rafId.current = 0;
-    }
-  };
-
-
-//   // (async () => {
-//   //   const { status } = await Camera.requestPermissionsAsync();
-//   //   setHasPermission(status === 'granted');
-//   // })();
-}
 
   const serveTypeDetection = (poses: any) => {
     if (poses && poses.length > 0) {
@@ -108,17 +85,10 @@ function stopTensorflow() {
       var rightShoulder = keypoints.filter(function (item: any) {
         return item.name === "right_shoulder";
       });
-      // console.log('rightShoulder: ', rightShoulder[0].x, rightShoulder[0].y);
 
-      // Right Elbow
       var rightElbow = keypoints.filter(function (item: any) {
         return item.name === "right_elbow";
       });
-      // console.log('rightElbow: ', rightElbow[0].x , rightElbow[0].y);
-
-      console.log("Skip Frame Count: ", skipFrameCount);
-
-      // setServeType("Flata");
 
       if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         console.log("Elbow is above Shoulder");
@@ -129,21 +99,12 @@ function stopTensorflow() {
 
         for (let i = 0; i < keypoints.length; i++) {
           var temp = keypoints[i];
-          console.log("I am here");
+          // console.log("I am here");
           test_pose.push(temp.x);
           test_pose.push(temp.y);
           test_pose.push(temp.score);
           // console.log(temp.x, temp.y, temp.score);
         }
-
-        // console.log(test_pose);
-
-        // var rightShoulder = keypoints.filter(function (item: any) {
-        //   return item.name === "right_shoulder";
-        // });
-        // console.log("rightShoulder: ", rightShoulder[0].x, rightShoulder[0].y);
-
-        // let result = typeOfServeDetector.predict(poses).data();
 
         let x = tf.tensor([test_pose]).reshape([-1, 99]);
 
@@ -158,6 +119,23 @@ function stopTensorflow() {
         const index: number = arr.indexOf(max);
 
         console.log(index);
+
+        const serveToCheck = arr[index];
+
+        if (serveToCheck * 100 > 90) {
+          AGradeServe = AGradeServe + 1;
+        } else if (serveToCheck * 100 > 80) {
+          BGradeServe = BGradeServe + 1;
+        } else if (serveToCheck * 100 > 70) {
+          CGradeServe = CGradeServe + 1;
+        } else {
+          DGradeServe = DGradeServe + 1;
+        }
+
+        console.log("A Grade Serve: ", AGradeServe);
+        console.log("B Grade Serve: ", BGradeServe);
+        console.log("C Grade Serve: ", CGradeServe);
+        console.log("D Grade Serve: ", DGradeServe);
 
         if (index && index === 0) {
           console.log("Inside Flat");
@@ -180,7 +158,7 @@ function stopTensorflow() {
         // console.log(totalServesTemp);
       } else if (skipFrameCount > 0 && skipFrameCount < 10) {
         skipFrameCount = skipFrameCount + 1;
-        console.log(skipFrameCount);
+        // console.logc(skipFrameCount);
       } else {
         skipFrameCount = 0;
       }
@@ -211,23 +189,20 @@ function stopTensorflow() {
       if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         console.log("I am here");
 
-        let skipFrameCountTemp = skipFrameCount + 1;
-        setSkipFrameCount(skipFrameCountTemp);
+        skipFrameCount = skipFrameCount + 1;
 
         let totalServesTemp = totalServes + 1;
         setTotalServes(totalServesTemp);
         console.log(totalServesTemp);
       } else if (skipFrameCount > 0 && skipFrameCount < 60) {
-        let skipFrameCountTemp = skipFrameCount + 1;
-        setSkipFrameCount(skipFrameCountTemp);
+        skipFrameCount = skipFrameCount + 1;
       } else {
-        setSkipFrameCount(0);
+        skipFrameCount = 0;
       }
     }
   };
 
-  const setupTensorflow = () => {
-setLoading(true);
+  useEffect(() => {
     async function prepare() {
       rafId.current = null;
 
@@ -252,7 +227,7 @@ setLoading(true);
       const model = posedetection.SupportedModels.BlazePose;
       const detectorConfig = {
         runtime: "tfjs", // or 'tfjs'
-        modelType: "lite",
+        modelType: "full",
       };
 
       const detector = await posedetection.createDetector(
@@ -293,8 +268,8 @@ setLoading(true);
         0.800599277, 0.607367218, 0.892697453, 0.967935383,
       ];
 
-      const model_json = await require("./../../../assets/model/model.json");
-      const model_weight = await require("./../../../assets/model/group1-shard.bin");
+      const model_json = await require("./src/assets/model/model.json");
+      const model_weight = await require("./src/assets/model/group1-shard.bin");
 
       const model_tos = await tf.loadLayersModel(
         bundleResourceIO(model_json, model_weight)
@@ -328,15 +303,10 @@ setLoading(true);
 
       // Ready!
       setTfReady(true);
-      setLoading(false);
     }
 
     prepare();
-  }
-
-useEffect(() => {
-setupTensorflow();
-}, [])
+  }, []);
 
   useEffect(() => {
     // Called when the app is unmounted.
@@ -366,6 +336,7 @@ setupTensorflow();
 
       // shotDetection(poses);
       serveTypeDetection(poses);
+      shotDetection(poses);
 
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
@@ -394,8 +365,7 @@ setupTensorflow();
         .filter((k) => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
         .map((k) => {
           // Flip horizontally on android or when using back camera on iOS.
-          const flipX =
-            IS_ANDROID || cameraType === Camera.Constants.Type.back;
+          const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
           const x = flipX ? getOutputTensorWidth() - k.x : k.x;
           const y = k.y;
           const cx =
@@ -426,7 +396,7 @@ setupTensorflow();
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Type of Serve: {serveType}</Text>
+        <Text>fps: {fps}</Text>
       </View>
     );
   };
@@ -439,17 +409,17 @@ setupTensorflow();
       >
         <Text>
           Switch to{" "}
-          {cameraType === Camera.Constants.Type.front ? "back" : "front"} camera
+          {cameraType === Camera.Constants.Type.back ? "back" : "front"} camera
         </Text>
       </View>
     );
   };
 
   const handleSwitchCameraType = () => {
-    if (cameraType === Camera.Constants.Type.front) {
-      setCameraType(Camera.Constants.Type.back);
-    } else {
+    if (cameraType === Camera.Constants.Type.back) {
       setCameraType(Camera.Constants.Type.front);
+    } else {
+      setCameraType(Camera.Constants.Type.back);
     }
   };
 
@@ -500,140 +470,53 @@ setupTensorflow();
     }
   };
 
-  const camView = () => {
-    // console.log('textureDims.height: ', textureDims.width);
+  if (!tfReady) {
     return (
-      <TensorCamera
-        // Standard Camera props
-        zoom={0}
-        // tensor related props
-        resizeHeight={300}
-        resizeWidth={300 * 0.75}
-        resizeDepth={3}
-        autorender={false}
-
-        ref={cameraRef}
-        style={styles.camera}
-        type={cameraType}
-        // tensor related props
-
-        rotation={getTextureRotationAngleInDegrees()}
-        onReady={handleCameraStream}
-      />
-    );
-  };
-
-        return (
-      <SafeAreaView style={styles_external.main_view}>
-        <HeaderWithText
-          text = {title}
-          hideProfileSection = {true}
-          navigation={navigation}
-        />
-              <View style={styles.cameraView} >
-             <View style={styles.cameraContainer}>
-               {tfReady ? camView()
-               :
-               <View style={styles.loadingMsg}>
-        {isLoading && <Text style={styles.loadingMsgText} >Preparing live camera photages...</Text>}
+      <View style={styles.loadingMsg}>
+        <Text>Loading...</Text>
       </View>
-               }
-               </View>
-               {renderPose()}
+    );
+  } else {
+    return (
+      // Note that you don't need to specify `cameraTextureWidth` and
+      // `cameraTextureHeight` prop in `TensorCamera` below.
+      <View
+        style={
+          isPortrait() ? styles.containerPortrait : styles.containerLandscape
+        }
+      >
+        <TensorCamera
+          ref={cameraRef}
+          style={styles.camera}
+          autorender={AUTO_RENDER}
+          type={cameraType}
+          // tensor related props
+          resizeWidth={getOutputTensorWidth()}
+          resizeHeight={getOutputTensorHeight()}
+          resizeDepth={3}
+          rotation={getTextureRotationAngleInDegrees()}
+          onReady={handleCameraStream}
+        />
+        {renderPose()}
         {renderFps()}
         {renderCameraTypeSwitcher()}
-        <View style={styles.buttonContainer}>
-          <IconButton styles={styles.recordIcon} icon={tfReady ? stopIcon : recordIcon} onPress={() => {!tfReady ? setupTensorflow() : stopTensorflow()} } transparent={true} />
       </View>
-      </View>
-      
-    </SafeAreaView>
-
     );
   }
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignContent:'center',
-    justifyContent:'center',
-    backgroundColor:'yellow',
+  containerPortrait: {
+    position: "relative",
+    width: CAM_PREVIEW_WIDTH,
+    height: CAM_PREVIEW_HEIGHT,
+    marginTop: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
   },
-  canvas: {
-     // try flex 1
-    width: CAM_WIDTH,
-    height: CAM_HEIGHT,
-    zIndex: 200,
-    borderWidth: 2,
-    borderColor: 'red',
-    // background
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    paddingTop: 20,
-    overflow: 'visible',
-  },
-  cameraContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '88%',
-    backgroundColor: 'black',
-    marginTop:16,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth:1,
-    borderColor:'black',
-    borderStyle:'solid'
-  },
-  cameraView: {
-    display:'flex',
-    flex:1,
-    alignItems:'center',
-    justifyContent:'center',
-  },
-  camera: {
-    // width:'100%',
-    // height:'100%',
-    display:'flex',
-    flex:1,
-    alignItems:'center',
-    justifyContent:'center',
-    overflow: 'hidden',
-    backgroundColor:'blue',
-    // height: CAM_HEIGHT,
-    zIndex: 500,
-  },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: 'blue',
-    flexDirection: 'row',
-    margin: 20,
-  },
-  button: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
-  },
-  recordIconStyle: {
-    width: 60,
-    height: 60,
-    position:'absolute',
-    bottom:36,
-    zIndex:1000,
-  },
-  recordIcon: {
-    width: 60,
-    height: 60,
-    position:'absolute',
-    bottom:108,
-    zIndex:1000,
+  containerLandscape: {
+    position: "relative",
+    width: CAM_PREVIEW_HEIGHT,
+    height: CAM_PREVIEW_WIDTH,
+    marginLeft: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
   },
   loadingMsg: {
     position: "absolute",
@@ -642,20 +525,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  loadingMsgText: {
-    color:'white',
+  camera: {
+    width: "100%",
+    height: "100%",
+    zIndex: 1,
   },
-  cameraTypeSwitcher: {
+  svg: {
+    width: "100%",
+    height: "100%",
     position: "absolute",
-    top: 10,
-    right: 10,
-    width: 180,
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, .7)",
-    borderRadius: 2,
-    padding: 8,
-    zIndex: 20,
-    marginTop: 16,
+    zIndex: 30,
   },
   fpsContainer: {
     position: "absolute",
@@ -667,12 +546,16 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
   },
-  svg: {
-    width: "100%",
-    height: "100%",
+  cameraTypeSwitcher: {
     position: "absolute",
-    zIndex: 30,
+    top: 10,
+    right: 10,
+    width: 180,
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, .7)",
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
   },
 });
