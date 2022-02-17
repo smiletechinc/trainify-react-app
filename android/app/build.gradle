@@ -137,10 +137,14 @@ android {
         applicationId "com.trainyfyapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 19
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
+    project.ext.react = [
+            entryFile: "index.js",
+            jsBundleDirRelease: "$buildDir/intermediates/merged_assets/release/mergeReleaseAssets/out"
+    ]
     splits {
         abi {
             reset()
