@@ -40,7 +40,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Trainyfy would like to access your camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Trainyfy would like to access your microphone.</string>
 	<key>UIAppFonts</key>

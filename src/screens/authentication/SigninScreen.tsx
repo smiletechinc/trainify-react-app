@@ -80,7 +80,7 @@ const proceedToLogin = () => {
     email,
     password,
   }
-  navigation.navigate('HomeScreen'); // remove this line when backend would be working.
+  // navigation.navigate('HomeScreen'); // remove this line when backend would be working.
   signInService(authObject, authenticationSuccess, authenticationFailure );
 }
 
