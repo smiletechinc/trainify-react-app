@@ -1,13 +1,15 @@
-import { app } from './../config/db';
+import app  from './../config/db';
+import * as firebase from "firebase/auth"
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getDatabase, ref, set, get } from "firebase/database";
 import {UserObject, ErrorObject, AuthObject} from '../../types';
 
 export const signInService = (authObject:AuthObject, onSuccess?:any,onFailure?:any) => {
     const {email, password} = authObject;
+    console.log(app);
     if (app) {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
+    const auth = firebase.getAuth();
+    firebase.signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
     // Signed in
     const user = userCredential.user;
