@@ -31,7 +31,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
 
-  const proceedToSignup = route.params.proceedToSignup;
+  // const proceedToSignup = route.params.proceedToSignup;
 
 
   const proceedToRegister = (user) => {
@@ -55,7 +55,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
       paymentPlan: subscriptionType,
     };
   
-    // registerUserService(userObject,registrationSuccess,authenticationFailure);
+    registerUserService(userObject,registrationSuccess,authenticationFailure);
   }
   
   const goToLoginScreen = () => {
@@ -80,6 +80,15 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
       const errorMessage = error.message;
       Alert.alert("Trainify", errorMessage)
     }
+  }
+
+  const proceedToSignup = () => {
+    // const authObject = {
+    //   email,
+    //   password,
+    // }
+    // navigation.navigate('HomeScreen'); // remove this line when backend would be working.
+    signUpService(authObject, authenticationSuccess, authenticationFailure );
   }
 
     // signUpService(authObject, authenticationSuccess, authenticationFailure );
@@ -168,8 +177,9 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
             buttonType="AUTHENTICATION"
             onPress={()=>{
               // if(proceedToSignup) {
-              //   // proceedToSignup();
+                proceedToSignup();
               // }
+              // proceedToRegister();
             }}
             buttonStyles={{
               marginTop: 33,
