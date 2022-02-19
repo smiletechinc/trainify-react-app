@@ -5,6 +5,8 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 import { AuthContext } from './../../context/auth-context';
+import { RootState } from '../../../store';
+import { useSelector} from 'react-redux';
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 const backIcon = require('../../assets/images/back-icon.png');
@@ -16,10 +18,11 @@ type Props = {
 }
 const HeaderWithText: FunctionComponent<Props> = (props) => {
   // const navigation = useNavigation();
+  const UserData = useSelector((state: RootState) => state.RegisterReducer.UserData);
   const {text, hideProfileSection, navigation} = props;
 
-  const { authUser, setAuthUser: setUser } = React.useContext(AuthContext);
-  const { lastName } = authUser ? authUser : "";
+  // const { authUser, setAuthUser: setUser } = React.useContext(AuthContext);
+  const { lastName } = UserData ? UserData : React.useContext(AuthContext).authUser;
 
 
   return(

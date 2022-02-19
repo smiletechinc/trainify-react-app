@@ -5,14 +5,17 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 import { AuthContext } from './../../context/auth-context';
+import { RootState } from '../../../store';
+import { useSelector} from 'react-redux';
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 
 const SimpleHeader: FunctionComponent = ({ navigation }) => {
-
-  const { authUser} = React.useContext(AuthContext);
-  console.log('authUser : ', authUser);
-  const {lastName} = authUser ? authUser : "";
+  const UserData = useSelector((state: RootState) => state.RegisterReducer.UserData);
+  // console.log('authUser.... : ', UserData);
+  // const { authUser } =  React.useContext(AuthContext);
+ 
+  const {lastName} = UserData ? UserData : React.useContext(AuthContext).authUser;
 
   // const navigation = useNavigation();  
   return(

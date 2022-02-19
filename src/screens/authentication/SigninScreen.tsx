@@ -3,7 +3,8 @@ import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform, Alert
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { GooglePay } from 'react-native-google-pay';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {setUserObject} from '../../redux/slices/AuthSlice';
 // Custom UI components.
 import { COLORS, SCREEN_WIDTH } from '../../constants';
 import {TextInput} from '../../global-components/input';
@@ -23,6 +24,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import {signInService, getUserWithIdService} from './../../services/authenticationServices'
 import { UserObject } from '../../types';
 import { AuthContext } from './../../context/auth-context';
+import { RootState } from '../../../store';
 const backIcon = require('../../assets/images/back-icon.png');
 
 type Props = {
@@ -32,15 +34,17 @@ type Props = {
 
 const SigninContainer: FunctionComponent<Props> = (props) => {
   const { authUser, setAuthUser, setAuthObject } = React.useContext(AuthContext);
-
+  // console.log('UserData: ', UserData);
   const {navigation, route} = props;
   const [email, setEmail] = useState<string>('Testing@gmail.com');
   const [password, setPassword] = useState<string>('123456');
+  const dispatch = useDispatch();
 
   const goToHomePage = (userObject) => {
     const user: UserObject = userObject;
-    console.log('userObject : ', user);
+    // console.log('userObject : ', user);
     setAuthUser(user);
+    dispatch(setUserObject(user));
     navigation.navigate('HomeScreen');
 }
 

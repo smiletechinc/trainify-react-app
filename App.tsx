@@ -20,17 +20,27 @@ import {
 import AppContainer from './src/navigations';
 import { AuthContextProvider } from './src/context/auth-context';
 import { CounterContextProvider } from './src/context/counter-context';
+import {store} from './store';
+import {Provider} from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
+
+let persistor = persistStore(store);
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={{flex: 1}}>
-      <AuthContextProvider>
-        <CounterContextProvider>
-        <AppContainer />
-        </CounterContextProvider>
-      </AuthContextProvider>
-    </View>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <View style={{flex: 1}}>
+          <AuthContextProvider>
+            <CounterContextProvider>
+              <AppContainer />
+            </CounterContextProvider>
+          </AuthContextProvider>
+        </View>
+      </PersistGate>
+    </Provider>
   );
 };
 
