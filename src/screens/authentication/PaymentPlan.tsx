@@ -87,7 +87,6 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
     //   email,
     //   password,
     // }
-    // navigation.navigate('HomeScreen'); // remove this line when backend would be working.
     signUpService(authObject, authenticationSuccess, authenticationFailure );
   }
 

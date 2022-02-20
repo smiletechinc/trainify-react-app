@@ -2,16 +2,28 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { Text, TouchableOpacity, ActivityIndicator, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {SCREEN_WIDTH} from '../../constants';
+import { RootState } from '../../../store';
+import { useSelector} from 'react-redux';
 
 const logo = require('../../assets/images/logo.png');
 const splashScreen = require('../../assets/images/splash-screen.png');
 
 const SplashScreenContainer: FunctionComponent = ({ navigation }) => {
   // const navigation = useNavigation();
-  
+  const UserData = useSelector((state: RootState) => state.RegisterReducer.UserData);
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('LanguageScreen');
+      if(UserData === null) {
+        navigation.navigate('LanguageScreen');
+      }
+      else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainApp' }],
+        });
+        // navigation.navigate('MainApp');
+      }
+     
     },2500);
   });
 
