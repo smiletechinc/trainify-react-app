@@ -17,7 +17,11 @@ const SplashScreenContainer: FunctionComponent = ({ navigation }) => {
         navigation.navigate('LanguageScreen');
       }
       else {
-        navigation.navigate('HomeScreen');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainApp' }],
+        });
+        // navigation.navigate('MainApp');
       }
      
     },2500);

@@ -5,27 +5,21 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import {
   SplashScreen,
-  HomeScreen,
   SigninScreen,
   SignupScreen,
   LandingScreenContainer,
   ResetPasswordContainer,
   PaymentPlanContainer,
   LanguageScreenContainer,
-  ServePracticeContainer,
-  RecordPracticeContainer,
-  UploadPracticeContainer,
-  TensorFlowCameraContainer,
-  TensorCameraContainer,
-  CameraContainer,
-  UsamaCameraContainer,
 } from '../screens';
+import MainAppContainer from './main-app';
+
 const AppStack = createNativeStackNavigator();
 
 function AppContainer() {
   return (
     <NavigationContainer>
-      <AppStack.Navigator initialRouteName="SplashScreen" headerMode="none" screenOptions={{
+      <AppStack.Navigator initialRouteName="SplashScreen" screenOptions={{
         headerShown: false
       }}>
       <AppStack.Screen name="SplashScreen" component={SplashScreen}/>
@@ -50,42 +44,14 @@ function AppContainer() {
         component={PaymentPlanContainer}
       />
       <AppStack.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-      />
-      <AppStack.Screen
-        name="ServePractice"
-        component={ServePracticeContainer}
-      />
-      <AppStack.Screen
-        name="RecordPractice"
-        component={RecordPracticeContainer}
-      />
-      <AppStack.Screen
-        name="UploadPractice"
-        component={UploadPracticeContainer}
-      />
-      <AppStack.Screen
         name="LanguageScreen"
         component={LanguageScreenContainer}
       />
-
       <AppStack.Screen
-      name="TensorFlowCameraContainer"
-      component={TensorFlowCameraContainer}
+        name="MainApp"
+        component={MainAppContainer}
       />
-      <AppStack.Screen
-      name="TensorCameraContainer"
-      component={TensorCameraContainer}
-      />
-            <AppStack.Screen
-      name="CameraContainer"
-      component={CameraContainer}
-      />
-      <AppStack.Screen
-      name="UsamaCameraContainer"
-      component={UsamaCameraContainer}
-      />
+      
       </AppStack.Navigator>
     </NavigationContainer>
   );
