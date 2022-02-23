@@ -63,11 +63,11 @@ export default function UsamaCameraContainer() {
   let skipFrameCount = 0;
   const [totalServes, setTotalServes] = useState(0);
   const [cameraType, setCameraType] = useState<CameraType>(
-    Camera.Constants.Type.back
+    Camera.Constants.Type.front
   );
 
   const [canAdd, setCanAdd] = useState(true);
-
+  const [serveGrade, setServeGrade] = useState('');
   // For Serve Grading
   let AGradeServe = 0;
   let BGradeServe = 0;
@@ -80,6 +80,115 @@ export default function UsamaCameraContainer() {
   // - 0: animation frame/loop has been canceled.
   // - >0: animation frame has been scheduled.
   const rafId = useRef<number | null>(null);
+
+  const find_angle = (a: any, b: any, c: any) => {
+    // let angle = Math.atan2( y2 - y1, x2 - x1 ) * ( 180 / Math.PI )
+    // console.log("I am here");
+    // console.log(a, b, c);
+    // console.log(c[0].y);
+    let radians =
+      Math.atan2(c[0].y - b[0].y, c[0].x - b[0].x) -
+      Math.atan2(a[0].y - b[0].y, a[0].x - b[0].x);
+    // console.log(radians);
+    // angle = np.abs(radians*180.0/np.pi)
+    let angle = Math.abs(radians * (180 / Math.PI));
+    return angle;
+  };
+
+  const serveTypeDetectionthreshold = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+      var leftShoulder = keypoints.filter(function (item: any) {
+        return item.name === "left_shoulder";
+      });
+      var rightShoulder = keypoints.filter(function (item: any) {
+        return item.name === "right_shoulder";
+      });
+      // Right Elbow
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === "left_elbow";
+      });
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === "right_elbow";
+      });
+      var rightHip = keypoints.filter(function (item: any) {
+        return item.name === "right_hip";
+      });
+      var leftHip = keypoints.filter(function (item: any) {
+        return item.name === "left_hip";
+      });
+      var leftKnee = keypoints.filter(function (item: any) {
+        return item.name === "left_knee";
+      });
+      var rightKnee = keypoints.filter(function (item: any) {
+        return item.name === "right_knee";
+      });
+      // console.log(leftShoulder, leftElbow, leftHip);
+      // console.log('rightElbow: ', leftElbow[0].x , leftElbow[0].y);
+      var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
+      var r_hip_angle = find_angle(leftShoulder, leftHip, leftKnee);
+      // console.log(l_shoulder_angle2, r_hip_angle);
+      if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+        increment();
+        skipFrameCount = skipFrameCount + 1;
+        if (l_shoulder_angle2 < 20 && l_shoulder_angle2 > 0) {
+          if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+            console.log(serveGrade);
+            setServeGrade("A");
+          } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
+            setServeGrade("B");
+            console.log(serveGrade);
+          } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
+            setServeGrade("C");
+            console.log(serveGrade);
+          } else {
+            setServeGrade("D");
+            console.log(serveGrade);
+          }
+          setServeType("Flat");
+        } else if (r_hip_angle < 179 && r_hip_angle > 165) {
+          if (r_hip_angle < 174 && r_hip_angle > 172) {
+            setServeGrade("A");
+            console.log(serveGrade);
+          } else if (r_hip_angle < 176 && r_hip_angle > 170) {
+            setServeGrade("B");
+            console.log(serveGrade);
+          } else if (r_hip_angle < 178 && r_hip_angle > 168) {
+            setServeGrade("C");
+            console.log(serveGrade);
+          } else {
+            setServeGrade("D");
+            console.log(serveGrade);
+          }
+          setServeType("Slice");
+        } else {
+          // console.log("Inside kick");
+          // console.log(r_hip_angle);
+          if (r_hip_angle < 182) {
+            setServeGrade("A");
+            console.log(serveGrade);
+          } else if (r_hip_angle < 185) {
+            setServeGrade("B");
+            console.log(serveGrade);
+          } else if (r_hip_angle < 188) {
+            setServeGrade("C");
+            console.log(serveGrade);
+          } else {
+            setServeGrade("D");
+            console.log(serveGrade);
+          }
+          setServeType("Kick");
+        }
+      } else if (skipFrameCount > 0 && skipFrameCount < 20) {
+        skipFrameCount = skipFrameCount + 1;
+        console.log(skipFrameCount);
+      } else {
+        skipFrameCount = 0;
+      }
+      // console.log(serveGrade);
+    }
+  };
 
   const serveTypeDetection = (poses: any) => {
     if (poses && poses.length > 0) {
@@ -199,13 +308,9 @@ export default function UsamaCameraContainer() {
         setTotalServes(totalServesTemp);
         // Alert.alert(JSON.stringify(canAdd));
         // Alert.alert(JSON.stringify(timerSeconds));
-        if (canAdd === true) {
-          Alert.alert("YES");
-          increment();
           setCanAdd(false);
           clearTimer(getDeadTime());
-        }
-        console.log(totalServesTemp);
+
       } else if (skipFrameCount > 0 && skipFrameCount < 80) {
         skipFrameCount = skipFrameCount + 1;
       } else {
@@ -349,8 +454,9 @@ export default function UsamaCameraContainer() {
       );
 
       // shotDetection(poses);
-      serveTypeDetection(poses);
-      shotDetection(poses);
+      // serveTypeDetection(poses);
+      serveTypeDetectionthreshold(poses)
+      // shotDetection(poses);
 
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
@@ -410,11 +516,9 @@ export default function UsamaCameraContainer() {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>FPS: {fps}</Text>
         <Text>Total {count}</Text>
-        <Text>Timer {timer}</Text>
-        <Text>Seconds {timerSeconds}</Text>
-        <Text>CanAdd { JSON.stringify(canAdd)}</Text>
+        <Text>Last Serve Type {serveType}</Text>
+        <Text>Grade {serveGrade}</Text>
       </View>
     );
   };
