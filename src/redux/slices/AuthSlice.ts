@@ -3,13 +3,15 @@
 /* eslint-disable arrow-parens */
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {UserObject} from '../../types';
-
+import * as posedetection from "@tensorflow-models/pose-detection";
 export interface RegisterState {
   UserData: UserObject;
+  postNetModal: posedetection.PoseDetector;
 }
 
 const initialState: RegisterState = {
   UserData: null,
+  postNetModal: null,
 };
 
 export const RegisterReducer = createSlice({
@@ -34,11 +36,21 @@ export const RegisterReducer = createSlice({
     ) => {
       state.UserData= action.payload;
     },
+    setPoseNetModal: (
+      state,
+      action: {
+        payload: posedetection.PoseDetector;
+        type: string;
+      },
+    ) => {
+      console.log('Modal: ', action.payload);
+      state.postNetModal= action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {setUserRegistrationData, setUserObject} =
+export const {setUserRegistrationData, setUserObject, setPoseNetModal} =
   RegisterReducer.actions;
 
 export default RegisterReducer.reducer;

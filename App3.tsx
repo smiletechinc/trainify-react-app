@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform, Alert } from "react-native";
-
+import { useSelector} from 'react-redux';
 import { Camera } from "expo-camera";
 
 import * as tf from "@tensorflow/tfjs";
@@ -14,6 +14,7 @@ import Svg, { Circle } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
 import { CounterContext } from "./src/context/counter-context";
+import { RootState } from "./store";
 // import DataFrame from "dataframe-js";
 
 // tslint:disable-next-line: variable-name
@@ -47,11 +48,12 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 const AUTO_RENDER = false;
 
 export default function UsamaCameraContainer() {
-    const { increment, decrement, reset, count } = React.useContext(CounterContext);
-
+  const { increment, decrement, reset, count } = React.useContext(CounterContext);
+  const PoseNetModal = useSelector((state: RootState) => state.RegisterReducer.postNetModal);
+  
   const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
-  const [model, setModel] = useState<posedetection.PoseDetector>();
+  const [model, setModel] = useState<posedetection.PoseDetector>(PoseNetModal);
   const [typeOfServeDetector, setTypeOfServeDetector] =
     useState<tf.LayersModel>();
   const [poses, setPoses] = useState<posedetection.Pose[]>();
@@ -236,25 +238,12 @@ export default function UsamaCameraContainer() {
       // Load movenet model.
       // https://github.com/tensorflow/tfjs-models/tree/master/pose-detection
 
-      const model = posedetection.SupportedModels.BlazePose;
-      const detectorConfig = {
-        runtime: "tfjs", // or 'tfjs'
-        modelType: "full",
-      };
-
-      const detector = await posedetection.createDetector(
-        model,
-        detectorConfig
-      );
-
       // const model = await posedetection.createDetector(
       //   // posedetection.SupportedModels.MoveNet,
       //   posedetection.SupportedModels.BlazePose,
       //   detectorConfig
       // );
-
-      setModel(detector);
-
+      setModel(PoseNetModal);
       console.log("Loading Type of Serve Model");
 
       let test_pose = [
