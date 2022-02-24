@@ -215,7 +215,7 @@ const proceedToLogin = () => {
             }}
 
             signupScreenOnPress={()=>{
-              navigation.navigate('Signup');
+              navigation.navigate('PaymentPlan');
             }}
           />
         </View>
