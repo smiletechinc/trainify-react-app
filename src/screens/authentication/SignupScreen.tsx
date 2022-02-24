@@ -259,7 +259,7 @@ const proceedToSignup = () => {
           
           <SignupFooterComponent
             navigation={navigation}
-            isButtonDisabled = {email !== '' && password !== '' ? false : true}
+            // isButtonDisabled = {email !== '' && password !== '' ? false : true}
             // onPress={proceedToSignup}
             onPress={()=>{
               navigation.navigate('PaymentPlan', {proceedToSignup,})

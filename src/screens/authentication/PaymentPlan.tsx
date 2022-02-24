@@ -50,7 +50,7 @@ let purchaseErrorSubscription;
 
 const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   const [playerSelected, setPlayerSelected] = useState<number>(0);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(-1);
   const proceedToSignup = route.params.proceedToSignup;
   const [products, setProducts] = useState([]);
   const [productList, setProductList] = useState([]);
@@ -77,9 +77,13 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
         console.log('purchase');
         if (purchase.productId === membershipProduct) {
-          await this.finishMembershipPurchase(purchase);
+          console.log('purchase.productId', purchase.productId);
+          // await this.finishMembershipPurchase(purchase);
+          // await requestPurchase(purchase)
         } else {
-          await this.finishCoursePurchase(purchase);
+          console.log('finish purchase.productId', purchase.productId);
+          // await this.finishCoursePurchase(purchase);
+          // await requestPurchase(purchase)
         }
       },
     );
@@ -133,16 +137,20 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
       console.log('getSubscriptions error => ', err);
     }
   };
-
+4
   async function getAvailablePurchases() {
     try {
+      console.log('before.');
       const purchases = await RNIap.getAvailablePurchases();
-      console.info('Available purchases => ', purchases);
+      console.log('after.');
       if (purchases && purchases.length > 0) {
+        console.info('Available purchases => ', purchases);
         this.setState({
           availableItemsMessage: `Got ${purchases.length} items.`,
           receipt: purchases[0].transactionReceipt,
         });
+      } else {
+        console.log('No available purchases')
       }
     } catch (err) {
       console.warn(err.code, err.message);
@@ -150,32 +158,31 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
     }
   };
 
-  // async function requestPurchase (sku, onSuccess: () => void) {
-  //   console.log('sku', sku);
-  //   try {
-  //     const dangerouslyFinishTransactionAutomatically = false;
-  //     RNIap.requestPurchase(sku, dangerouslyFinishTransactionAutomatically).then((res) => {
-  //       alert(`Purchase success, ${res}`);
-  //     }
-        
-  //     )
-  //   } catch (err) {
-  //     alert(`requestPurchase error => , ${err}`);
-  //   }
-  // };
-
-  async function requestPurchase (sku)  {
+  async function requestPurchase (sku, onSuccess: () => void) {
+    console.log('sku', sku);
     try {
-      RNIap.requestPurchase(sku);
+      const dangerouslyFinishTransactionAutomatically = false;
+      RNIap.requestPurchase(sku, dangerouslyFinishTransactionAutomatically).then((res) => {
+        alert(`Purchase success, ${res}`);
+      }
+        
+      )
     } catch (err) {
-      console.log('requestPurchase error => ', err);
+      alert(`requestPurchase error => , ${err}`);
     }
   };
 
+  // async function requestPurchase (sku)  {
+  //   try {
+  //     RNIap.requestPurchase(sku);
+  //   } catch (err) {
+  //     console.log('requestPurchase error => ', err);
+  //   }
+  // };
+
   async function requestSubscription (sku) {
     try {
-      await getItems();
-      await RNIap.requestSubscription(sku);
+      RNIap.requestSubscription(sku);
     } catch (err) {
       alert(err.toLocaleString());
     }
@@ -190,20 +197,27 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   };
 
   function proceedToPurchase() {
-    RNIap.getProducts(trainProducts)
-    .then(success => {
-      let product = success[0];
-      alert(JSON.stringify(success));
-      RNIap.requestPurchase(product.productId)
-      .then(ok => {
-        alert('requested to purchase');
-      })
-      .catch(error => {
-        alert(error); 
-      }) 
-    })
-    .catch(error => {
-       alert(error); })
+    // getSubscriptions();
+    // getAvailablePurchases();
+    requestSubscription(trainProducts[subscriptionPlan]);
+    // getAvailablePurchases();
+
+    // RNIap.getProducts(trainProducts)
+    // .then(success => {
+    //   let product = success[0];
+    //   console.log("product:", JSON.stringify(success));
+    //   RNIap.requestPurchase(product.productId)
+    //   .then(ok => {
+    //     alert('requested to purchase');
+    //   })
+    //   .catch(error => {
+    //     alert(error); 
+    //   }) 
+    // })
+    // .catch(error => {
+    //    alert( JSON.stringify(error)); 
+    // })
+
   }
 
   return(
@@ -265,7 +279,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
               isSelected = {subscriptionPlan === 0 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(0);
-                // requestPurchase('free_trainify');
+                requestPurchase(trainProducts[0], onSuccess);
                 proceedToPurchase();
               }}
             />
@@ -276,7 +290,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
               isSelected = {subscriptionPlan === 1 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(1);
-                // requestPurchase('free_trainify');
+                requestPurchase(trainProducts[1], onSuccess);
                 proceedToPurchase();
               }}
             />
@@ -286,7 +300,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
               isSelected = {subscriptionPlan === 2 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(2);
-                // requestPurchase('free_trainify');
+                requestPurchase(trainProducts[2], onSuccess);
                 proceedToPurchase();
               }}
             />
@@ -296,7 +310,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
               isSelected = {subscriptionPlan === 3 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(3);
-                // requestPurchase('free_trainify');
+                requestPurchase(trainProducts[3], onSuccess);
                 proceedToPurchase();
               }}
             />
@@ -305,6 +319,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
           <SimpleButton
             buttonText="Submit"
             buttonType="AUTHENTICATION"
+            isButtonDisabled={subscriptionPlan < 0}
             onPress={()=>{
               if(proceedToSignup) {
                 proceedToSignup();
