@@ -14,18 +14,32 @@ const styles = StyleSheet.create({
   height: SCREEN_HEIGHT,
  },
  // Signin styles.
- login_main_container: {
-  flex: 1,
-  alignItems: 'flex-start',
-  paddingTop: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT + 24 : 24,
-  backgroundColor: COLORS.white,
- },
- login_back_icon: {
-  width: 18,
-  height: 18,
-  borderRadius: 18 / 2,
-  borderWidth: 1,
-  borderColor: COLORS.medium_dark_blue,
-}
+  login_main_container: {
+    flex: 1,
+    alignItems: 'flex-start',
+    paddingTop: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT + 24 : 24,
+    backgroundColor: COLORS.white,
+  },
+  login_back_icon: {
+    width: 32,
+    height: 32,
+  },
+  login_forgot_view: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 11,
+    paddingRight: 24,
+  },
+  // Reset password styles.
+  reset_password_text: {
+    color: COLORS.medium_dark_blue,
+    marginTop: 16,
+  },
+  reset_password_details: {
+    color: COLORS.medium_grey,
+    fontWeight: '600',
+    marginTop: 7,
+  }
+
 });
 export default styles;

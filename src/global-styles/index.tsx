@@ -30,6 +30,13 @@ const styles = StyleSheet.create({
     fontFamily: FONT_STYLES.font,
     color: COLORS.dark_black,
   },
+  small: {
+    fontSize: FONT_STYLES.font_size_11,
+    lineHeight: FONT_STYLES.line_height_17,
+    fontWeight: 'normal',
+    fontFamily: FONT_STYLES.font,
+    color: COLORS.dark_black,
+  },
   bold: {
     fontWeight: 'bold',
   }

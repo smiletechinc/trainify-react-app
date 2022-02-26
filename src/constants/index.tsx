@@ -4,11 +4,6 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 export const SCREEN_WIDTH = Dimensions.get('window').width;
 export const SCREEN_HEIGHT = Dimensions.get('window').height;
 export const SMALL_DEVICE = SCREEN_WIDTH <= 420 && SCREEN_HEIGHT <= 695;
-export const NOPHOTO_URL =
-  'https://s3.eu-central-1.amazonaws.com/panion/nophoto-profile.png';
-
-// export const BASE_URL =
-//   'http://denaio-backend-dev.ap-northeast-2.elasticbeanstalk.com/v1/';
 
 export const STATUS_BAR_HEIGHT = getStatusBarHeight();
 export const COLORS = {
@@ -17,6 +12,9 @@ export const COLORS = {
   dark_black: '#424347',
   medium_dark_blue: '#008EC1',
   dark_grey: '#707070',
+  medium_grey: '#ADADAD',
+  black_25: '#252525',
+  light_blue: '#64C1DC',
 };
 export const FONT_STYLES = {
   font: Platform.OS === 'ios' ? 'System' : 'Poppins',
@@ -38,6 +36,7 @@ export const FONT_STYLES = {
   line_height_12: 12,
   font_size_44: 44,
   font_size_10: 10,
+  font_size_11: 11,
   font_size_14: 14,
   font_size_16: 16,
   font_size_18: 18,
