@@ -39,14 +39,14 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Trainyfy would like to access your camera.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Trainyfy would like to access your galery.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Trainyfy would like to access your location.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Trainyfy would like to access your microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Trainyfy would like to access your galery.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -559,7 +559,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = C48PH5S3RG;
+				DEVELOPMENT_TEAM = F67F944Q22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -572,7 +572,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.trainifyrandom;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.trainifytennis;
 				PRODUCT_NAME = TrainyfyApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -589,7 +589,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = C48PH5S3RG;
+				DEVELOPMENT_TEAM = F67F944Q22;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -601,7 +601,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.trainifyrandom;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trainify.trainifytennis;
 				PRODUCT_NAME = TrainyfyApp;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
