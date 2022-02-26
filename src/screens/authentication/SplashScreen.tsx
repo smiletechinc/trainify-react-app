@@ -4,14 +4,44 @@ import { useNavigation } from '@react-navigation/native';
 import {SCREEN_WIDTH} from '../../constants';
 import { RootState } from '../../../store';
 import { useSelector} from 'react-redux';
+import * as tf from "@tensorflow/tfjs";
+import * as posenet from '@tensorflow-models/posenet';
+import * as posedetection from "@tensorflow-models/pose-detection";
+import '@tensorflow/tfjs-react-native';
 
+import {useDispatch} from 'react-redux';
+import {setPoseNetModal} from '../../redux/slices/AuthSlice';
+
+require('@tensorflow/tfjs-backend-cpu');
+require('@tensorflow/tfjs-backend-webgl');
 const logo = require('../../assets/images/logo.png');
 const splashScreen = require('../../assets/images/splash-screen.png');
 
 const SplashScreenContainer: FunctionComponent = ({ navigation }) => {
   // const navigation = useNavigation();
+  const dispatch = useDispatch();
   const UserData = useSelector((state: RootState) => state.RegisterReducer.UserData);
+  const loadPosenetModel = async () => {
+    const model = posedetection.SupportedModels.BlazePose;
+      const detectorConfig = {
+        runtime: "tfjs", // or 'tfjs'
+        modelType: "full",
+      };
+
+      const detector = await posedetection.createDetector(
+        model,
+        detectorConfig
+      );
+    console.log('detector model: ', model);
+    dispatch(setPoseNetModal(detector));
+    
+  };
   useEffect(() => {
+    (async () => {
+      await tf.ready().then(tf1 => {
+        loadPosenetModel();
+      });
+    })();
     setTimeout(() => {
       if(UserData === null) {
         navigation.navigate('LanguageScreen');
