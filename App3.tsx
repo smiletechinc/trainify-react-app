@@ -15,6 +15,9 @@ import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
 import { CounterContext } from "./src/context/counter-context";
 import { RootState } from "./store";
+
+import { addVideoService } from "./src/services/servePracticeServices";
+import { VideoData } from "./types";
 // import DataFrame from "dataframe-js";
 
 // tslint:disable-next-line: variable-name
@@ -48,9 +51,9 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 const AUTO_RENDER = false;
 
 export default function UsamaCameraContainer() {
-  const { increment, decrement, reset, count } = React.useContext(CounterContext);
+  const { increment, decrement, reset, count, calibrated, setCalibrated, setData, data } = React.useContext(CounterContext);
   const PoseNetModal = useSelector((state: RootState) => state.RegisterReducer.postNetModal);
-  
+
   const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>(PoseNetModal);
@@ -65,16 +68,30 @@ export default function UsamaCameraContainer() {
   let skipFrameCount = 0;
   const [totalServes, setTotalServes] = useState(0);
   const [cameraType, setCameraType] = useState<CameraType>(
-    Camera.Constants.Type.back
+    Camera.Constants.Type.front
   );
+  var isCalibrated = false;
+  var isCompletedRecording = false;
 
+  const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [canAdd, setCanAdd] = useState(true);
-
+  const [serveGrade, setServeGrade] = useState('');
   // For Serve Grading
   let AGradeServe = 0;
   let BGradeServe = 0;
   let CGradeServe = 0;
   let DGradeServe = 0;
+
+  var analysis_data = {
+    labels: ["Flat", "Kick", "Slice"],
+    legend: ["A", "B", "C", "D"],
+    data: [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
+  };
 
   // Use `useRef` so that changing it won't trigger a re-render.
   //
@@ -82,6 +99,154 @@ export default function UsamaCameraContainer() {
   // - 0: animation frame/loop has been canceled.
   // - >0: animation frame has been scheduled.
   const rafId = useRef<number | null>(null);
+
+  const calibrate = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+      let tempCount = 0;
+      for (var i = 0; i < keypoints.length; i++) {
+        // console.log(keypoints[i].score);
+        // console.log("Next");
+        if (keypoints[i].score && keypoints[i].score * 100 < 60) {
+          tempCount = tempCount + 1;
+        }
+      }
+      if (tempCount == 0) {
+        isCalibrated = true
+        setIsCalibratedr(true);
+        
+      }
+    }
+  };
+
+  const find_angle = (a: any, b: any, c: any) => {
+    // let angle = Math.atan2( y2 - y1, x2 - x1 ) * ( 180 / Math.PI )
+    // console.log("I am here");
+    // console.log(a, b, c);
+    // console.log(c[0].y);
+    let radians =
+      Math.atan2(c[0].y - b[0].y, c[0].x - b[0].x) -
+      Math.atan2(a[0].y - b[0].y, a[0].x - b[0].x);
+    // console.log(radians);
+    // angle = np.abs(radians*180.0/np.pi)
+    let angle = Math.abs(radians * (180 / Math.PI));
+    return angle;
+  };
+
+  const serveTypeDetectionthreshold = (poses: any) => {
+    // analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+    console.log("Analysis: ", analysis_data.data[0]);
+    console.log("Analysis: ", analysis_data.data[1]);
+    console.log("Analysis: ", analysis_data.data[2]);
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+      var leftShoulder = keypoints.filter(function (item: any) {
+        return item.name === "left_shoulder";
+      });
+      var rightShoulder = keypoints.filter(function (item: any) {
+        return item.name === "right_shoulder";
+      });
+      // Right Elbow
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === "left_elbow";
+      });
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === "right_elbow";
+      });
+      var rightHip = keypoints.filter(function (item: any) {
+        return item.name === "right_hip";
+      });
+      var leftHip = keypoints.filter(function (item: any) {
+        return item.name === "left_hip";
+      });
+      var leftKnee = keypoints.filter(function (item: any) {
+        return item.name === "left_knee";
+      });
+      var rightKnee = keypoints.filter(function (item: any) {
+        return item.name === "right_knee";
+      });
+      // console.log(leftShoulder, leftElbow, leftHip);
+      // console.log('rightElbow: ', leftElbow[0].x , leftElbow[0].y);
+      var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
+      var r_hip_angle = find_angle(leftShoulder, leftHip, leftKnee);
+      console.log(l_shoulder_angle2, r_hip_angle);
+      if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+        increment();
+        skipFrameCount = skipFrameCount + 1;
+        if (l_shoulder_angle2 < 20 && l_shoulder_angle2 > 0) {
+          if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+            console.log(serveGrade);
+            setServeGrade("A");
+            analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+          } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
+            setServeGrade("B");
+            console.log(serveGrade);
+            analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
+            setServeGrade("C");
+            console.log(serveGrade);
+            analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
+          } else {
+            setServeGrade("D");
+            console.log(serveGrade);
+            analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
+          }
+          setServeType("Flat");
+        } else if (r_hip_angle < 179 && r_hip_angle > 165) {
+          if (r_hip_angle < 174 && r_hip_angle > 172) {
+            setServeGrade("A");
+            console.log(serveGrade);
+            analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
+          } else if (r_hip_angle < 176 && r_hip_angle > 170) {
+            setServeGrade("B");
+            console.log(serveGrade);
+            analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
+          } else if (r_hip_angle < 178 && r_hip_angle > 168) {
+            setServeGrade("C");
+            console.log(serveGrade);
+            analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
+          } else {
+            setServeGrade("D");
+            console.log(serveGrade);
+            analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
+          }
+          setServeType("Slice");
+        } else {
+          console.log("Inside kick");
+          console.log(r_hip_angle);
+          if (r_hip_angle < 182) {
+            setServeGrade("A");
+            console.log(serveGrade);
+            analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          } else if (r_hip_angle < 185) {
+            setServeGrade("B");
+            console.log(serveGrade);
+            analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          } else if (r_hip_angle < 188) {
+            setServeGrade("C");
+            console.log(serveGrade);
+            analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
+          } else {
+            setServeGrade("D");
+            console.log(serveGrade);
+            analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
+          }
+          setServeType("Kick");
+        }
+
+        setData(analysis_data.data);
+
+      } else if (skipFrameCount > 0 && skipFrameCount < 10) {
+        skipFrameCount = skipFrameCount + 1;
+        console.log(skipFrameCount);
+      } else {
+        skipFrameCount = 0;
+      }
+      // console.log(serveGrade);
+    }
+  };
 
   const serveTypeDetection = (poses: any) => {
     if (poses && poses.length > 0) {
@@ -201,13 +366,9 @@ export default function UsamaCameraContainer() {
         setTotalServes(totalServesTemp);
         // Alert.alert(JSON.stringify(canAdd));
         // Alert.alert(JSON.stringify(timerSeconds));
-        if (canAdd === true) {
-          Alert.alert("YES");
-          increment();
           setCanAdd(false);
           clearTimer(getDeadTime());
-        }
-        console.log(totalServesTemp);
+
       } else if (skipFrameCount > 0 && skipFrameCount < 80) {
         skipFrameCount = skipFrameCount + 1;
       } else {
@@ -313,6 +474,7 @@ export default function UsamaCameraContainer() {
     // Called when the app is unmounted.
     return () => {
       reset();
+      setCalibrated(false);
       if (rafId.current != null && rafId.current !== 0) {
         reset();
         cancelAnimationFrame(rafId.current);
@@ -338,8 +500,17 @@ export default function UsamaCameraContainer() {
       );
 
       // shotDetection(poses);
-      serveTypeDetection(poses);
-      shotDetection(poses);
+      // serveTypeDetection(poses);
+      calibrate(poses);
+      if(isCalibrated && !isCompletedRecording){
+        serveTypeDetectionthreshold(poses)
+      } else if (isCompletedRecording) {
+        addVideoToFirebase()
+        isCompletedRecording = false
+      }
+      // shotDetection(poses);
+
+
 
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
@@ -396,14 +567,28 @@ export default function UsamaCameraContainer() {
     }
   };
 
+  const renderCalibration = () => {
+    let text;
+    if (isCalibratedr) {
+      text = (
+        <Text>You are calibrated. Please dont move recording is starting.</Text>
+      );
+    } else {
+      text = (
+        <Text>
+          Please callibrate your self so that your whole body is visible.
+        </Text>
+      );
+    }
+    return <View style={styles.calibrationContainer}>{text}</View>;
+  };
+
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>FPS: {fps}</Text>
         <Text>Total {count}</Text>
-        <Text>Timer {timer}</Text>
-        <Text>Seconds {timerSeconds}</Text>
-        <Text>CanAdd { JSON.stringify(canAdd)}</Text>
+        <Text>Last Serve Type {serveType}</Text>
+        <Text>Grade {serveGrade}</Text>
       </View>
     );
   };
@@ -417,6 +602,90 @@ export default function UsamaCameraContainer() {
         <Text>
           Switch to{" "}
           {cameraType === Camera.Constants.Type.back ? "front" : "back"} camera
+        </Text>
+      </View>
+    );
+  };
+
+  const handleStopCamera = () => {
+isCompletedRecording = true;
+    Alert.alert('Stopping');
+    // 1. Add to firebase.
+    // 2. Add in the list of analysis cards
+    // 3. 
+
+  addVideoToFirebase();
+  };
+
+  const startRecording = () => {
+
+  }
+
+  const stopRecording = () => {
+    // Stop Calibrating
+    // Stop counting
+    // Stop grading
+    // Finalize video
+    // Upload to firebase
+
+    addVideoToFirebase();
+  }
+
+  const addVideoSuccess = (video?:any) => {
+    console.log("Added: ", JSON.stringify(video));
+    if (response){
+      navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
+    }
+    if (video) {
+      Alert.alert("Trainify", `Video added successfully.`);
+    }
+  }
+
+  const addVideoFailure = (error?:any) => {
+    console.log("Error: ", JSON.stringify(error));
+    if (error) {
+      Alert.alert("Trainify", `Error in adding video.`);
+    }
+  }
+
+  const addVideoToFirebase = () => {
+
+    let videoData = {
+      duration: 9.01,
+       fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+      fileSize: 9363694,
+      height: 720,
+      id: "EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001",
+       timestamp: "2022-02-25T17:02:18.000+0500",
+       type: "video/quicktime",
+       uri: "file:///var/mobile/Containers/Data/Application/4EC5C8B3-E530-4B35-83A8-49C844AA23DA/tmp/66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+       width: 1280
+      }
+
+      const tempAnalysisData = {
+        labels: ["Flat", "Kick", "Slice"],
+        legend: ["A", "B", "C", "D"],
+        data:data,
+        barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
+      };
+
+    const tempVideoData = {...videoData, analysisData: tempAnalysisData}
+
+    console.log('analysis_data for firebase, ', JSON.stringify(data));
+    console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+
+    // uploadVideoService(response, addVideoSuccess, addVideoFailure);
+      addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+  }
+
+  const renderRecordButton = () => {
+    return (
+      <View
+        style={styles.cameraRecordButton}
+        onTouchEnd={handleStopCamera}
+      >
+        <Text>
+          Stop Recording{" "}
         </Text>
       </View>
     );
@@ -558,6 +827,10 @@ const onClickReset = () => {
 }
 /* Timer end */
 
+useEffect(() => {
+  setCalibrated(calibrated);
+}, [calibrated])
+
 useEffect(()=> {
   if (timerSeconds >= 2){
     setCanAdd(false);
@@ -602,7 +875,9 @@ useEffect(() => {
         />
         {renderPose()}
         {renderFps()}
+        {renderCalibration()}
         {renderCameraTypeSwitcher()}
+        {renderRecordButton()}
       </View>
     );
   }
@@ -650,9 +925,32 @@ const styles = StyleSheet.create({
     padding: 8,
     zIndex: 20,
   },
+  calibrationContainer: {
+    position: "absolute",
+    top: 10,
+    left: 100,
+    width: 80,
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, .7)",
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
+  },
   cameraTypeSwitcher: {
     position: "absolute",
     top: 10,
+    right: 10,
+    width: 180,
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, .7)",
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
+  },
+
+  cameraRecordButton: {
+    position: "absolute",
+    bottom: 10,
     right: 10,
     width: 180,
     alignItems: "center",

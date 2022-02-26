@@ -1,7 +1,16 @@
-declare type Color = {
-    id: number,
-    name: string,
-    code: string,
+declare type VideoData = {
+    id: number;
+    fileName: string;
+    type: string;
+    timestamp: string;
+    uri: string;
+    fileSize: number;
+    duration: number;
+    width: number;
+    height: number;
+    thumbnail: string;
+    firebaseUrl: string;
+    analysisData: any;
 }
 
 export type AuthObject = {

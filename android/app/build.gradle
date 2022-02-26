@@ -137,7 +137,7 @@ android {
         applicationId "com.trainyfyapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 32
+        versionCode 35
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
@@ -223,6 +223,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    def billing_version = "4.0.0"
+    implementation("com.android.billingclient:billing:4.0.0")
 }
 
 // Run this once to be able to run the application with BUCK

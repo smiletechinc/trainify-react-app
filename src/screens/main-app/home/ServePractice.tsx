@@ -86,7 +86,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                navigation.navigate('UploadPractice', {title:'Upload RIGHT-Handed Serve'});
+                navigation.navigate('ImagePickerContainer', {title:'Upload RIGHT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -119,7 +119,10 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                // navigation.navigate('ServePractice');
+                // navigation.navigate('RecordPractice');
+                // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
+                navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
+                
               }}
             >
               <AutoHeightImage source={analysisIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
