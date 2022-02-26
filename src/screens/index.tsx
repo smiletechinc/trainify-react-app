@@ -8,9 +8,9 @@ import ServePracticeContainer from './main-app/home/ServePractice';
 import RecordPracticeContainer from './main-app/home/RecordService';
 import UploadPracticeContainer from './main-app/home/UploadServe';
 import ImagePickerContainer from './main-app/home/ImagePicker';
-import AnalysisScreen from './main-app/home/AnalysisScreen';
 import VideoPlayerContainer from './main-app/home/video_player_screen';
 import RenderGraphScreen from './main-app/home/render_graph';
+import AnalysisGridScreen from './main-app/home/AnalysisGrid';
 
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
@@ -36,7 +36,7 @@ export {
     CameraContainer,
     UsamaCameraContainer,
     ImagePickerContainer,
-    AnalysisScreen,
     VideoPlayerContainer,
-    RenderGraphScreen
+    RenderGraphScreen,
+    AnalysisGridScreen
 }

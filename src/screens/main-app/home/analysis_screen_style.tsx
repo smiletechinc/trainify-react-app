@@ -1,15 +1,25 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
+import { SCREEN_WIDTH } from '../../../constants';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#31A8A8',
+        backgroundColor: 'white',
+        paddingTop: Platform.OS === 'ios' ? 15 : 15,
+        paddingHorizontal: SCREEN_WIDTH * 0.05,
     },
+    main_view: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        backgroundColor: 'white',
+        paddingTop: Platform.OS === 'ios' ? 15 : 15,
+        paddingHorizontal: SCREEN_WIDTH * 0.05,
+      },
     flatcontainer: {
         paddingTop: 50,
-        backgroundColor: '#31A8A8',
+        backgroundColor: '#ffff',
         flex: 2,
     },
     activityIndicator: {
