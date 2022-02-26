@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, FunctionComponent } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform, Alert } from "react-native";
 import { useSelector} from 'react-redux';
 import { Camera } from "expo-camera";
@@ -50,7 +50,8 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
 
-export default function UsamaCameraContainer() {
+// export default function UsamaCameraContainer({}) {
+  const UsamaCameraContainer: FunctionComponent = ({ navigation }) => {
   const { increment, decrement, reset, count, calibrated, setCalibrated, setData, data } = React.useContext(CounterContext);
   const PoseNetModal = useSelector((state: RootState) => state.RegisterReducer.postNetModal);
 
@@ -608,13 +609,12 @@ export default function UsamaCameraContainer() {
   };
 
   const handleStopCamera = () => {
-isCompletedRecording = true;
-    Alert.alert('Stopping');
+    isCompletedRecording = true;
+    // Alert.alert('Stopping');
     // 1. Add to firebase.
     // 2. Add in the list of analysis cards
     // 3. 
-
-  addVideoToFirebase();
+    addVideoToFirebase();
   };
 
   const startRecording = () => {
@@ -633,12 +633,17 @@ isCompletedRecording = true;
 
   const addVideoSuccess = (video?:any) => {
     console.log("Added: ", JSON.stringify(video));
-    if (response){
-      navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
-    }
-    if (video) {
-      Alert.alert("Trainify", `Video added successfully.`);
-    }
+
+    Alert.alert("Trainify", `Video added successfully.`);
+    navigation.goBack();
+
+    // if (video){
+    //   navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
+    // }
+    // if (video) {
+    //   Alert.alert("Trainify", `Video added successfully.`);
+    // }
+
   }
 
   const addVideoFailure = (error?:any) => {
@@ -877,11 +882,13 @@ useEffect(() => {
         {renderFps()}
         {renderCalibration()}
         {renderCameraTypeSwitcher()}
-        {renderRecordButton()}
+        {isCalibratedr && renderRecordButton()}
       </View>
     );
   }
 }
+
+export default UsamaCameraContainer;
 
 const styles = StyleSheet.create({
   containerPortrait: {

@@ -5,6 +5,8 @@ import { addVideoService } from '../../../services/servePracticeServices';
 import { uploadVideoService } from '../../../services/mediaServices';
 import * as ImagePicker from 'react-native-image-picker';
 import { add } from '@tensorflow/tfjs-core/dist/engine';
+import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import external_styles from './../styles';
 
 /* toggle includeExtra */
 const includeExtra = true;
@@ -54,8 +56,12 @@ const addVideoSuccess = (video?:any) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <DemoTitle>🌄 React Native Image Picker</DemoTitle>
+    <SafeAreaView style={external_styles.main_view}>
+      {/* <DemoTitle>React Native Image Picker</DemoTitle> */}
+      <HeaderWithText
+            text = "Serve Practice"
+            navigation={navigation}
+          />
       <ScrollView>
         <View style={styles.buttonContainer}>
           {actions.map(({title, type, options}) => {
@@ -89,7 +95,7 @@ const addVideoSuccess = (video?:any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'aliceblue',
+    backgroundColor: 'white',
   },
   buttonContainer: {
     flexDirection: 'row',

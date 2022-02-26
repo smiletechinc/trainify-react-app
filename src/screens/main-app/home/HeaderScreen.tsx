@@ -43,7 +43,7 @@ const HeaderScreen: FunctionComponent = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         >
           <HeaderWithText
-            text = "Analysis Report"
+            text = "Trainigy"
             navigation={navigation}
           />
 

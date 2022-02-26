@@ -13,7 +13,8 @@ import {
   ImagePickerContainer,
   VideoPlayerContainer,
   RenderGraphScreen,
-  AnalysisGridScreen
+  AnalysisGridScreen,
+  PickerScreen
 } from '../../screens';
 const AppStack = createNativeStackNavigator();
 
@@ -74,6 +75,11 @@ function MainAppContainer() {
 <AppStack.Screen
     name='AnalysisGridScreen'
     component={AnalysisGridScreen}
+    />
+
+<AppStack.Screen
+    name='PickerScreen'
+    component={PickerScreen}
     />
 
     </AppStack.Navigator>

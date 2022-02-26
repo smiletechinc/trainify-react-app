@@ -97,7 +97,11 @@ const VideoPlayerContainer = ({navigation, route}) => {
   const onSeeking = (currentTime) => setCurrentTime(currentTime);
 
   const handleShowGraphButton = () => {
+    if (video && video.analysisData){
     navigation.navigate('RenderGraphScreen', {graphData: video.analysisData})
+  } else {
+    Alert.alert('No graph to show.');
+  }
   };
 
   const renderGraphButton = () => {

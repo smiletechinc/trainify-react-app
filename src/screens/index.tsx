@@ -11,6 +11,7 @@ import ImagePickerContainer from './main-app/home/ImagePicker';
 import VideoPlayerContainer from './main-app/home/video_player_screen';
 import RenderGraphScreen from './main-app/home/render_graph';
 import AnalysisGridScreen from './main-app/home/AnalysisGrid';
+import PickerScreen from './main-app/home/PickerScreen';
 
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
@@ -38,5 +39,6 @@ export {
     ImagePickerContainer,
     VideoPlayerContainer,
     RenderGraphScreen,
-    AnalysisGridScreen
+    AnalysisGridScreen,
+    PickerScreen,
 }
