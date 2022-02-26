@@ -40,9 +40,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Trainyfy would like to access your camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Trainyfy would like to access your location.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Trainyfy would like to access your microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Trainyfy would like to access your galery.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
