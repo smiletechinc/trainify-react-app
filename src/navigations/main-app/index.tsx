@@ -10,6 +10,10 @@ import {
   TensorCameraContainer,
   CameraContainer,
   UsamaCameraContainer,
+  ImagePickerContainer,
+  AnalysisScreen,
+  VideoPlayerContainer,
+  RenderGraphScreen,
 } from '../../screens';
 const AppStack = createNativeStackNavigator();
 
@@ -51,6 +55,27 @@ function MainAppContainer() {
     name="UsamaCameraContainer"
     component={UsamaCameraContainer}
     />
+
+<AppStack.Screen
+    name="ImagePickerContainer"
+    component={ImagePickerContainer}
+    />
+
+<AppStack.Screen
+    name="AnalysisScreen"
+    component={AnalysisScreen}
+    />
+
+    <AppStack.Screen
+    name="VideoPlayerContainer"
+    component={VideoPlayerContainer}
+    />
+
+    <AppStack.Screen
+    name='RenderGraphScreen'
+    component={RenderGraphScreen}
+    />
+
     </AppStack.Navigator>
   );
 }
