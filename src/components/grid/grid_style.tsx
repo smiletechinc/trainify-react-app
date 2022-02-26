@@ -8,22 +8,25 @@ const styles = StyleSheet.create({
   itemContainer: {
   borderStyle: "solid",
   justifyContent: 'flex-end',
-  borderRadius: 5,
+  borderRadius: 8,
   marginLeft: 32,
   marginTop: 8,
   padding: 10,
-  height: 150,
-  width: 150
+  height: 300,
+  width: 210
   },
   itemName: {
+    width:80,
   fontSize: 16,
-  color: '#fff',
+  color: '#0096FF',
   fontWeight: '600',
   },
   itemCode: {
+    width:80,
     fontWeight: '600',
     fontSize: 12,
-    color: '#fff',
+    color: 'black',
+    textAlign:"right"
   }
 });
 export default styles  ;

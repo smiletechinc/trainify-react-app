@@ -121,7 +121,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               onPress={()=> {
                 // navigation.navigate('RecordPractice');
                 // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
+                navigation.navigate('AnalysisGridScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
                 
               }}
             >
@@ -129,17 +129,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Analysis Reports</Text>
             </TouchableOpacity>
           </View>
-          <View style={{height: 400}}>
-          {/* <VideoRecorder
-            ref={(ref) => { setVideoRecorder(ref); }}
-            cameraOptions={{}}
-            durationTextStyle={styles.video_duration_text}
-            buttonCloseStyle={{
-              bottom: SCREEN_HEIGHT - STATUS_BAR_HEIGHT - 10,
-              left: (SCREEN_WIDTH / 2) - 23,
-            }}
-          /> */}
-        </View>
+          
         </KeyboardAwareScrollView>
         
       </SafeAreaView>
