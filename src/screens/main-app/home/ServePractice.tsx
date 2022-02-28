@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Text, TouchableOpacity, ActivityIndicator, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AutoHeightImage from 'react-native-auto-height-image';
+import RecordScreen from 'react-native-record-screen';
 
 import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../constants';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
@@ -21,7 +22,20 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
 
   const { authUser, setAuthUser } = React.useContext(AuthContext);
   const {playerstyle} = authUser ? authUser : "";
-
+  const startRecording = () => {
+    RecordScreen.startRecording({ mic: false }).catch((error) =>
+      console.error(error)
+    );
+  }
+  const stopRecording = async () => {
+    const res = await RecordScreen.stopRecording().catch((error) =>
+      console.warn(error)
+    );
+    if (res) {
+      const url = res.result.outputURL;
+      console.log('REOCORDING STOPPED: ', url);
+    }
+  }
   // const navigation = useNavigation();
   useEffect(() => {
   });
@@ -121,14 +135,37 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               onPress={()=> {
                 // navigation.navigate('RecordPractice');
                 // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
+                // navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
+                startRecording();
                 
               }}
             >
               <AutoHeightImage source={analysisIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Analysis Reports</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>start</Text>
             </TouchableOpacity>
           </View>
+
+
+          <View
+            style={{flexDirection: 'row', marginTop: 18,}}
+          >
+            <TouchableOpacity
+              activeOpacity={0.8}
+              delayPressIn={0}
+              onPress={()=> {
+                // navigation.navigate('RecordPractice');
+                // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
+                // navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
+                stopRecording();
+                
+              }}
+            >
+              <AutoHeightImage source={analysisIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>stop</Text>
+            </TouchableOpacity>
+          </View>
+
+
           <View style={{height: 400}}>
           {/* <VideoRecorder
             ref={(ref) => { setVideoRecorder(ref); }}
