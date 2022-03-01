@@ -312,7 +312,7 @@ const validateForInputs = () => {
           
           <SignupFooterComponent
             navigation={navigation}
-            // isButtonDisabled = {!validateForInputs()}
+            isButtonDisabled = {!validateForInputs()}
             // onPress={proceedToSignup}
             onPress={proceedForPayments}
           />
