@@ -282,6 +282,8 @@ PODS:
   - React-jsinspector (0.64.0)
   - react-native-image-picker (4.7.3):
     - React-Core
+  - react-native-record-screen (0.4.0):
+    - React-Core
   - react-native-safe-area-context (3.4.1):
     - React-Core
   - react-native-segmented-control (2.4.0):
@@ -427,6 +429,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-record-screen (from `../node_modules/react-native-record-screen`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-segmented-control (from `../node_modules/@react-native-segmented-control/segmented-control`)"
   - react-native-video (from `../node_modules/react-native-video`)
@@ -525,6 +528,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-record-screen:
+    :path: "../node_modules/react-native-record-screen"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-segmented-control:
@@ -592,7 +597,7 @@ SPEC CHECKSUMS:
   ExpoModulesCore: d04e519b3e8e21523b195bb21a40144e30f1e163
   EXScreenOrientation: ca9375ec57e5706128062867516da0b03a97ef64
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: 633d937503c61669db58c93db764f4e1c9c2fb20
+  FBReactNativeSpec: b97875443f3f3f950ce4607c403f868e2aff896d
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
@@ -617,6 +622,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 06a9c77b56902ae7ffcdd7a4905f664adc5d237b
   React-jsinspector: 0ae35a37b20d5e031eb020a69cc5afdbd6406301
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
+  react-native-record-screen: ed8a11f81433022cb0383831ce7e79c42e000bb1
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-segmented-control: 06607462630512ff8eef652ec560e6235a30cc3e
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
@@ -646,4 +652,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 0326c31ea7bf2b07b3be52ab6cf66f8bc9d433d3
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.10.1
