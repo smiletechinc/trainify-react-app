@@ -10,6 +10,7 @@ import {
   TensorCameraContainer,
   CameraContainer,
   UsamaCameraContainer,
+  App4,
   ImagePickerContainer,
   VideoPlayerContainer,
   RenderGraphScreen,
@@ -55,10 +56,13 @@ function MainAppContainer() {
     name="UsamaCameraContainer"
     component={UsamaCameraContainer}
     />
-
-<AppStack.Screen
-    name="ImagePickerContainer"
-    component={ImagePickerContainer}
+    <AppStack.Screen
+        name="App4"
+        component={App4}
+    />
+    <AppStack.Screen
+      name="ImagePickerContainer"
+      component={ImagePickerContainer}
     />
 
     <AppStack.Screen

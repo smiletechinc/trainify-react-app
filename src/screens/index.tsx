@@ -19,6 +19,7 @@ import TensorFlowCameraContainer from '../../App1';
 import TensorCameraContainer from '../../App3';
 import CameraContainer from './main-app/home/CameraContainer';
 import UsamaCameraContainer from '../../App3';
+import App4 from '../../App4';
 export {
     SigninScreen,
     SignupScreen,
@@ -38,5 +39,6 @@ export {
     ImagePickerContainer,
     VideoPlayerContainer,
     RenderGraphScreen,
+    App4,
     AnalysisGridScreen
 }

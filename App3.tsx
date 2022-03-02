@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, FunctionComponent } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform, Alert } from "react-native";
-import { useSelector} from 'react-redux';
+
 import { Camera } from "expo-camera";
 
 import * as tf from "@tensorflow/tfjs";
@@ -14,7 +14,6 @@ import Svg, { Circle } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
 import { CounterContext } from "./src/context/counter-context";
-import { RootState } from "./store";
 
 import { addVideoService } from "./src/services/servePracticeServices";
 import { VideoData } from "./types";
@@ -49,14 +48,16 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
-
-export default function UsamaCameraContainer() {
+ type Props = {
+   navigation: any
+ }
+  const UsamaCameraContainer: FunctionComponent<Props> = (props) => {
+    const {navigation} = props
   const { increment, decrement, reset, count, calibrated, setCalibrated, setData, data } = React.useContext(CounterContext);
-  const PoseNetModal = useSelector((state: RootState) => state.RegisterReducer.postNetModal);
 
   const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
-  const [model, setModel] = useState<posedetection.PoseDetector>(PoseNetModal);
+  const [model, setModel] = useState<posedetection.PoseDetector>();
   const [typeOfServeDetector, setTypeOfServeDetector] =
     useState<tf.LayersModel>();
   const [poses, setPoses] = useState<posedetection.Pose[]>();
@@ -399,12 +400,25 @@ export default function UsamaCameraContainer() {
       // Load movenet model.
       // https://github.com/tensorflow/tfjs-models/tree/master/pose-detection
 
+      const model = posedetection.SupportedModels.BlazePose;
+      const detectorConfig = {
+        runtime: "tfjs", // or 'tfjs'
+        modelType: "full",
+      };
+
+      const detector = await posedetection.createDetector(
+        model,
+        detectorConfig
+      );
+
       // const model = await posedetection.createDetector(
       //   // posedetection.SupportedModels.MoveNet,
       //   posedetection.SupportedModels.BlazePose,
       //   detectorConfig
       // );
-      setModel(PoseNetModal);
+
+      setModel(detector);
+
       console.log("Loading Type of Serve Model");
 
       let test_pose = [
@@ -609,7 +623,9 @@ export default function UsamaCameraContainer() {
 
   const handleStopCamera = () => {
 isCompletedRecording = true;
-    Alert.alert('Stopping');
+
+  // Video being added loader
+    // Alert.alert('Stopping');
     // 1. Add to firebase.
     // 2. Add in the list of analysis cards
     // 3. 
@@ -633,8 +649,8 @@ isCompletedRecording = true;
 
   const addVideoSuccess = (video?:any) => {
     console.log("Added: ", JSON.stringify(video));
-    if (response){
-      navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
+    if (video){
+      navigation.navigate('VideoPlayerContainer', {video:video});
     }
     if (video) {
       Alert.alert("Trainify", `Video added successfully.`);
@@ -877,12 +893,12 @@ useEffect(() => {
         {renderFps()}
         {renderCalibration()}
         {renderCameraTypeSwitcher()}
-        {renderRecordButton()}
+        {isCalibratedr && renderRecordButton()}
       </View>
     );
   }
 }
-
+export default UsamaCameraContainer;
 const styles = StyleSheet.create({
   containerPortrait: {
     position: "relative",

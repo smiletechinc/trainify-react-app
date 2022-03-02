@@ -70,7 +70,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
           }}
           onPress={()=> {
             // navigation.navigate('RecordPractice');
-            navigation.navigate('UsamaCameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
+            navigation.navigate('CameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
           }}
         >
           <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -102,8 +102,8 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
           onPress={()=> {
             // navigation.navigate('RecordPractice');
             // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-            navigation.navigate('UsamaCameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
-            
+            // navigation.navigate('UsamaCameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
+            navigation.navigate('App4', {title: 'RECORD RIGHT-HANDED SERVE'});
           }}
         >
           <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
