@@ -33,6 +33,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
     );
     if (res) {
       const url = res.result.outputURL;
+      console.log("Recording detials:", JSON.stringify(res));
       console.log('REOCORDING STOPPED: ', url);
     }
   }
@@ -69,7 +70,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                navigation.navigate('UploadPractice', {title:'Upload LEFT-Handed Serve'});
+                navigation.navigate('UploadServePracticeScreen', {title:'Upload LEFT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -84,7 +85,8 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
           }}
           onPress={()=> {
             // navigation.navigate('RecordPractice');
-            navigation.navigate('CameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
+            // navigation.navigate('CameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
+            navigation.navigate('App4', {title: 'RECORD LEFT-HANDED SERVE'});
           }}
         >
           <AutoHeightImage source={recordIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -100,7 +102,7 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={()=> {
-                navigation.navigate('ImagePickerContainer', {title:'Upload RIGHT-Handed Serve'});
+                navigation.navigate('UploadServePracticeScreen', {title:'Upload RIGHT-Handed Serve'});
               }}
             >
               <AutoHeightImage source={uploadIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
@@ -135,18 +137,18 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               onPress={()=> {
                 // navigation.navigate('RecordPractice');
                 // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                // navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
-                startRecording();
+                navigation.navigate('AnalysisGridScreen', {title: 'Analysis Report'})
+                // startRecording();
                 
               }}
             >
               <AutoHeightImage source={analysisIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>start</Text>
+              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>Analysis Report</Text>
             </TouchableOpacity>
           </View>
 
 
-          <View
+          {/* <View
             style={{flexDirection: 'row', marginTop: 18,}}
           >
             <TouchableOpacity
@@ -155,15 +157,15 @@ const ServePracticeContainer: FunctionComponent = ({ navigation }) => {
               onPress={()=> {
                 // navigation.navigate('RecordPractice');
                 // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                // navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
-                stopRecording();
+                navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
+                // stopRecording();
                 
               }}
             >
               <AutoHeightImage source={analysisIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
               <Text style={[globalStyles.medium, styles.record_and_upload_text]}>stop</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
 
           <View style={{height: 400}}>

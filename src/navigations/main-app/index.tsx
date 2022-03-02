@@ -14,7 +14,8 @@ import {
   ImagePickerContainer,
   VideoPlayerContainer,
   RenderGraphScreen,
-  AnalysisGridScreen
+  AnalysisGridScreen,
+  UploadServePracticeScreen
 } from '../../screens';
 const AppStack = createNativeStackNavigator();
 
@@ -80,6 +81,10 @@ function MainAppContainer() {
     component={AnalysisGridScreen}
     />
 
+    <AppStack.Screen
+    name='UploadServePracticeScreen'
+    component={UploadServePracticeScreen}
+/>
     </AppStack.Navigator>
   );
 }

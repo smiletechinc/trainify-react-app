@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef, FunctionComponent } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform, Alert } from "react-native";
-
 import { Camera } from "expo-camera";
-
+// import KeepAwake from 'react-native-keep-awake';
 import * as tf from "@tensorflow/tfjs";
 import * as posedetection from "@tensorflow-models/pose-detection";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -10,7 +9,7 @@ import {
   bundleResourceIO,
   cameraWithTensors,
 } from "@tensorflow/tfjs-react-native";
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Circle, Line } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
 import { CounterContext } from "./src/context/counter-context";
@@ -18,6 +17,8 @@ import { addVideoService } from "./src/services/servePracticeServices";
 import styles_external from './src/screens/main-app/styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
+import RecordScreen from 'react-native-record-screen';
+import VideoRecorder from 'react-native-beautiful-video-recorder';
 
 import { IconButton } from './src/components/buttons'
 
@@ -34,18 +35,28 @@ const OUTPUT_TENSOR_WIDTH = 180;
 const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 const AUTO_RENDER = false;
 
+// let cameraLayoutWidth = 873;
+// let cameraLayoutHeight = 826;
+
+let cameraLayoutWidth = 120;
+let cameraLayoutHeight = 160;
+
 type Props = {
   navigation: any
   route:any
 }
 
 const App4: FunctionComponent<Props> = (props) => {
+  const [cameraWidth, setCameraWidth] = useState(120);
+  const [cameraHeight, setCameraHeight] = useState(160);
+  const cameraRef = React.useRef()
+  const videoRef = useRef(null);
+
   const {navigation, route} = props
   const {title} = route.params
   const [isLoading, setLoading] = React.useState(false);
   const { increment, decrement, reset, 
   count, calibrated, setCalibrated, setData, data } = React.useContext(CounterContext);
-  const cameraRef = useRef(null);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
   const [typeOfServeDetector, setTypeOfServeDetector] =
@@ -66,6 +77,48 @@ const App4: FunctionComponent<Props> = (props) => {
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
+
+  const startRecording = () => {
+    RecordScreen.startRecording({ mic: false }).catch((error) =>
+      console.error(error)
+    );
+  }
+
+  const stopRecording = async () => {
+    const res = await RecordScreen.stopRecording().catch((error) =>
+      console.warn(error)
+    );
+    if (res) {
+      const url = res.result.outputURL;
+      console.log("Recording detials:", JSON.stringify(res));
+      console.log('REOCORDING STOPPED: ', url);
+      let videoData = {
+        duration: 9.01,
+         fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+        fileSize: 9363694,
+        height: 720,
+        id: "EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001",
+         timestamp: "2022-02-25T17:02:18.000+0500",
+         type: "video/quicktime",
+         uri: url,
+         width: 1280
+        }
+  
+        const tempAnalysisData = {
+          labels: ["Flat", "Kick", "Slice"],
+          legend: ["A", "B", "C", "D"],
+          data:data,
+          barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
+        };
+  
+      const tempVideoData = {...videoData, analysisData: tempAnalysisData}
+  
+      console.log('analysis_data for firebase, ', JSON.stringify(data));
+      console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+  
+        addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+    }
+  }
   // For Serve Grading
   let AGradeServe = 0;
   let BGradeServe = 0;
@@ -97,7 +150,7 @@ const App4: FunctionComponent<Props> = (props) => {
       if (tempCount == 0) {
         isCalibrated = true
         setIsCalibratedr(true);
-        
+       startRecording();
       }
     }
   };
@@ -426,7 +479,7 @@ const App4: FunctionComponent<Props> = (props) => {
         if(isCalibrated && !isCompletedRecording){
           serveTypeDetectionthreshold(poses)
         } else if (isCompletedRecording) {
-          addVideoToFirebase()
+          // addVideoToFirebase()
           isCompletedRecording = false
         }
 
@@ -450,21 +503,527 @@ const App4: FunctionComponent<Props> = (props) => {
       loop();
     };
 
+    const renderSkeleton = () => {
+      if (poses != null && poses.length > 0) {
+        const keypoints = poses[0].keypoints;
+  
+        var leftShoulder = keypoints.filter(function (item: any) {
+          return item.name === "left_shoulder";
+        });
+  
+        const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
+        const lsx = flipX
+          ? getOutputTensorWidth() - leftShoulder[0].x
+          : leftShoulder[0].x;
+        const lsy = leftShoulder[0].y;
+        const lscx =
+          (lsx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const lscy =
+          (lsy / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightShoulder = keypoints.filter(function (item: any) {
+          return item.name === "right_shoulder";
+        });
+  
+        const rsx = flipX
+          ? getOutputTensorWidth() - rightShoulder[0].x
+          : rightShoulder[0].x;
+        const rsy = rightShoulder[0].y;
+        const rscx =
+          (rsx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const rscy =
+          (rsy / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var leftHip = keypoints.filter(function (item: any) {
+          return item.name === "left_hip";
+        });
+  
+        const lhx = flipX ? getOutputTensorWidth() - leftHip[0].x : leftHip[0].x;
+        const lhy = leftHip[0].y;
+        const lhcx =
+          (lhx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const lhcy =
+          (lhy / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightHip = keypoints.filter(function (item: any) {
+          return item.name === "right_hip";
+        });
+  
+        const rhx = flipX
+          ? getOutputTensorWidth() - rightHip[0].x
+          : rightHip[0].x;
+        const rhy = rightHip[0].y;
+        const rhcx =
+          (rhx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const rhcy =
+          (rhy / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var leftKnee = keypoints.filter(function (item: any) {
+          return item.name === "left_knee";
+        });
+  
+        const lkx = flipX
+          ? getOutputTensorWidth() - leftKnee[0].x
+          : leftKnee[0].x;
+        const lky = leftKnee[0].y;
+        const lkcx =
+          (lkx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const lkcy =
+          (lky / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightKnee = keypoints.filter(function (item: any) {
+          return item.name === "right_knee";
+        });
+  
+        const rkx = flipX
+          ? getOutputTensorWidth() - rightKnee[0].x
+          : rightKnee[0].x;
+        const rky = rightKnee[0].y;
+        const rkcx =
+          (rkx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const rkcy =
+          (rky / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var leftAnkle = keypoints.filter(function (item: any) {
+          return item.name === "left_ankle";
+        });
+  
+        const lax = flipX
+          ? getOutputTensorWidth() - leftAnkle[0].x
+          : leftAnkle[0].x;
+        const lay = leftAnkle[0].y;
+        const lacx =
+          (lax / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const lacy =
+          (lay / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightAnkle = keypoints.filter(function (item: any) {
+          return item.name === "right_ankle";
+        });
+  
+        const rax = flipX
+          ? getOutputTensorWidth() - rightAnkle[0].x
+          : rightAnkle[0].x;
+        const ray = rightAnkle[0].y;
+        const racx =
+          (rax / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const racy =
+          (ray / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var leftElbow = keypoints.filter(function (item: any) {
+          return item.name === "left_elbow";
+        });
+  
+        const lex = flipX
+          ? getOutputTensorWidth() - leftElbow[0].x
+          : leftElbow[0].x;
+        const ley = leftElbow[0].y;
+        const lecx =
+          (lex / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const lecy =
+          (ley / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightElbow = keypoints.filter(function (item: any) {
+          return item.name === "right_elbow";
+        });
+  
+        const rex = flipX
+          ? getOutputTensorWidth() - rightElbow[0].x
+          : rightElbow[0].x;
+        const rey = rightElbow[0].y;
+        const recx =
+          (rex / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const recy =
+          (rey / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var leftThumb = keypoints.filter(function (item: any) {
+          return item.name === "left_wrist";
+        });
+  
+        const ltx = flipX
+          ? getOutputTensorWidth() - leftThumb[0].x
+          : leftThumb[0].x;
+        const lty = leftThumb[0].y;
+        const ltcx =
+          (ltx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const ltcy =
+          (lty / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightThumb = keypoints.filter(function (item: any) {
+          return item.name === "right_wrist";
+        });
+  
+        const rtx = flipX
+          ? getOutputTensorWidth() - rightThumb[0].x
+          : rightThumb[0].x;
+        const rty = rightThumb[0].y;
+        const rtcx =
+          (rtx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const rtcy =
+          (rty / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var nose = keypoints.filter(function (item: any) {
+          return item.name === "nose";
+        });
+  
+        const nx = flipX ? getOutputTensorWidth() - nose[0].x : nose[0].x;
+        const ny = nose[0].y;
+        const ncx =
+          (nx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const ncy =
+          (ny / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var leftFoot = keypoints.filter(function (item: any) {
+          return item.name === "left_foot_index";
+        });
+  
+        const lfx = flipX
+          ? getOutputTensorWidth() - leftFoot[0].x
+          : leftFoot[0].x;
+        const lfy = leftFoot[0].y;
+        const lfcx =
+          (lfx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const lfcy =
+          (lfy / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        var rightFoot = keypoints.filter(function (item: any) {
+          return item.name === "right_foot_index";
+        });
+  
+        const rfx = flipX
+          ? getOutputTensorWidth() - rightFoot[0].x
+          : rightFoot[0].x;
+        const rfy = rightFoot[0].y;
+        const rfcx =
+          (rfx / getOutputTensorWidth()) *
+          (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+        const rfcy =
+          (rfy / getOutputTensorHeight()) *
+          (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+        // console.log(lscx, lscy, rscx, rscy);
+  
+        const color = "green";
+        const stroke = "2";
+  
+        return (
+          <Svg
+            style={styles.svg}
+            height={CAM_PREVIEW_HEIGHT}
+            width={CAM_PREVIEW_WIDTH}
+          >
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={lscx}
+              cy={lscy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={rscx}
+              cy={rscy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={lhcx}
+              cy={lhcy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={rhcx}
+              cy={rhcy}
+              r="4"
+              strokeWidth="2"
+              fill="#00AA00"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={lecx}
+              cy={lecy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={recx}
+              cy={recy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={lkcx}
+              cy={lkcy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={rkcx}
+              cy={rkcy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={ltcx}
+              cy={ltcy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={rtcx}
+              cy={rtcy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={lacx}
+              cy={lacy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={racx}
+              cy={racy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+  
+            <Circle
+              // key={`skeletonkp_${k.name}`}
+              cx={ncx}
+              cy={ncy}
+              r="4"
+              strokeWidth="0"
+              fill="white"
+              stroke="white"
+            />
+  
+            <Line
+              x1={lscx}
+              y1={lscy}
+              x2={rscx}
+              y2={rscy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+            <Line
+              x1={lhcx}
+              y1={lhcy}
+              x2={rhcx}
+              y2={rhcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={rscx}
+              y1={rscy}
+              x2={rhcx}
+              y2={rhcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={lscx}
+              y1={lscy}
+              x2={lhcx}
+              y2={lhcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={lhcx}
+              y1={lhcy}
+              x2={lkcx}
+              y2={lkcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={rhcx}
+              y1={rhcy}
+              x2={rkcx}
+              y2={rkcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={lkcx}
+              y1={lkcy}
+              x2={lacx}
+              y2={lacy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={rkcx}
+              y1={rkcy}
+              x2={racx}
+              y2={racy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={lscx}
+              y1={lscy}
+              x2={lecx}
+              y2={lecy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={rscx}
+              y1={rscy}
+              x2={recx}
+              y2={recy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={lecx}
+              y1={lecy}
+              x2={ltcx}
+              y2={ltcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={recx}
+              y1={recy}
+              x2={rtcx}
+              y2={rtcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={lacx}
+              y1={lacy}
+              x2={lfcx}
+              y2={lfcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={racx}
+              y1={racy}
+              x2={rfcx}
+              y2={rfcy}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+  
+            <Line
+              x1={ncx}
+              y1={ncy}
+              x2={(rscx + lscx) / 2}
+              y2={(rscy + lscy) / 2}
+              stroke={color}
+              strokeWidth={stroke}
+            />
+          </Svg>
+        );
+      }
+    };
+
     const renderPose = () => {
+
+      console.log("GetOutputTensorWidth:", getOutputTensorWidth());
+      console.log("GetOutputTensorHeight:", getOutputTensorHeight());
+      console.log("Camera Preview Width:", CAM_PREVIEW_WIDTH);
+      console.log("Camera Preview Height:", CAM_PREVIEW_HEIGHT);
+      console.log("Camera Width:", CAM_WIDTH);
+      console.log("Camera Height:", CAM_HEIGHT);
+      
       if (poses != null && poses.length > 0) {
         const keypoints = poses[0].keypoints
           .filter((k) => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
           .map((k) => {
             // Flip horizontally on android or when using back camera on iOS.
             const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
-            const x = flipX ? getOutputTensorWidth() - k.x : k.x;
+            const x = flipX ? cameraLayoutWidth - k.x : k.x;
+            console.log("value of x:", x);
             const y = k.y;
+            console.log("Value of y:", y);
             const cx =
-              (x / getOutputTensorWidth()) *
-              (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+              (x / cameraLayoutWidth) *
+              (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
+              console.log("Value of cx:", cx);
             const cy =
-              (y / getOutputTensorHeight()) *
-              (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+              (y / cameraLayoutHeight) *
+              (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
+              console.log("Value of cy:", cy);
             return (
               <Circle
                 key={`skeletonkp_${k.name}`}
@@ -526,7 +1085,7 @@ const App4: FunctionComponent<Props> = (props) => {
   
     const handleStopCamera = () => {
      isCompletedRecording = true;
-     addVideoToFirebase();
+     stopRecording();
     };
 
     const addVideoSuccess = (video?:any) => {
@@ -545,34 +1104,34 @@ const App4: FunctionComponent<Props> = (props) => {
       }
     }
   
-    const addVideoToFirebase = () => {
+    // const addVideoToFirebase = () => {
   
-      let videoData = {
-        duration: 9.01,
-         fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
-        fileSize: 9363694,
-        height: 720,
-        id: "EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001",
-         timestamp: "2022-02-25T17:02:18.000+0500",
-         type: "video/quicktime",
-         uri: "file:///var/mobile/Containers/Data/Application/4EC5C8B3-E530-4B35-83A8-49C844AA23DA/tmp/66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
-         width: 1280
-        }
+    //   let videoData = {
+    //     duration: 9.01,
+    //      fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+    //     fileSize: 9363694,
+    //     height: 720,
+    //     id: "EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001",
+    //      timestamp: "2022-02-25T17:02:18.000+0500",
+    //      type: "video/quicktime",
+    //      uri: "file:///var/mobile/Containers/Data/Application/4EC5C8B3-E530-4B35-83A8-49C844AA23DA/tmp/66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+    //      width: 1280
+    //     }
   
-        const tempAnalysisData = {
-          labels: ["Flat", "Kick", "Slice"],
-          legend: ["A", "B", "C", "D"],
-          data:data,
-          barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
-        };
+    //     const tempAnalysisData = {
+    //       labels: ["Flat", "Kick", "Slice"],
+    //       legend: ["A", "B", "C", "D"],
+    //       data:data,
+    //       barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
+    //     };
   
-      const tempVideoData = {...videoData, analysisData: tempAnalysisData}
+    //   const tempVideoData = {...videoData, analysisData: tempAnalysisData}
   
-      console.log('analysis_data for firebase, ', JSON.stringify(data));
-      console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+    //   console.log('analysis_data for firebase, ', JSON.stringify(data));
+    //   console.log('sending to firebase, ', JSON.stringify(tempVideoData));
   
-        addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
-    }
+    //     addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+    // }
 
     const handleSwitchCameraType = () => {
 
@@ -680,19 +1239,33 @@ const App4: FunctionComponent<Props> = (props) => {
     }
   }, [tfReady]);
   
+  const onLayout=(event)=> {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    console.log("Dimensions : ", x, y, height, width );
+    cameraLayoutWidth = width;
+    setCameraWidth(width);
+  
+    cameraLayoutHeight = height;
+    setCameraHeight(height);
+  }
+
   const camView = () => {
     return (
       <View
-      style={
-        isPortrait() ? styles.containerPortrait : styles.containerLandscape
-      }>
+      // style={
+      //   isPortrait() ? styles.containerPortrait : styles.containerLandscape
+      // }
+     style={{position: "relative",
+     width: cameraWidth,
+     height: cameraHeight}}
+     >
         <TensorCamera
           ref={cameraRef}
           style={styles.camera}
           autorender={AUTO_RENDER}
           type={cameraType}
-          resizeWidth={getOutputTensorWidth()}
-          resizeHeight={getOutputTensorHeight()}
+          resizeWidth={cameraWidth}
+          resizeHeight={cameraHeight}
           resizeDepth={3}
           rotation={getTextureRotationAngleInDegrees()}
           onReady={handleCameraStream}
@@ -709,7 +1282,10 @@ const App4: FunctionComponent<Props> = (props) => {
           navigation={navigation}
         />
         <View style={styles.cameraView} >
-          <View style={styles.cameraContainer}>
+       
+          <View 
+          onLayout={onLayout}
+          style={styles.cameraContainer}>
             {tfReady ? camView()
               :
               <View style={styles.loadingMsg}>
@@ -717,13 +1293,16 @@ const App4: FunctionComponent<Props> = (props) => {
               </View>
               }
               {renderPose()}
+              {/* {renderSkeleton()} */}
               {renderFps()}
               {renderCalibration()}
               {renderCameraTypeSwitcher()}
+              {/* <KeepAwake /> */}
           </View>
-          <View style={styles.buttonContainer}>
+          
+          {isCalibratedr && <View style={styles.buttonContainer}>
             <IconButton styles={styles.recordIcon} icon={stopIcon} onPress={handleStopCamera} transparent={true} />
-          </View>
+          </View>}
        </View>
       </SafeAreaView>
 
@@ -738,18 +1317,6 @@ const styles = StyleSheet.create({
     alignContent:'center',
     justifyContent:'center',
     backgroundColor:'yellow',
-  },
-  canvas: {
-    width: CAM_WIDTH,
-    height: CAM_HEIGHT,
-    zIndex: 200,
-    borderWidth: 2,
-    borderColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    paddingTop: 20,
-    overflow: 'visible',
   },
   calibrationContainer: {
     position: "absolute",
@@ -768,20 +1335,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '88%',
+    height: '100%',
     backgroundColor: 'black',
-    marginTop:16,
+    marginTop:0,
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth:1,
     borderColor:'black',
-    borderStyle:'solid'
+    borderStyle:'solid',
+    padding: 0
   },
   cameraView: {
     display:'flex',
     flex:1,
     alignItems:'center',
     justifyContent:'center',
+    marginBottom:128,
+    marginTop: 32
   },
   camera: {
     display:'flex',
@@ -796,7 +1366,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'blue',
     flexDirection: 'row',
-    margin: 20,
+    margin: 0,
   },
   button: {
     flex: 0.1,
@@ -818,7 +1388,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     position:'absolute',
-    bottom:108,
+    bottom:36,
     zIndex:1000,
   },
   loadingMsg: {
@@ -863,14 +1433,12 @@ const styles = StyleSheet.create({
   },
   containerPortrait: {
     position: "relative",
-    width: CAM_PREVIEW_WIDTH,
-    height: CAM_PREVIEW_HEIGHT,
-    marginTop: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
+    width: cameraLayoutWidth,
+    height: cameraLayoutHeight,
   },
   containerLandscape: {
     position: "relative",
-    width: CAM_PREVIEW_HEIGHT,
-    height: CAM_PREVIEW_WIDTH,
-    marginLeft: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
+    width: cameraLayoutWidth,
+    height: cameraLayoutHeight,
   },
 });

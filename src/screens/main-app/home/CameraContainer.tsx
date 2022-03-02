@@ -510,7 +510,7 @@ setupTensorflow();
         resizeHeight={300}
         resizeWidth={300 * 0.75}
         resizeDepth={3}
-        autorender={false}
+        autorender={true}
 
         ref={cameraRef}
         style={styles.camera}
@@ -531,21 +531,21 @@ setupTensorflow();
           navigation={navigation}
         />
               <View style={styles.cameraView} >
-             <View style={styles.cameraContainer}>
-               {tfReady ? camView()
-               :
-               <View style={styles.loadingMsg}>
-        {isLoading && <Text style={styles.loadingMsgText} >Preparing live camera photages...</Text>}
-      </View>
-               }
+                <View style={styles.cameraContainer}>
+                  {tfReady ? camView()
+                  :
+                  <View style={styles.loadingMsg}>
+                  {isLoading && <Text style={styles.loadingMsgText} >Preparing live camera photages...</Text>}
+                  </View>
+                 }
                </View>
-               {renderPose()}
-        {renderFps()}
-        {renderCameraTypeSwitcher()}
-        <View style={styles.buttonContainer}>
-          <IconButton styles={styles.recordIcon} icon={tfReady ? stopIcon : recordIcon} onPress={() => {!tfReady ? setupTensorflow() : stopTensorflow()} } transparent={true} />
-      </View>
-      </View>
+                {renderPose()}
+                {renderFps()}
+                {renderCameraTypeSwitcher()}
+                <View style={styles.buttonContainer}>
+                  <IconButton styles={styles.recordIcon} icon={tfReady ? stopIcon : recordIcon} onPress={() => {!tfReady ? setupTensorflow() : stopTensorflow()} } transparent={true} />
+                </View>
+       </View>
       
     </SafeAreaView>
 
@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor:'blue',
     // height: CAM_HEIGHT,
-    zIndex: 500,
+    zIndex: 10000,
   },
   buttonContainer: {
     flex: 1,
