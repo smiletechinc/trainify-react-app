@@ -28,14 +28,18 @@ console.log('Firebase data: ', JSON.stringify(video));
     if (app) {
         const db = getDatabase(app);
         push(ref(db, branch), video)
-        .then(() => {
+        .then((response) => {
+
+          // Todo: Change video video data with id from server.
+
+          console.log('Response from firebase, success: ', JSON.stringify(response));
         // Signed in
-        onSuccess();
+        onSuccess(video);
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log('Error in adding video: ', error.message);
+        console.log('Response from firebase, error: ', error.message);
         onFailure(error);
       });
     } else {

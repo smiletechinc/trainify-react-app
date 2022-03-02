@@ -11,7 +11,7 @@ import ImagePickerContainer from './main-app/home/ImagePicker';
 import VideoPlayerContainer from './main-app/home/video_player_screen';
 import RenderGraphScreen from './main-app/home/render_graph';
 import AnalysisGridScreen from './main-app/home/AnalysisGrid';
-
+import UploadServePracticeScreen from './main-app/home/upload_server_practice'
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
 
@@ -19,6 +19,7 @@ import TensorFlowCameraContainer from '../../App1';
 import TensorCameraContainer from '../../App3';
 import CameraContainer from './main-app/home/CameraContainer';
 import UsamaCameraContainer from '../../App3';
+import App4 from '../../App4';
 export {
     SigninScreen,
     SignupScreen,
@@ -38,5 +39,7 @@ export {
     ImagePickerContainer,
     VideoPlayerContainer,
     RenderGraphScreen,
-    AnalysisGridScreen
+    App4,
+    AnalysisGridScreen,
+    UploadServePracticeScreen
 }

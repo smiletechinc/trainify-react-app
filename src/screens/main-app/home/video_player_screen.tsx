@@ -14,6 +14,7 @@ import Video from 'react-native-video';
 import
   MediaControls, {PLAYER_STATES}
 from 'react-native-media-controls';
+import HeaderWithText from '../../../global-components/header/HeaderWithText';
 
 const VideoPlayerContainer = ({navigation, route}) => {
   const { video } = route.params;
@@ -115,6 +116,11 @@ const VideoPlayerContainer = ({navigation, route}) => {
 
   return (
     <View style={{flex: 1}}>
+      <HeaderWithText 
+          text = {'Trainify Recorded Video'}
+          hideProfileSection = {true}
+          navigation={navigation}
+        />
       <Video
         onEnd={onEnd}
         onLoad={onLoad}

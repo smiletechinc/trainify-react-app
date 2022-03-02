@@ -10,10 +10,12 @@ import {
   TensorCameraContainer,
   CameraContainer,
   UsamaCameraContainer,
+  App4,
   ImagePickerContainer,
   VideoPlayerContainer,
   RenderGraphScreen,
-  AnalysisGridScreen
+  AnalysisGridScreen,
+  UploadServePracticeScreen
 } from '../../screens';
 const AppStack = createNativeStackNavigator();
 
@@ -55,10 +57,13 @@ function MainAppContainer() {
     name="UsamaCameraContainer"
     component={UsamaCameraContainer}
     />
-
-<AppStack.Screen
-    name="ImagePickerContainer"
-    component={ImagePickerContainer}
+    <AppStack.Screen
+        name="App4"
+        component={App4}
+    />
+    <AppStack.Screen
+      name="ImagePickerContainer"
+      component={ImagePickerContainer}
     />
 
     <AppStack.Screen
@@ -76,6 +81,10 @@ function MainAppContainer() {
     component={AnalysisGridScreen}
     />
 
+    <AppStack.Screen
+    name='UploadServePracticeScreen'
+    component={UploadServePracticeScreen}
+/>
     </AppStack.Navigator>
   );
 }
