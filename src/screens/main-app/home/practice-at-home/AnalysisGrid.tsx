@@ -2,11 +2,11 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { View, FlatList, Text } from 'react-native';
 import styles from './analysis_screen_style';
 import { connect, useDispatch } from 'react-redux';
-import { ListItem } from '../../../components/grid/index';
-import EmptyState from '../../../components/empty_states/colors_empty_state';
-import { fetchVideosService } from './../../../services/servePracticeServices';
+import { ListItem } from '../../../../components/grid/index';
+import EmptyState from '../../../../components/empty_states/colors_empty_state';
+import { fetchVideosService } from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-navigation';
 
@@ -18,7 +18,7 @@ type Props = {
   add: any
 }
 
-const AnalysisGridScreen: FunctionComponent<Props> = (props) => {
+const HomePracticeAnalysisGridScreen: FunctionComponent<Props> = (props) => {
 
   const {navigation, route, reduxColors, updated, add} = props;
   const [isFetching, setIsFetching] = useState(false);
@@ -47,7 +47,7 @@ const AnalysisGridScreen: FunctionComponent<Props> = (props) => {
     console.log("ColorID:", item.id);
     setSelectedID(item.id);
     console.log("selectedid is :",selectedID);
-    navigation.navigate('VideoPlayerContainer', {video:item});
+    navigation.navigate('HomePracticeVideoPlayer', {video:item});
   }
 
   const onRefresh = () => {
@@ -122,4 +122,4 @@ const AnalysisGridScreen: FunctionComponent<Props> = (props) => {
     </SafeAreaView>
   )
 };
-export default AnalysisGridScreen;
+export default HomePracticeAnalysisGridScreen;

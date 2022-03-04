@@ -1,5 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
-import { SCREEN_WIDTH } from '../../../constants';
+import { SCREEN_WIDTH } from '../../../../constants';
 
 const styles = StyleSheet.create({
     container: {

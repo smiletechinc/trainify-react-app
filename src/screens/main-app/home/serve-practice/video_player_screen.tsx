@@ -11,12 +11,10 @@ import {SafeAreaView, StyleSheet, Text, View, Alert} from 'react-native';
 import Video from 'react-native-video';
 
 // Media Controls to control Play/Pause/Seek and full screen
-import
-  MediaControls, {PLAYER_STATES}
-from 'react-native-media-controls';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
-const VideoPlayerContainer = ({navigation, route}) => {
+const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const { video } = route.params;
   let fileURI = ''
   if (video && video.uri) {
@@ -154,7 +152,7 @@ const VideoPlayerContainer = ({navigation, route}) => {
   );
 };
 
-export default VideoPlayerContainer;
+export default ServePracticeVideoPlayerContainer;
 
 const styles = StyleSheet.create({
   container: {

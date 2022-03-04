@@ -53,7 +53,6 @@ const App4: FunctionComponent<Props> = (props) => {
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation>();
   const [cameraType, setCameraType] = useState<CameraType>( Camera.Constants.Type.front );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
-  const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
@@ -323,84 +322,6 @@ const App4: FunctionComponent<Props> = (props) => {
     return <View style={styles.calibrationContainer}>{text}</View>;
   };
 
-  const renderCalibrationPoints = () => {
-    // const cx1 = cameraLayoutWidth / 2  - 75;
-    // const cy1 = 400;
-
-    // const cx2 = cameraLayoutWidth / 2 + 75;
-    // const cy2 = 400;
-
-    // const cx3 = cameraLayoutWidth / 2 - 75;
-    // const cy3 = cameraLayoutHeight - 100;
-
-    // const cx4 = cameraLayoutWidth / 2 + 75;
-    // const cy4 = cameraLayoutHeight  - 100;
-
-    console.log("I amhere");
-    const cx1 = 400;
-    const cy1 = 486;
-
-    const cx2 = 448;
-    const cy2 = 780;
-
-    const cx3 = 276;
-    const cy3 = 780;
-
-    const cx4 = 295;
-    const cy4 = 486;
-
-    if (isCalibratedp) {
-      return (
-        <Svg
-          style={styles.svg}
-          width={cameraWidth}
-          height={cameraHeight}        >
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx1}
-            cy={cy1}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx2}
-            cy={cy2}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx3}
-            cy={cy3}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx4}
-            cy={cy4}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-        </Svg>
-      );
-    } else {
-      return <View></View>;
-    }
-  };
-
   const isPortrait = () => {
     return ( 
       orientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
@@ -422,469 +343,207 @@ const App4: FunctionComponent<Props> = (props) => {
     );
   };
 
-  const renderSkeleton = () => {
-    if (poses != null && poses.length > 0) {
-      const keypoints = poses[0].keypoints;
+  // const renderSkeleton = () => {
+  //   if (poses != null && poses.length > 0) {
+  //     const keypoints = poses[0].keypoints;
+  //     const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
 
-      var leftShoulder = keypoints.filter(function (item: any) {
-        return item.name === "left_shoulder";
-      });
+  //     var leftShoulder = keypoints.filter(function (item: any) {
+  //       return item.name === "left_shoulder";
+  //     });
+  //     const lsx = flipX ? getOutputTensorWidth() - leftShoulder[0].x : leftShoulder[0].x;
+  //     const lsy = leftShoulder[0].y;
+  //     const lscx = (lsx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const lscy = (lsy / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
-      const lsx = flipX
-        ? cameraLayoutWidth - leftShoulder[0].x
-        : leftShoulder[0].x;
-      const lsy = leftShoulder[0].y;
-      const lscx =
-        (lsx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const lscy =
-        (lsy / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
+  //     var rightShoulder = keypoints.filter(function (item: any) {
+  //       return item.name === "right_shoulder";
+  //     });
+  //     const rsx = flipX ? getOutputTensorWidth() - rightShoulder[0].x : rightShoulder[0].x;
+  //     const rsy = rightShoulder[0].y;
+  //     const rscx = (rsx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const rscy = (rsy / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      var rightShoulder = keypoints.filter(function (item: any) {
-        return item.name === "right_shoulder";
-      });
+  //     var leftHip = keypoints.filter(function (item: any) {
+  //       return item.name === "left_hip";
+  //     });
+  //     const lhx = flipX ? getOutputTensorWidth() - leftHip[0].x : leftHip[0].x;
+  //     const lhy = leftHip[0].y;
+  //     const lhcx = (lhx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const lhcy = (lhy / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      const rsx = flipX
-        ? cameraLayoutWidth - rightShoulder[0].x
-        : rightShoulder[0].x;
-      const rsy = rightShoulder[0].y;
-      const rscx =
-        (rsx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const rscy =
-        (rsy / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
+  //     var rightHip = keypoints.filter(function (item: any) {
+  //       return item.name === "right_hip";
+  //     });
+  //     const rhx = flipX ? getOutputTensorWidth() - rightHip[0].x : rightHip[0].x;
+  //     const rhy = rightHip[0].y;
+  //     const rhcx = (rhx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const rhcy = (rhy / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      var leftHip = keypoints.filter(function (item: any) {
-        return item.name === "left_hip";
-      });
+  //     var leftKnee = keypoints.filter(function (item: any) {
+  //       return item.name === "left_knee";
+  //     });
+  //     const lkx = flipX ? getOutputTensorWidth() - leftKnee[0].x : leftKnee[0].x;
+  //     const lky = leftKnee[0].y;
+  //     const lkcx = (lkx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const lkcy = (lky / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      const lhx = flipX ? cameraLayoutWidth - leftHip[0].x : leftHip[0].x;
-      const lhy = leftHip[0].y;
-      const lhcx =
-        (lhx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const lhcy =
-        (lhy / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
+  //     var rightKnee = keypoints.filter(function (item: any) {
+  //       return item.name === "right_knee";
+  //     });
+  //     const rkx = flipX ? getOutputTensorWidth() - rightKnee[0].x : rightKnee[0].x;
+  //     const rky = rightKnee[0].y;
+  //     const rkcx = (rkx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const rkcy = (rky / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      var rightHip = keypoints.filter(function (item: any) {
-        return item.name === "right_hip";
-      });
+  //     var leftAnkle = keypoints.filter(function (item: any) {
+  //       return item.name === "left_ankle";
+  //     });
+  //     const lax = flipX ? getOutputTensorWidth() - leftAnkle[0].x : leftAnkle[0].x;
+  //     const lay = leftAnkle[0].y;
+  //     const lacx = (lax / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const lacy = (lay / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      const rhx = flipX
-        ? cameraLayoutWidth - rightHip[0].x
-        : rightHip[0].x;
-      const rhy = rightHip[0].y;
-      const rhcx =
-        (rhx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const rhcy =
-        (rhy / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
+  //     var rightAnkle = keypoints.filter(function (item: any) {
+  //       return item.name === "right_ankle";
+  //     });
+  //     const rax = flipX ? getOutputTensorWidth() - rightAnkle[0].x : rightAnkle[0].x;
+  //     const ray = rightAnkle[0].y;
+  //     const racx = (rax / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const racy = (ray / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+  //     var leftElbow = keypoints.filter(function (item: any) {
+  //       return item.name === "left_elbow";
+  //     });
+  //     const lex = flipX ? getOutputTensorWidth() - leftElbow[0].x : leftElbow[0].x;
+  //     const ley = leftElbow[0].y;
+  //     const lecx = (lex / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const lecy = (ley / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+  //     var rightElbow = keypoints.filter(function (item: any) {
+  //       return item.name === "right_elbow";
+  //     });
+  //     const rex = flipX ? getOutputTensorWidth() - rightElbow[0].x : rightElbow[0].x;
+  //     const rey = rightElbow[0].y;
+  //     const recx = (rex / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const recy = (rey / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+  //     var leftThumb = keypoints.filter(function (item: any) {
+  //       return item.name === "left_wrist";
+  //     });
+  //     const ltx = flipX ? getOutputTensorWidth() - leftThumb[0].x : leftThumb[0].x;
+  //     const lty = leftThumb[0].y;
+  //     const ltcx = (ltx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const ltcy = (lty / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+  //     var rightThumb = keypoints.filter(function (item: any) {
+  //       return item.name === "right_wrist";
+  //     });
+  //     const rtx = flipX ? getOutputTensorWidth() - rightThumb[0].x : rightThumb[0].x;
+  //     const rty = rightThumb[0].y;
+  //     const rtcx = (rtx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const rtcy = (rty / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+  //     var nose = keypoints.filter(function (item: any) {
+  //       return item.name === "nose";
+  //     });
+  //     const nx = flipX ? getOutputTensorWidth() - nose[0].x : nose[0].x;
+  //     const ny = nose[0].y;
+  //     const ncx = (nx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const ncy = (ny / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  
+  //     var leftFoot = keypoints.filter(function (item: any) {
+  //       return item.name === "left_foot_index";
+  //     });
+  //     const lfx = flipX ? getOutputTensorWidth() - leftFoot[0].x : leftFoot[0].x;
+  //     const lfy = leftFoot[0].y;
+  //     const lfcx = (lfx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const lfcy = (lfy / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
 
-      var leftKnee = keypoints.filter(function (item: any) {
-        return item.name === "left_knee";
-      });
+  //     var rightFoot = keypoints.filter(function (item: any) {
+  //       return item.name === "right_foot_index";
+  //     });
+  //     const rfx = flipX ? getOutputTensorWidth() - rightFoot[0].x : rightFoot[0].x;
+  //     const rfy = rightFoot[0].y;
+  //     const rfcx = (rfx / getOutputTensorWidth()) * (isPortrait() ? CAM_PREVIEW_WIDTH : CAM_PREVIEW_HEIGHT);
+  //     const rfcy = (rfy / getOutputTensorHeight()) * (isPortrait() ? CAM_PREVIEW_HEIGHT : CAM_PREVIEW_WIDTH);
+  //     const color = "green";
+  //     const stroke = "2";
 
-      const lkx = flipX
-        ? cameraLayoutWidth - leftKnee[0].x
-        : leftKnee[0].x;
-      const lky = leftKnee[0].y;
-      const lkcx =
-        (lkx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const lkcy =
-        (lky / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var rightKnee = keypoints.filter(function (item: any) {
-        return item.name === "right_knee";
-      });
-
-      const rkx = flipX
-        ? cameraLayoutWidth - rightKnee[0].x
-        : rightKnee[0].x;
-      const rky = rightKnee[0].y;
-      const rkcx =
-        (rkx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const rkcy =
-        (rky / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var leftAnkle = keypoints.filter(function (item: any) {
-        return item.name === "left_ankle";
-      });
-
-      const lax = flipX
-        ? cameraLayoutWidth - leftAnkle[0].x
-        : leftAnkle[0].x;
-      const lay = leftAnkle[0].y;
-      const lacx =
-        (lax / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const lacy =
-        (lay / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var rightAnkle = keypoints.filter(function (item: any) {
-        return item.name === "right_ankle";
-      });
-
-      const rax = flipX
-        ? cameraLayoutWidth - rightAnkle[0].x
-        : rightAnkle[0].x;
-      const ray = rightAnkle[0].y;
-      const racx =
-        (rax / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const racy =
-        (ray / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var leftElbow = keypoints.filter(function (item: any) {
-        return item.name === "left_elbow";
-      });
-
-      const lex = flipX
-        ? cameraLayoutWidth - leftElbow[0].x
-        : leftElbow[0].x;
-      const ley = leftElbow[0].y;
-      const lecx =
-        (lex / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const lecy =
-        (ley / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var rightElbow = keypoints.filter(function (item: any) {
-        return item.name === "right_elbow";
-      });
-
-      const rex = flipX
-        ? cameraLayoutWidth - rightElbow[0].x
-        : rightElbow[0].x;
-      const rey = rightElbow[0].y;
-      const recx =
-        (rex / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const recy =
-        (rey / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var leftThumb = keypoints.filter(function (item: any) {
-        return item.name === "left_wrist";
-      });
-
-      const ltx = flipX
-        ? cameraLayoutWidth - leftThumb[0].x
-        : leftThumb[0].x;
-      const lty = leftThumb[0].y;
-      const ltcx =
-        (ltx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const ltcy =
-        (lty / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var rightThumb = keypoints.filter(function (item: any) {
-        return item.name === "right_wrist";
-      });
-
-      const rtx = flipX
-        ? cameraLayoutWidth - rightThumb[0].x
-        : rightThumb[0].x;
-      const rty = rightThumb[0].y;
-      const rtcx =
-        (rtx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const rtcy =
-        (rty / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var nose = keypoints.filter(function (item: any) {
-        return item.name === "nose";
-      });
-
-      const nx = flipX ? cameraLayoutWidth - nose[0].x : nose[0].x;
-      const ny = nose[0].y;
-      const ncx =
-        (nx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const ncy =
-        (ny / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var leftFoot = keypoints.filter(function (item: any) {
-        return item.name === "left_foot_index";
-      });
-
-      const lfx = flipX
-        ? cameraLayoutWidth - leftFoot[0].x
-        : leftFoot[0].x;
-      const lfy = leftFoot[0].y;
-      const lfcx =
-        (lfx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const lfcy =
-        (lfy / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      var rightFoot = keypoints.filter(function (item: any) {
-        return item.name === "right_foot_index";
-      });
-
-      const rfx = flipX
-        ? cameraLayoutWidth - rightFoot[0].x
-        : rightFoot[0].x;
-      const rfy = rightFoot[0].y;
-      const rfcx =
-        (rfx / cameraLayoutWidth) * (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-      const rfcy =
-        (rfy / cameraLayoutHeight) * (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-
-      // console.log(lscx, lscy, rscx, rscy);
-
-      const color = "green";
-      const stroke = "2";
-
-      return (
-        <Svg
-          style={styles.svg}
-          height={cameraLayoutHeight}
-          width={cameraLayoutWidth}
-        >
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={lscx}
-            cy={lscy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={rscx}
-            cy={rscy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={lhcx}
-            cy={lhcy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={rhcx}
-            cy={rhcy}
-            r="4"
-            strokeWidth="2"
-            fill="#00AA00"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={lecx}
-            cy={lecy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={recx}
-            cy={recy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={lkcx}
-            cy={lkcy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={rkcx}
-            cy={rkcy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={ltcx}
-            cy={ltcy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={rtcx}
-            cy={rtcy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={lacx}
-            cy={lacy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={racx}
-            cy={racy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={ncx}
-            cy={ncy}
-            r="4"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-
-          <Line
-            x1={lscx}
-            y1={lscy}
-            x2={rscx}
-            y2={rscy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-          <Line
-            x1={lhcx}
-            y1={lhcy}
-            x2={rhcx}
-            y2={rhcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={rscx}
-            y1={rscy}
-            x2={rhcx}
-            y2={rhcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={lscx}
-            y1={lscy}
-            x2={lhcx}
-            y2={lhcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={lhcx}
-            y1={lhcy}
-            x2={lkcx}
-            y2={lkcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={rhcx}
-            y1={rhcy}
-            x2={rkcx}
-            y2={rkcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={lkcx}
-            y1={lkcy}
-            x2={lacx}
-            y2={lacy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={rkcx}
-            y1={rkcy}
-            x2={racx}
-            y2={racy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={lscx}
-            y1={lscy}
-            x2={lecx}
-            y2={lecy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={rscx}
-            y1={rscy}
-            x2={recx}
-            y2={recy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={lecx}
-            y1={lecy}
-            x2={ltcx}
-            y2={ltcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={recx}
-            y1={recy}
-            x2={rtcx}
-            y2={rtcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={lacx}
-            y1={lacy}
-            x2={lfcx}
-            y2={lfcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={racx}
-            y1={racy}
-            x2={rfcx}
-            y2={rfcy}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-
-          <Line
-            x1={ncx}
-            y1={ncy}
-            x2={(rscx + lscx) / 2}
-            y2={(rscy + lscy) / 2}
-            stroke={color}
-            strokeWidth={stroke}
-          />
-        </Svg>
-      );
-    }
-  };
+  //     return (
+  //         <Svg style={styles.svg} height={CAM_PREVIEW_HEIGHT} width={CAM_PREVIEW_WIDTH} >
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={lscx} cy={lscy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={rscx} cy={rscy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={lhcx} cy={lhcy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={rhcx} cy={rhcy} r="4" strokeWidth="2" fill="#00AA00" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={lecx} cy={lecy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={recx} cy={recy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={lkcx} cy={lkcy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={rkcx} cy={rkcy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={ltcx} cy={ltcy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={rtcx} cy={rtcy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={lacx} cy={lacy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={racx} cy={racy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  //       <Circle 
+  //         // key={`skeletonkp_${k.name}`}
+  //         cx={ncx} cy={ncy} r="4" strokeWidth="0" fill="white" stroke="white"
+  //       />
+  
+  //       <Line x1={lscx} y1={lscy} x2={rscx} y2={rscy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lhcx} y1={lhcy} x2={rhcx} y2={rhcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={rscx} y1={rscy} x2={rhcx} y2={rhcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lscx} y1={lscy} x2={lhcx} y2={lhcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lhcx} y1={lhcy} x2={lkcx} y2={lkcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={rhcx} y1={rhcy} x2={rkcx} y2={rkcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lkcx} y1={lkcy} x2={lacx} y2={lacy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={rkcx} y1={rkcy} x2={racx} y2={racy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lscx} y1={lscy} x2={lecx} y2={lecy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={rscx} y1={rscy} x2={recx} y2={recy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lecx} y1={lecy} x2={ltcx} y2={ltcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={recx} y1={recy} x2={rtcx} y2={lfcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={lacx} y1={lacy} x2={lfcx} y2={lfcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={racx} y1={racy} x2={rfcx} y2={rfcy} stroke={color} strokeWidth={stroke} />
+  //       <Line x1={ncx} y1={ncy} x2={(rscx + lscx) / 2} y2={(rscy + lscy) / 2} stroke={color} strokeWidth={stroke} />
+  //       </Svg>
+  //     );
+  //   }
+  // };
 
   const renderPose = () => {
     if (poses != null && poses.length > 0) {
@@ -1008,110 +667,18 @@ const App4: FunctionComponent<Props> = (props) => {
   };
 
   const calibrate = (poses: any) => {
-    console.log("I amhere");
-    const cx1 = 400;
-    const cy1 = 486;
-
-    const cx2 = 448;
-    const cy2 = 780;
-
-    const cx3 = 276;
-    const cy3 = 780;
-
-    const cx4 = 295;
-    const cy4 = 486;
-
-    // const cx1 = cameraLayoutWidth / 2  - 75;
-    // const cy1 = 400;
-    // console.log('cx1, cy1 : ',cx1, cy1);
-
-    // const cx2 = cameraLayoutWidth / 2 + 75;
-    // const cy2 = 400;
-    // console.log('cx2, cy2 : ',cx2, cy2);
-
-    // const cx3 = cameraLayoutWidth / 2 - 75;
-    // const cy3 = cameraLayoutHeight - 100;
-    // console.log('cx3, cy3 : ',cx3, cy3);
-
-    // const cx4 = cameraLayoutWidth / 2 + 75;
-    // const cy4 = cameraLayoutHeight  - 100;
-    // console.log('cx4, cy4 : ',cx4, cy4);
-
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
-
       let tempCount = 0;
-
       for (var i = 0; i < keypoints.length; i++) {
-        // console.log(keypoints[i].score);
-        // console.log("Next");
         if (keypoints[i].score && keypoints[i].score * 100 < 60) {
           tempCount = tempCount + 1;
-          // console.log(keypoints[i].name);
         }
       }
-
-      var leftWrist = keypoints.filter(function (item: any) {
-        return item.name === "left_index";
-      });
-
-      var rightWrist = keypoints.filter(function (item: any) {
-        return item.name === "right_index";
-      });
-
-      var leftAnkle = keypoints.filter(function (item: any) {
-        return item.name === "left_foot_index";
-      });
-
-      var rightAnkle = keypoints.filter(function (item: any) {
-        return item.name === "right_foot_index";
-      });
-
-      if (true) {
-        // console.log("temp  Count");
-        console.log(
-          leftWrist[0].x,
-          leftWrist[0].y,
-          rightWrist[0].x,
-          rightWrist[0].y
-        );
-        if (
-          leftWrist[0].x < cx1 + 50 &&
-          leftWrist[0].x > cx1 - 50 &&
-          leftWrist[0].y < cy1 + 50 &&
-          leftWrist[0].y > cy1 - 50
-        ) {
-          console.log("Temp Count");
-          if (
-            rightWrist[0].x < cx4 + 50 &&
-            rightWrist[0].x > cx4 - 50 &&
-            rightWrist[0].y < cy4 + 50 &&
-            rightWrist[0].y > cy4 - 50
-          ) {
-            console.log("Temp Count");
-            if (
-              leftAnkle[0].x < cx2 + 50 &&
-              leftAnkle[0].x > cx2 - 50 &&
-              leftAnkle[0].y < cy2 + 50 &&
-              leftAnkle[0].y > cy2 - 50
-            ) {
-              console.log("Temp Count");
-              if (
-                rightAnkle[0].x < cx3 + 50 &&
-                rightAnkle[0].x > cx3 - 50 &&
-                rightAnkle[0].y < cy3 + 50 &&
-                rightAnkle[0].y > cy3 - 50
-              ) {
-                console.log("Temp Count");
-                setIsCalibratedr(true);
-                setIsCalibratedp(false);
-                isCalibrated = true;
-                // console.log("inside", isCalibrated);
-              }
-            }
-          }
-        }
+      if (tempCount == 0) {
+        isCalibrated = true
+        setIsCalibratedr(true);
       }
     }
   };
@@ -1196,9 +763,8 @@ const App4: FunctionComponent<Props> = (props) => {
               {isLoading && <Text style={styles.loadingMsgText} >Preparing live camera photages...</Text>}
             </View>
           }
-          {/* {renderPose()} */}
-          {renderSkeleton()}
-          {renderCalibrationPoints()}
+          {renderPose()}
+          {/* {renderSkeleton()} */}
           {renderFps()}
           {renderCalibration()}
           {renderCameraTypeSwitcher()}

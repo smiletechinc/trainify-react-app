@@ -13,13 +13,14 @@ import {
 import Svg, { Circle } from "react-native-svg";
 import { ExpoWebGLRenderingContext } from "expo-gl";
 import { CameraType } from "expo-camera/build/Camera.types";
-import styles_external from '../styles';
+import styles_external from '../../styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
-import { IconButton } from '../../../components/buttons'
-const recordIcon = require('../../../assets/images/icon_record_start.png');
-const stopIcon = require('../../../assets/images/icon_record_stop.png');
+import { IconButton } from '../../../../components/buttons'
+
+const recordIcon = require('../../../../assets/images/icon_record_start.png');
+const stopIcon = require('../../../../assets/images/icon_record_stop.png');
 // import DataFrame from "dataframe-js";
 
 // tslint:disable-next-line: variable-name
@@ -55,7 +56,7 @@ const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4);
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = false;
 
-export default function CameraContainer({navigation, route}) {
+export default function ServePracticeCameraContainer({navigation, route}) {
     const {title} = route.params
   const cameraRef = useRef(null);
   const [isLoading, setLoading] = React.useState(false);
@@ -293,8 +294,8 @@ setLoading(true);
         0.800599277, 0.607367218, 0.892697453, 0.967935383,
       ];
 
-      const model_json = await require("./../../../assets/model/model.json");
-      const model_weight = await require("./../../../assets/model/group1-shard.bin");
+      const model_json = await require("../../../../assets/model/model.json");
+      const model_weight = await require("../../../../assets/model/group1-shard.bin");
 
       const model_tos = await tf.loadLayersModel(
         bundleResourceIO(model_json, model_weight)

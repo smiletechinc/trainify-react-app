@@ -1,9 +1,7 @@
 import React, { FunctionComponent, useEffect } from 'react';
-import { Text, TouchableOpacity, ActivityIndicator, View, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { Text, TouchableOpacity, View, } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-
-import {COLORS, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../constants';
+import {SCREEN_WIDTH, } from '../../../constants';
 import Header from '../../../global-components/header';
 import styles from '../styles';
 import globalStyles from '../../../global-styles';
@@ -13,8 +11,11 @@ const servePracticeImage = require('../../../assets/images/serve-practice.png');
 const practiceWithBall = require('../../../assets/images/practice-with-ball.png');
 const practiceAtHome = require('../../../assets/images/practice-at-home.png');
 
-const HomeScreen: FunctionComponent = ({ navigation }) => {
-  // const navigation = useNavigation();
+type Props = {
+  navigation: any
+}
+
+const HomeScreen: FunctionComponent<Props> = ({ navigation }) => {
   useEffect(() => {
   });
 
@@ -29,9 +30,9 @@ const HomeScreen: FunctionComponent = ({ navigation }) => {
             marginTop: 60,
           }}
           onPress={()=>{
-            navigation.navigate('ServePractice')
+            navigation.navigate('ServePracticeHomeScreen')
           }}
-        >
+          >
           <AutoHeightImage source={servePracticeImage} width={SCREEN_WIDTH * 0.9} />
           <Text style={[globalStyles.h1, styles.practice_text]}>Serve Practice</Text>
         </TouchableOpacity>
@@ -42,7 +43,10 @@ const HomeScreen: FunctionComponent = ({ navigation }) => {
           style={{
             marginTop: 26,
           }}
-        >
+          onPress={()=>{
+            navigation.navigate('BallMachinePracticeHomeScreen')
+          }}
+          >
           <AutoHeightImage source={practiceWithBall} width={SCREEN_WIDTH * 0.9} />
           <Text style={[globalStyles.h1, styles.practice_text]}>Practice with Ball Machine</Text>
         </TouchableOpacity>
@@ -53,7 +57,10 @@ const HomeScreen: FunctionComponent = ({ navigation }) => {
           style={{
             marginTop: 26,
           }}
-        >
+          onPress={()=>{
+            navigation.navigate('HomePracticeHomeScreen')
+          }}
+          >
           <AutoHeightImage source = {practiceAtHome} width = {SCREEN_WIDTH * 0.9} />
           <Text style={[globalStyles.h1, styles.practice_text]}>Practice at Home/ Posture Workout</Text>
         </TouchableOpacity>
@@ -61,4 +68,5 @@ const HomeScreen: FunctionComponent = ({ navigation }) => {
     </View>
   )
 };
+
 export default HomeScreen;

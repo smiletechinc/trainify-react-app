@@ -3,20 +3,24 @@ import { Text, TouchableOpacity, ActivityIndicator, View, Image } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../constants';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../../constants';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 // import VideoRecorder from 'react-native-beautiful-video-recorder';
 
-import styles from '../styles';
-import globalStyles from '../../../global-styles';
+import styles from '../../styles';
+import globalStyles from '../../../../global-styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SimpleButton } from '../../../global-components/button';
+import { SimpleButton } from '../../../../global-components/button';
 
-const uploadIcon = require('../../../assets/images/upload-icon.png');
+const uploadIcon = require('../../../../assets/images/upload-icon.png');
 
+type Props = {
+  navigation: any
+  route: any
+}
 
-const UploadPracticeContainer: FunctionComponent = ({ navigation, route }) => {
+const UploadBallPracticeContainer: FunctionComponent<Props> = ({ navigation, route }) => {
   const {title} = route.params
   // const navigation = useNavigation();
   useEffect(() => {
@@ -72,4 +76,4 @@ const UploadPracticeContainer: FunctionComponent = ({ navigation, route }) => {
     )
 
 };
-export default UploadPracticeContainer;
+export default UploadBallPracticeContainer;
