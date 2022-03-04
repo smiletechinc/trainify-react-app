@@ -1,18 +1,22 @@
 import React, { useEffect, useState, FunctionComponent } from 'react';
 import {StyleSheet, SafeAreaView, View, Image, ScrollView, Alert, Text} from 'react-native';
-import {DemoTitle, DemoButton, DemoResponse} from './components';
-import { addVideoService } from '../../../services/servePracticeServices';
-import { uploadVideoService } from '../../../services/mediaServices';
+import {DemoTitle, DemoButton, DemoResponse} from '../components';
+import { addVideoService } from '../../../../services/servePracticeServices';
+import { uploadVideoService } from '../../../../services/mediaServices';
 import * as ImagePicker from 'react-native-image-picker';
 import { add } from '@tensorflow/tfjs-core/dist/engine';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import styles_external from '../styles';
+import styles_external from '../../styles';
 
 /* toggle includeExtra */
 const includeExtra = true;
 
-const UploadServePracticeScreen: FunctionComponent = ({ navigation }) => {
+type Props = {
+  navigation: any
+}
+
+const UploadHomePracticeScreen: FunctionComponent<Props> = ({ navigation }) => {
   const [response, setResponse] = React.useState<any>(null);
     
 useEffect(() => {
@@ -25,7 +29,7 @@ useEffect(() => {
 const addVideoSuccess = (video?:any) => {
     console.log("Added: ", JSON.stringify(video));
     if (response){
-      navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
+      navigation.navigate('HomePracticeVideoPlayer', {video:response.assets[0]});
     }
     if (video) {
       Alert.alert("Trainify", `Video added successfully.`);
@@ -102,7 +106,7 @@ const addVideoSuccess = (video?:any) => {
     )
 
 };
-export default UploadServePracticeScreen;
+export default UploadHomePracticeScreen;
 
 
 const styles = StyleSheet.create({

@@ -1,15 +1,19 @@
 import React, { useEffect, useState, FunctionComponent } from 'react';
 import {StyleSheet, SafeAreaView, View, Image, ScrollView, Alert, Text} from 'react-native';
-import {DemoTitle, DemoButton, DemoResponse} from './components';
-import { addVideoService } from '../../../services/servePracticeServices';
-import { uploadVideoService } from '../../../services/mediaServices';
+import {DemoTitle, DemoButton, DemoResponse} from '../components';
+import { addVideoService } from '../../../../services/servePracticeServices';
+import { uploadVideoService } from '../../../../services/mediaServices';
 import * as ImagePicker from 'react-native-image-picker';
 import { add } from '@tensorflow/tfjs-core/dist/engine';
 
 /* toggle includeExtra */
 const includeExtra = true;
 
-const ImagePickerContainer: FunctionComponent = ({ navigation }) => {
+type Props = {
+  navigation: any
+}
+
+const ServePracticeImagePickerContainer: FunctionComponent<Props> = ({ navigation }) => {
   const [response, setResponse] = React.useState<any>(null);
     
 useEffect(() => {
@@ -174,4 +178,4 @@ const actions: Action[] = [
   },
 ];
 
-export default ImagePickerContainer;
+export default ServePracticeImagePickerContainer;

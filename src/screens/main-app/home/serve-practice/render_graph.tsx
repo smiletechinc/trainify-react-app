@@ -17,7 +17,7 @@ const chartConfig = {
   useShadowColorFromDataset: false, // optional
 };
 
-export default function RenderGraphScreen({navigation, route}) {
+export default function ServePracticeRenderGraphScreen({navigation, route}) {
     const { graphData } = route.params;
 console.log('graphData 1', graphData);
 console.log('graphData.labels ', graphData.labels)

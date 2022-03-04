@@ -294,12 +294,8 @@ PODS:
     - React
   - react-native-record-screen (0.4.0):
     - React-Core
-  - react-native-record-screen-zone (0.1.1):
-    - React
   - react-native-safe-area-context (3.4.1):
     - React-Core
-  - react-native-screen-capture-secure (1.0.5):
-    - React
   - react-native-segmented-control (2.4.0):
     - React-Core
   - react-native-video (5.2.0):
@@ -379,15 +375,15 @@ PODS:
     - React-Core
   - RNFS (2.19.0):
     - React-Core
-  - RNGestureHandler (2.2.0):
+  - RNGestureHandler (2.3.0):
     - React-Core
   - RNIap (8.0.5):
     - React-Core
-  - RNScreens (3.12.0):
+  - RNScreens (3.13.1):
     - React-Core
     - React-RCTImage
-  - RNSVG (12.1.1):
-    - React
+  - RNSVG (12.3.0):
+    - React-Core
   - RNVectorIcons (9.1.0):
     - React-Core
   - Yoga (1.14.0)
@@ -446,9 +442,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - react-native-record-screen (from `../node_modules/react-native-record-screen`)
-  - react-native-record-screen-zone (from `../node_modules/react-native-record-screen-zone`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
-  - react-native-screen-capture-secure (from `../node_modules/react-native-screen-capture-secure`)
   - "react-native-segmented-control (from `../node_modules/@react-native-segmented-control/segmented-control`)"
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -552,12 +546,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-keep-awake"
   react-native-record-screen:
     :path: "../node_modules/react-native-record-screen"
-  react-native-record-screen-zone:
-    :path: "../node_modules/react-native-record-screen-zone"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
-  react-native-screen-capture-secure:
-    :path: "../node_modules/react-native-screen-capture-secure"
   react-native-segmented-control:
     :path: "../node_modules/@react-native-segmented-control/segmented-control"
   react-native-video:
@@ -651,9 +641,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-record-screen: ed8a11f81433022cb0383831ce7e79c42e000bb1
-  react-native-record-screen-zone: cfbaefaf06bf3b707c0c9c6d9415eb570e73160a
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
-  react-native-screen-capture-secure: e5b88c0aa936ea94adcb60380e10bfa160089b0b
   react-native-segmented-control: 06607462630512ff8eef652ec560e6235a30cc3e
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
   react-native-webview: 380c1a03ec94b7ed764dac8db1e7c9952d08c93a
@@ -672,10 +660,10 @@ SPEC CHECKSUMS:
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: b49b4e38a1548d03b74b30e558a1d18465b94be7
   RNFS: fc610f78fdf8bfc89a9e5cc2f898519f4dba1002
-  RNGestureHandler: bf572f552ea324acd5b5464b8d30755b2d8c1de6
+  RNGestureHandler: 77d59828d40838c9fabb76a12d2d0a80c006906f
   RNIap: 2bb5fdc51db7f62f194efdd5e9d613ae48605cb1
-  RNScreens: 2559f98b0835103cbef3b26ba77fa61d4bb37ae7
-  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
+  RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

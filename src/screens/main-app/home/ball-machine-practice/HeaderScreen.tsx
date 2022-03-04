@@ -3,22 +3,29 @@ import { Text, TouchableOpacity, ActivityIndicator, View, Image } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../constants';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../../../constants';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 // import VideoRecorder from 'react-native-beautiful-video-recorder';
 
-import styles from '../styles';
-import globalStyles from '../../../global-styles';
+import styles from '../../styles';
+import globalStyles from '../../../../global-styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthContext } from './../../../context/auth-context';
+import { AuthContext } from '../../../../context/auth-context';
 
-const recordIcon = require('../../../assets/images/record-icon.png');
+const recordIcon = require('../../../../assets/images/record-icon.png');
+const uploadIcon = require('../../../../assets/images/upload-service.png');
+const analysisIcon = require('../../../../assets/images/analysis-icon.png');
 
+type Props = {
+  navigation: any
+}
 
-const RecordPracticeContainer: FunctionComponent = ({ navigation }) => {
-  const { authUser, setAuthUser: setUser } = React.useContext(AuthContext);
-  console.log('authUser : ', authUser);
+const HeaderScreen: FunctionComponent<Props> = ({ navigation }) => {
+
+  const { authUser, setAuthUser } = React.useContext(AuthContext);
+  const {playerstyle} = authUser ? authUser : "";
+
   // const navigation = useNavigation();
   useEffect(() => {
   });
@@ -40,15 +47,14 @@ const RecordPracticeContainer: FunctionComponent = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         >
           <HeaderWithText
-            text = "RECORD LEFT-HANDED SERVE"
-            hideProfileSection = {true}
+            text = "Analysis Report"
             navigation={navigation}
           />
-         
+
         </KeyboardAwareScrollView>
         
       </SafeAreaView>
     )
 
 };
-export default RecordPracticeContainer;
+export default HeaderScreen;
