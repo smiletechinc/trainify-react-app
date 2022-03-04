@@ -16,6 +16,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8411CD045826744CF55FDB99 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D0B167E90F5315FEEE618E /* ExpoModulesProvider.swift */; };
 		88E2F9E118E1FD7C1BBD8C32 /* libPods-TrainyfyApp-TrainyfyAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D2D929B9382571075D646C /* libPods-TrainyfyApp-TrainyfyAppTests.a */; };
+		9947FB4927D27EE800F3E28B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9947FB4827D27EE800F3E28B /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		7400EC7FFE5943A68FFC920C /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		7F604301112A4D2B83EE4476 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrainyfyApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9947FB4827D27EE800F3E28B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A6B659EFE1F94673B175FB7B /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		A90A0E6A997B4A5E845700C6 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		AC640D52AA8249AA967E2AAF /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				066E09B683E28BF89003F6DE /* libPods-TrainyfyApp.a in Frameworks */,
+				9947FB4927D27EE800F3E28B /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +124,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9947FB4827D27EE800F3E28B /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				04C2675EB88650C8A23CDCAD /* libPods-TrainyfyApp.a */,
 				12D2D929B9382571075D646C /* libPods-TrainyfyApp-TrainyfyAppTests.a */,
@@ -558,7 +562,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = F67F944Q22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
@@ -588,7 +592,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = F67F944Q22;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
