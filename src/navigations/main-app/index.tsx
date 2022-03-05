@@ -7,6 +7,7 @@ import {
   TensorCameraContainer,
   UsamaCameraContainer,
   App4,
+  App45
 } from '../../screens';
 
 import {
@@ -52,7 +53,7 @@ function MainAppContainer() {
     <AppStack.Navigator initialRouteName="HomeScreen" screenOptions={{ headerShown: false }}>
     
       <AppStack.Screen name="App4" component={App4} />
-      
+      <AppStack.Screen name="App45" component={App45} />
 
       <AppStack.Screen name="HomeScreen" component={HomeScreen} />
 

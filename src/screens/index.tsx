@@ -2,6 +2,7 @@ import TensorFlowCameraContainer from '../../App1';
 import TensorCameraContainer from '../../App3';
 import UsamaCameraContainer from '../../App3';
 import App4 from '../../App4';
+import App45 from '../../App4 copy';
 
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
@@ -39,7 +40,7 @@ import ServePracticeImagePickerContainer from './main-app/home/serve-practice/Im
 import RecordServePracticeContainer from './main-app/home/serve-practice/RecordService';
 import ServePracticeRenderGraphScreen from './main-app/home/serve-practice/render_graph';
 import ServePracticeContainer from './main-app/home/serve-practice/ServePractice';
-import UploadServePracticeScreen from './main-app/home/serve-practice/upload_server_practice';
+import UploadServePracticeScreen from './main-app/home/serve-practice/UploadServerPractice';
 import UploadServePracticeContainer from './main-app/home/serve-practice/UploadServe'; 
 import ServePracticeVideoPlayerContainer from './main-app/home/serve-practice/video_player_screen'; 
 
@@ -47,7 +48,7 @@ export {
     TensorFlowCameraContainer,
     TensorCameraContainer,
     UsamaCameraContainer,
-    App4,
+    App4, App45,
 
     LandingScreenContainer,
     LanguageScreenContainer,

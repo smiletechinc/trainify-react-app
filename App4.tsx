@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
 import { IconButton } from './src/components/buttons'
 import RecordScreen from 'react-native-record-screen';
+import CameraRoll from "@react-native-community/cameraroll";
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -53,6 +54,7 @@ const App4: FunctionComponent<Props> = (props) => {
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation>();
   const [cameraType, setCameraType] = useState<CameraType>( Camera.Constants.Type.front );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
+  const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -91,7 +93,7 @@ const App4: FunctionComponent<Props> = (props) => {
       setTypeOfServeDetector(model_tos); 
       setTfReady(true);
       setLoading(false);
-
+      startRecording();
       ScreenOrientation.addOrientationChangeListener((event) => {
         setOrientation(event.orientationInfo.orientation);
       });
@@ -128,6 +130,7 @@ const App4: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     return () => {
+      RecordScreen.clean();
       reset();
       setCalibrated(false);
       if (rafId.current != null && rafId.current !== 0) {
@@ -204,6 +207,7 @@ const App4: FunctionComponent<Props> = (props) => {
   }
   
   useEffect(() => {
+    // RecordScreen.setup();
     clearTimer(getDeadTime());
   }, []);
 
@@ -228,11 +232,9 @@ const App4: FunctionComponent<Props> = (props) => {
   const addVideoSuccess = (video?:any) => {
     console.log("Added: ", JSON.stringify(video));
     if (video){
-      navigation.navigate('VideoPlayerContainer', {video:video});
+      navigation.replace('VideoPlayerContainer', {video:video});
     }
-    if (video) {
-      Alert.alert("Trainify", `Video added successfully.`);
-    }
+    // 0
   }
   const addVideoFailure = (error?:any) => {
     console.log("Error: ", JSON.stringify(error));
@@ -241,15 +243,17 @@ const App4: FunctionComponent<Props> = (props) => {
     }
   }
 
-  const stopRecording = async () => {
+const stopRecording = async () => {
     const res = await RecordScreen.stopRecording().catch((error) => console.warn(error) );
     if (res) {
+      console.log("Response:", res)
       const url = res.result.outputURL;
+      CameraRoll.save(url, { type:'video', album:'TrainfyApp' })
       console.log("Recording detials:", JSON.stringify(res));
       console.log('REOCORDING STOPPED: ', url);
       
       let videoData = {
-        duration: 9.01,
+        duration: 0.01,
         fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
         fileSize: 9363694,
         height: 720,
@@ -301,15 +305,21 @@ const App4: FunctionComponent<Props> = (props) => {
   };
 
   const startRecording = () => {
-    RecordScreen.startRecording({ mic: false }).catch((error) =>
-      console.error(error)
+    RecordScreen.startRecording({ mic: false })
+    .then((res) => {
+      setIsStartedVideoRecording(true);
+      console.log('Video recording started.');
+    })
+    .catch((error) => {
+      console.error(error);
+      console.log('Video recording could not started.');
+    }
     );
   }
 
   const renderCalibration = () => {
     let text;
     if (isCalibratedr) {
-      startRecording();
       text = (
         <Text>You are calibrated. Please dont move recording is starting.</Text>
       );
@@ -324,30 +334,30 @@ const App4: FunctionComponent<Props> = (props) => {
   };
 
   const renderCalibrationPoints = () => {
-    // const cx1 = cameraLayoutWidth / 2  - 75;
-    // const cy1 = 400;
+    const cx1 = cameraLayoutWidth / 2  - 75;
+    const cy1 = 400;
 
-    // const cx2 = cameraLayoutWidth / 2 + 75;
-    // const cy2 = 400;
+    const cx2 = cameraLayoutWidth / 2 + 75;
+    const cy2 = 400;
 
-    // const cx3 = cameraLayoutWidth / 2 - 75;
-    // const cy3 = cameraLayoutHeight - 100;
+    const cx3 = cameraLayoutWidth / 2 - 75;
+    const cy3 = cameraLayoutHeight - 100;
 
-    // const cx4 = cameraLayoutWidth / 2 + 75;
-    // const cy4 = cameraLayoutHeight  - 100;
+    const cx4 = cameraLayoutWidth / 2 + 75;
+    const cy4 = cameraLayoutHeight  - 100;
 
     console.log("I amhere");
-    const cx1 = 400;
-    const cy1 = 486;
+    // const cx1 = 400;
+    // const cy1 = 486;
 
-    const cx2 = 448;
-    const cy2 = 780;
+    // const cx2 = 448;
+    // const cy2 = 780;
 
-    const cx3 = 276;
-    const cy3 = 780;
+    // const cx3 = 276;
+    // const cy3 = 780;
 
-    const cx4 = 295;
-    const cy4 = 486;
+    // const cx4 = 295;
+    // const cy4 = 486;
 
     if (isCalibratedp) {
       return (
@@ -1203,7 +1213,7 @@ const App4: FunctionComponent<Props> = (props) => {
           {renderCalibration()}
           {renderCameraTypeSwitcher()}
         </View>
-        {isCalibratedr && <View style={styles.buttonContainer}>
+        {isStartedVideoRecording && <View style={styles.buttonContainer}>
           <IconButton styles={styles.recordIcon} icon={stopIcon} onPress={handleStopCamera} transparent={true} />
         </View>}
       </View>
