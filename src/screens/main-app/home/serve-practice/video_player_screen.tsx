@@ -15,14 +15,15 @@ import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
-  const { video } = route.params;
+  const {video} = route.params;
 
-
-  let fileURI = 'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
+  let fileURI =
+    'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
   if (video && video.uri) {
     fileURI = video.uri;
   } else {
-    fileURI = 'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
+    fileURI =
+      'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
   }
   const videoPlayer = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -30,21 +31,19 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [paused, setPaused] = useState(false);
-  const [
-    playerState, setPlayerState
-  ] = useState(PLAYER_STATES.PLAYING);
+  const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
   const [screenType, setScreenType] = useState('content');
 
-useEffect(() => {
-  console.log('filePath in ServePracticeVideoPlayerContainer: ', fileURI);
-}, [fileURI]);
+  useEffect(() => {
+    console.log('filePath in ServePracticeVideoPlayerContainer: ', fileURI);
+  }, [fileURI]);
 
-  const onSeek = (seek) => {
+  const onSeek = seek => {
     //Handler for change in seekbar
     videoPlayer.current.seek(seek);
   };
 
-  const onPaused = (playerState) => {
+  const onPaused = playerState => {
     //Handler for Video Pause
     setPaused(!paused);
     setPlayerState(playerState);
@@ -56,19 +55,19 @@ useEffect(() => {
     videoPlayer.current.seek(0);
   };
 
-  const onProgress = (data) => {
+  const onProgress = data => {
     // Video Player will progress continue even if it ends
     if (!isLoading && playerState !== PLAYER_STATES.ENDED) {
       setCurrentTime(data.currentTime);
     }
   };
 
-  const onLoad = (data) => {
+  const onLoad = data => {
     setDuration(data.duration);
     setIsLoading(false);
   };
 
-  const onLoadStart = (data) => setIsLoading(true);
+  const onLoadStart = data => setIsLoading(true);
 
   const onEnd = () => setPlayerState(PLAYER_STATES.ENDED);
 
@@ -86,9 +85,8 @@ useEffect(() => {
     else setScreenType('content');
   };
 
-
   useEffect(() => {
-    if(video){
+    if (video) {
       console.log('video, ', video);
     }
   }, [video]);
@@ -99,32 +97,31 @@ useEffect(() => {
     </View>
   );
 
-  const onSeeking = (currentTime) => setCurrentTime(currentTime);
+  const onSeeking = currentTime => setCurrentTime(currentTime);
 
   const handleShowGraphButton = () => {
-    navigation.navigate('RenderGraphScreen', {graphData: video.analysisData})
+    navigation.navigate('RenderGraphScreen', {
+      analysis_data: video.analysisData,
+    });
   };
 
   const renderGraphButton = () => {
     return (
       <View
         style={styles.cameraTypeSwitcher}
-        onTouchEnd={handleShowGraphButton}
-      >
-        <Text>
-          Show graph
-        </Text>
+        onTouchEnd={handleShowGraphButton}>
+        <Text>Show graph</Text>
       </View>
     );
   };
 
   return (
     <View style={{flex: 1}}>
-      <HeaderWithText 
-          text = {'Trainify Recorded Video'}
-          hideProfileSection = {true}
-          navigation={navigation}
-        />
+      <HeaderWithText
+        text={'Trainify Recorded Video'}
+        hideProfileSection={true}
+        navigation={navigation}
+      />
       <Video
         onEnd={onEnd}
         onLoad={onLoad}
@@ -135,7 +132,7 @@ useEffect(() => {
         resizeMode={screenType}
         onFullScreen={isFullScreen}
         source={{
-          uri:fileURI
+          uri: fileURI,
         }}
         style={styles.mediaPlayer}
         volume={10}
@@ -180,12 +177,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cameraTypeSwitcher: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
     width: 180,
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, .7)",
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
