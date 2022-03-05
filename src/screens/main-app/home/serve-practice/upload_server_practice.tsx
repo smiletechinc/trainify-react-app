@@ -21,13 +21,16 @@ const UploadServePracticeScreen: FunctionComponent <Props> = (props) => {
     
 useEffect(() => {
   if(response){
-    console.log('response: ', response);
-    addVideoToFirebase();
+    // console.log('response: ', response);
+    uploadVideoService(response, uploadVideoSuccess, uploadVideoFailure);
+    // addVideoService(response.assets[0], addVideoSuccess, addVideoFailure);
+    
+    // addVideoToFirebase();
   }
 }, [response]);
 
 const addVideoSuccess = (video?:any) => {
-    console.log("Added: ", JSON.stringify(video));
+    console.log("Added: ", JSON.stringify(video.assets[0]));
     if (response){
       navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
     }
@@ -35,8 +38,30 @@ const addVideoSuccess = (video?:any) => {
       Alert.alert("Trainify", `Video added successfully.`);
     }
   }
+  const uploadVideoSuccess = (updatedResponse? :any) => {
+    console.log("upload video success: ", JSON.stringify(updatedResponse));
+    let videoData = updatedResponse.ref._location;
+    // console.log('tempVideoData: ', videoData)
+    // const tempVideUrl = updatedResponse.assets[0].uri;
+    // const tempVideoData = {...videoData, fileUrl: tempVideUrl}
+    // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+
+
+    // if (response){
+    //   navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
+    // }
+    // if (video) {
+    //   Alert.alert("Trainify", `Video added successfully.`);
+    // }
+  }
 
   const addVideoFailure = (error?:any) => {
+    console.log("Error: ", JSON.stringify(error));
+    if (error) {
+      Alert.alert("Trainify", `Error in adding video.`);
+    }
+  }
+  const uploadVideoFailure = (error?:any) => {
     console.log("Error: ", JSON.stringify(error));
     if (error) {
       Alert.alert("Trainify", `Error in adding video.`);
@@ -65,6 +90,7 @@ const addVideoSuccess = (video?:any) => {
         <KeyboardAwareScrollView
           contentContainerStyle={{
             paddingBottom: 20,
+            paddingTop: 40,
           }}
           showsVerticalScrollIndicator={false}
         >
@@ -73,7 +99,7 @@ const addVideoSuccess = (video?:any) => {
             navigation={navigation}
           />
 
-<ScrollView>
+      <ScrollView>
         <View style={styles.buttonContainer}>
           {actions.map(({title, type, options}) => {
             return (
@@ -100,7 +126,7 @@ const addVideoSuccess = (video?:any) => {
           ))}
       </ScrollView>
 
-        </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
         
       </SafeAreaView>
     )

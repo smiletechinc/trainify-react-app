@@ -8,7 +8,7 @@ import { Platform } from 'react-native';
 // Create a root reference
 const storage = getStorage();
 
-export const uploadVideoService = (video, onSuccess?:any, onFailure?:any) => {
+export const uploadVideoService = async (video, onSuccess?:any, onFailure?:any) => {
 
   console.log('Video: ', video);
   // const uri:string = video.uri;
@@ -41,12 +41,16 @@ export const uploadVideoService = (video, onSuccess?:any, onFailure?:any) => {
 //   name: fileName,
 // })
 
-const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: 'image/jpeg', name: 'testPhotoName' }));
+const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
 
-uploadBytes(storageRef, fileImage)
-.then((snapshot) => {
-  console.log('Video uploaded');
-  onSuccess();
+const img = await fetch(fileImage.uri);
+const bytes = await img.blob();
+console.log('ready file: ', fileImage);
+
+uploadBytes(storageRef, bytes)
+.then((response) => {
+  // console.log('Video uploaded: ', response);
+  onSuccess(response);
 })
 .then((error) => {
   console.error(error);

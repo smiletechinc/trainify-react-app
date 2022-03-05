@@ -101,14 +101,14 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
 
   const renderGraphButton = () => {
     return (
-      <View
+      <SafeAreaView
         style={styles.cameraTypeSwitcher}
         onTouchEnd={handleShowGraphButton}
       >
         <Text>
           Show graph
         </Text>
-      </View>
+      </SafeAreaView>
     );
   };
 
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
   cameraTypeSwitcher: {
     position: "absolute",
-    top: 10,
+    top: 30,
     right: 10,
     width: 180,
     alignItems: "center",
