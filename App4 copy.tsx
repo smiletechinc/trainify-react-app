@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
 import { IconButton } from './src/components/buttons'
 import RecordScreen from 'react-native-record-screen';
+import CameraRoll from "@react-native-community/cameraroll";
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -35,7 +36,7 @@ type Props = {
   route:any
 }
 
-const App4: FunctionComponent<Props> = (props) => {
+const App45: FunctionComponent<Props> = (props) => {
 
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
@@ -227,7 +228,7 @@ const App4: FunctionComponent<Props> = (props) => {
   const addVideoSuccess = (video?:any) => {
     console.log("Added: ", JSON.stringify(video));
     if (video){
-      navigation.navigate('VideoPlayerContainer', {video:video});
+      navigation.replace('VideoPlayerContainer', {video:video});
     }
     if (video) {
       Alert.alert("Trainify", `Video added successfully.`);
@@ -244,6 +245,7 @@ const App4: FunctionComponent<Props> = (props) => {
     const res = await RecordScreen.stopRecording().catch((error) => console.warn(error) );
     if (res) {
       const url = res.result.outputURL;
+      CameraRoll.save(url, { type:'video', album:'TrainfyApp' })
       console.log("Recording detials:", JSON.stringify(res));
       console.log('REOCORDING STOPPED: ', url);
       
@@ -308,7 +310,6 @@ const App4: FunctionComponent<Props> = (props) => {
   const renderCalibration = () => {
     let text;
     if (isCalibratedr) {
-      startRecording();
       text = (
         <Text>You are calibrated. Please dont move recording is starting.</Text>
       );
@@ -709,6 +710,7 @@ const App4: FunctionComponent<Props> = (props) => {
       rafId.current = requestAnimationFrame(loop);
     };
     loop();
+    startRecording();
   };
 
   const getTextureRotationAngleInDegrees = () => {
@@ -769,16 +771,16 @@ const App4: FunctionComponent<Props> = (props) => {
           {renderCalibration()}
           {renderCameraTypeSwitcher()}
         </View>
-        {isCalibratedr && <View style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <IconButton styles={styles.recordIcon} icon={stopIcon} onPress={handleStopCamera} transparent={true} />
-        </View>}
+        </View>
       </View>
     </SafeAreaView>
 
   );
 }
 
-export default App4;
+export default App45;
 
 const styles = StyleSheet.create({
   container: {

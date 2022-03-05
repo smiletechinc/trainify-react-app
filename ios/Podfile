@@ -13,6 +13,8 @@ target 'TrainyfyApp' do
     rescue => e
       Pod::UI.warn e
 
+      pod 'RNFS', :path => '../node_modules/react-native-fs'
+
     end
   #   expo_patch_react_imports!(installer)
   # end

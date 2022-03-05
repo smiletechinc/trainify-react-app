@@ -16,7 +16,9 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const { video } = route.params;
-  let fileURI = ''
+
+
+  let fileURI = 'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
   if (video && video.uri) {
     fileURI = video.uri;
   } else {
@@ -32,6 +34,10 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
     playerState, setPlayerState
   ] = useState(PLAYER_STATES.PLAYING);
   const [screenType, setScreenType] = useState('content');
+
+useEffect(() => {
+  console.log('filePath in ServePracticeVideoPlayerContainer: ', fileURI);
+}, [fileURI]);
 
   const onSeek = (seek) => {
     //Handler for change in seekbar
