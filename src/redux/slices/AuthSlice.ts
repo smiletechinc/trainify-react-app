@@ -43,7 +43,7 @@ export const RegisterReducer = createSlice({
         type: string;
       },
     ) => {
-      console.log('Modal: ', action.payload);
+      // console.log('Modal: ', action.payload);
       state.postNetModal= action.payload;
     },
   },
