@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react';
-import {Text, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {Text, TouchableOpacity, ActivityIndicator, View} from 'react-native';
 import styles from './styles';
 // import globalStyles from '../../global-styles';
 import {COLORS} from '../../constants';
@@ -35,7 +35,12 @@ const BUTTON_STYLES = {
   },
 };
 type Props = {
-  buttonType: 'PRIMARY' | 'DISABLED' | 'SOCIAL' | 'SECONDARY' | 'AUTHENTICATION';
+  buttonType:
+    | 'PRIMARY'
+    | 'DISABLED'
+    | 'SOCIAL'
+    | 'SECONDARY'
+    | 'AUTHENTICATION';
   buttonText: string;
   disabled?: boolean;
   loading?: boolean;
@@ -74,19 +79,31 @@ const SimpleButton: FunctionComponent<Props> = function SimpleButton(props) {
         if (onPress) {
           onPress();
         }
-      }}
-    >
+      }}>
       {leftComponent || null}
       {loading ? (
-        <ActivityIndicator animating={true} size="large" color={COLORS.dark_black} />
+        <View
+          style={{
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingRight: 16,
+          }}>
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={COLORS.dark_black}
+          />
+        </View>
       ) : (
         <Text
           style={[
             // globalStyles.regular,
             BUTTON_STYLES[buttonType].textStyles,
             {...buttonTextStyles},
-          ]}
-        >
+          ]}>
           {buttonText}
         </Text>
       )}

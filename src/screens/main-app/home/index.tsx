@@ -6,6 +6,7 @@ import Header from '../../../global-components/header';
 import styles from '../styles';
 import globalStyles from '../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import HeaderWithText from '../../../global-components/header/HeaderWithText';
 
 const servePracticeImage = require('../../../assets/images/serve-practice.png');
 const practiceWithBall = require('../../../assets/images/practice-with-ball.png');
@@ -21,7 +22,11 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
   return (
     <View style={styles.home_main_view}>
       <KeyboardAwareScrollView>
-        <Header />
+        <HeaderWithText
+          text={''}
+          navigation={navigation}
+          hideBackButton={true}
+        />
         <TouchableOpacity
           activeOpacity={0.8}
           delayPressIn={0}

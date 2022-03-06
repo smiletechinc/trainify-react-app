@@ -5,7 +5,15 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 // import all the components we are going to use
-import {SafeAreaView, StyleSheet, Text, View, Alert} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 
 // Import React Native Video to play video
 import Video from 'react-native-video';
@@ -13,6 +21,8 @@ import Video from 'react-native-video';
 // Media Controls to control Play/Pause/Seek and full screen
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+
+const backIcon = require('../../../../assets/images/back-icon.png');
 
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const {video} = route.params;
@@ -110,8 +120,20 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
       <View
         style={styles.cameraTypeSwitcher}
         onTouchEnd={handleShowGraphButton}>
-        <Text>Show graph</Text>
+        <Text>Graph</Text>
       </View>
+    );
+  };
+
+  const renderBackButton = () => {
+    return (
+      <TouchableOpacity
+        style={styles.backButtonContainer}
+        onPress={() => {
+          navigation.goBack();
+        }}>
+        <Image source={backIcon} style={{width: 32, height: 32}} />
+      </TouchableOpacity>
     );
   };
 
@@ -151,6 +173,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
         toolbar={renderToolbar()}
       />
       {renderGraphButton()}
+      {renderBackButton()}
     </View>
   );
 };
@@ -178,11 +201,23 @@ const styles = StyleSheet.create({
   },
   cameraTypeSwitcher: {
     position: 'absolute',
-    top: 10,
+    top: 24,
     right: 10,
     width: 180,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
+  },
+  backButtonContainer: {
+    position: 'absolute',
+    top: 24,
+    left: 10,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
