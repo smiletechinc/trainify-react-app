@@ -74,7 +74,7 @@ const HeaderWithText: FunctionComponent<Props> = props => {
           onPress={() => {
             navigation.goBack();
           }}>
-          <Image source={backIcon} style={{width: 32, height: 32}} />
+          <Image source={backIcon} style={{width: 24, height: 24}} />
         </TouchableOpacity>
       )}
       <View style={{flex: 1}}>
