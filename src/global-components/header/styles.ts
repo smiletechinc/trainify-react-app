@@ -15,10 +15,12 @@ const styles = StyleSheet.create({
 
   // Header with text styles.
   header_with_text_main_view: {
+    display:'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'white',
     alignItems: 'center',
+    marginHorizontal:8
   },
   text: {
     fontWeight: '600',

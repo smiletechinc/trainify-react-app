@@ -3,22 +3,27 @@ import React from 'react';
 
 // Declaring the state object globally.
 const initialAuthState = {
-    authObject: null,
-    authUser: null
+  authObject: null,
+  authUser: null,
 };
 
 const authContextWrapper = (component?: React.Component) => ({
   ...initialAuthState,
-  setAuthUser: (newUser) => {
-      console.log('newUserObject : ', newUser)
-      initialAuthState.authUser = newUser
-      component?.setState({ context: authContextWrapper(component) });
+  setAuthUser: newUser => {
+    console.log('newUserObject : ', newUser);
+    initialAuthState.authUser = newUser;
+    component?.setState({context: authContextWrapper(component)});
   },
-  setAuthObject: (authObject) => {
-    console.log('newAuthObject : ', authObject)
-    initialAuthState.authUser = authObject
-    component?.setState({ context: authContextWrapper(component) });
-  }
+  setAuthObject: authObject => {
+    console.log('newAuthObject : ', authObject);
+    initialAuthState.authObject = authObject;
+    component?.setState({context: authContextWrapper(component)});
+  },
+  logoutUser: () => {
+    initialAuthState.authUser = null;
+    initialAuthState.authObject = null;
+    component?.setState({context: authContextWrapper(component)});
+  },
 });
 
 type Context = ReturnType<typeof authContextWrapper>;

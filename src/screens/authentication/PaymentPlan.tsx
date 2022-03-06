@@ -1,23 +1,37 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import { Text, TouchableOpacity, ActivityIndicator, View, Image, Platform } from 'react-native';
+import React, {FunctionComponent, useState, useEffect} from 'react';
+import {
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  View,
+  Image,
+  Platform,
+  Alert,
+} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // const PaymentRequest = require('react-native-payments').PaymentRequest;
 
 // Custom UI components.
-import { COLORS, SCREEN_WIDTH } from '../../constants';
+import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
 import AppUserItem from './components/AppUserItem';
 import SubscriptionItem from './components/SubscriptionItem';
+import {
+  signUpService,
+  signInService,
+  registerUserService,
+} from './../../services/authenticationServices';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
-import { SimpleButton } from '../../global-components/button';
-import { trainProducts, membershipProduct } from './products';
+import {SimpleButton} from '../../global-components/button';
+import {trainProducts, membershipProduct} from './products';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
+const backIcon = require('../../assets/images/back-icon.png');
 
 import RNIap, {
   InAppPurchase,
@@ -29,6 +43,7 @@ import RNIap, {
   purchaseUpdatedListener,
   SubscriptionPurchase,
 } from 'react-native-iap';
+import {UserObject} from '../../types';
 
 const itemSkus =
   Platform.select({
@@ -39,7 +54,7 @@ const itemSkus =
     ],
   }) || [];
 
-  const itemSubs =
+const itemSubs =
   Platform.select({
     ios: [membershipProduct],
     android: [membershipProduct],
@@ -48,22 +63,29 @@ const itemSkus =
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
-const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
+type Props = {
+  route: any;
+  navigation: any;
+};
+
+const PaymentPlanContainer: FunctionComponent<Props> = props => {
+  const {route, navigation} = props;
+  const {authObject, signupObject} = route.params;
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(-1);
-  const proceedToSignup = route.params.proceedToSignup;
   const [products, setProducts] = useState([]);
   const [productList, setProductList] = useState([]);
-  const [coursePurchaseInProgress, setCoursePurchaseInProgress] = useState(false);
+  const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
+    useState(false);
 
   useEffect(() => {
     proceedForApplePay();
-    return(()=>{
+    return () => {
       removeApplePay();
-    })
-  },[]);
+    };
+  }, []);
 
-  async function proceedForApplePay()  {
+  async function proceedForApplePay() {
     getItems();
     try {
       const result = await RNIap.initConnection();
@@ -88,22 +110,23 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
       },
     );
 
-    purchaseErrorSubscription = purchaseErrorListener(async (error: PurchaseError) => {
-      setCoursePurchaseInProgress(false);
+    purchaseErrorSubscription = purchaseErrorListener(
+      async (error: PurchaseError) => {
+        setCoursePurchaseInProgress(false);
 
-      if (error.code === 'E_USER_CANCELLED') return;
+        if (error.code === 'E_USER_CANCELLED') return;
 
-      if (error.code === 'E_ALREADY_OWNED') {
-        // @TODO When Android subscriptions fixed:
-        // Check if user already has a subscription in owned products
-        // If so, retry creating  membership on YI servers
-        // const subscriptions = await RNIap.getSubscriptions(itemSubs);
-        return;
-      }
+        if (error.code === 'E_ALREADY_OWNED') {
+          // @TODO When Android subscriptions fixed:
+          // Check if user already has a subscription in owned products
+          // If so, retry creating  membership on YI servers
+          // const subscriptions = await RNIap.getSubscriptions(itemSubs);
+          return;
+        }
 
-      alert(`${JSON.stringify(error)}, IAP purchaseErrorListener`);
-    });
-
+        alert(`${JSON.stringify(error)}, IAP purchaseErrorListener`);
+      },
+    );
   }
 
   async function removeApplePay() {
@@ -126,18 +149,18 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
     } catch (err) {
       console.log('getItems || purchase error => ', err);
     }
-  };
+  }
 
   async function getSubscriptions() {
     try {
       const products = await RNIap.getSubscriptions(itemSubs);
       console.log('Products => ', products);
-      setProductList(products)
+      setProductList(products);
     } catch (err) {
       console.log('getSubscriptions error => ', err);
     }
-  };
-4
+  }
+  4;
   async function getAvailablePurchases() {
     try {
       console.log('before.');
@@ -150,27 +173,28 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
           receipt: purchases[0].transactionReceipt,
         });
       } else {
-        console.log('No available purchases')
+        console.log('No available purchases');
       }
     } catch (err) {
       console.warn(err.code, err.message);
       console.log('getAvailablePurchases error => ', err);
     }
-  };
+  }
 
-  async function requestPurchase (sku, onSuccess: () => void) {
+  async function requestPurchase(sku, onSuccess: () => void) {
     console.log('sku', sku);
     try {
       const dangerouslyFinishTransactionAutomatically = false;
-      RNIap.requestPurchase(sku, dangerouslyFinishTransactionAutomatically).then((res) => {
+      RNIap.requestPurchase(
+        sku,
+        dangerouslyFinishTransactionAutomatically,
+      ).then(res => {
         alert(`Purchase success, ${res}`);
-      }
-        
-      )
+      });
     } catch (err) {
       alert(`requestPurchase error => , ${err}`);
     }
-  };
+  }
 
   // async function requestPurchase (sku)  {
   //   try {
@@ -180,17 +204,17 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
   //   }
   // };
 
-  async function requestSubscription (sku) {
+  async function requestSubscription(sku) {
     try {
       RNIap.requestSubscription(sku);
     } catch (err) {
       alert(err.toLocaleString());
     }
-  };
+  }
 
   function purchaseConfirmed() {
     //you can code here for what changes you want to do in db on purchase successfull
-  };
+  }
 
   const onSuccess = () => {
     alert('successfully puchased');
@@ -211,67 +235,138 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
     //     alert('requested to purchase');
     //   })
     //   .catch(error => {
-    //     alert(error); 
-    //   }) 
+    //     alert(error);
+    //   })
     // })
     // .catch(error => {
-    //    alert( JSON.stringify(error)); 
+    //    alert( JSON.stringify(error));
     // })
-
   }
 
-  return(
+  const proceedToRegister = user => {
+    const id = user.uid;
+    const userObject: UserObject = {...signupObject, id: user.uid};
+    registerUserService(userObject, registrationSuccess, registrationFailure);
+  };
+
+  const goToHomePage = () => {
+    navigation.replace('Signin');
+    //     const resetAction = StackActions.reset({
+    //   index: 0, // <-- currect active route from actions array
+    //   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
+    // });
+
+    //   navigation.dispatch(resetAction);
+  };
+
+  const registrationSuccess = (userCredential?: any) => {
+    Alert.alert('Trainify', `You've signed up successfully.`);
+    goToHomePage();
+  };
+
+  const registrationFailure = error => {
+    if (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert('Trainify', errorMessage);
+    } else {
+      Alert.alert('Trainify', 'Error in user registration!');
+    }
+  };
+
+  const signupSuccess = (user?: any) => {
+    if (user) {
+      proceedToRegister(user);
+    }
+  };
+
+  const signupFailure = error => {
+    if (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      if (errorCode === 'auth/email-already-in-use') {
+        Alert.alert('Trainify', 'User already exists!');
+      } else {
+        Alert.alert('Trainify', 'Error in signup!');
+      }
+    } else {
+      Alert.alert('Trainify', 'Error in signup!');
+    }
+  };
+
+  const proceedToSignup = () => {
+    signUpService(authObject, signupSuccess, signupFailure);
+  };
+
+  return (
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView
         bounces={false}
         contentContainerStyle={{
           paddingBottom: 55,
-        }}
-        
-      >
+        }}>
         <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
               navigation.goBack();
-            }}
-          >
-
+            }}>
+            <Image source={backIcon} style={{width: 32, height: 32}} />
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05,}}>
+        <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <View style={{alignItems: 'center'}}>
-            <AutoHeightImage 
-              source={signupMainImage}
-              width={163}
-            />
+            <AutoHeightImage source={signupMainImage} width={163} />
           </View>
           <View>
-            <Text style={[globalStyles.h1, {color: COLORS.dark_black, marginTop: 16, lineHeight: 30, fontWeight: '600'}]}>WHO’S USING THE APP?</Text>
+            <Text
+              style={[
+                globalStyles.h1,
+                {
+                  color: COLORS.dark_black,
+                  marginTop: 16,
+                  lineHeight: 30,
+                  fontWeight: '600',
+                },
+              ]}>
+              WHO’S USING THE APP?
+            </Text>
             <AppUserItem
               leftText="Coach"
-              onPress={()=>{
+              onPress={() => {
                 setPlayerSelected(0);
               }}
-              isSelected = {playerSelected === 0 ? true : false}
+              isSelected={playerSelected === 0 ? true : false}
             />
             <AppUserItem
               leftText="Player Self Tracking"
-              onPress={()=>{
+              onPress={() => {
                 setPlayerSelected(1);
               }}
-              isSelected = {playerSelected === 1 ? true : false}
+              isSelected={playerSelected === 1 ? true : false}
             />
             <AppUserItem
               leftText="Parent for Child Tracking"
-              onPress={()=>{
+              onPress={() => {
                 setPlayerSelected(2);
               }}
-              isSelected = {playerSelected === 2 ? true : false}
+              isSelected={playerSelected === 2 ? true : false}
             />
           </View>
           <View>
-            <Text style={[globalStyles.h1, {color: COLORS.dark_black, marginTop: 47, lineHeight: 30, fontWeight: '600'}]}>SUBSCRIPTION TIERS</Text>
+            <Text
+              style={[
+                globalStyles.h1,
+                {
+                  color: COLORS.dark_black,
+                  marginTop: 47,
+                  lineHeight: 30,
+                  fontWeight: '600',
+                },
+              ]}>
+              SUBSCRIPTION TIERS
+            </Text>
 
             {/* <SubscriptionItem
               leftText="Free"
@@ -287,7 +382,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
             <SubscriptionItem
               leftText="Basic"
               price="$1.0/yr"
-              isSelected = {subscriptionPlan === 1 ? true : false}
+              isSelected={subscriptionPlan === 1 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(1);
                 requestPurchase(trainProducts[1], onSuccess);
@@ -297,7 +392,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
             <SubscriptionItem
               leftText="Silver"
               price="$2.0/yr"
-              isSelected = {subscriptionPlan === 2 ? true : false}
+              isSelected={subscriptionPlan === 2 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(2);
                 requestPurchase(trainProducts[2], onSuccess);
@@ -307,7 +402,7 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
             <SubscriptionItem
               leftText="Platinum"
               price="$3.0/yr"
-              isSelected = {subscriptionPlan === 3 ? true : false}
+              isSelected={subscriptionPlan === 3 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(3);
                 requestPurchase(trainProducts[3], onSuccess);
@@ -315,24 +410,20 @@ const PaymentPlanContainer: FunctionComponent = ({ route, navigation }) => {
               }}
             />
           </View>
-          
+
           <SimpleButton
             buttonText="Submit"
-            buttonType="AUTHENTICATION"
-            isButtonDisabled={subscriptionPlan < 0}
-            onPress={()=>{
-              if(proceedToSignup) {
-                proceedToSignup();
-              }
+            buttonType={subscriptionPlan < 0 ? 'DISABLED' : 'AUTHENTICATION'}
+            onPress={() => {
+              proceedToSignup();
             }}
             buttonStyles={{
               marginTop: 33,
             }}
           />
         </View>
-
       </KeyboardAwareScrollView>
     </View>
-  )
+  );
 };
 export default PaymentPlanContainer;
