@@ -34,59 +34,55 @@ import UploadHomePracticeScreen from './main-app/home/practice-at-home/upload_se
 import UploadHomePracticeContainer from './main-app/home/practice-at-home/UploadServe';
 import HomePracticeVideoPlayerContainer from './main-app/home/practice-at-home/video_player_screen';
 
-import ServePracticeAnalysisGridScreen from './main-app/home/serve-practice/AnalysisGrid'; 
+import ServePracticeAnalysisGridScreen from './main-app/home/serve-practice/AnalysisGrid';
 import ServePracticeCameraContainer from './main-app/home/serve-practice/CameraContainer';
 import ServePracticeImagePickerContainer from './main-app/home/serve-practice/ImagePicker';
 import RecordServePracticeContainer from './main-app/home/serve-practice/RecordService';
 import ServePracticeRenderGraphScreen from './main-app/home/serve-practice/render_graph';
 import ServePracticeContainer from './main-app/home/serve-practice/ServePractice';
-import UploadServePracticeScreen from './main-app/home/serve-practice/UploadServerPractice';
-import UploadServePracticeContainer from './main-app/home/serve-practice/UploadServe'; 
-import ServePracticeVideoPlayerContainer from './main-app/home/serve-practice/video_player_screen'; 
+import UploadServePracticeScreen from './main-app/home/serve-practice/upload_server_practice';
+import UploadServePracticeContainer from './main-app/home/serve-practice/UploadServe';
+import ServePracticeVideoPlayerContainer from './main-app/home/serve-practice/video_player_screen';
 
 export {
-    TensorFlowCameraContainer,
-    TensorCameraContainer,
-    UsamaCameraContainer,
-    App4, App45,
-
-    LandingScreenContainer,
-    LanguageScreenContainer,
-    PaymentPlanContainer,
-    ResetPasswordContainer,
-    SigninScreen,
-    SignupScreen,
-    SplashScreen,
-    
-    HomeScreen,
-
-    BallPracitceAnalysisGridScreen,
-    BallPracticeCameraContainer,
-    BallPracticeImagePickerContainer,
-    RecordBallPracticeContainer,
-    BallPracticeRenderGraphScreen,
-    BallPracticeContainer,
-    UploadBallPracticeScreen,
-    UploadBallPracticeContainer,
-    BallPracticeVideoPlayerContainer,
-
-    HomePracticeAnalysisGridScreen,
-    HomePracticeCameraContainer,
-    HomePracticeImagePickerContainer,
-    RecordHomePracticeContainer,
-    HomePracticeRenderGraphScreen,
-    HomePracticeContainer,
-    UploadHomePracticeScreen,
-    UploadHomePracticeContainer,
-    HomePracticeVideoPlayerContainer,
-
-    ServePracticeAnalysisGridScreen,
-    ServePracticeCameraContainer,
-    ServePracticeImagePickerContainer,
-    RecordServePracticeContainer,
-    ServePracticeRenderGraphScreen,
-    ServePracticeContainer,
-    UploadServePracticeContainer,
-    UploadServePracticeScreen,
-    ServePracticeVideoPlayerContainer,
-}
+  TensorFlowCameraContainer,
+  TensorCameraContainer,
+  UsamaCameraContainer,
+  App4,
+  App45,
+  LandingScreenContainer,
+  LanguageScreenContainer,
+  PaymentPlanContainer,
+  ResetPasswordContainer,
+  SigninScreen,
+  SignupScreen,
+  SplashScreen,
+  HomeScreen,
+  BallPracitceAnalysisGridScreen,
+  BallPracticeCameraContainer,
+  BallPracticeImagePickerContainer,
+  RecordBallPracticeContainer,
+  BallPracticeRenderGraphScreen,
+  BallPracticeContainer,
+  UploadBallPracticeScreen,
+  UploadBallPracticeContainer,
+  BallPracticeVideoPlayerContainer,
+  HomePracticeAnalysisGridScreen,
+  HomePracticeCameraContainer,
+  HomePracticeImagePickerContainer,
+  RecordHomePracticeContainer,
+  HomePracticeRenderGraphScreen,
+  HomePracticeContainer,
+  UploadHomePracticeScreen,
+  UploadHomePracticeContainer,
+  HomePracticeVideoPlayerContainer,
+  ServePracticeAnalysisGridScreen,
+  ServePracticeCameraContainer,
+  ServePracticeImagePickerContainer,
+  RecordServePracticeContainer,
+  ServePracticeRenderGraphScreen,
+  ServePracticeContainer,
+  UploadServePracticeContainer,
+  UploadServePracticeScreen,
+  ServePracticeVideoPlayerContainer,
+};

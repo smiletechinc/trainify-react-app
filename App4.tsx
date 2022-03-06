@@ -112,7 +112,7 @@ const App4: FunctionComponent<Props> = props => {
       setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
-      startRecording();
+      // startRecording();
       ScreenOrientation.addOrientationChangeListener(event => {
         setOrientation(event.orientationInfo.orientation);
       });
@@ -294,7 +294,7 @@ const App4: FunctionComponent<Props> = props => {
         data: data,
         barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
       };
-      const tempVideoData = {...videoData, analysisData: tempAnalysisData};
+      const tempVideoData = {...videoData, analysis_data: tempAnalysisData};
       console.log('analysis_data for firebase, ', JSON.stringify(data));
       console.log('sending to firebase, ', JSON.stringify(tempVideoData));
       addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
@@ -1287,6 +1287,7 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
+        startRecording();
         // console.log('Calibrated Successfully');
       } else {
         // console.log('Please Calibrate Yourself');
