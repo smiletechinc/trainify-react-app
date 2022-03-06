@@ -1,55 +1,65 @@
-import React, { useEffect, useState, FunctionComponent } from 'react';
-import {StyleSheet, SafeAreaView, View, Image, ScrollView, Alert, Text} from 'react-native';
+import React, {useEffect, useState, FunctionComponent} from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Image,
+  ScrollView,
+  Alert,
+  Text,
+} from 'react-native';
 import {DemoTitle, DemoButton, DemoResponse} from '../components';
-import { addVideoService } from '../../../../services/servePracticeServices';
-import { uploadVideoService } from '../../../../services/mediaServices';
+import {addVideoService} from '../../../../services/servePracticeServices';
+import {uploadVideoService} from '../../../../services/mediaServices';
 import * as ImagePicker from 'react-native-image-picker';
-import { add } from '@tensorflow/tfjs-core/dist/engine';
+import {add} from '@tensorflow/tfjs-core/dist/engine';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles_external from '../../styles';
 
 /* toggle includeExtra */
 const includeExtra = true;
 
 type Props = {
-  navigation: any
-}
+  navigation: any;
+};
 
-const UploadHomePracticeScreen: FunctionComponent<Props> = ({ navigation }) => {
+const UploadHomePracticeScreen: FunctionComponent<Props> = ({navigation}) => {
   const [response, setResponse] = React.useState<any>(null);
-    
-useEffect(() => {
-  if(response){
-    console.log('response: ', response);
-    addVideoToFirebase();
-  }
-}, [response]);
 
-const addVideoSuccess = (video?:any) => {
-    console.log("Added: ", JSON.stringify(video));
-    if (response){
-      navigation.navigate('HomePracticeVideoPlayer', {video:response.assets[0]});
+  useEffect(() => {
+    if (response) {
+      console.log('response: ', response);
+      addVideoToFirebase();
+    }
+  }, [response]);
+
+  const addVideoSuccess = (video?: any) => {
+    console.log('Added: ', JSON.stringify(video));
+    if (response) {
+      navigation.navigate('HomePracticeVideoPlayer', {
+        video: response.assets[0],
+      });
     }
     if (video) {
-      Alert.alert("Trainify", `Video added successfully.`);
+      Alert.alert('Trainify', `Video added successfully.`);
     }
-  }
+  };
 
-  const addVideoFailure = (error?:any) => {
-    console.log("Error: ", JSON.stringify(error));
+  const addVideoFailure = (error?: any) => {
+    console.log('Error: ', JSON.stringify(error));
     if (error) {
-      Alert.alert("Trainify", `Error in adding video.`);
+      Alert.alert('Trainify', `Error in adding video.`);
     }
-  }
-  
+  };
+
   const addVideoToFirebase = () => {
     // uploadVideoService(response, addVideoSuccess, addVideoFailure);
-      addVideoService(response.assets[0], addVideoSuccess, addVideoFailure);
-  }
+    addVideoService(response.assets[0], addVideoSuccess, addVideoFailure);
+  };
 
   // const loadVideo = (e) => {
-    
+
   // }
 
   const onButtonPress = React.useCallback((type, options) => {
@@ -60,54 +70,49 @@ const addVideoSuccess = (video?:any) => {
     }
   }, []);
 
-    return(
-      <SafeAreaView style={styles_external.main_view}>
-        <KeyboardAwareScrollView
-          contentContainerStyle={{
-            paddingBottom: 20,
-          }}
-          showsVerticalScrollIndicator={false}
-        >
-          <HeaderWithText
-            text = "Upload Serve Practice"
-            navigation={navigation}
-          />
+  return (
+    <SafeAreaView style={styles_external.main_view}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        showsVerticalScrollIndicator={false}>
+        <HeaderWithText
+          text="Upload Serve Practice ~"
+          navigation={navigation}
+        />
 
-<ScrollView>
-        <View style={styles.buttonContainer}>
-          {actions.map(({title, type, options}) => {
-            return (
-              <DemoButton
-                key={title}
-                onPress={() => onButtonPress(type, options)}>
-                {title}
-              </DemoButton>
-            );
-          })}
-        </View>
-        <DemoResponse>{response}</DemoResponse>
+        <ScrollView>
+          <View style={styles.buttonContainer}>
+            {actions.map(({title, type, options}) => {
+              return (
+                <DemoButton
+                  key={title}
+                  onPress={() => onButtonPress(type, options)}>
+                  {title}
+                </DemoButton>
+              );
+            })}
+          </View>
+          <DemoResponse>{response}</DemoResponse>
 
-        {response?.assets &&
-          response?.assets.map(({uri}) => (
-            <View key={uri} style={styles.image}>
-              <Image
-                resizeMode="cover"
-                resizeMethod="scale"
-                style={{width: 200, height: 200}}
-                source={{uri: uri}}
-              />
-            </View>
-          ))}
-      </ScrollView>
-
-        </KeyboardAwareScrollView>
-        
-      </SafeAreaView>
-    )
-
+          {response?.assets &&
+            response?.assets.map(({uri}) => (
+              <View key={uri} style={styles.image}>
+                <Image
+                  resizeMode="cover"
+                  resizeMethod="scale"
+                  style={{width: 200, height: 200}}
+                  source={{uri: uri}}
+                />
+              </View>
+            ))}
+        </ScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
+  );
 };
 export default UploadHomePracticeScreen;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -126,17 +131,16 @@ const styles = StyleSheet.create({
   },
 
   cameraTypeSwitcher: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
     width: 180,
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, .7)",
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
   },
-
 });
 
 interface Action {

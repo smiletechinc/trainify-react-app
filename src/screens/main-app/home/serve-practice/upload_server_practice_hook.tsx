@@ -7,69 +7,109 @@ import {
   ScrollView,
   Alert,
   Text,
+  Button,
 } from 'react-native';
 import {DemoTitle, DemoButton, DemoResponse} from '../components';
 import {addVideoService} from '../../../../services/servePracticeServices';
-import {uploadVideoService} from '../../../../services/mediaServices';
+import {
+  uploadPhotoService,
+  uploadVideoService,
+  getThumbnailURL,
+} from '../../../../services/mediaServices';
 import * as ImagePicker from 'react-native-image-picker';
 import {add} from '@tensorflow/tfjs-core/dist/engine';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles_external from '../../styles';
-import {setStatusBarNetworkActivityIndicatorVisible} from 'expo-status-bar';
-import CameraRoll from '@react-native-community/cameraroll';
-
-const RNFS = require('react-native-fs');
+import AnimatedLoader from 'react-native-animated-loader';
+import {PrimaryButton} from '../../../../components/buttons';
+import {useMediaUpload} from '../../../../hooks/useThumbnailUpload';
+import {image} from '@tensorflow/tfjs-core';
+import {useAnalysisUpload} from '../../../../hooks';
 /* toggle includeExtra */
 const includeExtra = true;
 
 type Props = {
   navigation: any;
 };
-const UploadServePracticeScreen: FunctionComponent<Props> = props => {
+const UploadServePracticeScreenHook: FunctionComponent<Props> = props => {
   const {navigation} = props;
   const [response, setResponse] = React.useState<any>(null);
+  const [thumbnail, setThumbnail] = React.useState<any>(null);
+  const [videoURL, setVideoURL] = React.useState<string>(null);
+  const [videoData, setVideoData] = React.useState<string>(null);
+
+  const {
+    uploading,
+    uploadThumbnail,
+    uploadVideo,
+    cancelUploading,
+    thumbnailURL,
+    currentStatus,
+    uploadThumbnailFailure,
+    uploadVideoFailure,
+  } = useMediaUpload({image: thumbnail});
+
+  const {
+    videoAnalysisData,
+    uploadingAnalysis,
+    addVideoAnalysisToFirebase,
+    currentAnalysisStatus,
+  } = useAnalysisUpload({videoData: videoData});
 
   useEffect(() => {
-    if (response) {
-      console.log('response: ', response);
-      console.log('Video Assests:', response.assets[0]);
-      // addVideoToFirebase();
-      navigation.navigate('VideoPlayerContainer', {video: response.assets[0]});
+    if (uploadThumbnailFailure) {
+      Alert.alert('Could not upload thumbnail');
     }
-  }, [response]);
+    if (thumbnailURL) {
+      (() => {
+        uploadVideo(thumbnail);
+      })();
+    }
+  }, [thumbnailURL, uploadThumbnailFailure]);
 
-  const addVideoSuccess = (video?: any) => {
-    console.log('Added: ', JSON.stringify(video));
-    if (response) {
-      navigation.navigate('VideoPlayerContainer', {video: response.assets[0]});
+  useEffect(() => {
+    if (uploadThumbnailFailure) {
+      Alert.alert('Could not upload video');
     }
-    if (video) {
-      Alert.alert('Trainify', `Video added successfully.`);
+    if (videoURL) {
+      (() => {
+        let res = thumbnail;
+        const videoMetadata = {
+          ...res,
+          thumbnailURL: thumbnailURL,
+          videoURL: videoURL,
+        };
+        setVideoData(videoMetadata);
+      })();
+    }
+  }, [videoURL, uploadVideoFailure]);
+
+  useEffect(() => {
+    if (videoAnalysisData) {
+      (() => {
+        navigation.navigate('VideoPlayerContainer', {video: videoAnalysisData});
+        Alert.alert('Trainify', `Video added successfully.`);
+      })();
+    }
+  }, [videoAnalysisData]);
+
+  const handleSelectVideo = (res?: any) => {
+    if (res && res.assets) {
+      setResponse(res);
+      setThumbnail(res.assets[0]);
+      // proceedToUploadThumbnail(res);
+      // proceedToUploadVideo();
+    } else {
+      Alert.alert('Could not fetch file.');
     }
   };
-
-  const addVideoFailure = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
-    if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
-    }
-  };
-
-  const addVideoToFirebase = () => {
-    // uploadVideoService(response, addVideoSuccess, addVideoFailure);
-    addVideoService(response.assets[0], addVideoSuccess, addVideoFailure);
-  };
-
-  // const loadVideo = (e) => {
-
-  // }
 
   const onButtonPress = React.useCallback((type, options) => {
     if (type === 'capture') {
-      ImagePicker.launchCamera(options, setResponse);
+      ImagePicker.launchCamera(options, handleSelectVideo);
     } else {
-      ImagePicker.launchImageLibrary(options, setResponse);
+      ImagePicker.launchImageLibrary(options, handleSelectVideo);
     }
   }, []);
 
@@ -78,9 +118,28 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
       <KeyboardAwareScrollView
         contentContainerStyle={{
           paddingBottom: 20,
+          paddingTop: 40,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Upload Serve Practice" navigation={navigation} />
+        <HeaderWithText
+          text="Upload Serve Practice Hook"
+          navigation={navigation}
+        />
+        <AnimatedLoader
+          visible={uploading || uploadingAnalysis}
+          overlayColor={'rgba(255, 255, 255, 0.75)'}
+          source={require('./loader.json')}
+          animationStyle={styles.lottie}
+          speed={1}>
+          <Text>
+            {uploading
+              ? currentStatus
+              : uploadingAnalysis
+              ? currentAnalysisStatus
+              : false}
+          </Text>
+          <Button title={'Cancel upload'} onPress={() => cancelUploading()} />
+        </AnimatedLoader>
 
         <ScrollView>
           <View style={styles.buttonContainer}>
@@ -94,7 +153,15 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
               );
             })}
           </View>
-          <DemoResponse>{response}</DemoResponse>
+          <DemoResponse>
+            {response && response?.assets && response.assets[0]}
+          </DemoResponse>
+
+          <DemoResponse>
+            {thumbnailURL && `Thumbnail URL: ${thumbnailURL}`}
+          </DemoResponse>
+
+          <DemoResponse>{videoURL && `Video URL: ${videoURL}`}</DemoResponse>
 
           {response?.assets &&
             response?.assets.map(({uri}) => (
@@ -112,7 +179,7 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
     </SafeAreaView>
   );
 };
-export default UploadServePracticeScreen;
+export default UploadServePracticeScreenHook;
 
 const styles = StyleSheet.create({
   container: {
@@ -140,6 +207,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
+  },
+  lottie: {
+    width: 100,
+    height: 100,
   },
 });
 

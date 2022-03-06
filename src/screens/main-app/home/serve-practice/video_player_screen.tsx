@@ -5,15 +5,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 // import all the components we are going to use
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Alert,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, Alert} from 'react-native';
 
 // Import React Native Video to play video
 import Video from 'react-native-video';
@@ -22,19 +14,19 @@ import Video from 'react-native-video';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
-const backIcon = require('../../../../assets/images/back-icon.png');
-
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const {video} = route.params;
-
-  let fileURI =
-    'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
+  console.log('video, ', video);
+  let fileURI = '';
   if (video && video.uri) {
     fileURI = video.uri;
   } else {
     fileURI =
       'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
   }
+
+  let videoURL = video.videoURL;
+
   const videoPlayer = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -43,10 +35,6 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const [paused, setPaused] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
   const [screenType, setScreenType] = useState('content');
-
-  useEffect(() => {
-    console.log('filePath in ServePracticeVideoPlayerContainer: ', fileURI);
-  }, [fileURI]);
 
   const onSeek = seek => {
     //Handler for change in seekbar
@@ -111,7 +99,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
 
   const handleShowGraphButton = () => {
     navigation.navigate('RenderGraphScreen', {
-      analysis_data: video.analysisData,
+      analysis_data: video.analysis_data,
     });
   };
 
@@ -122,18 +110,6 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
         onTouchEnd={handleShowGraphButton}>
         <Text>Show graph</Text>
       </SafeAreaView>
-    );
-  };
-
-  const renderBackButton = () => {
-    return (
-      <TouchableOpacity
-        style={styles.backButtonContainer}
-        onPress={() => {
-          navigation.goBack();
-        }}>
-        <Image source={backIcon} style={{width: 24, height: 24}} />
-      </TouchableOpacity>
     );
   };
 
@@ -154,7 +130,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
         resizeMode={screenType}
         onFullScreen={isFullScreen}
         source={{
-          uri: fileURI,
+          uri: videoURL,
         }}
         style={styles.mediaPlayer}
         volume={10}
@@ -173,7 +149,6 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
         toolbar={renderToolbar()}
       />
       {renderGraphButton()}
-      {renderBackButton()}
     </View>
   );
 };
@@ -206,18 +181,6 @@ const styles = StyleSheet.create({
     width: 180,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
-    padding: 8,
-    zIndex: 20,
-  },
-  backButtonContainer: {
-    position: 'absolute',
-    top: 24,
-    left: 10,
-    width: 24,
-    height: 24,
-    alignItems: 'center',
-    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,

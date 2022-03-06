@@ -74,7 +74,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={() => {
-                navigation.navigate('UploadServePracticeScreen', {
+                navigation.navigate('UploadServePracticeScreenHook', {
                   title: 'Upload LEFT-Handed Serve',
                 });
               }}>
@@ -117,7 +117,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={() => {
-                navigation.navigate('UploadServePracticeScreen', {
+                navigation.navigate('UploadServePracticeScreenHook', {
                   title: 'Upload RIGHT-Handed Serve',
                 });
               }}>

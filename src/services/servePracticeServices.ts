@@ -5,7 +5,7 @@ import { getDatabase, ref, set, get, push } from "firebase/database";
 import { ErrorObject, VideoData} from '../../types';
 import { getStorage, uploadBytes } from "firebase/storage";
 
-export const addVideoService = (video:VideoData, onSuccess?:any, onFailure?:any) => {
+export const addVideoService = (video:any, onSuccess?:any, onFailure?:any) => {
 
     //   const analysisData = {
     //     labels: ["Flat", "Kick", "Slice"],
