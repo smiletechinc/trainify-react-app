@@ -1,5 +1,5 @@
 import {useEffect, useState, FunctionComponent, useCallback} from 'react';
-import app from './../config/db';
+import app from '../config/db';
 import firebase from 'firebase/auth';
 import {
   getStorage,
@@ -21,7 +21,7 @@ interface Props {
   image: any;
 }
 
-export const useThumbnailUpload = props => {
+export const useMediaUpload = props => {
   const {image} = props;
   const [currentStatus, setCurrentStatus] = useState('Preparing');
   const [uploading, setUploading] = useState(false);
@@ -29,12 +29,18 @@ export const useThumbnailUpload = props => {
   const [uploadThumbnailSuccess, setUploadThumbnailSuccess] = useState(false);
   const [thumbnailURL, setThumbnailURL] = useState('');
 
+  const [uploadVideoFailure, setUploadVideoFailure] = useState(false);
+  const [uploadVideoSuccess, setUploadVideoSuccess] = useState(false);
+  const [videoURL, setVideoURL] = useState('');
+
   useEffect(() => {
     (() => {
-      console.log('File is being set');
+      //   Alert.alert('File is being set');
       setThumbnailURL('');
       (() => {
-        uploadThumbnail(image);
+        if (image) {
+          uploadThumbnail(image);
+        }
       })();
     })();
   }, [image]);
@@ -92,7 +98,62 @@ export const useThumbnailUpload = props => {
         console.error(error);
         setUploadThumbnailFailure(true);
         setUploading(false);
-        setUploadThumbnailFailure(true);
+      });
+    // return downloadURL;
+  };
+
+  const uploadVideo = useCallback(async videoData => {
+    setUploading(true);
+    setCurrentStatus('Uploading video');
+
+    const fileName = videoData.fileName
+      ? videoData.fileName
+      : videoData.name
+      ? videoData.name
+      : 'temp-file-name';
+    const fileURI = videoData.uri;
+    const fileType = videoData.type;
+
+    const storageRef = ref(storage, `videos/${fileName}`);
+    const fileImage = JSON.parse(
+      JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
+    );
+
+    const img = await fetch(fileImage.uri);
+    const bytes = await img.blob();
+    console.log('ready file: ', fileImage);
+
+    uploadBytes(storageRef, bytes)
+      .then(response => {
+        console.log('Thumbnail uploaded: ', response);
+        // onSuccess(response);
+        // let fileName = response.metadata.name
+        let filePath = response.ref._location.path_;
+        (() => {
+          getVideoURL(filePath);
+        })();
+      })
+      .catch(error => {
+        console.error(error);
+        setUploadVideoFailure(true);
+        setUploading(false);
+      });
+  }, []);
+
+  const getVideoURL = (fileName: string) => {
+    console.log('fetching url for thumbnail: ', fileName);
+    const storageRef = ref(storage, fileName);
+    getDownloadURL(storageRef)
+      .then(response => {
+        console.log('Video url response success: ', response);
+        setVideoURL(response);
+        setUploading(false);
+      })
+      .catch(error => {
+        console.log('Video url response error: ', error);
+        console.error(error);
+        setUploadVideoFailure(true);
+        setUploading(false);
       });
     // return downloadURL;
   };
@@ -106,8 +167,13 @@ export const useThumbnailUpload = props => {
     uploading,
     currentStatus,
     uploadThumbnail,
+    uploadVideo,
     cancelUploading,
+    thumbnailURL,
     uploadThumbnailSuccess,
     uploadThumbnailFailure,
+    videoURL,
+    uploadVideoSuccess,
+    uploadVideoFailure,
   };
 };

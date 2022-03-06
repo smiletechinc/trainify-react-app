@@ -41,6 +41,7 @@ import RecordServePracticeContainer from './main-app/home/serve-practice/RecordS
 import ServePracticeRenderGraphScreen from './main-app/home/serve-practice/render_graph';
 import ServePracticeContainer from './main-app/home/serve-practice/ServePractice';
 import UploadServePracticeScreen from './main-app/home/serve-practice/upload_server_practice';
+import UploadServePracticeScreenHook from './main-app/home/serve-practice/upload_server_practice_hook';
 import UploadServePracticeContainer from './main-app/home/serve-practice/UploadServe';
 import ServePracticeVideoPlayerContainer from './main-app/home/serve-practice/video_player_screen';
 
@@ -85,4 +86,5 @@ export {
   UploadServePracticeContainer,
   UploadServePracticeScreen,
   ServePracticeVideoPlayerContainer,
+  UploadServePracticeScreenHook,
 };

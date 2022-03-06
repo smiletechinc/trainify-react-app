@@ -1,1 +1,2 @@
-export * from './useMediaUpload';
+export * from './useThumbnailUpload';
+export * from './useAnalysisUpload';

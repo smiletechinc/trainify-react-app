@@ -26,6 +26,7 @@ import HeaderWithText from './src/global-components/header/HeaderWithText';
 import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
+import {useAnalysisUpload, useMediaUpload} from './src/hooks';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -74,6 +75,28 @@ const App4: FunctionComponent<Props> = props => {
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
 
+  const [thumbnail, setThumbnail] = React.useState<any>(null);
+  const [videoURL, setVideoURL] = React.useState<string>(null);
+  const [videoData, setVideoData] = React.useState<string>(null);
+
+  const {
+    uploading,
+    uploadThumbnail,
+    uploadVideo,
+    cancelUploading,
+    thumbnailURL,
+    currentStatus,
+    uploadThumbnailFailure,
+    uploadVideoFailure,
+  } = useMediaUpload({image: thumbnail});
+
+  const {
+    videoAnalysisData,
+    uploadingAnalysis,
+    addVideoAnalysisToFirebase,
+    currentAnalysisStatus,
+  } = useAnalysisUpload({videoData: videoData});
+
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
@@ -88,6 +111,43 @@ const App4: FunctionComponent<Props> = props => {
     ],
     barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
   };
+
+  useEffect(() => {
+    if (uploadThumbnailFailure) {
+      Alert.alert('Could not upload thumbnail');
+    }
+    if (thumbnailURL) {
+      (() => {
+        uploadVideo(thumbnail);
+      })();
+    }
+  }, [thumbnailURL, uploadThumbnailFailure]);
+
+  useEffect(() => {
+    if (uploadThumbnailFailure) {
+      Alert.alert('Could not upload video');
+    }
+    if (videoURL) {
+      (() => {
+        let res = thumbnail;
+        const videoMetadata = {
+          ...res,
+          thumbnailURL: thumbnailURL,
+          videoURL: videoURL,
+        };
+        setVideoData(videoMetadata);
+      })();
+    }
+  }, [videoURL, uploadVideoFailure]);
+
+  useEffect(() => {
+    if (videoAnalysisData) {
+      (() => {
+        navigation.navigate('VideoPlayerContainer', {video: videoAnalysisData});
+        Alert.alert('Trainify', `Video added successfully.`);
+      })();
+    }
+  }, [videoAnalysisData]);
 
   useEffect(() => {
     async function prepare() {
@@ -297,7 +357,10 @@ const App4: FunctionComponent<Props> = props => {
       const tempVideoData = {...videoData, analysis_data: tempAnalysisData};
       console.log('analysis_data for firebase, ', JSON.stringify(data));
       console.log('sending to firebase, ', JSON.stringify(tempVideoData));
-      addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+
+      setVideoData(tempVideoData);
+
+      // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
     }
   };
 
@@ -1362,8 +1425,10 @@ const App4: FunctionComponent<Props> = props => {
     updatePreview: () => void,
     gl: ExpoWebGLRenderingContext,
   ) => {
+    console.log('images, ', JSON.stringify(images));
     const loop = async () => {
       const imageTensor = images.next().value as tf.Tensor3D;
+      console.log('imageTensor, ', JSON.stringify(imageTensor));
       const startTs = Date.now();
       const poses = await model!.estimatePoses(
         imageTensor,

@@ -44,6 +44,7 @@ import {
   ServePracticeRenderGraphScreen,
   ServePracticeAnalysisGridScreen,
   UploadServePracticeScreen,
+  UploadServePracticeScreenHook,
 } from '../../screens';
 
 const AppStack = createNativeStackNavigator();
@@ -115,6 +116,10 @@ function MainAppContainer() {
       <AppStack.Screen
         name="UploadServePracticeScreen"
         component={UploadServePracticeScreen}
+      />
+      <AppStack.Screen
+        name="UploadServePracticeScreenHook"
+        component={UploadServePracticeScreenHook}
       />
       <AppStack.Screen
         name="AnalysisGridScreen"
