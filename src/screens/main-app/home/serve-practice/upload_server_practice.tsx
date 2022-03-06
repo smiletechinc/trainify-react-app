@@ -134,7 +134,7 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
     const videoMetadata = {
       ...res,
       thumbnailURL: thumbURL,
-      videoURL: vidURL,
+      videoURL: videoURL,
     };
     console.log('videoMetadata, ', videoMetadata);
     navigation.navigate('VideoPlayerContainer', {video: videoMetadata});
