@@ -117,11 +117,11 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
 
   const renderGraphButton = () => {
     return (
-      <View
+      <SafeAreaView
         style={styles.cameraTypeSwitcher}
         onTouchEnd={handleShowGraphButton}>
-        <Text>Graph</Text>
-      </View>
+        <Text>Show graph</Text>
+      </SafeAreaView>
     );
   };
 
@@ -132,7 +132,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
         onPress={() => {
           navigation.goBack();
         }}>
-        <Image source={backIcon} style={{width: 32, height: 32}} />
+        <Image source={backIcon} style={{width: 24, height: 24}} />
       </TouchableOpacity>
     );
   };
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   cameraTypeSwitcher: {
     position: 'absolute',
-    top: 24,
+    top: 30,
     right: 10,
     width: 180,
     alignItems: 'center',
