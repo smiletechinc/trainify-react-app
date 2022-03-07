@@ -188,10 +188,14 @@ const App4: FunctionComponent<Props> = props => {
       await Camera.requestCameraPermissionsAsync();
 
       await tf.ready();
+      // Following is just to check if the screen recording uploading is working by customly recording the video for 3 seconds.
       // startRecording();
-      setTimeout(() => {
-        stopRecording();
-      }, 3000)
+      // setTimeout(() => {
+      //   console.log('stopped: ');
+      //   stopRecording();
+      // }, 3000)
+
+
       let test_pose = [
         0.594638705, 0.369584292, 0.999754488, 0.589969754, 0.358422577,
         0.999666452, 0.588887513, 0.358062506, 0.999462545, 0.587873518,
@@ -375,6 +379,7 @@ const App4: FunctionComponent<Props> = props => {
 
 
       // KAZMI Code Starts here.
+
       let videoData1 = { name: 'screen_recording', uri: url, type: 'video' }
       uploadVideoService(videoData1, uploadVideoSuccess, uploadVideoFailureFirebase);
 
@@ -489,7 +494,7 @@ const App4: FunctionComponent<Props> = props => {
     const cx4 = cameraLayoutWidth - 100;
     const cy4 = cameraLayoutHeight - 50;
 
-    console.log('I amhere');
+    // console.log('I amhere');
     // const cx1 = 400;
     // const cy1 = 486;
 
@@ -1474,7 +1479,7 @@ const App4: FunctionComponent<Props> = props => {
     console.log('images, ', JSON.stringify(images));
     const loop = async () => {
       const imageTensor = images.next().value as tf.Tensor3D;
-      console.log('imageTensor, ', JSON.stringify(imageTensor));
+      // console.log('imageTensor, ', JSON.stringify(imageTensor));
       const startTs = Date.now();
       const poses = await model!.estimatePoses(
         imageTensor,
