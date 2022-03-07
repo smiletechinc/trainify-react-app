@@ -95,6 +95,7 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
     }
   };
 
+  // Extract thumbnail
   const proceedToUploadThumbnail = newResponse => {
     setLoading(true);
     setStatus('Uploading thumbnail');

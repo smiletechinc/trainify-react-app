@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {StatusBar} from 'expo-status-bar';
+import React, {useState, useRef, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {StackedBarChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -12,54 +10,16 @@ import {
   VictoryLabel,
   VictoryPie,
 } from 'victory-native';
+import {reactHooksModuleName} from '@reduxjs/toolkit/dist/query/react/module';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {TouchableOpacity} from 'react-native-gesture-handler/lib/typescript/components/touchables';
 
-const screenWidth = Dimensions.get('window').width;
-
-const chartConfig = {
-  backgroundGradientFrom: '#1E2923',
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: '#08130D',
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 8) => `rgba(0, 0, 0, ${opacity})`,
-  strokeWidth: 5, // optional, default 3
-  barPercentage: 1,
-  useShadowColorFromDataset: false, // optional
-};
+var screenWidth = Dimensions.get('window').width;
+var screenHeight = Dimensions.get('window').height;
 
 export default function ServePracticeRenderGraphScreen({navigation, route}) {
+  // Data coming from Firebase
   const {analysis_data} = route.params;
-  // console.log('graphData 1', graphData);
-  // console.log('graphData.labels ', graphData.labels)
-  //     const [data, setData] = useState(graphData);
-
-  // useEffect(() => {
-  //     console.log('graphData ',graphData);
-  //     // const analysisData = JSON.parse(graphData);
-  //     // console.log('analysisData 1', analysisData);
-  //     // setData(JSON.parse(analysisData));
-  // }, [graphData]);
-
-  // const temp_analysis_data = {
-  //         labels: ["Flat", "Kick", "Slice"],
-  //     legend: ["Grade A", "Grade B", "Grade C", "Grade D"],
-  //     data: [
-  //       [1, 1, 1, 1],
-  //       [1, 1, 1, 6],
-  //       [1, 1, 1, 4],
-  //     ],
-  //     barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
-  // }
-
-  // const analysis_data = {
-  //   labels: ['Flat', 'Kick', 'Slice'],
-  //   legend: ['Grade A', 'Grade B', 'Grade C', 'Grade D'],
-  //   data: [
-  //     [2, 3, 4, 1],
-  //     [1, 5, 5, 6],
-  //     [0, 2, 6, 4],
-  //   ],
-  //   barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-  // };
 
   // Data Format that Victory Graph Receives
   const data_victory = {
@@ -132,30 +92,57 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
 
   // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
 
+  // const renderGraphButton = () => {
+  //   return (
+  //     <SafeAreaView
+  //       style={styles.cameraTypeSwitcher}
+  //       onTouchEnd={handleShowGraphButton}>
+  //       <Text>Show graph</Text>
+  //     </SafeAreaView>
+  //   );
+  // };
+
+  // const renderBackButton = () => {
+  //   return (
+  //     <TouchableOpacity
+  //       // style={styles.backButtonContainer}
+  //       onPress={() => {
+  //         navigation.goBack();
+  //       }}>
+  //       {/* <Image source={backIcon} style={{width: 24, height: 24}} /> */}
+  //     </TouchableOpacity>
+  //   );
+  // };
+
   return (
     // Graph Printing
     <View style={styles.container}>
+      <HeaderWithText
+        text="Graph"
+        hideProfileSection={true}
+        navigation={navigation}
+      />
       <View style={styles.pieContainer}>
         <VictoryPie
           animate={{
             duration: 1000,
           }}
-          padding={60}
-          width={500}
-          height={500}
+          padding={screenWidth / 4}
+          width={screenWidth}
+          height={screenHeight}
           colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
           data={pie_data.data}
         />
       </View>
       <Text>Distibution of Serves Performed</Text>
       <View style={styles.vectorContainer}>
-        <VictoryChart domainPadding={80}>
+        <VictoryChart domainPadding={screenWidth / 8} width={screenWidth}>
           <VictoryAxis
             dependentAxis
             label={'Total Serves'}
             style={{axisLabel: {padding: 30}}}></VictoryAxis>
           <VictoryAxis label={'Type of Serve'}></VictoryAxis>
-          <VictoryGroup offset={30}>
+          <VictoryGroup offset={screenWidth / 25}>
             <VictoryBar
               animate={{
                 duration: 2000,
@@ -190,9 +177,9 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
           </VictoryGroup>
           <VictoryLegend
-            x={Dimensions.get('screen').width / 2 - 300}
+            x={screenWidth / 30}
             orientation={'horizontal'}
-            gutter={100}
+            gutter={screenWidth / 20}
             data={[
               {name: 'A Grade', symbol: {fill: 'blue'}},
               {name: 'B Grade', symbol: {fill: 'orange'}},
@@ -202,18 +189,6 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
         </VictoryChart>
       </View>
     </View>
-    // <View style={styles.container}>
-    //   {data && (
-    //     <StackedBarChart
-    //       // style={graphStyle}
-    //       data={graphData}
-    //       width={screenWidth}
-    //       height={220}
-    //       chartConfig={chartConfig}
-    //     />
-    //   )}
-    //   <StatusBar style="auto" />
-    // </View>
   );
 }
 
