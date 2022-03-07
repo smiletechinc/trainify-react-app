@@ -97,6 +97,7 @@ const UploadServePracticeScreenHook: FunctionComponent<Props> = props => {
   const handleSelectVideo = (res?: any) => {
     if (res && res.assets) {
       setResponse(res);
+      // Extract thumbnail
       setThumbnail(res.assets[0]);
       // proceedToUploadThumbnail(res);
       // proceedToUploadVideo();
