@@ -58,7 +58,8 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
       setResponse(res);
       response_let = res;
       setVideo(res.assets[0]);
-      proceedToUploadThumbnail(res);
+
+      // proceedToUploadThumbnail(res);
       // proceedToUploadVideo();
     } else {
       Alert.alert('Could not fetch file.');
@@ -86,44 +87,44 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
     // }
   };
 
-  const uploadThubnailFailure = (error?: any) => {
-    setLoading(false);
-    setStatus('');
-    console.log('Error: ', JSON.stringify(error));
-    if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
-    }
-  };
+  // const uploadThubnailFailure = (error?: any) => {
+  //   setLoading(false);
+  //   setStatus('');
+  //   console.log('Error: ', JSON.stringify(error));
+  //   if (error) {
+  //     Alert.alert('Trainify', `Error in adding video.`);
+  //   }
+  // };
 
-  const proceedToUploadThumbnail = newResponse => {
-    setLoading(true);
-    setStatus('Uploading thumbnail');
-    const thumbnailURI =
-      'file:///var/mobile/Containers/Data/Application/24B888DB-B776-4E4D-A328-459705E6087A/tmp/A5F48E77-EB56-4323-A801-AFD6E0F7C1E8.jpg';
-    let tempResponse = newResponse.assets[0];
+  // const proceedToUploadThumbnail = newResponse => {
+  //   setLoading(true);
+  //   setStatus('Uploading thumbnail');
+  //   const thumbnailURI =
+  //     'file:///var/mobile/Containers/Data/Application/24B888DB-B776-4E4D-A328-459705E6087A/tmp/A5F48E77-EB56-4323-A801-AFD6E0F7C1E8.jpg';
+  //   let tempResponse = newResponse.assets[0];
 
-    let photoData = {...tempResponse, thumbnailURL: thumbnailURI};
-    uploadPhotoService(
-      photoData,
-      uploadThumbnailSuccess,
-      uploadThubnailFailure,
-    );
-  };
+  //   let photoData = {...tempResponse, thumbnailURL: thumbnailURI};
+  //   uploadPhotoService(
+  //     photoData,
+  //     uploadThumbnailSuccess,
+  //     uploadThubnailFailure,
+  //   );
+  // };
 
-  const proceedToUploadVideo = () => {
-    setLoading(true);
-    if (response_let) {
-      setStatus('Uploading video');
-      const videoURI =
-        'file:///var/mobile/Containers/Data/Application/24B888DB-B776-4E4D-A328-459705E6087A/tmp/A5F48E77-EB56-4323-A801-AFD6E0F7C1E8.jpg';
-      let tempResponse = response_let.assets[0];
-      let videoData = {...tempResponse, videoURL: videoURI};
-      uploadVideoService(videoData, uploadVideoSuccess, uploadVideoFailure);
-    } else {
-      Alert.alert('Could not upload video');
-      setLoading(false);
-    }
-  };
+  // const proceedToUploadVideo = () => {
+  //   setLoading(true);
+  //   if (response_let) {
+  //     setStatus('Uploading video');
+  //     const videoURI =
+  //       'file:///var/mobile/Containers/Data/Application/24B888DB-B776-4E4D-A328-459705E6087A/tmp/A5F48E77-EB56-4323-A801-AFD6E0F7C1E8.jpg';
+  //     let tempResponse = response_let.assets[0];
+  //     let videoData = {...tempResponse, videoURL: videoURI};
+  //     uploadVideoService(videoData, uploadVideoSuccess, uploadVideoFailure);
+  //   } else {
+  //     Alert.alert('Could not upload video');
+  //     setLoading(false);
+  //   }
+  // };
 
   const addVideoSuccess = (video?: any) => {
     setLoading(false);
@@ -140,26 +141,26 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
     navigation.navigate('VideoPlayerContainer', {video: videoMetadata});
     Alert.alert('Trainify', `Video added successfully.`);
   };
-  const uploadVideoSuccess = (updatedResponse?: any) => {
-    setLoading(false);
-    Alert.alert('Video uploaded successfully');
-    setVideoURL(updatedResponse);
-    vidURL = updatedResponse;
-    console.log('upload video success: ', JSON.stringify(updatedResponse));
-    addVideoToFirebase();
-    // let videoData = updatedResponse.ref._location;
-    // console.log('tempVideoData: ', videoData)
-    // const tempVideUrl = updatedResponse.assets[0].uri;
-    // const tempVideoData = {...videoData, fileUrl: tempVideUrl}
-    // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+  // const uploadVideoSuccess = (updatedResponse?: any) => {
+  //   setLoading(false);
+  //   Alert.alert('Video uploaded successfully');
+  //   setVideoURL(updatedResponse);
+  //   vidURL = updatedResponse;
+  //   console.log('upload video success: ', JSON.stringify(updatedResponse));
+  //   addVideoToFirebase();
+  //   // let videoData = updatedResponse.ref._location;
+  //   // console.log('tempVideoData: ', videoData)
+  //   // const tempVideUrl = updatedResponse.assets[0].uri;
+  //   // const tempVideoData = {...videoData, fileUrl: tempVideUrl}
+  //   // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
 
-    // if (response){
-    //   navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
-    // }
-    // if (video) {
-    //   Alert.alert("Trainify", `Video added successfully.`);
-    // }
-  };
+  //   // if (response){
+  //   //   navigation.navigate('VideoPlayerContainer', {video:response.assets[0]});
+  //   // }
+  //   // if (video) {
+  //   //   Alert.alert("Trainify", `Video added successfully.`);
+  //   // }
+  // };
 
   const addVideoFailure = (error?: any) => {
     setLoading(false);
@@ -168,28 +169,28 @@ const UploadServePracticeScreen: FunctionComponent<Props> = props => {
       Alert.alert('Trainify', `Error in adding video.`);
     }
   };
-  const uploadVideoFailure = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
-    if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
-    }
-  };
+  // const uploadVideoFailure = (error?: any) => {
+  //   console.log('Error: ', JSON.stringify(error));
+  //   if (error) {
+  //     Alert.alert('Trainify', `Error in adding video.`);
+  //   }
+  // };
 
-  const addVideoToFirebase = () => {
-    // uploadVideoService(response, addVideoSuccess, addVideoFailure);
-    let res = response_let.assets[0];
-    const videoMetadata = {
-      ...res,
-      thumbnailURL: thumbURL,
-      videoURL: vidURL,
-    };
-    console.log('videoMetadata, ', videoMetadata);
-    addVideoService(videoMetadata, addVideoSuccess, addVideoFailure);
-  };
+  // const addVideoToFirebase = () => {
+  //   // uploadVideoService(response, addVideoSuccess, addVideoFailure);
+  //   let res = response_let.assets[0];
+  //   const videoMetadata = {
+  //     ...res,
+  //     thumbnailURL: thumbURL,
+  //     videoURL: vidURL,
+  //   };
+  //   console.log('videoMetadata, ', videoMetadata);
+  //   addVideoService(videoMetadata, addVideoSuccess, addVideoFailure);
+  // };
 
-  // const loadVideo = (e) => {
+  // // const loadVideo = (e) => {
 
-  // }
+  // // }
 
   const onButtonPress = React.useCallback((type, options) => {
     if (type === 'capture') {

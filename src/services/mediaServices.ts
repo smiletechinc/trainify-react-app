@@ -26,49 +26,49 @@ export const uploadVideoService = async (videoData, onSuccess?:any, onFailure?:a
 
   // const uploadTask = storage.ref(`/images/${video.fileName}`).put(video.fileName)
 
-// 'file' comes from the Uri
+  // 'file' comes from the Uri
 
-// var storageRef = firebase.storage.ref("folderName/file.jpg");
+  // var storageRef = firebase.storage.ref("folderName/file.jpg");
 
-// const fileImage = {
-//   uri: fileURI,
-//   name: fileName,
-//   type: fileType, // if you can get image type from cropping replace here
-// }
+  // const fileImage = {
+  //   uri: fileURI,
+  //   name: fileName,
+  //   type: fileType, // if you can get image type from cropping replace here
+  // }
 
-// const fileImage = ('photo', {
-//   uri: fileURI,
-//   type: fileType, 
-//   name: fileName,
-// })
+  // const fileImage = ('photo', {
+  //   uri: fileURI,
+  //   type: fileType, 
+  //   name: fileName,
+  // })
 
-const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
+  const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
 
-const img = await fetch(fileImage.uri);
-const bytes = await img.blob();
-console.log('ready file: ', fileImage);
+  const img = await fetch(fileImage.uri);
+  const bytes = await img.blob();
+  console.log('ready file: ', fileImage);
 
-uploadBytes(storageRef, bytes)
-.then((response) => {
-  console.log('Video uploaded: ', response);
-  // let fileName = response.metadata.name
-  let filePath = response.ref._location.path_;
-  getVideoURL(filePath, onSuccess, onFailure);})
-.catch((error) => {
-  console.error(error);
-  onFailure(error);
-})
+  uploadBytes(storageRef, bytes)
+  .then((response) => {
+    console.log('Video uploaded: ', response);
+    // let fileName = response.metadata.name
+    let filePath = response.ref._location.path_;
+    getVideoURL(filePath, onSuccess, onFailure);})
+  .catch((error) => {
+    console.error(error);
+    onFailure(error);
+  })
 
 
-// console.log('storageRef: ', storageRef);
-// uploadString(storageRef, video)
-// .then((snapshot) => {
-//   console.log('Video uploaded');
-// })
-// .catch((error) => {
-//   console.error(error);
-//   onFailure(error);
-// });
+  // console.log('storageRef: ', storageRef);
+  // uploadString(storageRef, video)
+  // .then((snapshot) => {
+  //   console.log('Video uploaded');
+  // })
+  // .catch((error) => {
+  //   console.error(error);
+  //   onFailure(error);
+  // });
 
 }
 
