@@ -180,7 +180,7 @@ const App4: FunctionComponent<Props> = props => {
       setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
-      startRecording();
+      // startRecording();
       ScreenOrientation.addOrientationChangeListener(event => {
         setOrientation(event.orientationInfo.orientation);
       });
@@ -1245,7 +1245,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 5) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
         skipFrameCount = skipFrameCount + 1;
         console.log(skipFrameCount);
       } else {
@@ -1413,7 +1413,7 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
-        // startRecording();
+        startRecording();
         // console.log('Calibrated Successfully');
       } else {
         // console.log('Please Calibrate Yourself');

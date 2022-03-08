@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {View, FlatList, Text} from 'react-native';
+import {View, FlatList, Text, Alert} from 'react-native';
 import styles from './analysis_screen_style';
 import {connect, useDispatch} from 'react-redux';
 import {ListItem} from '../../../../components/grid/index';
@@ -9,6 +9,7 @@ import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-navigation';
+import {SCREEN_WIDTH} from '../../../../constants';
 
 type Props = {
   navigation: any;
@@ -38,6 +39,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
+    console.log('Width of Screen is:', (SCREEN_WIDTH * 0.9) / 2 - 23);
     fetchVideosService(fetchVideosSuccess, fetchVideosFailure); //call reducrer action
   }, []);
 
@@ -58,6 +60,12 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     } else {
       return <ListItem video={item} onPress={() => handleOnClickVideo(item)} />;
     }
+  };
+
+  const onLayout = event => {
+    console.log('ScreenWidth:', SCREEN_WIDTH);
+    const {x, y, height, width} = event.nativeEvent.layout;
+    console.log('Dimensions : ', x, y, height, width);
   };
   return (
     <SafeAreaView style={styles.main_view}>
@@ -83,11 +91,12 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
           {videos && videos.length > 0 ? (
             <View>
               <FlatList
+                onLayout={onLayout}
                 style={styles.listContainer}
                 data={videos}
                 keyExtractor={(item, index) => index.toString()}
                 extraData={selectedID}
-                numColumns={3}
+                numColumns={2}
                 renderItem={renderItem}
               />
             </View>
