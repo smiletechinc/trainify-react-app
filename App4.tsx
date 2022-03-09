@@ -105,7 +105,7 @@ const App4: FunctionComponent<Props> = props => {
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  let response_let = {};
+  var response_let = {};
   let thumbURL = '';
   let vidURL = '';
 
@@ -151,6 +151,7 @@ const App4: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (videoAnalysisData) {
       (() => {
+        RecordScreen.clean();
         navigation.replace('VideoPlayerContainer', {video: videoAnalysisData});
         Alert.alert('Trainify', `Video added successfully.`);
       })();
@@ -326,9 +327,6 @@ const App4: FunctionComponent<Props> = props => {
     }
   }, [tfReady]);
 
-  // useEffect(() => {
-  //   startRecording();
-  // }, [!isStartedVideoRecording]);
   const addVideoSuccess = (video?: any) => {
     console.log('Added: ', JSON.stringify(video));
     if (video) {
@@ -346,7 +344,6 @@ const App4: FunctionComponent<Props> = props => {
   const uploadVideoSuccess = (updatedResponse?: any) => {
     setLoading(false);
     Alert.alert('Video uploaded successfully');
-    console.log('UpadatedResponseURL:', updatedResponse);
     setVideoURL(updatedResponse);
     vidURL = updatedResponse;
     console.log('upload video success: ', JSON.stringify(updatedResponse));
@@ -355,9 +352,7 @@ const App4: FunctionComponent<Props> = props => {
 
   const addVideoToFirebase = () => {
     // uploadVideoService(response, addVideoSuccess, addVideoFailure);
-    // console.log('ResponseLet:', response_let);
     let res = response_let;
-    console.log('response:', res);
     const videoMetadata = {
       ...res,
       thumbnailURL: thumbURL,
@@ -386,26 +381,23 @@ const App4: FunctionComponent<Props> = props => {
       // KAZMI Code Starts here.
 
       let videoData1 = {name: 'screen_recording', uri: url, type: 'video'};
-      if (url) {
-        uploadVideoService(
-          videoData1,
-          uploadVideoSuccess,
-          uploadVideoFailureFirebase,
-        );
-      }
+      uploadVideoService(
+        videoData1,
+        uploadVideoSuccess,
+        uploadVideoFailureFirebase,
+      );
 
       // Kazmi code Ends here
       console.log('Recording detials:', JSON.stringify(res));
       console.log('REOCORDING STOPPED: ', url);
-      setIsStartedVideoRecording(false);
-      let date = new Date().toLocaleString();
+      var date = new Date().toLocaleString();
 
       let videoData = {
-        duration: 10.0,
-        fileName: url.substr(-7),
+        duration: 0.01,
+        fileName: '66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov',
         fileSize: 9363694,
         height: 720,
-        id: Math.random() * 10,
+        id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
         timestamp: date,
         type: 'video/quicktime',
         uri: url,
@@ -421,6 +413,7 @@ const App4: FunctionComponent<Props> = props => {
       console.log('analysis_data for firebase, ', JSON.stringify(data));
       console.log('sending to firebase, ', JSON.stringify(tempVideoData));
       response_let = tempVideoData;
+
       setVideoData(tempVideoData);
 
       // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
@@ -573,7 +566,6 @@ const App4: FunctionComponent<Props> = props => {
             fill="white"
             stroke="white"
           />
-
           <Circle
             // key={`skeletonkp_${k.name}`}
             cx={cx3}
@@ -583,7 +575,6 @@ const App4: FunctionComponent<Props> = props => {
             fill="white"
             stroke="white"
           />
-
           <Circle
             // key={`skeletonkp_${k.name}`}
             cx={cx4}

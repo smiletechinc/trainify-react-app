@@ -43,21 +43,41 @@ export const uploadVideoService = async (videoData, onSuccess?:any, onFailure?:a
   // })
 
   const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
+  
 
   const img = await fetch(fileImage.uri);
+  console.log("img in uploadservices:", img);
   const bytes = await img.blob();
   console.log('ready file: ', fileImage);
+  console.log("bytes in uploadservices:", bytes);
 
-  uploadBytes(storageRef, bytes)
+  if(bytes){
+    uploadBytes(storageRef, bytes)
   .then((response) => {
     console.log('Video uploaded: ', response);
     // let fileName = response.metadata.name
     let filePath = response.ref._location.path_;
+    console.log("FilePath of BYtes:", filePath);
     getVideoURL(filePath, onSuccess, onFailure);})
   .catch((error) => {
     console.error(error);
     onFailure(error);
   })
+  }
+  else {
+    console.log("bytes are empty");
+    onFailure("bytes are empty");
+  }
+  // uploadBytes(storageRef, bytes)
+  // .then((response) => {
+  //   console.log('Video uploaded: ', response);
+  //   // let fileName = response.metadata.name
+  //   let filePath = response.ref._location.path_;
+  //   getVideoURL(filePath, onSuccess, onFailure);})
+  // .catch((error) => {
+  //   console.error(error);
+  //   onFailure(error);
+  // })
 
 
   // console.log('storageRef: ', storageRef);
@@ -111,19 +131,36 @@ const img = await fetch(fileImage.uri);
 const bytes = await img.blob();
 console.log('ready file: ', fileImage);
 
-uploadBytes(storageRef, bytes)
+if(bytes){
+  uploadBytes(storageRef, bytes)
 .then((response) => {
-  console.log('Thumbnail uploaded: ', response);
-  // onSuccess(response);
+  console.log('Video uploaded: ', response);
   // let fileName = response.metadata.name
   let filePath = response.ref._location.path_;
-
-  getThumbnailURL(filePath, onSuccess, onFailure);
-})
+  console.log("FilePath of BYtes:", filePath);
+  getVideoURL(filePath, onSuccess, onFailure);})
 .catch((error) => {
   console.error(error);
   onFailure(error);
 })
+}
+else {
+  console.log("bytes are empty");
+  onFailure("bytes are empty");
+}
+// uploadBytes(storageRef, bytes)
+// .then((response) => {
+//   console.log('Thumbnail uploaded: ', response);
+//   // onSuccess(response);
+//   // let fileName = response.metadata.name
+//   let filePath = response.ref._location.path_;
+
+//   getThumbnailURL(filePath, onSuccess, onFailure);
+// })
+// .catch((error) => {
+//   console.error(error);
+//   onFailure(error);
+// })
 
 // console.log('storageRef: ', storageRef);
 // uploadString(storageRef, video)

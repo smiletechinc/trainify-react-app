@@ -25,6 +25,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
       'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
   }
 
+  console.log('VideoURL:', fileURI);
   let videoURL = video.videoURL;
 
   const videoPlayer = useRef(null);
