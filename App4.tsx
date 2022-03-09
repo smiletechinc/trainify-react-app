@@ -58,6 +58,7 @@ const App4: FunctionComponent<Props> = props => {
   const cameraRef = React.useRef();
   const { navigation, route } = props;
   const { title } = route.params;
+  // const title = '';
   const [isLoading, setLoading] = React.useState(true);
   const { increment, reset, count, calibrated, setCalibrated, setData, data } =
     React.useContext(CounterContext);
@@ -151,8 +152,8 @@ const App4: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (videoAnalysisData) {
       (() => {
-        navigation.navigate('VideoPlayerContainer', { video: videoAnalysisData });
-        Alert.alert('Trainify', `Video added successfully.`);
+        // navigation.navigate('VideoPlayerContainer', { video: videoAnalysisData });
+        // Alert.alert('Trainify', `Video added successfully.`);
       })();
     }
   }, [videoAnalysisData]);
@@ -193,7 +194,7 @@ const App4: FunctionComponent<Props> = props => {
       // setTimeout(() => {
       //   console.log('stopped: ');
       //   stopRecording();
-      // }, 3000)
+      // }, 8000);
 
 
       let test_pose = [
@@ -328,16 +329,16 @@ const App4: FunctionComponent<Props> = props => {
   }, [tfReady]);
 
   const addVideoSuccess = (video?: any) => {
-    console.log('Added: ', JSON.stringify(video));
+    // console.log('Added: ', JSON.stringify(video));
     if (video) {
       navigation.replace('VideoPlayerContainer', { video: video });
     }
     // 0
   };
   const addVideoFailure = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
+    // console.log('Error: ', JSON.stringify(error));
     if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
+      Alert.alert('Trainify', `Error in adding video metadata.`);
     }
   };
   const uploadVideoSuccess = (updatedResponse?: any) => {
@@ -364,7 +365,7 @@ const App4: FunctionComponent<Props> = props => {
   const uploadVideoFailureFirebase = (error?: any) => {
     console.log('Error: ', JSON.stringify(error));
     if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
+      // Alert.alert('Trainify', `Error in adding video.`);
     }
   }
 
@@ -373,16 +374,15 @@ const App4: FunctionComponent<Props> = props => {
       console.warn(error),
     );
     if (res) {
-      console.log('Response:', res);
+      console.log('recording stopped:', res);
       const url = res.result.outputURL;
-      CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' });
+      await CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' });
 
 
       // KAZMI Code Starts here.
 
-      let videoData1 = { name: 'screen_recording', uri: url, type: 'video' }
-      uploadVideoService(videoData1, uploadVideoSuccess, uploadVideoFailureFirebase);
-
+      let videoData1 = { name: 'screen_recording_1.mp4', uri: url, type: 'video/mp4' }
+      await uploadVideoService(videoData1, uploadVideoSuccess, uploadVideoFailureFirebase);
 
       // Kazmi code Ends here
       console.log('Recording detials:', JSON.stringify(res));
@@ -1162,72 +1162,72 @@ const App4: FunctionComponent<Props> = props => {
       });
       var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
       var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
-      console.log(
-        'LeftShoulder and RightSholder',
-        l_shoulder_angle2,
-        r_hip_angle,
-      );
+      // console.log(
+      //   'LeftShoulder and RightSholder',
+      //   l_shoulder_angle2,
+      //   r_hip_angle,
+      // );
 
       if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
         increment();
         skipFrameCount = skipFrameCount + 1;
         if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
           if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
-            console.log(serveGrade);
+            // console.log(serveGrade);
             setServeGrade('A');
             analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
           } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
             setServeGrade('B');
-            console.log(serveGrade);
+            // console.log(serveGrade);
             analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
           } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
             setServeGrade('C');
-            console.log(serveGrade);
+            // console.log(serveGrade);
             analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
           } else {
             setServeGrade('D');
-            console.log(serveGrade);
+            // console.log(serveGrade);
             analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
           }
           setServeType('Flat');
         } else if (r_hip_angle < 190 && r_hip_angle > 175) {
-          console.log('Right Hip Angle: ', rightHip);
+          //console.log('Right Hip Angle: ', rightHip);
           if (r_hip_angle < 185 && r_hip_angle > 181) {
             setServeGrade('A');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
           } else if (r_hip_angle < 187 && r_hip_angle > 179) {
             setServeGrade('B');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
           } else if (r_hip_angle < 188 && r_hip_angle > 177) {
             setServeGrade('C');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
           } else {
             setServeGrade('D');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
           }
           setServeType('Slice');
         } else {
-          console.log('Inside kick');
-          console.log(r_hip_angle);
+          //console.log('Inside kick');
+          //console.log(r_hip_angle);
           if (r_hip_angle > 170) {
             setServeGrade('A');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
           } else if (r_hip_angle > 167) {
             setServeGrade('B');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
           } else if (r_hip_angle > 164) {
             setServeGrade('C');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
           } else {
             setServeGrade('D');
-            console.log(serveGrade);
+            //console.log(serveGrade);
             analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
           }
           setServeType('Kick');
@@ -1235,7 +1235,7 @@ const App4: FunctionComponent<Props> = props => {
         setData(analysis_data.data);
       } else if (skipFrameCount > 0 && skipFrameCount < 5) {
         skipFrameCount = skipFrameCount + 1;
-        console.log(skipFrameCount);
+        //console.log(skipFrameCount);
       } else {
         skipFrameCount = 0;
       }
@@ -1377,22 +1377,22 @@ const App4: FunctionComponent<Props> = props => {
 
         if (keypoints[i].score && keypoints[i].score * 100 < 60) {
           tempCount = tempCount + 1;
-          console.log('Score');
+          // console.log('Score');
         }
         if (cx < cx1) {
-          console.log('First');
+          // console.log('First');
           tempCount = tempCount + 1;
         }
         if (cx > cx2) {
-          console.log('Second');
+          // console.log('Second');
           tempCount = tempCount + 1;
         }
         if (cy < cy1) {
-          console.log('Third');
+          // console.log('Third');
           tempCount = tempCount + 1;
         }
         if (cy > cy3) {
-          console.log('Fourth');
+          // console.log('Fourth');
           tempCount = tempCount + 1;
         }
       }
