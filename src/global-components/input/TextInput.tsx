@@ -1,5 +1,11 @@
 import React, {FunctionComponent} from 'react';
-import {TouchableOpacity, TextInput, Text, View} from 'react-native';
+import {
+  TouchableOpacity,
+  TextInput,
+  Text,
+  View,
+  KeyboardTypeOptions,
+} from 'react-native';
 import styles from './styles';
 import globalStyles from '../../global-styles';
 import {COLORS} from '../../constants';
@@ -10,6 +16,7 @@ type Props = {
   returnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send';
   maxLength?: number;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  keyboardType?: KeyboardTypeOptions;
   placeholder?: string;
   onChangeText?: (text: string) => void;
   inputStyles?: Metadata;
@@ -35,6 +42,7 @@ const TextInputComponent: FunctionComponent<Props> =
       RightComponent,
       multiline,
       secureTextEntry,
+      keyboardType,
     } = props;
     // const [isOnFocused, setIsOnFocused] = useState<boolean>(false);
 
@@ -42,13 +50,15 @@ const TextInputComponent: FunctionComponent<Props> =
       <TouchableOpacity
         delayPressIn={0}
         activeOpacity={0.9}
-        style={[
-          styles.input_parent_container,
-          {...inputParentStyles},
-        ]}
-      >
-        <View>
+        style={[styles.input_parent_container, {...inputParentStyles}]}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+          }}>
           <TextInput
+            keyboardType={keyboardType || 'default'}
             autoCapitalize={autoCapitalize}
             maxLength={maxLength || 10000}
             returnKeyType={returnKeyType || 'done'}
@@ -58,7 +68,7 @@ const TextInputComponent: FunctionComponent<Props> =
                 onChangeText(text);
               }
             }}
-            placeholder={placeholder || 'User'}
+            placeholder={placeholder || 'Input'}
             placeholderTextColor={placeholderTextColor}
             onFocus={() => {
               // console.log('focused');

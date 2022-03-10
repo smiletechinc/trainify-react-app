@@ -20,14 +20,14 @@ const CAM_WIDTH = Dimensions.get('window').width;
 const CAM_HEIGHT = Dimensions.get('window').height;
 const AUTO_RENDER = false;
 
-import styles_external from '../styles';
-import globalStyles from '../../../global-styles';
+import styles_external from '../../styles';
+import globalStyles from '../../../../global-styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderWithText from '../../../global-components/header/HeaderWithText';
-import { IconButton } from '../../../components/buttons'
-const recordIcon = require('../../../assets/images/icon_record_start.png');
-const stopIcon = require('../../../assets/images/icon_record_stop.png');
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import { IconButton } from '../../../../components/buttons'
+const recordIcon = require('../../../../assets/images/icon_record_start.png');
+const stopIcon = require('../../../../assets/images/icon_record_stop.png');
 
 export default function TensorFlowCameraContainer({navigation, route}) {
   const {title} = route.params
