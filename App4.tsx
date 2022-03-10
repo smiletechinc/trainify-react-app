@@ -370,49 +370,53 @@ const App4: FunctionComponent<Props> = props => {
   }
 
   const stopRecording = async () => {
-    const res = await RecordScreen.stopRecording().catch(error =>
-      console.warn(error),
-    );
-    if (res) {
-      console.log('recording stopped:', res);
-      const url = res.result.outputURL;
-      await CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' });
+    const res = await RecordScreen.stopRecording()
+      .then(async (res) => {
+        if (res) {
+          console.log('recording stopped:', res);
+          const url = res.result.outputURL;
+          await CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' });
 
 
-      // KAZMI Code Starts here.
+          // KAZMI Code Starts here.
 
-      let videoData1 = { name: 'screen_recording_1.mp4', uri: url, type: 'video/mp4' }
-      await uploadVideoService(videoData1, uploadVideoSuccess, uploadVideoFailureFirebase);
+          let videoData1 = { name: 'screen_recording_1.mp4', uri: url, type: 'video/mp4' }
+          await uploadVideoService(videoData1, uploadVideoSuccess, uploadVideoFailureFirebase);
 
-      // Kazmi code Ends here
-      console.log('Recording detials:', JSON.stringify(res));
-      console.log('REOCORDING STOPPED: ', url);
+          // Kazmi code Ends here
+          console.log('Recording detials:', JSON.stringify(res));
+          console.log('REOCORDING STOPPED: ', url);
 
-      let videoData = {
-        duration: 0.01,
-        fileName: '66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov',
-        fileSize: 9363694,
-        height: 720,
-        id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
-        timestamp: '2022-02-25T17:02:18.000+0500',
-        type: 'video/quicktime',
-        uri: url,
-        width: 1280,
-      };
-      const tempAnalysisData = {
-        labels: ['Flat', 'Kick', 'Slice'],
-        legend: ['A', 'B', 'C', 'D'],
-        data: data,
-        barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-      };
-      const tempVideoData = { ...videoData, analysis_data: tempAnalysisData };
-      console.log('analysis_data for firebase, ', JSON.stringify(data));
-      console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+          let videoData = {
+            duration: 0.01,
+            fileName: '66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov',
+            fileSize: 9363694,
+            height: 720,
+            id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
+            timestamp: '2022-02-25T17:02:18.000+0500',
+            type: 'video/quicktime',
+            uri: url,
+            width: 1280,
+          };
+          const tempAnalysisData = {
+            labels: ['Flat', 'Kick', 'Slice'],
+            legend: ['A', 'B', 'C', 'D'],
+            data: data,
+            barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
+          };
+          const tempVideoData = { ...videoData, analysis_data: tempAnalysisData };
+          console.log('analysis_data for firebase, ', JSON.stringify(data));
+          console.log('sending to firebase, ', JSON.stringify(tempVideoData));
 
-      setVideoData(tempVideoData);
+          setVideoData(tempVideoData);
 
-      // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
-    }
+          // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+        }
+      })
+      .catch(error =>
+        console.log('error...: ', error),
+      );
+
   };
 
   const handleStopCamera = () => {
@@ -441,8 +445,8 @@ const App4: FunctionComponent<Props> = props => {
     );
   };
 
-  const startRecording = () => {
-    RecordScreen.startRecording({ mic: false })
+  const startRecording = async () => {
+    await RecordScreen.startRecording({ mic: false })
       .then(res => {
         setIsStartedVideoRecording(true);
         console.log('Video recording started.');
