@@ -43,13 +43,13 @@ export const uploadVideoService = async (videoData, onSuccess?:any, onFailure?:a
   // })
 
   const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
-  
+  console.log("StorageRef", storageRef);
 
   const img = await fetch(fileImage.uri);
   console.log("img in uploadservices:", img);
   const bytes = await img.blob();
   console.log('ready file: ', fileImage);
-  console.log("bytes in uploadservices:", bytes);
+  
 
   if(bytes){
     uploadBytes(storageRef, bytes)
