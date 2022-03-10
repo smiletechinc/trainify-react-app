@@ -20,6 +20,7 @@ import {
   BallPracticeRenderGraphScreen,
   BallPracitceAnalysisGridScreen,
   UploadBallPracticeScreen,
+  BallPracticeTensorCamera,
 } from '../../screens';
 
 import {
@@ -66,6 +67,10 @@ function MainAppContainer() {
       <AppStack.Screen
         name="UploadBallPracticeScreen"
         component={UploadBallPracticeScreen}
+      />
+      <AppStack.Screen
+        name="BallPracticeTensorCamera"
+        component={BallPracticeTensorCamera}
       />
       <AppStack.Screen
         name="BallPracitceAnalysisGridScreen"

@@ -18,22 +18,22 @@ import {
 import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
-import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
-import styles_external from './src/screens/main-app/styles';
+import {CounterContext} from '../../../../context/counter-context';
+import {addVideoService} from '../../../../services/servePracticeServices';
+import styles_external from '../../styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import HeaderWithText from './src/global-components/header/HeaderWithText';
-import {IconButton} from './src/components/buttons';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {IconButton} from '../../../../components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
+import {useAnalysisUpload, useMediaUpload} from '../../../../hooks';
 import {
   uploadPhotoService,
   uploadVideoService,
   getThumbnailURL,
-} from './src/services/mediaServices';
+} from '../../../../services/mediaServices';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
+const stopIcon = require('../../../../assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
 const IS_IOS = Platform.OS === 'ios';
@@ -110,11 +110,18 @@ const App4: FunctionComponent<Props> = props => {
   let thumbURL = '';
   let vidURL = '';
 
+  var [isMissed, setIsMissed] = useState('');
+
+  var isCalibrated = false;
+  var rallyRunningFlag = true;
+  var frames_to_skip = 0;
+  var missed = 0;
+  var missTimeCounter = 0;
+
   var analysis_data = {
-    labels: ['Flat', 'Kick', 'Slice'],
+    labels: ['Forehand', 'Backhand'],
     legend: ['A', 'B', 'C', 'D'],
     data: [
-      [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
@@ -152,7 +159,9 @@ const App4: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (videoAnalysisData) {
       (() => {
-        navigation.replace('VideoPlayerContainer', {video: videoAnalysisData});
+        navigation.replace('BallPracticeVideoPlayer', {
+          video: videoAnalysisData,
+        });
         Alert.alert('Trainify', `Video added successfully.`);
       })();
     }
@@ -169,16 +178,16 @@ const App4: FunctionComponent<Props> = props => {
         model,
         detectorConfig,
       );
-      const model_json = await require('./src/assets/model/model.json');
-      const model_weight = await require('./src/assets/model/group1-shard.bin');
-      const model_tos = await tf.loadLayersModel(
-        bundleResourceIO(model_json, model_weight),
-      );
+      // const model_json = await require('./src/assets/model/model.json');
+      // const model_weight = await require('./src/assets/model/group1-shard.bin');
+      // const model_tos = await tf.loadLayersModel(
+      //   bundleResourceIO(model_json, model_weight),
+      // );
 
       setOrientation(curOrientation);
       setModel(detector);
       console.log('Loading Type of Serve Model');
-      setTypeOfServeDetector(model_tos);
+      // setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
       // startRecording();
@@ -330,7 +339,7 @@ const App4: FunctionComponent<Props> = props => {
   const addVideoSuccess = (video?: any) => {
     console.log('Added: ', JSON.stringify(video));
     if (video) {
-      navigation.replace('VideoPlayerContainer', {video: video});
+      navigation.replace('BallPracticeVideoPlayer', {video: video});
     }
     // 0
   };
@@ -401,6 +410,9 @@ const App4: FunctionComponent<Props> = props => {
         uri: url,
         width: 1280,
       };
+
+      console.log('USAMA TESTING: ', data);
+
       const tempAnalysisData = {
         labels: ['Flat', 'Kick', 'Slice'],
         legend: ['A', 'B', 'C', 'D'],
@@ -615,7 +627,7 @@ const App4: FunctionComponent<Props> = props => {
       <View style={styles.fpsContainer}>
         <Text>Total {count}</Text>
         <Text>Last Serve Type {serveType}</Text>
-        <Text>Grade {serveGrade}</Text>
+        {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
   };
@@ -1132,6 +1144,81 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
+  const shotDetectionReturn = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+
+      var leftWrist = keypoints.filter(function (item: any) {
+        return item.name === 'left_wrist';
+      });
+
+      var rightWrist = keypoints.filter(function (item: any) {
+        return item.name === 'right_wrist';
+      });
+
+      var nose = keypoints.filter(function (item: any) {
+        return item.name === 'nose';
+      });
+
+      // console.log(
+      //   "Ratio: ",
+      //   rightWrist[0].x - nose[0].x / rightElbow[0].x - nose[0].x
+      // );
+
+      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+        // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
+        increment();
+        analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+        setIsMissed('');
+        skipFrameCount = skipFrameCount + 1;
+        console.log('Forehand Return');
+        setServeType('Forehand Return');
+        missTimeCounter = 0;
+        rallyRunningFlag = true;
+        setData(analysis_data.data);
+      } else if (rightWrist[0].x < rightElbow[0].x) {
+        // console.log("I am here");
+        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+          increment();
+          analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          setIsMissed('');
+          skipFrameCount = skipFrameCount + 1;
+          console.log('Backhand Return');
+          setServeType('Backhand Return');
+          missTimeCounter = 0;
+          rallyRunningFlag = true;
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
+        skipFrameCount = skipFrameCount + 1;
+        missTimeCounter = missTimeCounter + 1;
+      } else {
+        missTimeCounter = missTimeCounter + 1;
+        setServeType('Mid');
+        skipFrameCount = 0;
+        console.log('Mid');
+      }
+
+      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+        missed = missed + 1;
+        setIsMissed('Missed Detected');
+        // console.log("Missed: ", missed);
+        missTimeCounter = 0;
+        rallyRunningFlag = false;
+      }
+      console.log('Missed: ', missed);
+    }
+  };
+
   const serveTypeDetectionthreshold = (poses: any) => {
     // console.log('Analysis: ', analysis_data.data[0]);
     // console.log('Analysis: ', analysis_data.data[1]);
@@ -1491,7 +1578,8 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
+        // serveTypeDetectionthreshold(poses);
+        shotDetectionReturn(poses);
         // console.log();
       } else if (isCompletedRecording) {
         isCompletedRecording = false;

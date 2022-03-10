@@ -20,6 +20,7 @@ import BallPracticeImagePickerContainer from './main-app/home/ball-machine-pract
 import RecordBallPracticeContainer from './main-app/home/ball-machine-practice/RecordService';
 import BallPracticeRenderGraphScreen from './main-app/home/ball-machine-practice/render_graph';
 import BallPracticeContainer from './main-app/home/ball-machine-practice/ServePractice';
+import BallPracticeTensorCamera from './main-app/home/ball-machine-practice/BallPracticeTensorCamera';
 import UploadBallPracticeScreen from './main-app/home/ball-machine-practice/upload_server_practice';
 import UploadBallPracticeContainer from './main-app/home/ball-machine-practice/UploadServe';
 import BallPracticeVideoPlayerContainer from './main-app/home/ball-machine-practice/video_player_screen';
@@ -64,6 +65,7 @@ export {
   BallPracticeImagePickerContainer,
   RecordBallPracticeContainer,
   BallPracticeRenderGraphScreen,
+  BallPracticeTensorCamera,
   BallPracticeContainer,
   UploadBallPracticeScreen,
   UploadBallPracticeContainer,
