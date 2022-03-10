@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StatusBar} from 'expo-status-bar';
 import {StyleSheet, Text, View} from 'react-native';
 import {StackedBarChart} from 'react-native-chart-kit';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -136,6 +137,11 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   return (
     // Graph Printing
     <View style={styles.container}>
+      <HeaderWithText
+        text={'Trainify Recorded Video'}
+        hideProfileSection={true}
+        navigation={navigation}
+      />
       <View style={styles.pieContainer}>
         <VictoryPie
           animate={{

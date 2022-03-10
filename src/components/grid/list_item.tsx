@@ -13,6 +13,7 @@ type Props = {
 
 const ListItem: React.FunctionComponent<Props> = props => {
   const {video, onPress, itemWidth} = props;
+  console.log('VideoThumb:', video.thumbnail);
   return (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -24,7 +25,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
         ]}>
         <View style={{marginLeft: -10}}>
           <Image
-            source={playerImage}
+            source={video.thumbnail}
             style={{height: 185, width: itemWidth - 17}}
           />
         </View>

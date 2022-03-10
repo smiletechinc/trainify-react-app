@@ -32,6 +32,7 @@ import {
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
+import {createThumbnail} from 'react-native-create-thumbnail';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -389,17 +390,27 @@ const App4: FunctionComponent<Props> = props => {
       // Kazmi code Ends here
       console.log('Recording detials:', JSON.stringify(res));
       console.log('REOCORDING STOPPED: ', url);
+      createThumbnail({
+        url: url,
+        timeStamp: 10000,
+        format: 'jpeg',
+      })
+        .then(response => setThumbnail(response.path))
+        .catch(err => console.log({err}));
+
+      var date = new Date().toLocaleString();
 
       let videoData = {
         duration: 0.01,
-        fileName: '66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov',
+        fileName: url.substr(-7),
         fileSize: 9363694,
         height: 720,
         id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
-        timestamp: '2022-02-25T17:02:18.000+0500',
+        timestamp: date,
         type: 'video/quicktime',
         uri: url,
         width: 1280,
+        thumbURL: thumbnail,
       };
       const tempAnalysisData = {
         labels: ['Flat', 'Kick', 'Slice'],

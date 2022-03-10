@@ -70,6 +70,7 @@
     "react-native-slider": "^0.11.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "^12.1.1",
+    "react-native-thumbnail-video": "^0.1.2",
     "react-native-vector-icons": "^9.1.0",
     "react-native-video": "^5.2.0",
     "react-native-webview": "^11.16.0",
