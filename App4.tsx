@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
+import React, {useEffect, useState, useRef, FunctionComponent} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { Camera } from 'expo-camera';
+import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
 import * as posedetection from '@tensorflow-models/pose-detection';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -15,18 +15,18 @@ import {
   bundleResourceIO,
   cameraWithTensors,
 } from '@tensorflow/tfjs-react-native';
-import Svg, { Circle, Line } from 'react-native-svg';
-import { ExpoWebGLRenderingContext } from 'expo-gl';
-import { CameraType } from 'expo-camera/build/Camera.types';
-import { CounterContext } from './src/context/counter-context';
-import { addVideoService } from './src/services/servePracticeServices';
+import Svg, {Circle, Line} from 'react-native-svg';
+import {ExpoWebGLRenderingContext} from 'expo-gl';
+import {CameraType} from 'expo-camera/build/Camera.types';
+import {CounterContext} from './src/context/counter-context';
+import {addVideoService} from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
-import { IconButton } from './src/components/buttons';
+import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import { useAnalysisUpload, useMediaUpload } from './src/hooks';
+import {useAnalysisUpload, useMediaUpload} from './src/hooks';
 import {
   uploadPhotoService,
   uploadVideoService,
@@ -56,11 +56,11 @@ const App4: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
-  const { navigation, route } = props;
-  const { title } = route.params;
+  const {navigation, route} = props;
+  const {title} = route.params;
   // const title = '';
   const [isLoading, setLoading] = React.useState(true);
-  const { increment, reset, count, calibrated, setCalibrated, setData, data } =
+  const {increment, reset, count, calibrated, setCalibrated, setData, data} =
     React.useContext(CounterContext);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -94,19 +94,19 @@ const App4: FunctionComponent<Props> = props => {
     currentStatus,
     uploadThumbnailFailure,
     uploadVideoFailure,
-  } = useMediaUpload({ image: thumbnail });
+  } = useMediaUpload({image: thumbnail});
 
   const {
     videoAnalysisData,
     uploadingAnalysis,
     addVideoAnalysisToFirebase,
     currentAnalysisStatus,
-  } = useAnalysisUpload({ videoData: videoData });
+  } = useAnalysisUpload({videoData: videoData});
 
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  let response_let = '';
+  let response_let = {};
   let thumbURL = '';
   let vidURL = '';
 
@@ -164,7 +164,7 @@ const App4: FunctionComponent<Props> = props => {
 
       const curOrientation = await ScreenOrientation.getOrientationAsync();
       const model = posedetection.SupportedModels.BlazePose;
-      const detectorConfig = { runtime: 'tfjs', modelType: 'full' };
+      const detectorConfig = {runtime: 'tfjs', modelType: 'full'};
       const detector = await posedetection.createDetector(
         model,
         detectorConfig,
@@ -195,7 +195,6 @@ const App4: FunctionComponent<Props> = props => {
       //   console.log('stopped: ');
       //   stopRecording();
       // }, 8000);
-
 
       let test_pose = [
         0.594638705, 0.369584292, 0.999754488, 0.589969754, 0.358422577,
@@ -283,7 +282,7 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const startTimer = e => {
-    let { total, hours, minutes, seconds } = getTimeRemaining(e);
+    let {total, hours, minutes, seconds} = getTimeRemaining(e);
     if (total >= 0) {
       setSeconds(seconds);
     }
@@ -331,7 +330,7 @@ const App4: FunctionComponent<Props> = props => {
   const addVideoSuccess = (video?: any) => {
     // console.log('Added: ', JSON.stringify(video));
     if (video) {
-      navigation.replace('VideoPlayerContainer', { video: video });
+      navigation.replace('VideoPlayerContainer', {video: video});
     }
     // 0
   };
@@ -352,7 +351,7 @@ const App4: FunctionComponent<Props> = props => {
 
   const addVideoToFirebase = () => {
     // uploadVideoService(response, addVideoSuccess, addVideoFailure);
-    let res = response_let.assets[0];
+    let res = response_let;
     const videoMetadata = {
       ...res,
       thumbnailURL: thumbURL,
@@ -367,21 +366,28 @@ const App4: FunctionComponent<Props> = props => {
     if (error) {
       // Alert.alert('Trainify', `Error in adding video.`);
     }
-  }
+  };
 
   const stopRecording = async () => {
     const res = await RecordScreen.stopRecording()
-      .then(async (res) => {
+      .then(async res => {
         if (res) {
           console.log('recording stopped:', res);
           const url = res.result.outputURL;
-          await CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' });
-
+          await CameraRoll.save(url, {type: 'video', album: 'TrainfyApp'});
 
           // KAZMI Code Starts here.
 
-          let videoData1 = { name: 'screen_recording_1.mp4', uri: url, type: 'video/mp4' }
-          await uploadVideoService(videoData1, uploadVideoSuccess, uploadVideoFailureFirebase);
+          let videoData1 = {
+            name: 'screen_recording_1.mp4',
+            uri: url,
+            type: 'video/mp4',
+          };
+          await uploadVideoService(
+            videoData1,
+            uploadVideoSuccess,
+            uploadVideoFailureFirebase,
+          );
 
           // Kazmi code Ends here
           console.log('Recording detials:', JSON.stringify(res));
@@ -404,19 +410,17 @@ const App4: FunctionComponent<Props> = props => {
             data: data,
             barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
           };
-          const tempVideoData = { ...videoData, analysis_data: tempAnalysisData };
+          const tempVideoData = {...videoData, analysis_data: tempAnalysisData};
           console.log('analysis_data for firebase, ', JSON.stringify(data));
           console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+          response_let = tempVideoData;
 
           setVideoData(tempVideoData);
 
           // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
         }
       })
-      .catch(error =>
-        console.log('error...: ', error),
-      );
-
+      .catch(error => console.log('error...: ', error));
   };
 
   const handleStopCamera = () => {
@@ -446,7 +450,7 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const startRecording = async () => {
-    await RecordScreen.startRecording({ mic: false })
+    await RecordScreen.startRecording({mic: false})
       .then(res => {
         setIsStartedVideoRecording(true);
         console.log('Video recording started.');
@@ -1552,7 +1556,7 @@ const App4: FunctionComponent<Props> = props => {
     );
   };
   const onLayout = event => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
     cameraLayoutWidth = width;
     setCameraWidth(width);
