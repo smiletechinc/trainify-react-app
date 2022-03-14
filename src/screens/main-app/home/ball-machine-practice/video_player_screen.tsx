@@ -16,6 +16,7 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 
 const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
   const {video} = route.params;
+  console.log('video, ', video);
   let fileURI = '';
   if (video && video.uri) {
     fileURI = video.uri;
@@ -23,6 +24,9 @@ const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
     fileURI =
       'https://firebasestorage.googleapis.com/v0/b/trainify-app-firebase.appspot.com/o/videos%2Fy2mate.com.mp4?alt=media&token=a567aa95-2423-496a-977d-cc496f6140f6';
   }
+
+  let videoURL = video.videoURL;
+
   const videoPlayer = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -95,17 +99,17 @@ const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
 
   const handleShowGraphButton = () => {
     navigation.navigate('BallPracticeRenderGraphScreen', {
-      graphData: video.analysisData,
+      analysis_data: video.analysis_data,
     });
   };
 
   const renderGraphButton = () => {
     return (
-      <View
+      <SafeAreaView
         style={styles.cameraTypeSwitcher}
         onTouchEnd={handleShowGraphButton}>
         <Text>Show graph</Text>
-      </View>
+      </SafeAreaView>
     );
   };
 
@@ -126,7 +130,7 @@ const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
         resizeMode={screenType}
         onFullScreen={isFullScreen}
         source={{
-          uri: fileURI,
+          uri: videoURL,
         }}
         style={styles.mediaPlayer}
         volume={10}
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
   },
   cameraTypeSwitcher: {
     position: 'absolute',
-    top: 10,
+    top: 30,
     right: 10,
     width: 180,
     alignItems: 'center',

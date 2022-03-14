@@ -13,7 +13,8 @@ import {
   VictoryPie,
 } from 'victory-native';
 
-const screenWidth = Dimensions.get('window').width;
+var screenWidth = Dimensions.get('window').width;
+var screenHeight = Dimensions.get('window').height;
 
 const chartConfig = {
   backgroundGradientFrom: '#1E2923',
@@ -140,22 +141,22 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
           animate={{
             duration: 1000,
           }}
-          padding={60}
-          width={500}
-          height={500}
+          padding={screenWidth / 4}
+          width={screenWidth}
+          height={screenHeight}
           colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
           data={pie_data.data}
         />
       </View>
       <Text>Distibution of Serves Performed</Text>
       <View style={styles.vectorContainer}>
-        <VictoryChart domainPadding={80}>
+        <VictoryChart domainPadding={screenWidth / 8} width={screenWidth}>
           <VictoryAxis
             dependentAxis
             label={'Total Serves'}
             style={{axisLabel: {padding: 30}}}></VictoryAxis>
           <VictoryAxis label={'Type of Serve'}></VictoryAxis>
-          <VictoryGroup offset={30}>
+          <VictoryGroup offset={screenWidth / 25}>
             <VictoryBar
               animate={{
                 duration: 2000,
@@ -190,7 +191,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
           </VictoryGroup>
           <VictoryLegend
-            x={Dimensions.get('screen').width / 2 - 300}
+            x={Dimensions.get('screen').width - 30}
             orientation={'horizontal'}
             gutter={100}
             data={[
