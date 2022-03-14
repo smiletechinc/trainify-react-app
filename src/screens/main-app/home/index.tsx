@@ -52,7 +52,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
-            // navigation.navigate('BallMachinePracticeHomeScreen')
+            navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
           <AutoHeightImage
             source={practiceWithBall}
@@ -70,7 +70,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
-            // navigation.navigate('HomePracticeHomeScreen')
+            navigation.navigate('HomePracticeHomeScreen');
           }}>
           <AutoHeightImage source={practiceAtHome} width={SCREEN_WIDTH * 0.9} />
           <Text style={[globalStyles.h1, styles.practice_text]}>
