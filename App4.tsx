@@ -427,6 +427,7 @@ const App4: FunctionComponent<Props> = props => {
 
   const handleStopCamera = () => {
     isCompletedRecording = true;
+    console.log('stoppedButtonPressed:', isCompletedRecording);
     stopRecording();
   };
 
