@@ -1244,7 +1244,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 5) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
         skipFrameCount = skipFrameCount + 1;
         //console.log(skipFrameCount);
       } else {

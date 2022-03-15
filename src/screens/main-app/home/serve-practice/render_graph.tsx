@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {StatusBar} from 'expo-status-bar';
+
+
 import {StyleSheet, Text, View, Platform} from 'react-native';
 import {StackedBarChart} from 'react-native-chart-kit';
+import React, {useState, useRef, useEffect} from 'react';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -32,39 +33,8 @@ const chartConfig = {
 };
 
 export default function ServePracticeRenderGraphScreen({navigation, route}) {
+  // Data coming from Firebase
   const {analysis_data} = route.params;
-  // console.log('graphData 1', graphData);
-  // console.log('graphData.labels ', graphData.labels)
-  //     const [data, setData] = useState(graphData);
-
-  // useEffect(() => {
-  //     console.log('graphData ',graphData);
-  //     // const analysisData = JSON.parse(graphData);
-  //     // console.log('analysisData 1', analysisData);
-  //     // setData(JSON.parse(analysisData));
-  // }, [graphData]);
-
-  // const temp_analysis_data = {
-  //         labels: ["Flat", "Kick", "Slice"],
-  //     legend: ["Grade A", "Grade B", "Grade C", "Grade D"],
-  //     data: [
-  //       [1, 1, 1, 1],
-  //       [1, 1, 1, 6],
-  //       [1, 1, 1, 4],
-  //     ],
-  //     barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
-  // }
-
-  // const analysis_data = {
-  //   labels: ['Flat', 'Kick', 'Slice'],
-  //   legend: ['Grade A', 'Grade B', 'Grade C', 'Grade D'],
-  //   data: [
-  //     [2, 3, 4, 1],
-  //     [1, 5, 5, 6],
-  //     [0, 2, 6, 4],
-  //   ],
-  //   barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-  // };
 
   // Data Format that Victory Graph Receives
   const data_victory = {
@@ -136,6 +106,28 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   data_victory.DGrade[2].y = analysis_data['data'][2][3];
 
   // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
+
+  // const renderGraphButton = () => {
+  //   return (
+  //     <SafeAreaView
+  //       style={styles.cameraTypeSwitcher}
+  //       onTouchEnd={handleShowGraphButton}>
+  //       <Text>Show graph</Text>
+  //     </SafeAreaView>
+  //   );
+  // };
+
+  // const renderBackButton = () => {
+  //   return (
+  //     <TouchableOpacity
+  //       // style={styles.backButtonContainer}
+  //       onPress={() => {
+  //         navigation.goBack();
+  //       }}>
+  //       {/* <Image source={backIcon} style={{width: 24, height: 24}} /> */}
+  //     </TouchableOpacity>
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.main_view}>
