@@ -180,37 +180,37 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
                   }}
                   data={data_victory.AGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+                  style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.BGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+                  style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.CGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+                  style={{data: {fill: 'red'}, labels: {fill: 'red'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.DGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+                  style={{data: {fill: 'green'}, labels: {fill: 'green'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
               </VictoryGroup>
               <VictoryLegend
                 x={Dimensions.get('screen').width / 30}
                 orientation={'horizontal'}
-                gutter={screenWidth / 20}
+                gutter={screenWidth / 30}
                 data={[
                   {name: 'A Grade', symbol: {fill: 'blue'}},
                   {name: 'B Grade', symbol: {fill: 'orange'}},

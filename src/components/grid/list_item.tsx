@@ -13,7 +13,7 @@ type Props = {
 
 const ListItem: React.FunctionComponent<Props> = props => {
   const {video, onPress, itemWidth} = props;
-  console.log('VideoThumb:', video.thumbnail);
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View
