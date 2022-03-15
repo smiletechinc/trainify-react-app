@@ -152,6 +152,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
       <View style={styles.vectorContainer}>
         <VictoryChart domainPadding={screenWidth / 8} width={screenWidth}>
           <VictoryAxis
+            domain={{y: [0, 8]}}
             dependentAxis
             label={'Total Serves'}
             style={{axisLabel: {padding: 30}}}></VictoryAxis>
@@ -163,37 +164,37 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               }}
               data={data_victory.AGrade}
               labels={({datum}) => datum.y}
-              style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+              style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
+              labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
             <VictoryBar
               animate={{
                 duration: 2000,
               }}
               data={data_victory.BGrade}
               labels={({datum}) => datum.y}
-              style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+              style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
+              labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
             <VictoryBar
               animate={{
                 duration: 2000,
               }}
               data={data_victory.CGrade}
               labels={({datum}) => datum.y}
-              style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+              style={{data: {fill: 'red'}, labels: {fill: 'red'}}}
+              labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
             <VictoryBar
               animate={{
                 duration: 2000,
               }}
               data={data_victory.DGrade}
               labels={({datum}) => datum.y}
-              style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
+              style={{data: {fill: 'green'}, labels: {fill: 'green'}}}
+              labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
           </VictoryGroup>
           <VictoryLegend
-            x={Dimensions.get('screen').width - 30}
+            x={Dimensions.get('screen').width / 30}
             orientation={'horizontal'}
-            gutter={100}
+            gutter={screenWidth / 20}
             data={[
               {name: 'A Grade', symbol: {fill: 'blue'}},
               {name: 'B Grade', symbol: {fill: 'orange'}},
