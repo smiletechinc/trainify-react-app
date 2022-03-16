@@ -1,5 +1,8 @@
+
+
+import {StyleSheet, Text, View, Platform} from 'react-native';
+import {StackedBarChart} from 'react-native-chart-kit';
 import React, {useState, useRef, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -10,12 +13,24 @@ import {
   VictoryLabel,
   VictoryPie,
 } from 'victory-native';
-import {reactHooksModuleName} from '@reduxjs/toolkit/dist/query/react/module';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import {TouchableOpacity} from 'react-native-gesture-handler/lib/typescript/components/touchables';
+import {SafeAreaView} from 'react-navigation';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {SCREEN_WIDTH} from '../../../../constants';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
+
+const chartConfig = {
+  backgroundGradientFrom: '#1E2923',
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: '#08130D',
+  backgroundGradientToOpacity: 0.5,
+  color: (opacity = 8) => `rgba(0, 0, 0, ${opacity})`,
+  strokeWidth: 5, // optional, default 3
+  barPercentage: 1,
+  useShadowColorFromDataset: false, // optional
+};
 
 export default function ServePracticeRenderGraphScreen({navigation, route}) {
   // Data coming from Firebase
@@ -115,80 +130,90 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   // };
 
   return (
-    // Graph Printing
-    <View style={styles.container}>
-      <HeaderWithText
-        text="Graph"
-        hideProfileSection={true}
-        navigation={navigation}
-      />
-      <View style={styles.pieContainer}>
-        <VictoryPie
-          animate={{
-            duration: 1000,
-          }}
-          padding={screenWidth / 4}
-          width={screenWidth}
-          height={screenHeight}
-          colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
-          data={pie_data.data}
+    <SafeAreaView style={styles.main_view}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        showsVerticalScrollIndicator={false}>
+        <HeaderWithText
+          text="Graph Report"
+          navigation={navigation}
+          hideBackButton={false}
         />
-      </View>
-      <Text>Distibution of Serves Performed</Text>
-      <View style={styles.vectorContainer}>
-        <VictoryChart domainPadding={screenWidth / 8} width={screenWidth}>
-          <VictoryAxis
-            dependentAxis
-            label={'Total Serves'}
-            style={{axisLabel: {padding: 30}}}></VictoryAxis>
-          <VictoryAxis label={'Type of Serve'}></VictoryAxis>
-          <VictoryGroup offset={screenWidth / 25}>
-            <VictoryBar
+        <View style={styles.container}>
+          <View style={styles.pieContainer}>
+            <VictoryPie
               animate={{
-                duration: 2000,
+                duration: 1000,
               }}
-              data={data_victory.AGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.BGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.CGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.DGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-          </VictoryGroup>
-          <VictoryLegend
-            x={screenWidth / 30}
-            orientation={'horizontal'}
-            gutter={screenWidth / 20}
-            data={[
-              {name: 'A Grade', symbol: {fill: 'blue'}},
-              {name: 'B Grade', symbol: {fill: 'orange'}},
-              {name: 'C Grade', symbol: {fill: 'red'}},
-              {name: 'D Grade', symbol: {fill: 'green'}},
-            ]}></VictoryLegend>
-        </VictoryChart>
-      </View>
-    </View>
+              padding={screenWidth / 5}
+              width={screenWidth}
+              height={screenHeight / 2}
+              colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
+              data={pie_data.data}
+            />
+          </View>
+          <View style={{marginTop: -40}}>
+            <Text>Distibution of Serves Performed</Text>
+          </View>
+          <View style={styles.vectorContainer}>
+            <VictoryChart domainPadding={screenWidth / 4}>
+              <VictoryAxis
+                domain={{y: [0, 8]}}
+                dependentAxis
+                label={'Total Serves'}
+                style={{axisLabel: {padding: 30}}}></VictoryAxis>
+              <VictoryAxis label={'Type of Serve'}></VictoryAxis>
+              <VictoryGroup offset={screenWidth / 25}>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.AGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.BGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.CGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'red'}, labels: {fill: 'red'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.DGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'green'}, labels: {fill: 'green'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+              </VictoryGroup>
+              <VictoryLegend
+                x={Dimensions.get('screen').width / 30}
+                orientation={'horizontal'}
+                gutter={screenWidth / 30}
+                data={[
+                  {name: 'A Grade', symbol: {fill: 'blue'}},
+                  {name: 'B Grade', symbol: {fill: 'orange'}},
+                  {name: 'C Grade', symbol: {fill: 'red'}},
+                  {name: 'D Grade', symbol: {fill: 'green'}},
+                ]}></VictoryLegend>
+            </VictoryChart>
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -200,17 +225,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  main_view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 15 : 15,
+    paddingHorizontal: SCREEN_WIDTH * 0.05,
+  },
   pieContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: screenHeight / 1.8,
+    paddingBottom: screenHeight / 8,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: screenHeight / 3,
+    paddingLeft: screenWidth / 20,
   },
 
   calibrationContainer: {

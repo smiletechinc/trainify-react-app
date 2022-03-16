@@ -14,6 +14,7 @@ import {
   BallPracticeContainer,
   RecordBallPracticeContainer,
   UploadBallPracticeContainer,
+  BallPracticeTensorCamera,
   BallPracticeCameraContainer,
   BallPracticeImagePickerContainer,
   BallPracticeVideoPlayerContainer,
@@ -66,6 +67,10 @@ function MainAppContainer() {
       <AppStack.Screen
         name="UploadBallPracticeScreen"
         component={UploadBallPracticeScreen}
+      />
+      <AppStack.Screen
+        name="BallPracticeTensorCamera"
+        component={BallPracticeTensorCamera}
       />
       <AppStack.Screen
         name="BallPracitceAnalysisGridScreen"

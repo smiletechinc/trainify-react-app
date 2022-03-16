@@ -16,6 +16,7 @@ import HomeScreen from './main-app/home';
 
 import BallPracitceAnalysisGridScreen from './main-app/home/ball-machine-practice/AnalysisGrid';
 import BallPracticeCameraContainer from './main-app/home/ball-machine-practice/CameraContainer';
+import BallPracticeTensorCamera from './main-app/home/ball-machine-practice/BallPracticeTensorCamera';
 import BallPracticeImagePickerContainer from './main-app/home/ball-machine-practice/ImagePicker';
 import RecordBallPracticeContainer from './main-app/home/ball-machine-practice/RecordService';
 import BallPracticeRenderGraphScreen from './main-app/home/ball-machine-practice/render_graph';
@@ -60,6 +61,7 @@ export {
   SplashScreen,
   HomeScreen,
   BallPracitceAnalysisGridScreen,
+  BallPracticeTensorCamera,
   BallPracticeCameraContainer,
   BallPracticeImagePickerContainer,
   RecordBallPracticeContainer,
