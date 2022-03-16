@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useEffect} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import {SCREEN_WIDTH} from '../../../constants';
+import { SCREEN_WIDTH } from '../../../constants';
 import Header from '../../../global-components/header';
 import styles from '../styles';
 import globalStyles from '../../../global-styles';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 
 const servePracticeImage = require('../../../assets/images/serve-practice.png');
@@ -16,8 +16,8 @@ type Props = {
   navigation: any;
 };
 
-const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
-  useEffect(() => {});
+const HomeScreen: FunctionComponent<Props> = ({ navigation }) => {
+  useEffect(() => { });
 
   return (
     <View style={styles.home_main_view}>
@@ -52,7 +52,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
-            navigation.navigate('BallMachinePracticeHomeScreen');
+            // navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
           <AutoHeightImage
             source={practiceWithBall}
@@ -70,7 +70,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
-            navigation.navigate('HomePracticeHomeScreen');
+            // navigation.navigate('HomePracticeHomeScreen');
           }}>
           <AutoHeightImage source={practiceAtHome} width={SCREEN_WIDTH * 0.9} />
           <Text style={[globalStyles.h1, styles.practice_text]}>
