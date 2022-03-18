@@ -6,6 +6,7 @@ import {
   Dimensions,
   Platform,
   Alert,
+  Button,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -32,6 +33,7 @@ import {
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
+import AnimatedLoader from 'react-native-animated-loader';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -84,6 +86,8 @@ const App4: FunctionComponent<Props> = props => {
   const [thumbnail, setThumbnail] = React.useState<any>(null);
   const [videoURL, setVideoURL] = React.useState<string>(null);
   const [videoData, setVideoData] = React.useState<string>(null);
+  const [currentUploadStatus, setStatus] = useState('Processing media');
+  const [uploadingVideo, setUploading] = useState(false);
 
   const {
     uploading,
@@ -329,6 +333,9 @@ const App4: FunctionComponent<Props> = props => {
 
   const addVideoSuccess = (video?: any) => {
     // console.log('Added: ', JSON.stringify(video));
+    setStatus('Video added');
+    setUploading(false);
+    Alert.alert('Video added successfully');
     if (video) {
       navigation.replace('VideoPlayerContainer', {video: video});
     }
@@ -336,16 +343,18 @@ const App4: FunctionComponent<Props> = props => {
   };
   const addVideoFailure = (error?: any) => {
     // console.log('Error: ', JSON.stringify(error));
+    setStatus('Video added');
+    setUploading(false);
     if (error) {
       Alert.alert('Trainify', `Error in adding video metadata.`);
     }
   };
   const uploadVideoSuccess = (updatedResponse?: any) => {
     setLoading(false);
-    Alert.alert('Video uploaded successfully');
     setVideoURL(updatedResponse);
     vidURL = updatedResponse;
     console.log('upload video success: ', JSON.stringify(updatedResponse));
+    setUploading(false);
     addVideoToFirebase();
   };
 
@@ -357,22 +366,27 @@ const App4: FunctionComponent<Props> = props => {
       thumbnailURL: thumbURL,
       videoURL: vidURL,
     };
-    console.log('videoMetadata, ', videoMetadata);
+    console.log('videoMetadata, ', JSON.stringify(videoMetadata));
+    setUploading(true);
+    setStatus('Adding to database');
+    setUploading(true);
     addVideoService(videoMetadata, addVideoSuccess, addVideoFailure);
   };
 
   const uploadVideoFailureFirebase = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
+    Alert.alert('upload video failure in firebase: ', JSON.stringify(error));
     if (error) {
       // Alert.alert('Trainify', `Error in adding video.`);
     }
   };
 
   const stopRecording = async () => {
-    const res = await RecordScreen.stopRecording()
+    setUploading(true);
+    setStatus('Saving video in Device!');
+    const responseReocrding = await RecordScreen.stopRecording()
       .then(async res => {
         if (res) {
-          console.log('recording stopped:', res);
+          console.log('recording stopped:', JSON.stringify(res));
           const url = res.result.outputURL;
           await CameraRoll.save(url, {type: 'video', album: 'TrainfyApp'});
 
@@ -383,6 +397,9 @@ const App4: FunctionComponent<Props> = props => {
             uri: url,
             type: 'video/mp4',
           };
+          console.log('videoData for uploading:', JSON.stringify(videoData1));
+          setUploading(true);
+          setStatus('Uploading video!');
           await uploadVideoService(
             videoData1,
             uploadVideoSuccess,
@@ -419,6 +436,7 @@ const App4: FunctionComponent<Props> = props => {
 
           // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
         }
+        setUploading(true);
       })
       .catch(error => console.log('error...: ', error));
   };
@@ -1533,6 +1551,26 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
+  const renderUploadingAnimation = () => {
+    return (
+      <AnimatedLoader
+        style={styles.cameraContainer}
+        visible={uploadingVideo}
+        overlayColor={'rgba(255, 255, 255, 0.75)'}
+        source={require('./loader.json')}
+        animationStyle={styles.lottie}
+        speed={1}>
+        <Text>{currentUploadStatus}</Text>
+        <Button
+          title={'Cancel upload'}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      </AnimatedLoader>
+    );
+  };
+
   const camView = () => {
     return (
       <View
@@ -1589,6 +1627,7 @@ const App4: FunctionComponent<Props> = props => {
           {renderFps()}
           {renderCalibration()}
           {renderCameraTypeSwitcher()}
+          {renderUploadingAnimation()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
@@ -1736,5 +1775,9 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: cameraLayoutWidth,
     height: cameraLayoutHeight,
+  },
+  lottie: {
+    width: 100,
+    height: 100,
   },
 });

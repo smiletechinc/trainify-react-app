@@ -7,6 +7,7 @@ import styles from '../styles';
 import globalStyles from '../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
+import RecordScreen from 'react-native-record-screen';
 
 const servePracticeImage = require('../../../assets/images/serve-practice.png');
 const practiceWithBall = require('../../../assets/images/practice-with-ball.png');
@@ -17,7 +18,9 @@ type Props = {
 };
 
 const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
-  useEffect(() => {});
+  useEffect(() => {
+    RecordScreen.startRecording({mic: false});
+  }, []);
 
   return (
     <View style={styles.home_main_view}>
@@ -34,6 +37,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 60,
           }}
           onPress={() => {
+            RecordScreen.stopRecording();
             navigation.navigate('ServePracticeHomeScreen');
           }}>
           <AutoHeightImage
@@ -52,6 +56,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
+            RecordScreen.stopRecording();
             // navigation.navigate('BallMachinePracticeHomeScreen')
           }}>
           <AutoHeightImage
@@ -70,6 +75,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
+            RecordScreen.stopRecording();
             // navigation.navigate('HomePracticeHomeScreen')
           }}>
           <AutoHeightImage source={practiceAtHome} width={SCREEN_WIDTH * 0.9} />
