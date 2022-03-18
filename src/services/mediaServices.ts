@@ -42,25 +42,47 @@ export const uploadVideoService = async (videoData, onSuccess?: any, onFailure?:
   //   name: fileName,
   // })
 
-  const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
-  console.log('11111: ', fileImage);
-  const img = await fetch(fileImage.uri);
-  console.log('22222:  ', img);
-  const bytes = await img.blob();
-  console.log('33333: ', bytes);
+  try {
+    const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
+    Alert.alert('upload 11111: ', JSON.stringify(fileImage));
+    // const uploadUri = Platform.OS === 'ios' ? fileImage.uri.replace('file://', '') : fileImage.uri
 
-  uploadBytes(storageRef, bytes)
-    .then((response) => {
-      console.log('Video uploaded: ', response);
-      // let fileName = response.metadata.name
-      console.log('success: ', response);
-      let filePath = response.ref._location.path_;
-      getVideoURL(filePath, onSuccess, onFailure);
-    })
-    .catch((error) => {
-      console.error('Error: ', error);
-      onFailure(error);
-    })
+    const file = await fetch(fileImage.uri);
+    // const file = fileImage.uri;
+    Alert.alert('upload  22222:  ', JSON.stringify(file));
+    try{
+      const bytes = await file.blob();
+      Alert.alert('upload 33333: ', JSON.stringify(bytes));
+      const metadata = { contentType: "video/mp4" };
+
+      uploadBytes(storageRef, bytes, metadata)
+        .then((response) => {
+          Alert.alert('Video uploaded: ', JSON.stringify(response));
+          // let fileName = response.metadata.name
+          console.log('success: ', response);
+          let filePath = response.ref._location.path_;
+          if (filePath){
+            Alert.alert('video path: ', filePath);
+          } else{
+            Alert.alert("VideoPath is not found");
+          }
+          // getVideoURL(filePath, onSuccess, onFailure);
+          // file.blob.prototype.stop();
+        })
+        .catch((error) => {
+          Alert.alert('Error in uploading: ', error);
+          onFailure(error);
+          file.blob.prototype.stop();
+        })
+    } catch (error) {
+      Alert.alert('Error in internal catch ', JSON.stringify(error));
+    onFailure(error);
+    file.blob.prototype.stop();
+    }
+  } catch (error){
+    Alert.alert('Error in catch ', JSON.stringify(error));
+    onFailure(error);
+  }
 
 
   // console.log('storageRef: ', storageRef);
@@ -158,15 +180,15 @@ export const getThumbnailURL = (fileName: string, onSuccess?: any, onFailure?: a
 }
 
 export const getVideoURL = (fileName: string, onSuccess?: any, onFailure?: any) => {
-  console.log('fetching url for video: ', fileName);
+  Alert.alert('fetching url for video: ', fileName);
   const storageRef = ref(storage, fileName);
   getDownloadURL(storageRef)
     .then((response) => {
-      console.log('Thumbnail url response success: ', response);
+      Alert.alert('Thumbnail url response success: ', response);
       onSuccess(response);
     })
     .catch((error) => {
-      console.log('Thumbnail url response error: ', error);
+      Alert.alert('Thumbnail url response error: ', error);
 
       console.error(error);
       onFailure(error);
@@ -176,4 +198,120 @@ export const getVideoURL = (fileName: string, onSuccess?: any, onFailure?: any) 
 
 export const downloadVideoService = () => {
 
+}
+
+export const uploadVideoServiceBackup2 = async (videoData, onSuccess?: any, onFailure?: any) => {
+
+  const fileName = videoData.fileName ? videoData.fileName : videoData.name ? videoData.name : 'temp-file-name';
+  const fileURI = videoData.uri;
+  const fileType = videoData.type;
+
+// export const uploadVideoAsync =  async (uri) => {
+  // Why are we using XMLHttpRequest? See:
+  // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+  const blob: Blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+      reject(new TypeError("Network request failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", fileURI, true);
+    xhr.send(null);
+  });
+
+  const storageRef = ref(storage, `videos/${fileName}`);
+  // const ref = firebase.storage().ref().child(uuid.v4());
+  if (blob){
+    Alert.alert('Uploading bytes...');
+    const snapshot = await uploadBytes(storageRef, blob);
+    // const uploadedVideo = await snapshot.ref.getDownloadURL();
+    if(snapshot){
+      Alert.alert('video uploaded successfuly, ', JSON.stringify(snapshot));
+    }
+    // We're done with the blob, close and release it
+    blob.close();
+    return snapshot;
+  } else {
+    Alert.alert('Empty blob');
+  }
+}
+
+export const uploadVideoServiceBackup3 = async (videoData, onSuccess?: any, onFailure?: any) => {
+
+  const fileName = videoData.fileName ? videoData.fileName : videoData.name ? videoData.name : 'temp-file-name';
+  const fileURI = videoData.uri;
+  const fileType = videoData.type;
+
+
+  // const videoRef = firebase.storage().ref("video/filename");
+  const videoRef = ref(storage, `videos/${fileName}`);
+
+  const metadata = { contentType: "video/mp4" };
+
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+
+    xhr.ontimeout = function (e) {
+      // XMLHttpRequest timed out. Do something here.
+
+      console.log(e);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+
+      reject(new TypeError("Network request failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", fileURI, true);
+    xhr.timeout = 1000 * 60;
+    xhr.send(null);
+  });
+
+
+  var uploadTask = videoRef.put(blob, metadata);
+
+  uploadTask.on(
+    "state_changed",
+    (snapshot) => {
+      // Observe state change events such as progress, pause, and resume
+      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      const progress = snapshot.bytesTransferred / snapshot.totalBytes;
+
+    
+
+      // switch (snapshot.state) {
+      //   case storage.TaskState.PAUSED: // or 'paused'
+      //     console.log("Upload is paused");
+      //     break;
+      //   case firebase.storage.TaskState.RUNNING: // or 'running'
+      //     console.log("Upload is running");
+      //     break;
+      // }
+    },
+    (error) => {
+      console.log(error);
+
+      // Handle unsuccessful uploads
+      blob.close();
+    },
+    () => {
+      // Handle successful uploads on complete
+      // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+      uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+
+
+Alert.alert("Video file save at:",downloadURL)
+       
+      });
+      blob.close();
+    }
+  );
 }

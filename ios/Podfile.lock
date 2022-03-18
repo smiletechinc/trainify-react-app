@@ -27,6 +27,8 @@ PODS:
   - EXScreenOrientation (4.1.2):
     - ExpoModulesCore
     - React-Core
+  - EXVideoThumbnails (6.2.0):
+    - ExpoModulesCore
   - FBLazyVector (0.64.0)
   - FBReactNativeSpec (0.64.0):
     - RCT-Folly (= 2020.01.13.00)
@@ -381,15 +383,15 @@ PODS:
     - React-Core
   - RNFS (2.19.0):
     - React-Core
-  - RNGestureHandler (2.2.0):
+  - RNGestureHandler (2.3.0):
     - React-Core
   - RNIap (8.0.5):
     - React-Core
-  - RNScreens (3.12.0):
+  - RNScreens (3.13.1):
     - React-Core
     - React-RCTImage
-  - RNSVG (12.1.1):
-    - React
+  - RNSVG (12.3.0):
+    - React-Core
   - RNThumbnail (1.0.0):
     - React
   - RNVectorIcons (9.1.0):
@@ -411,6 +413,7 @@ DEPENDENCIES:
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
   - EXScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
+  - EXVideoThumbnails (from `../node_modules/expo-video-thumbnails/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - Flipper (~> 0.75.1)
@@ -522,6 +525,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core/ios"
   EXScreenOrientation:
     :path: "../node_modules/expo-screen-orientation/ios"
+  EXVideoThumbnails:
+    :path: "../node_modules/expo-video-thumbnails/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -630,8 +635,9 @@ SPEC CHECKSUMS:
   Expo: 6ca1d5ca8c8264a7131a608afcd01561f79f1e6e
   ExpoModulesCore: d04e519b3e8e21523b195bb21a40144e30f1e163
   EXScreenOrientation: ca9375ec57e5706128062867516da0b03a97ef64
+  EXVideoThumbnails: 847d648d6f4bc0c1afad05caa56a487dc543445e
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: 5e5b7d4b88db0d5bdb8d5e9d52acf9819b28c6ec
+  FBReactNativeSpec: 633d937503c61669db58c93db764f4e1c9c2fb20
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
@@ -681,10 +687,10 @@ SPEC CHECKSUMS:
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: b49b4e38a1548d03b74b30e558a1d18465b94be7
   RNFS: fc610f78fdf8bfc89a9e5cc2f898519f4dba1002
-  RNGestureHandler: bf572f552ea324acd5b5464b8d30755b2d8c1de6
+  RNGestureHandler: 77d59828d40838c9fabb76a12d2d0a80c006906f
   RNIap: 2bb5fdc51db7f62f194efdd5e9d613ae48605cb1
-  RNScreens: 2559f98b0835103cbef3b26ba77fa61d4bb37ae7
-  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
+  RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   RNThumbnail: f5d3c6e18dd15213ce46e1f631be65d4c6fcb133
   RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf

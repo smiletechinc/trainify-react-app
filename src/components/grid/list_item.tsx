@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {VideoData} from '../../../types';
 import {styles} from './index';
@@ -13,7 +13,12 @@ type Props = {
 
 const ListItem: React.FunctionComponent<Props> = props => {
   const {video, onPress, itemWidth} = props;
+  const [image, setImage] = useState(null);
 
+  useEffect(() => {
+    console.log('VideoThumbnail:', video.thumbnailURL);
+    setImage(video.thumbnailURL);
+  }, [video.thumbnailURL]);
   return (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -24,10 +29,16 @@ const ListItem: React.FunctionComponent<Props> = props => {
           },
         ]}>
         <View style={{marginLeft: -10}}>
-          <Image
+          {image && (
+            <Image
+              source={{uri: image}}
+              style={{height: 185, width: itemWidth - 17}}
+            />
+          )}
+          {/* <Image
             source={playerImage}
             style={{height: 185, width: itemWidth - 17}}
-          />
+          /> */}
         </View>
         <View
           style={{

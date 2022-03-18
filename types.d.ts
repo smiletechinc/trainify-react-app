@@ -8,7 +8,7 @@ declare type VideoData = {
     duration: number;
     width: number;
     height: number;
-    thumbnail: string;
+    thumbnailURL: string;
     firebaseUrl: string;
     analysisData: any;
 }

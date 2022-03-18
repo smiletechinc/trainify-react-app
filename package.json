@@ -41,6 +41,7 @@
     "expo-modules-autolinking": "^0.5.5",
     "expo-screen-orientation": "^4.1.2",
     "expo-status-bar": "^1.2.0",
+    "expo-video-thumbnails": "^6.2.0",
     "firebase": "^9.6.4",
     "i": "^0.3.7",
     "jpeg-js": "^0.4.3",

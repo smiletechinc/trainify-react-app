@@ -50,7 +50,6 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
     }
   };
   // const navigation = useNavigation();
-  useEffect(() => {});
   // const start = () => {
   //   // 30 seconds
   //   setShowVideoRecorder(true);
@@ -74,6 +73,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={() => {
+                RecordScreen.stopRecording();
                 navigation.navigate('UploadServePracticeScreen', {
                   title: 'Upload LEFT-Handed Serve',
                 });
@@ -97,6 +97,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               onPress={() => {
                 // navigation.navigate('RecordPractice');
                 // navigation.navigate('CameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
+                RecordScreen.stopRecording();
                 navigation.navigate('App4', {
                   title: 'RECORD LEFT-HANDED SERVE',
                 });
@@ -117,6 +118,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               activeOpacity={0.8}
               delayPressIn={0}
               onPress={() => {
+                RecordScreen.stopRecording();
                 navigation.navigate('UploadServePracticeScreen', {
                   title: 'Upload RIGHT-Handed Serve',
                 });
@@ -141,6 +143,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                 // navigation.navigate('RecordPractice');
                 // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
                 // navigation.navigate('UsamaCameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
+                RecordScreen.stopRecording();
                 navigation.navigate('App4', {
                   title: 'RECORD RIGHT-HANDED SERVE',
                 });
@@ -164,6 +167,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             onPress={() => {
               // navigation.navigate('RecordPractice');
               // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
+              RecordScreen.stopRecording();
               navigation.navigate('AnalysisGridScreen', {
                 title: 'Analysis Report',
               });
