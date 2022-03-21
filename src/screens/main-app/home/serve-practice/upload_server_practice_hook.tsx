@@ -23,8 +23,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles_external from '../../styles';
 import AnimatedLoader from 'react-native-animated-loader';
 import {PrimaryButton} from '../../../../components/buttons';
-import {useMediaUpload} from '../../../../hooks/useThumbnailUpload';
-import {image} from '@tensorflow/tfjs-core';
+import {useMediaUpload} from '../../../../hooks/useMediaUpload';
 import {useAnalysisUpload} from '../../../../hooks';
 /* toggle includeExtra */
 const includeExtra = true;

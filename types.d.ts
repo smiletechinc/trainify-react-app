@@ -11,6 +11,8 @@ declare type VideoData = {
     thumbnail: string;
     firebaseUrl: string;
     analysisData: any;
+    thumbnailURL: string;
+    videoURL: string;
 }
 
 export type AuthObject = {

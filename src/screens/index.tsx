@@ -44,7 +44,9 @@ import UploadServePracticeScreen from './main-app/home/serve-practice/upload_ser
 import UploadServePracticeScreenHook from './main-app/home/serve-practice/upload_server_practice_hook';
 import UploadServePracticeContainer from './main-app/home/serve-practice/UploadServe';
 import ServePracticeVideoPlayerContainer from './main-app/home/serve-practice/video_player_screen';
-
+import TestRecordScreenContainer from './authentication/TestRecordScreen';
+import TestRecordScreenContainerHook from './authentication/TestRecordScreenHook';
+import UploadServeContainerHook from './authentication/UploadServeContainerHook';
 export {
   TensorFlowCameraContainer,
   TensorCameraContainer,
@@ -53,6 +55,9 @@ export {
   App45,
   LandingScreenContainer,
   LanguageScreenContainer,
+  TestRecordScreenContainer,
+  TestRecordScreenContainerHook,
+  UploadServeContainerHook,
   PaymentPlanContainer,
   ResetPasswordContainer,
   SigninScreen,

@@ -39,7 +39,49 @@ const styles = StyleSheet.create({
     color: COLORS.medium_grey,
     fontWeight: '600',
     marginTop: 7,
-  }
+  },
+  recordButtonContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderColor:'gray',
+    borderWidth:1,
+    flexDirection: 'row',
+    margin: 0,
+  },
+  recordIconStyle: {
+    width: 60,
+    height: 60,
+    position: 'absolute',
+    bottom: 36,
+    zIndex: 1000,
+  },
+  recordIcon: {
+    width: 60,
+    height: 60,
+    position: 'absolute',
+    bottom: 36,
+    zIndex: 1000,
+  },
+  cameraContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'black',
+    marginTop: 0,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    padding: 0,
+  },
+  lottie: {
+    width: 100,
+    height: 100,
+  },
 
 });
 export default styles;

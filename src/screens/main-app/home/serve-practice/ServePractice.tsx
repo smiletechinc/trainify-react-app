@@ -95,8 +95,6 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                 marginLeft: 23,
               }}
               onPress={() => {
-                // navigation.navigate('RecordPractice');
-                // navigation.navigate('CameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
                 navigation.navigate('App4', {
                   title: 'RECORD LEFT-HANDED SERVE',
                 });
@@ -138,9 +136,6 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                 marginLeft: 23,
               }}
               onPress={() => {
-                // navigation.navigate('RecordPractice');
-                // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                // navigation.navigate('UsamaCameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
                 navigation.navigate('App4', {
                   title: 'RECORD RIGHT-HANDED SERVE',
                 });
@@ -162,8 +157,6 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             activeOpacity={0.8}
             delayPressIn={0}
             onPress={() => {
-              // navigation.navigate('RecordPractice');
-              // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
               navigation.navigate('AnalysisGridScreen', {
                 title: 'Analysis Report',
               });
@@ -177,37 +170,6 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               Analysis Report
             </Text>
           </TouchableOpacity>
-        </View>
-
-        {/* <View
-            style={{flexDirection: 'row', marginTop: 18,}}
-          >
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayPressIn={0}
-              onPress={()=> {
-                // navigation.navigate('RecordPractice');
-                // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                navigation.navigate('AnalysisScreen', {title: 'RECORD RIGHT-HANDED SERVE'})
-                // stopRecording();
-                
-              }}
-            >
-              <AutoHeightImage source={analysisIcon} width={((SCREEN_WIDTH * 0.9) / 2) - 23} />
-              <Text style={[globalStyles.medium, styles.record_and_upload_text]}>stop</Text>
-            </TouchableOpacity>
-          </View> */}
-
-        <View style={{height: 400}}>
-          {/* <VideoRecorder
-            ref={(ref) => { setVideoRecorder(ref); }}
-            cameraOptions={{}}
-            durationTextStyle={styles.video_duration_text}
-            buttonCloseStyle={{
-              bottom: SCREEN_HEIGHT - STATUS_BAR_HEIGHT - 10,
-              left: (SCREEN_WIDTH / 2) - 23,
-            }}
-          /> */}
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
