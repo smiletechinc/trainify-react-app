@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Platform} from 'react-native';
 import {StackedBarChart} from 'react-native-chart-kit';
+import React, {useState, useRef, useEffect} from 'react';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -12,8 +11,13 @@ import {
   VictoryLabel,
   VictoryPie,
 } from 'victory-native';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {SafeAreaView} from 'react-navigation';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {SCREEN_WIDTH} from '../../../../constants';
 
-const screenWidth = Dimensions.get('window').width;
+var screenWidth = Dimensions.get('window').width;
+var screenHeight = Dimensions.get('window').height;
 
 const chartConfig = {
   backgroundGradientFrom: '#1E2923',
@@ -27,39 +31,8 @@ const chartConfig = {
 };
 
 export default function ServePracticeRenderGraphScreen({navigation, route}) {
+  // Data coming from Firebase
   const {analysis_data} = route.params;
-  // console.log('graphData 1', graphData);
-  // console.log('graphData.labels ', graphData.labels)
-  //     const [data, setData] = useState(graphData);
-
-  // useEffect(() => {
-  //     console.log('graphData ',graphData);
-  //     // const analysisData = JSON.parse(graphData);
-  //     // console.log('analysisData 1', analysisData);
-  //     // setData(JSON.parse(analysisData));
-  // }, [graphData]);
-
-  // const temp_analysis_data = {
-  //         labels: ["Flat", "Kick", "Slice"],
-  //     legend: ["Grade A", "Grade B", "Grade C", "Grade D"],
-  //     data: [
-  //       [1, 1, 1, 1],
-  //       [1, 1, 1, 6],
-  //       [1, 1, 1, 4],
-  //     ],
-  //     barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
-  // }
-
-  // const analysis_data = {
-  //   labels: ['Flat', 'Kick', 'Slice'],
-  //   legend: ['Grade A', 'Grade B', 'Grade C', 'Grade D'],
-  //   data: [
-  //     [2, 3, 4, 1],
-  //     [1, 5, 5, 6],
-  //     [0, 2, 6, 4],
-  //   ],
-  //   barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-  // };
 
   // Data Format that Victory Graph Receives
   const data_victory = {
@@ -130,90 +103,91 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   data_victory.DGrade[1].y = analysis_data['data'][1][3];
   data_victory.DGrade[2].y = analysis_data['data'][2][3];
 
-  // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
-
   return (
-    // Graph Printing
-    <View style={styles.container}>
-      <View style={styles.pieContainer}>
-        <VictoryPie
-          animate={{
-            duration: 1000,
-          }}
-          padding={60}
-          width={500}
-          height={500}
-          colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
-          data={pie_data.data}
+    <SafeAreaView style={styles.main_view}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        showsVerticalScrollIndicator={false}>
+        <HeaderWithText
+          text="Graph Report"
+          navigation={navigation}
+          hideBackButton={false}
         />
-      </View>
-      <Text>Distibution of Serves Performed</Text>
-      <View style={styles.vectorContainer}>
-        <VictoryChart domainPadding={80}>
-          <VictoryAxis
-            dependentAxis
-            label={'Total Serves'}
-            style={{axisLabel: {padding: 30}}}></VictoryAxis>
-          <VictoryAxis label={'Type of Serve'}></VictoryAxis>
-          <VictoryGroup offset={30}>
-            <VictoryBar
+        <View style={styles.container}>
+          <View style={styles.pieContainer}>
+            <VictoryPie
               animate={{
-                duration: 2000,
+                duration: 1000,
               }}
-              data={data_victory.AGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.BGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.CGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.DGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-          </VictoryGroup>
-          <VictoryLegend
-            x={Dimensions.get('screen').width / 2 - 300}
-            orientation={'horizontal'}
-            gutter={100}
-            data={[
-              {name: 'A Grade', symbol: {fill: 'blue'}},
-              {name: 'B Grade', symbol: {fill: 'orange'}},
-              {name: 'C Grade', symbol: {fill: 'red'}},
-              {name: 'D Grade', symbol: {fill: 'green'}},
-            ]}></VictoryLegend>
-        </VictoryChart>
-      </View>
-    </View>
-    // <View style={styles.container}>
-    //   {data && (
-    //     <StackedBarChart
-    //       // style={graphStyle}
-    //       data={graphData}
-    //       width={screenWidth}
-    //       height={220}
-    //       chartConfig={chartConfig}
-    //     />
-    //   )}
-    //   <StatusBar style="auto" />
-    // </View>
+              padding={screenWidth / 5}
+              width={screenWidth}
+              height={screenHeight / 2}
+              colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
+              data={pie_data.data}
+            />
+          </View>
+          <View style={{marginTop: -40}}>
+            <Text>Distibution of Serves Performed</Text>
+          </View>
+          <View style={styles.vectorContainer}>
+            <VictoryChart domainPadding={screenWidth / 4}>
+              <VictoryAxis
+                domain={{y: [0, 8]}}
+                dependentAxis
+                label={'Total Serves'}
+                style={{axisLabel: {padding: 30}}}></VictoryAxis>
+              <VictoryAxis label={'Type of Serve'}></VictoryAxis>
+              <VictoryGroup offset={screenWidth / 25}>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.AGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.BGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.CGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'red'}, labels: {fill: 'red'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.DGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'green'}, labels: {fill: 'green'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+              </VictoryGroup>
+              <VictoryLegend
+                x={Dimensions.get('screen').width / 30}
+                orientation={'horizontal'}
+                gutter={screenWidth / 30}
+                data={[
+                  {name: 'A Grade', symbol: {fill: 'blue'}},
+                  {name: 'B Grade', symbol: {fill: 'orange'}},
+                  {name: 'C Grade', symbol: {fill: 'red'}},
+                  {name: 'D Grade', symbol: {fill: 'green'}},
+                ]}></VictoryLegend>
+            </VictoryChart>
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -225,17 +199,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  main_view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 15 : 15,
+    paddingHorizontal: SCREEN_WIDTH * 0.05,
+  },
   pieContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: screenHeight / 1.8,
+    paddingBottom: screenHeight / 8,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: screenHeight / 3,
+    paddingLeft: screenWidth / 20,
   },
 
   calibrationContainer: {

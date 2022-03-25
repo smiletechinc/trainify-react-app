@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {VideoData} from '../../../types';
 import {styles} from './index';
@@ -7,26 +7,38 @@ const playerImage = require('../../assets/images/player_Grid.jpeg');
 
 type Props = {
   video: VideoData;
+  itemWidth: number;
   onPress: any;
 };
 
 const ListItem: React.FunctionComponent<Props> = props => {
-  const {video, onPress} = props;
+  const {video, onPress, itemWidth} = props;
+  const [image, setImage] = useState(null);
 
+  useEffect(() => {
+    console.log('VideoThumbnail:', video.thumbnailURL);
+    setImage(video.thumbnailURL);
+  }, [video.thumbnailURL]);
   return (
     <TouchableOpacity onPress={onPress}>
       <View
         style={[
           styles.itemContainer,
           {
-            backgroundColor: '#D3D3D3',
-            borderWidth: 2,
-            borderColor: 'grey',
-            marginTop: 32,
+            width: itemWidth - 12,
           },
         ]}>
         <View style={{marginLeft: -10}}>
-          <Image source={playerImage} style={{height: 185, width: 205}} />
+          {image && (
+            <Image
+              source={{uri: image}}
+              style={{height: 185, width: itemWidth - 17}}
+            />
+          )}
+          {/* <Image
+            source={playerImage}
+            style={{height: 185, width: itemWidth - 17}}
+          /> */}
         </View>
         <View
           style={{
@@ -38,8 +50,12 @@ const ListItem: React.FunctionComponent<Props> = props => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <Text style={styles.itemName}>{video.fileName}</Text>
-          <Text style={styles.itemCode}>{video.duration}</Text>
+          <Text style={[styles.itemName, {width: (itemWidth - 15) / 2}]}>
+            {video.fileName}
+          </Text>
+          <Text style={[styles.itemCode, {width: (itemWidth - 15) / 2}]}>
+            {video.duration}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

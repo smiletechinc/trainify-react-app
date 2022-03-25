@@ -19,25 +19,17 @@ import {
 import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
-import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
-import styles_external from './src/screens/main-app/styles';
+import {CounterContext} from '../../../../context/counter-context';
+import {addVideoService} from '../../../../services/servePracticeServices';
+import styles_external from '../../styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import HeaderWithText from './src/global-components/header/HeaderWithText';
-import {IconButton} from './src/components/buttons';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {IconButton} from '../../../../components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
-import {
-  uploadPhotoService,
-  uploadVideoService,
-  getThumbnailURL,
-} from './src/services/mediaServices';
-import AnimatedLoader from 'react-native-animated-loader';
+import {isBoolean} from '@tensorflow/tfjs-core/dist/util_base';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
-const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
+const stopIcon = require('../../../../assets/images/icon_record_stop.png');
 
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
@@ -51,19 +43,19 @@ const AUTO_RENDER = false;
 
 let cameraLayoutWidth = 120;
 let cameraLayoutHeight = 160;
+var [isMissed, setIsMissed] = useState('');
 
 type Props = {
   navigation: any;
   route: any;
 };
 
-const App4: FunctionComponent<Props> = props => {
+const BallPracticeTensorCamera: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
-  // const title = '';
   const [isLoading, setLoading] = React.useState(true);
   const {increment, reset, count, calibrated, setCalibrated, setData, data} =
     React.useContext(CounterContext);
@@ -90,9 +82,12 @@ const App4: FunctionComponent<Props> = props => {
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  let response_let = {};
-  let thumbURL = '';
-  let vidURL = '';
+  var cameraflow = false;
+
+  var rallyRunningFlag = true;
+  var frames_to_skip = 0;
+  var missed = 0;
+  var missTimeCounter = 0;
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -116,16 +111,10 @@ const App4: FunctionComponent<Props> = props => {
         model,
         detectorConfig,
       );
-      const model_json = await require('./src/assets/model/model.json');
-      const model_weight = await require('./src/assets/model/group1-shard.bin');
-      const model_tos = await tf.loadLayersModel(
-        bundleResourceIO(model_json, model_weight),
-      );
 
       setOrientation(curOrientation);
       setModel(detector);
       console.log('Loading Type of Serve Model');
-      setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
       ScreenOrientation.addOrientationChangeListener(event => {
@@ -165,6 +154,7 @@ const App4: FunctionComponent<Props> = props => {
   useEffect(() => {
     return () => {
       RecordScreen.clean();
+      cameraflow = true;
       reset();
       setCalibrated(false);
       if (rafId.current != null && rafId.current !== 0) {
@@ -216,7 +206,6 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
-    // RecordScreen.setup();
     clearTimer(getDeadTime());
   }, []);
 
@@ -239,7 +228,6 @@ const App4: FunctionComponent<Props> = props => {
   }, [tfReady]);
 
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
-  const [videoURI, setVideoURI] = useState(null);
 
   const stopRecording = async () => {
     try {
@@ -248,22 +236,35 @@ const App4: FunctionComponent<Props> = props => {
           if (res) {
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
+
             try {
-              const response = await CameraRoll.save(url);
+              const response = await CameraRoll.save(url, {
+                type: 'video',
+                album: 'TrainfyApp',
+              });
               if (response) {
                 setIsRecordingInProgress(false);
-                console.log('Recording saved successfuly.');
-                setVideoURI(url);
+                cameraflow = false;
                 navigation.navigate('UploadServeContainerHook', {
                   capturedVideoURI: url,
-                  graphData: data,
+                  graphdata: data,
                 });
               } else {
-                Alert.alert('Video could not saved');
+                Alert.alert('Error .. while processing video');
               }
             } catch (error) {
-              Alert.alert('Failed to save video in gallery');
+              Alert.alert(
+                'Failed to save video in gallery',
+                // JSON.stringify(error),
+                error,
+              );
             }
+            // setIsRecordingInProgress(false);
+            // cameraflow = false;
+            // navigation.navigate('UploadServeContainerHook', {
+            //   capturedVideoURI: url,
+            //   graphdata: data,
+            // });
           }
         })
         .catch(error => Alert.alert('Error in recording...: ', error));
@@ -389,24 +390,12 @@ const App4: FunctionComponent<Props> = props => {
     );
   };
 
-  const getOutputTensorWidth = () => {
-    return isPortrait() || IS_ANDROID
-      ? OUTPUT_TENSOR_WIDTH
-      : OUTPUT_TENSOR_HEIGHT;
-  };
-
-  const getOutputTensorHeight = () => {
-    return isPortrait() || IS_ANDROID
-      ? OUTPUT_TENSOR_HEIGHT
-      : OUTPUT_TENSOR_WIDTH;
-  };
-
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
         <Text>Total {count}</Text>
         <Text>Last Serve Type {serveType}</Text>
-        <Text>Grade {serveGrade}</Text>
+        {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
   };
@@ -615,6 +604,8 @@ const App4: FunctionComponent<Props> = props => {
         (rfy / cameraLayoutHeight) *
         (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
 
+      // console.log(lscx, lscy, rscx, rscy);
+
       const color = 'green';
       const stroke = '2';
 
@@ -624,6 +615,7 @@ const App4: FunctionComponent<Props> = props => {
           height={cameraLayoutHeight}
           width={cameraLayoutWidth}>
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lscx}
             cy={lscy}
             r="4"
@@ -632,6 +624,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rscx}
             cy={rscy}
             r="4"
@@ -640,6 +633,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lhcx}
             cy={lhcy}
             r="4"
@@ -648,6 +642,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rhcx}
             cy={rhcy}
             r="4"
@@ -656,6 +651,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lecx}
             cy={lecy}
             r="4"
@@ -664,6 +660,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={recx}
             cy={recy}
             r="4"
@@ -672,6 +669,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lkcx}
             cy={lkcy}
             r="4"
@@ -680,6 +678,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rkcx}
             cy={rkcy}
             r="4"
@@ -688,6 +687,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={ltcx}
             cy={ltcy}
             r="4"
@@ -696,6 +696,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rtcx}
             cy={rtcy}
             r="4"
@@ -704,6 +705,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lacx}
             cy={lacy}
             r="4"
@@ -712,6 +714,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={racx}
             cy={racy}
             r="4"
@@ -721,6 +724,7 @@ const App4: FunctionComponent<Props> = props => {
           />
 
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={ncx}
             cy={ncy}
             r="4"
@@ -867,39 +871,6 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
-  const renderPose = () => {
-    if (poses != null && poses.length > 0) {
-      const keypoints = poses[0].keypoints
-        .filter(k => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
-        .map(k => {
-          // Flip horizontally on android or when using back camera on iOS.
-          const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
-          const x = flipX ? cameraLayoutWidth - k.x : k.x;
-          const y = k.y;
-          const cx =
-            (x / cameraLayoutWidth) *
-            (isPortrait() ? cameraLayoutWidth : cameraLayoutHeight);
-          const cy =
-            (y / cameraLayoutHeight) *
-            (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
-          return (
-            <Circle
-              key={`skeletonkp_${k.name}`}
-              cx={cx}
-              cy={cy}
-              r="4"
-              strokeWidth="2"
-              fill="#00AA00"
-              stroke="white"
-            />
-          );
-        });
-      return <Svg style={styles.svg}>{keypoints}</Svg>;
-    } else {
-      return <View></View>;
-    }
-  };
-
   const find_angle = (a: any, b: any, c: any) => {
     let radians =
       Math.atan2(c[0].y - b[0].y, c[0].x - b[0].x) -
@@ -908,92 +879,73 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
-  const serveTypeDetectionthreshold = (poses: any) => {
+  const shotDetectionReturn = (poses: any) => {
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
-      var leftShoulder = keypoints.filter(function (item: any) {
-        return item.name === 'left_shoulder';
-      });
-      var rightShoulder = keypoints.filter(function (item: any) {
-        return item.name === 'right_shoulder';
-      });
+
       var leftElbow = keypoints.filter(function (item: any) {
         return item.name === 'left_elbow';
       });
+
       var rightElbow = keypoints.filter(function (item: any) {
         return item.name === 'right_elbow';
       });
-      var rightHip = keypoints.filter(function (item: any) {
-        return item.name === 'right_hip';
-      });
-      var leftHip = keypoints.filter(function (item: any) {
-        return item.name === 'left_hip';
-      });
-      var leftKnee = keypoints.filter(function (item: any) {
-        return item.name === 'left_knee';
-      });
-      var rightKnee = keypoints.filter(function (item: any) {
-        return item.name === 'right_knee';
-      });
-      var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
-      var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
 
-      if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+      var leftWrist = keypoints.filter(function (item: any) {
+        return item.name === 'left_wrist';
+      });
+
+      var rightWrist = keypoints.filter(function (item: any) {
+        return item.name === 'right_wrist';
+      });
+
+      var nose = keypoints.filter(function (item: any) {
+        return item.name === 'nose';
+      });
+
+      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+        // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
         increment();
+        analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+        setIsMissed('');
         skipFrameCount = skipFrameCount + 1;
-        if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
-          if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
-            setServeGrade('A');
-            analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
-          } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
-            setServeGrade('B');
-            analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
-          } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
-            setServeGrade('C');
-            analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
-          } else {
-            setServeGrade('D');
-            analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
-          }
-          setServeType('Flat');
-        } else if (r_hip_angle < 190 && r_hip_angle > 175) {
-          if (r_hip_angle < 185 && r_hip_angle > 181) {
-            setServeGrade('A');
-            analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
-          } else if (r_hip_angle < 187 && r_hip_angle > 179) {
-            setServeGrade('B');
-            analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
-          } else if (r_hip_angle < 188 && r_hip_angle > 177) {
-            setServeGrade('C');
-            analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
-          } else {
-            setServeGrade('D');
-            analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
-          }
-          setServeType('Slice');
-        } else {
-          if (r_hip_angle > 170) {
-            setServeGrade('A');
-            analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
-          } else if (r_hip_angle > 167) {
-            setServeGrade('B');
-            analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
-          } else if (r_hip_angle > 164) {
-            setServeGrade('C');
-            analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
-          } else {
-            setServeGrade('D');
-            analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
-          }
-          setServeType('Kick');
+        console.log('Forehand Return');
+        setServeType('Forehand Return');
+        missTimeCounter = 0;
+        rallyRunningFlag = true;
+        setData(analysis_data.data);
+      } else if (rightWrist[0].x < rightElbow[0].x) {
+        // console.log("I am here");
+        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+          increment();
+          analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          setIsMissed('');
+          skipFrameCount = skipFrameCount + 1;
+          console.log('Backhand Return');
+          setServeType('Backhand Return');
+          missTimeCounter = 0;
+          rallyRunningFlag = true;
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 5) {
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
         skipFrameCount = skipFrameCount + 1;
+        missTimeCounter = missTimeCounter + 1;
       } else {
+        missTimeCounter = missTimeCounter + 1;
+        setServeType('Mid');
         skipFrameCount = 0;
+        console.log('Mid');
       }
+
+      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+        missed = missed + 1;
+        setIsMissed('Missed Detected');
+        // console.log("Missed: ", missed);
+        missTimeCounter = 0;
+        rallyRunningFlag = false;
+      }
+      console.log('Missed: ', missed);
     }
   };
 
@@ -1017,6 +969,9 @@ const App4: FunctionComponent<Props> = props => {
       let tempCount = 0;
 
       for (var i = 0; i < keypoints.length; i++) {
+        // console.log(keypoints[i].score);
+        // console.log("Next");
+
         const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
         const x = flipX ? cameraLayoutWidth - keypoints[i].x : keypoints[i].x;
         const y = keypoints[i].y;
@@ -1027,19 +982,28 @@ const App4: FunctionComponent<Props> = props => {
           (y / cameraLayoutHeight) *
           (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
 
+        // console.log('CX', cx, 'CX2', cx2);
+        // console.log('CX: ', cx, ' CY: ', cy);
+        // console.log('X: ', cx1, ' Y: ', cx2);
+
         if (keypoints[i].score && keypoints[i].score * 100 < 60) {
           tempCount = tempCount + 1;
+          // console.log('Score');
         }
         if (cx < cx1) {
+          // console.log('First');
           tempCount = tempCount + 1;
         }
         if (cx > cx2) {
+          // console.log('Second');
           tempCount = tempCount + 1;
         }
         if (cy < cy1) {
+          // console.log('Third');
           tempCount = tempCount + 1;
         }
         if (cy > cy3) {
+          // console.log('Fourth');
           tempCount = tempCount + 1;
         }
       }
@@ -1049,6 +1013,7 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedp(false);
         isCalibrated = true;
         startRecording();
+        // console.log('Calibrated Successfully');
       }
     }
   };
@@ -1061,6 +1026,7 @@ const App4: FunctionComponent<Props> = props => {
     console.log('images, ', JSON.stringify(images));
     const loop = async () => {
       const imageTensor = images.next().value as tf.Tensor3D;
+      // console.log('imageTensor, ', JSON.stringify(imageTensor));
       const startTs = Date.now();
       const poses = await model!.estimatePoses(
         imageTensor,
@@ -1069,12 +1035,16 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
+        // serveTypeDetectionthreshold(poses);
+        shotDetectionReturn(poses);
+        // console.log();
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
+      frames_to_skip = Math.floor(1000 / latency) * 1.5;
+      console.log('FramesSkip: ', frames_to_skip);
       setPoses(poses);
       tf.dispose([imageTensor]);
       if (rafId.current === 0) {
@@ -1106,6 +1076,7 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const camView = () => {
+    cameraflow = true;
     return (
       <View
         style={{
@@ -1113,17 +1084,27 @@ const App4: FunctionComponent<Props> = props => {
           width: cameraWidth,
           height: cameraHeight,
         }}>
-        <TensorCamera
-          ref={cameraRef}
-          style={styles.camera}
-          autorender={AUTO_RENDER}
-          type={cameraType}
-          resizeWidth={cameraWidth}
-          resizeHeight={cameraHeight}
-          resizeDepth={3}
-          rotation={getTextureRotationAngleInDegrees()}
-          onReady={handleCameraStream}
-        />
+        {cameraflow ? (
+          <TensorCamera
+            ref={cameraRef}
+            style={styles.camera}
+            autorender={AUTO_RENDER}
+            type={cameraType}
+            resizeWidth={cameraWidth}
+            resizeHeight={cameraHeight}
+            resizeDepth={3}
+            rotation={getTextureRotationAngleInDegrees()}
+            onReady={handleCameraStream}
+          />
+        ) : (
+          <View style={styles.loadingMsg}>
+            {isLoading && (
+              <Text style={styles.loadingMsgText}>
+                Preparing live camera photages...
+              </Text>
+            )}
+          </View>
+        )}
       </View>
     );
   };
@@ -1177,7 +1158,7 @@ const App4: FunctionComponent<Props> = props => {
   );
 };
 
-export default App4;
+export default BallPracticeTensorCamera;
 
 const styles = StyleSheet.create({
   container: {
@@ -1308,9 +1289,5 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: cameraLayoutWidth,
     height: cameraLayoutHeight,
-  },
-  lottie: {
-    width: 100,
-    height: 100,
   },
 });

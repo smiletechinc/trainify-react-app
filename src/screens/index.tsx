@@ -2,7 +2,6 @@ import TensorFlowCameraContainer from '../../App1';
 import TensorCameraContainer from '../../App3';
 import UsamaCameraContainer from '../../App3';
 import App4 from '../../App4';
-import App45 from '../../App4 copy';
 
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
@@ -52,7 +51,6 @@ export {
   TensorCameraContainer,
   UsamaCameraContainer,
   App4,
-  App45,
   LandingScreenContainer,
   LanguageScreenContainer,
   TestRecordScreenContainer,

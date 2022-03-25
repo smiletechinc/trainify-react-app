@@ -51,7 +51,7 @@ type Props = {
 
 const UploadServeContainerHook: FunctionComponent<Props> = props => {
   const {navigation, route} = props;
-  const {capturedVideoURI} = route.params;
+  const {capturedVideoURI, graphData} = route.params;
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
   const [response, setResponse] = React.useState<any>(null);
   const [thumbnailData, setThumbnailData] = React.useState<any>(null);
@@ -82,7 +82,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (capturedVideoURI) {
       // Alert.alert(capturedVideoURI);
-      const uri = capturedVideoURI;
+      setVideoURI(capturedVideoURI);
       proceedToUploadVideo(capturedVideoURI);
     }
   }, [capturedVideoURI]);
@@ -121,11 +121,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
     var analysis_data = {
       labels: ['Flat', 'Kick', 'Slice'],
       legend: ['A', 'B', 'C', 'D'],
-      data: [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ],
+      data: graphData,
       barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
     };
     var last = capturedVideoURI.substring(
@@ -158,11 +154,6 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       const {uri} = await VideoThumbnails.getThumbnailAsync(capturedVideoURI, {
         time: 200,
       });
-      try {
-        await CameraRoll.save(uri, {type: 'photo', album: 'TrainfyApp'});
-      } catch (error) {
-        Alert.alert('Failed to save thumbnail in gallery');
-      }
       var last = uri.substring(uri.lastIndexOf('/') + 1, uri.length);
       const name = last;
       // data for thumbnail
@@ -188,44 +179,6 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
     console.log('videoData for uploading:', JSON.stringify(videoData1));
     setVideoData(videoData1);
     uploadVideo(videoData1);
-  };
-
-  const startRecording = async () => {
-    await RecordScreen.startRecording({mic: false})
-      .then(res => {
-        setIsRecordingInProgress(true);
-        console.log('Video recording started.');
-      })
-      .catch(error => {
-        console.error(error);
-        console.log('Video recording could not started.');
-      });
-  };
-
-  const stopRecording = async () => {
-    const responseReocrding = await RecordScreen.stopRecording()
-      .then(async res => {
-        if (res) {
-          console.log('recording stopped:', JSON.stringify(res));
-          const url = res.result.outputURL;
-          await CameraRoll.save(url, {type: 'video', album: 'TrainfyApp'});
-          setIsRecordingInProgress(false);
-          // setVideoData(tempVideoData);
-          // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
-          console.log('Recording saved successfuly.');
-          setVideoURI(url);
-          proceedToUploadVideo(url);
-        }
-      })
-      .catch(error => console.log('error...: ', error));
-  };
-
-  const handleStartCamera = () => {
-    startRecording();
-  };
-
-  const handleStopCamera = () => {
-    stopRecording();
   };
 
   return (

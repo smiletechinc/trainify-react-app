@@ -99,7 +99,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
 
   const handleShowGraphButton = () => {
     navigation.navigate('RenderGraphScreen', {
-      analysis_data: video.analysis_data,
+      analysis_data: video.analysisData,
     });
   };
 

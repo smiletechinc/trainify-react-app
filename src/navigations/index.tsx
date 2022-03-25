@@ -14,7 +14,7 @@ import {
   TestRecordScreenContainer,
   TestRecordScreenContainerHook,
   ServePracticeVideoPlayerContainer,
-  UploadServePracticeScreenHook,
+  UploadServeContainerHook,
 } from '../screens';
 import MainAppContainer from './main-app';
 
@@ -56,7 +56,7 @@ function AppContainer() {
         />
         <AppStack.Screen
           name="UploadServeContainerHook"
-          component={UploadServePracticeScreenHook}
+          component={UploadServeContainerHook}
         />
         <AppStack.Screen
           name="VideoPlayerContainer"

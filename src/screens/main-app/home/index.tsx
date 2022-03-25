@@ -8,6 +8,7 @@ import globalStyles from '../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import RecordScreen from 'react-native-record-screen';
+import CameraRoll from '@react-native-community/cameraroll';
 
 const servePracticeImage = require('../../../assets/images/serve-practice.png');
 const practiceWithBall = require('../../../assets/images/practice-with-ball.png');
@@ -37,7 +38,10 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 60,
           }}
           onPress={() => {
-            RecordScreen.stopRecording();
+            RecordScreen.stopRecording().then(response => {
+              const url = response.result.outputURL;
+              CameraRoll.save(url, {type: 'video'});
+            });
             navigation.navigate('ServePracticeHomeScreen');
           }}>
           <AutoHeightImage
