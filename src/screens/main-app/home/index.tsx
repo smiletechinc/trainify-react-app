@@ -61,7 +61,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
           }}
           onPress={() => {
             RecordScreen.stopRecording();
-            // navigation.navigate('BallMachinePracticeHomeScreen')
+            navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
           <AutoHeightImage
             source={practiceWithBall}

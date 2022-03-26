@@ -2,23 +2,13 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import {HomeScreen} from '../../screens';
-import {
-  TensorFlowCameraContainer,
-  TensorCameraContainer,
-  UsamaCameraContainer,
-  App4,
-} from '../../screens';
+import {TensorCameraContainer, App4} from '../../screens';
 
 import {
   BallPracticeContainer,
-  RecordBallPracticeContainer,
-  UploadBallPracticeContainer,
-  BallPracticeCameraContainer,
-  BallPracticeImagePickerContainer,
-  BallPracticeVideoPlayerContainer,
-  BallPracticeRenderGraphScreen,
   BallPracitceAnalysisGridScreen,
-  UploadBallPracticeScreen,
+  BallPracticeRenderGraphScreen,
+  BallPracticeVideoPlayer,
 } from '../../screens';
 
 import {
@@ -62,26 +52,17 @@ function MainAppContainer() {
         component={BallPracticeContainer}
       />
       <AppStack.Screen
-        name="UploadBallPracticeScreen"
-        component={UploadBallPracticeScreen}
-      />
-      <AppStack.Screen
         name="BallPracitceAnalysisGridScreen"
         component={BallPracitceAnalysisGridScreen}
-      />
-      <AppStack.Screen
-        name="BallPracticeVideoPlayer"
-        component={BallPracticeVideoPlayerContainer}
       />
       <AppStack.Screen
         name="BallPracticeRenderGraphScreen"
         component={BallPracticeRenderGraphScreen}
       />
       <AppStack.Screen
-        name="UploadBallPracticeContainer"
-        component={UploadBallPracticeContainer}
+        name="BallPracticeVideoPlayer"
+        component={BallPracticeVideoPlayer}
       />
-
       <AppStack.Screen
         name="HomePracticeHomeScreen"
         component={HomePracticeContainer}
@@ -136,16 +117,8 @@ function MainAppContainer() {
         component={UploadServePracticeContainer}
       />
       <AppStack.Screen
-        name="TensorFlowCameraContainer"
-        component={TensorFlowCameraContainer}
-      />
-      <AppStack.Screen
         name="TensorCameraContainer"
         component={TensorCameraContainer}
-      />
-      <AppStack.Screen
-        name="UsamaCameraContainer"
-        component={UsamaCameraContainer}
       />
     </AppStack.Navigator>
   );
