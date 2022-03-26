@@ -59,43 +59,55 @@ export const useMediaUpload = props => {
   // }, [videoData]);
 
   const uploadThumbnail = useCallback(async imageData => {
+    setUploading(true);
+    setCurrentStatus('Uploading thumbnail');
+
+    const fileName = imageData.fileName
+      ? imageData.fileName
+      : imageData.name
+      ? imageData.name
+      : 'temp-file-name';
+    const fileURI = imageData.uri;
+    const fileType = imageData.type;
+
+    const storageRef = ref(storage, `images/${fileName}`);
+    const fileImage = JSON.parse(
+      JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
+    );
+
     try {
-      setUploading(true);
-      setCurrentStatus('Uploading thumbnail');
-
-      const fileName = imageData.fileName
-        ? imageData.fileName
-        : imageData.name
-        ? imageData.name
-        : 'temp-file-name';
-      const fileURI = imageData.uri;
-      const fileType = imageData.type;
-
-      const storageRef = ref(storage, `images/${fileName}`);
-      const fileImage = JSON.parse(
-        JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
-      );
-
       const img = await fetch(fileImage.uri);
-      const bytes = await img.blob();
-      console.log('ready file: ', fileImage);
+      if (img) {
+        const bytes = await img.blob();
+        if (bytes) {
+          console.log('ready file: ', fileImage);
 
-      uploadBytes(storageRef, bytes)
-        .then(response => {
-          console.log('Thumbnail uploaded: ', response);
-          // onSuccess(response);
-          // let fileName = response.metadata.name
-          let filePath = response.ref._location.path_;
-          (() => {
-            getThumbnailURL(filePath);
-          })();
-        })
-        .catch(error => {
-          console.error(error);
-          setUploadThumbnailFailure(true);
+          uploadBytes(storageRef, bytes)
+            .then(response => {
+              console.log('Thumbnail uploaded: ', response);
+              // onSuccess(response);
+              // let fileName = response.metadata.name
+              let filePath = response.ref._location.path_;
+              (() => {
+                getThumbnailURL(filePath);
+              })();
+            })
+            .catch(error => {
+              console.error(error);
+              setUploadThumbnailFailure(true);
+              setUploading(false);
+              setUploadThumbnailFailure(true);
+            });
+        } else {
+          Alert.alert('Error uploading humbnail 2');
           setUploading(false);
-          setUploadThumbnailFailure(true);
-        });
+          setCurrentStatus('Error uploading thumbnail');
+        }
+      } else {
+        Alert.alert('Error uploading humbnail 1');
+        setUploading(false);
+        setCurrentStatus('Error uploading thumbnail');
+      }
     } catch (error) {
       Alert.alert('Error uploading humbnail', JSON.stringify(error));
       setUploading(false);
@@ -122,46 +134,66 @@ export const useMediaUpload = props => {
   };
 
   const uploadVideo = useCallback(async videoData => {
+    setUploading(true);
+    setCurrentStatus('Uploading video');
+    console.log('uploading video: ', videoData);
+
+    const fileName = videoData.fileName
+      ? videoData.fileName
+      : videoData.name
+      ? videoData.name
+      : 'temp-file-name';
+    const fileURI = videoData.uri;
+    const fileType = videoData.type;
+
+    const storageRef = ref(storage, `videos/${fileName}`);
+    console.log('storageRef: ', storageRef);
+    const fileImage = JSON.parse(
+      JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
+    );
     try {
-      setUploading(true);
-      setCurrentStatus('Uploading video');
-
-      const fileName = videoData.fileName
-        ? videoData.fileName
-        : videoData.name
-        ? videoData.name
-        : 'temp-file-name';
-      const fileURI = videoData.uri;
-      const fileType = videoData.type;
-
-      const storageRef = ref(storage, `videos/${fileName}`);
-      const fileImage = JSON.parse(
-        JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
-      );
-
       const img = await fetch(fileImage.uri);
-      const bytes = await img.blob();
-      console.log('ready file: ', fileImage);
-
-      uploadBytes(storageRef, bytes)
-        .then(response => {
-          console.log('Thumbnail uploaded: ', response);
-          // onSuccess(response);
-          // let fileName = response.metadata.name
-          let filePath = response.ref._location.path_;
-          (() => {
-            getVideoURL(filePath);
-          })();
-        })
-        .catch(error => {
-          console.error(error);
-          setUploadVideoFailure(true);
+      if (img) {
+        // Alert.alert('Bytes for Videos');
+        console.log('image for video: ', img);
+        const bytes = await img.blob();
+        if (bytes) {
+          console.log('bytes for video: ', fileImage);
+          try {
+            uploadBytes(storageRef, bytes)
+              .then(response => {
+                console.log('Video uploaded: ', response);
+                // onSuccess(response);
+                // let fileName = response.metadata.name
+                let filePath = response.ref._location.path_;
+                (() => {
+                  getVideoURL(filePath);
+                })();
+              })
+              .catch(error => {
+                console.error(error);
+                setUploadVideoFailure(true);
+                setUploading(false);
+              });
+          } catch (error) {
+            Alert.alert('Error uploading video, ');
+            setUploading(false);
+            setCurrentStatus('Error uploading video');
+          }
+        } else {
+          Alert.alert('Error uploading video 2, ');
           setUploading(false);
-        });
+          setCurrentStatus('Error uploading video 2');
+        }
+      } else {
+        Alert.alert('Error uploading video 1, ');
+        setUploading(false);
+        setCurrentStatus('Error uploading video 1');
+      }
     } catch (error) {
-      Alert.alert('Error uploading video, ', JSON.stringify(error));
+      Alert.alert('Error uploading video 0, ');
       setUploading(false);
-      setCurrentStatus('Error uploading thumbnail');
+      setCurrentStatus('Error uploading video 0');
     }
   }, []);
 

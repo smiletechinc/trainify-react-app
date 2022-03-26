@@ -1427,7 +1427,7 @@ const App5: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
-        startRecording();
+        // startRecording();
         // console.log('Calibrated Successfully');
       } else {
         // console.log('Please Calibrate Yourself');

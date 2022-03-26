@@ -262,7 +262,7 @@ const App4: FunctionComponent<Props> = props => {
                 Alert.alert('Video could not saved');
               }
             } catch (error) {
-              Alert.alert('Failed to save video in gallery');
+              Alert.alert('Failed to save video in gallery', error);
             }
           }
         })

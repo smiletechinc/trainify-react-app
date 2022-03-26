@@ -115,7 +115,7 @@ const TestRecordScreenContainer: FunctionComponent = ({navigation}) => {
   };
 
   const handleStartCamera = () => {
-    startRecording();
+    // startRecording();
   };
 
   const handleStopCamera = () => {

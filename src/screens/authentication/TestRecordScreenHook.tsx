@@ -237,7 +237,7 @@ const TestRecordScreenContainerHook: FunctionComponent<Props> = props => {
   };
 
   const handleStartCamera = () => {
-    startRecording();
+    // startRecording();
   };
 
   const handleStopCamera = () => {

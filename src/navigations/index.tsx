@@ -13,10 +13,8 @@ import {
   LanguageScreenContainer,
   TestRecordScreenContainer,
   TestRecordScreenContainerHook,
-  ServePracticeVideoPlayerContainer,
-  BallPracticeVideoPlayer,
-  UploadServeContainerHook,
   UploadBallMachineContainerHook,
+  UploadServeContainerHook,
 } from '../screens';
 import MainAppContainer from './main-app';
 
@@ -63,14 +61,6 @@ function AppContainer() {
         <AppStack.Screen
           name="UploadBallMachineContainerHook"
           component={UploadBallMachineContainerHook}
-        />
-        <AppStack.Screen
-          name="VideoPlayerContainer"
-          component={ServePracticeVideoPlayerContainer}
-        />
-        <AppStack.Screen
-          name="BallPracticeVideoPlayer"
-          component={BallPracticeVideoPlayer}
         />
       </AppStack.Navigator>
     </NavigationContainer>

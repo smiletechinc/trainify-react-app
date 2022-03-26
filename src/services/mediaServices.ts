@@ -12,35 +12,13 @@ storage.maxOperationRetryTime = 15000;
 export const uploadVideoService = async (videoData, onSuccess?: any, onFailure?: any) => {
 
   console.log('Video: ', videoData);
-  // const uri:string = video.uri;
-
-  // const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
-
-  // Create a reference to 'images/mountains.jpg'
+ 
   const fileName = videoData.fileName ? videoData.fileName : videoData.name ? videoData.name : 'temp-file-name';
 
   const fileURI = videoData.uri;
   const fileType = videoData.type;
 
   const storageRef = ref(storage, `videos/${fileName}`);
-
-  // const uploadTask = storage.ref(`/images/${video.fileName}`).put(video.fileName)
-
-  // 'file' comes from the Uri
-
-  // var storageRef = firebase.storage.ref("folderName/file.jpg");
-
-  // const fileImage = {
-  //   uri: fileURI,
-  //   name: fileName,
-  //   type: fileType, // if you can get image type from cropping replace here
-  // }
-
-  // const fileImage = ('photo', {
-  //   uri: fileURI,
-  //   type: fileType, 
-  //   name: fileName,
-  // })
 
   const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
   console.log('11111: ', fileImage);
@@ -49,7 +27,8 @@ export const uploadVideoService = async (videoData, onSuccess?: any, onFailure?:
   const bytes = await img.blob();
   console.log('33333: ', bytes);
 
-  uploadBytes(storageRef, bytes)
+  try{
+    uploadBytes(storageRef, bytes)
     .then((response) => {
       console.log('Video uploaded: ', response);
       // let fileName = response.metadata.name
@@ -58,55 +37,24 @@ export const uploadVideoService = async (videoData, onSuccess?: any, onFailure?:
       getVideoURL(filePath, onSuccess, onFailure);
     })
     .catch((error) => {
-      console.error('Error: ', error);
+      Alert.alert('Error: ', error);
       onFailure(error);
     })
-
-
-  // console.log('storageRef: ', storageRef);
-  // uploadString(storageRef, video)
-  // .then((snapshot) => {
-  //   console.log('Video uploaded');
-  // })
-  // .catch((error) => {
-  //   console.error(error);
-  //   onFailure(error);
-  // });
+  } catch (error) {
+    Alert.alert(error);
+  }
 
 }
 
 export const uploadPhotoService = async (imageData, onSuccess?: any, onFailure?: any) => {
 
   console.log('Image: ', imageData);
-  // const uri:string = video.uri;
-
-  // const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
-
-  // Create a reference to 'images/mountains.jpg'
+  
   const fileName = imageData.fileName ? imageData.fileName : imageData.name ? imageData.name : 'temp-file-name';
   const fileURI = imageData.uri;
   const fileType = imageData.type;
 
   const storageRef = ref(storage, `images/${fileName}`);
-
-  // const uploadTask = storage.ref(`/images/${video.fileName}`).put(video.fileName)
-
-
-  // 'file' comes from the Uri
-
-  // var storageRef = firebase.storage.ref("folderName/file.jpg");
-
-  // const fileImage = {
-  //   uri: fileURI,
-  //   name: fileName,
-  //   type: fileType, // if you can get image type from cropping replace here
-  // }
-
-  // const fileImage = ('photo', {
-  //   uri: fileURI,
-  //   type: fileType, 
-  //   name: fileName,
-  // })
 
   const fileImage = JSON.parse(JSON.stringify({ uri: fileURI, type: fileType, name: fileName }));
 
@@ -114,7 +62,8 @@ export const uploadPhotoService = async (imageData, onSuccess?: any, onFailure?:
   const bytes = await img.blob();
   console.log('ready file: ', fileImage);
 
-  uploadBytes(storageRef, bytes)
+  try{
+    uploadBytes(storageRef, bytes)
     .then((response) => {
       console.log('Thumbnail uploaded: ', response);
       // onSuccess(response);
@@ -127,16 +76,9 @@ export const uploadPhotoService = async (imageData, onSuccess?: any, onFailure?:
       console.error(error);
       onFailure(error);
     })
-
-  // console.log('storageRef: ', storageRef);
-  // uploadString(storageRef, video)
-  // .then((snapshot) => {
-  //   console.log('Video uploaded');
-  // })
-  // .catch((error) => {
-  //   console.error(error);
-  //   onFailure(error);
-  // });
+  }catch (error) {
+    Alert.alert(error);
+  }
 
 }
 

@@ -250,7 +250,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
                 setIsRecordingInProgress(false);
                 console.log('Recording saved successfuly.');
                 setVideoURI(url);
-                navigation.navigate('UploadBallMachineContainerHook', {
+                navigation.replace('UploadBallMachineContainerHook', {
                   capturedVideoURI: url,
                   graphData: data,
                 });

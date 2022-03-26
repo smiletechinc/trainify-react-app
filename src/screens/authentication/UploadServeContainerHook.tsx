@@ -112,7 +112,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (videoAnalysisData) {
-      navigation.replace('VideoPlayerContainer', {video: videoAnalysisData});
+      navigation.navigate('VideoPlayerContainer', {video: videoAnalysisData});
       Alert.alert('Trainify', `Video added successfully.`);
     }
   }, [videoAnalysisData]);
@@ -128,6 +128,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       capturedVideoURI.lastIndexOf('/') + 1,
       capturedVideoURI.length,
     );
+    let date = new Date().toLocaleString();
     const name = last;
     let videoAnalysisData1 = {
       duration: 0.01,
@@ -136,7 +137,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       fileSize: 9363694,
       height: 720,
       id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
-      timestamp: '2022-02-25T17:02:18.000+0500',
+      timestamp: date,
       type: 'video/quicktime',
       videoURI: videoURI ? videoURI : 'No uri',
       thumbnailURI: thumbnailURI ? thumbnailURI : 'No uri',
@@ -146,7 +147,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       analysisData: analysis_data,
     };
     // Alert.alert('Adding metadata 1');
-    addVideoAnalysisToFirebase(videoAnalysisData1);
+    addVideoAnalysisToFirebase(videoAnalysisData1, 'servePracticeVideos');
   };
 
   const proceedToUploadThumbnail = async () => {
@@ -160,7 +161,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       const imageData = {
         name: name,
         uri: uri,
-        type: 'image/jpg',
+        type: 'image',
       };
       setThumbnailURI(uri);
       setThumbnailData(imageData);
@@ -174,7 +175,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
     let videoData1 = {
       name: name,
       uri: url,
-      type: 'video/mp4',
+      type: 'video',
     };
     console.log('videoData for uploading:', JSON.stringify(videoData1));
     setVideoData(videoData1);
