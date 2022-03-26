@@ -980,9 +980,12 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         // console.log("Missed: ", missed);
         missTimeCounter = 0;
         rallyRunningFlag = false;
+        setData(analysis_data.data);
       }
       console.log('Missed: ', missed);
     }
+
+    console.log('ANALYSIS DATA: ', analysis_data.data);
   };
 
   const serveTypeDetectionthreshold = (poses: any) => {
