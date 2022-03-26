@@ -1,4 +1,4 @@
-import {useEffect, useState, FunctionComponent, useCallback} from 'react';
+import { useEffect, useState, FunctionComponent, useCallback } from 'react';
 import app from '../config/db';
 import firebase from 'firebase/auth';
 import {
@@ -9,9 +9,10 @@ import {
   UploadTask,
   getDownloadURL,
 } from 'firebase/storage';
+import storage1 from '@react-native-firebase/storage';
 
-import {ErrorObject, VideoData} from '../../types';
-import {Alert, Platform} from 'react-native';
+import { ErrorObject, VideoData } from '../../types';
+import { Alert, Platform } from 'react-native';
 
 // Create a root reference
 const storage = getStorage();
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export const useMediaUpload = props => {
-  const {videoData} = props;
+  const { videoData } = props;
   const [currentStatus, setCurrentStatus] = useState('Preparing');
   const [uploading, setUploading] = useState(false);
   const [uploadThumbnailFailure, setUploadThumbnailFailure] = useState(false);
@@ -65,14 +66,14 @@ export const useMediaUpload = props => {
     const fileName = imageData.fileName
       ? imageData.fileName
       : imageData.name
-      ? imageData.name
-      : 'temp-file-name';
+        ? imageData.name
+        : 'temp-file-name';
     const fileURI = imageData.uri;
     const fileType = imageData.type;
 
     const storageRef = ref(storage, `images/${fileName}`);
     const fileImage = JSON.parse(
-      JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
+      JSON.stringify({ uri: fileURI, type: fileType, name: fileName }),
     );
 
     try {
@@ -141,60 +142,79 @@ export const useMediaUpload = props => {
     const fileName = videoData.fileName
       ? videoData.fileName
       : videoData.name
-      ? videoData.name
-      : 'temp-file-name';
+        ? videoData.name
+        : 'temp-file-name';
     const fileURI = videoData.uri;
-    const fileType = videoData.type;
 
-    const storageRef = ref(storage, `videos/${fileName}`);
-    console.log('storageRef: ', storageRef);
-    const fileImage = JSON.parse(
-      JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
-    );
+    const videoReference = storage1().ref(`videos/${fileName}`);
     try {
-      const img = await fetch(fileImage.uri);
-      if (img) {
-        // Alert.alert('Bytes for Videos');
-        console.log('image for video: ', img);
-        const bytes = await img.blob();
-        if (bytes) {
-          console.log('bytes for video: ', fileImage);
-          try {
-            uploadBytes(storageRef, bytes)
-              .then(response => {
-                console.log('Video uploaded: ', response);
-                // onSuccess(response);
-                // let fileName = response.metadata.name
-                let filePath = response.ref._location.path_;
-                (() => {
-                  getVideoURL(filePath);
-                })();
-              })
-              .catch(error => {
-                console.error(error);
-                setUploadVideoFailure(true);
-                setUploading(false);
-              });
-          } catch (error) {
-            Alert.alert('Error uploading video, ');
-            setUploading(false);
-            setCurrentStatus('Error uploading video');
-          }
-        } else {
-          Alert.alert('Error uploading video 2, ');
-          setUploading(false);
-          setCurrentStatus('Error uploading video 2');
-        }
-      } else {
-        Alert.alert('Error uploading video 1, ');
+      const task = videoReference.putFile(fileURI);
+      task.then((response) => {
+        console.log('File uploaded successfully:.... ', response);
+        let filePath = response.metadata.fullPath;
+        (() => {
+          getVideoURL(filePath);
+        })();
+      }).catch((error) => {
+        Alert.alert('Error:.... ', error);
+        console.error(error);
+        setUploadVideoFailure(true);
         setUploading(false);
-        setCurrentStatus('Error uploading video 1');
-      }
+        // onFailure(error);
+      });
     } catch (error) {
-      Alert.alert('Error uploading video 0, ');
+      Alert.alert('Sorry Something went wrong.', error);
+      Alert.alert('Error uploading video, ');
       setUploading(false);
-      setCurrentStatus('Error uploading video 0');
+      setCurrentStatus('Error uploading video');
     }
+
+    // try {
+    //   const img = await fetch(fileImage.uri);
+    //   if (img) {
+    //     // Alert.alert('Bytes for Videos');
+    //     console.log('image for video: ', img);
+    //     const bytes = await img.blob();
+    //     if (bytes) {
+    //       console.log('bytes for video: ', fileImage);
+    //       try {
+    //         uploadBytes(storageRef, bytes)
+    //           .then(response => {
+    //             console.log('Video uploaded: ', response);
+    //             // onSuccess(response);
+    //             // let fileName = response.metadata.name
+    //             let filePath = response.ref._location.path_;
+    //             (() => {
+    //               getVideoURL(filePath);
+    //             })();
+    //           })
+    //           .catch(error => {
+    //             console.error(error);
+    //             setUploadVideoFailure(true);
+    //             setUploading(false);
+    //           });
+    //       } catch (error) {
+    //         Alert.alert('Error uploading video, ');
+    //         setUploading(false);
+    //         setCurrentStatus('Error uploading video');
+    //       }
+    //     } else {
+    //       Alert.alert('Error uploading video 2, ');
+    //       setUploading(false);
+    //       setCurrentStatus('Error uploading video 2');
+    //     }
+    //   } else {
+    //     Alert.alert('Error uploading video 1, ');
+    //     setUploading(false);
+    //     setCurrentStatus('Error uploading video 1');
+    //   }
+    // } catch (error) {
+    //   Alert.alert('Error uploading video 0, ');
+    //   setUploading(false);
+    //   setCurrentStatus('Error uploading video 0');
+    // }
+
+
   }, []);
 
   const getVideoURL = (fileName: string) => {
