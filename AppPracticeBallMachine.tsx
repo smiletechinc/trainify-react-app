@@ -6,7 +6,6 @@ import {
   Dimensions,
   Platform,
   Alert,
-  Button,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -34,11 +33,8 @@ import {
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
-import AnimatedLoader from 'react-native-animated-loader';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
-const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
-
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
 const IS_IOS = Platform.OS === 'ios';
@@ -57,13 +53,12 @@ type Props = {
   route: any;
 };
 
-const App4: FunctionComponent<Props> = props => {
+const TensorCameraContainer: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
-  // const title = '';
   const [isLoading, setLoading] = React.useState(true);
   const {increment, reset, count, calibrated, setCalibrated, setData, data} =
     React.useContext(CounterContext);
@@ -81,11 +76,14 @@ const App4: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
+
+  const [thumbnail, setThumbnail] = React.useState<any>(null);
+  const [videoURL, setVideoURL] = React.useState<string>(null);
+  const [videoData, setVideoData] = React.useState<string>(null);
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -93,6 +91,16 @@ const App4: FunctionComponent<Props> = props => {
   let response_let = {};
   let thumbURL = '';
   let vidURL = '';
+
+  var [isMissed, setIsMissed] = useState('');
+  const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
+  const [videoURI, setVideoURI] = useState(null);
+
+  var rallyRunningFlag = true;
+  var frames_to_skip = 0;
+  var missed = 0;
+  var missTimeCounter = 0;
+  var isForehandMissed = true;
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -116,16 +124,9 @@ const App4: FunctionComponent<Props> = props => {
         model,
         detectorConfig,
       );
-      const model_json = await require('./src/assets/model/model.json');
-      const model_weight = await require('./src/assets/model/group1-shard.bin');
-      const model_tos = await tf.loadLayersModel(
-        bundleResourceIO(model_json, model_weight),
-      );
 
       setOrientation(curOrientation);
       setModel(detector);
-      console.log('Loading Type of Serve Model');
-      setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
       ScreenOrientation.addOrientationChangeListener(event => {
@@ -201,7 +202,6 @@ const App4: FunctionComponent<Props> = props => {
 
   const clearTimer = e => {
     setSeconds(10);
-
     if (Ref.current) clearInterval(Ref.current);
     const id = setInterval(() => {
       startTimer(e);
@@ -216,7 +216,6 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
-    // RecordScreen.setup();
     clearTimer(getDeadTime());
   }, []);
 
@@ -238,9 +237,6 @@ const App4: FunctionComponent<Props> = props => {
     }
   }, [tfReady]);
 
-  const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
-  const [videoURI, setVideoURI] = useState(null);
-
   const stopRecording = async () => {
     try {
       const responseReocrding = await RecordScreen.stopRecording()
@@ -254,7 +250,7 @@ const App4: FunctionComponent<Props> = props => {
                 setIsRecordingInProgress(false);
                 console.log('Recording saved successfuly.');
                 setVideoURI(url);
-                navigation.navigate('UploadServeContainerHook', {
+                navigation.replace('UploadBallMachineContainerHook', {
                   capturedVideoURI: url,
                   graphData: data,
                 });
@@ -262,7 +258,7 @@ const App4: FunctionComponent<Props> = props => {
                 Alert.alert('Video could not saved');
               }
             } catch (error) {
-              Alert.alert('Failed to save video in gallery', error);
+              Alert.alert('Failed to save video in gallery');
             }
           }
         })
@@ -405,8 +401,7 @@ const App4: FunctionComponent<Props> = props => {
     return (
       <View style={styles.fpsContainer}>
         <Text>Total {count}</Text>
-        <Text>Last Serve Type {serveType}</Text>
-        <Text>Grade {serveGrade}</Text>
+        <Text>Last Return Type {serveType}</Text>
       </View>
     );
   };
@@ -908,6 +903,91 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
+  const shotDetectionReturn = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+
+      var leftWrist = keypoints.filter(function (item: any) {
+        return item.name === 'left_wrist';
+      });
+
+      var rightWrist = keypoints.filter(function (item: any) {
+        return item.name === 'right_wrist';
+      });
+
+      var nose = keypoints.filter(function (item: any) {
+        return item.name === 'nose';
+      });
+
+      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+        // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
+        increment();
+        analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+        setIsMissed('');
+        skipFrameCount = skipFrameCount + 1;
+        console.log('Forehand Return');
+        isForehandMissed = true;
+        setServeType('Forehand Return');
+        missTimeCounter = 0;
+        rallyRunningFlag = true;
+        setData(analysis_data.data);
+      } else if (rightWrist[0].x < rightElbow[0].x) {
+        // console.log("I am here");
+        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+          increment();
+          analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          setIsMissed('');
+          skipFrameCount = skipFrameCount + 1;
+          console.log('Backhand Return');
+          isForehandMissed = false;
+          setServeType('Backhand Return');
+          missTimeCounter = 0;
+          rallyRunningFlag = true;
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
+        skipFrameCount = skipFrameCount + 1;
+        missTimeCounter = missTimeCounter + 1;
+      } else {
+        missTimeCounter = missTimeCounter + 1;
+        setServeType('Mid');
+        skipFrameCount = 0;
+        console.log('Mid');
+      }
+
+      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+        missed = missed + 1;
+        setIsMissed('Missed Detected');
+        if (isForehandMissed) {
+          // Setting missed detection
+          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+        } else {
+          // Setting missed detection
+          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+        }
+
+        // console.log("Missed: ", missed);
+        missTimeCounter = 0;
+        rallyRunningFlag = false;
+        setData(analysis_data.data);
+      }
+      console.log('Missed: ', missed);
+    }
+
+    console.log('ANALYSIS DATA: ', analysis_data.data);
+  };
+
   const serveTypeDetectionthreshold = (poses: any) => {
     if (poses && poses.length > 0) {
       const object = poses[0];
@@ -989,7 +1069,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1069,12 +1149,14 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
+        shotDetectionReturn(poses);
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
+      frames_to_skip = Math.floor(1000 / latency) * 1.5;
+      console.log('FramesSkip: ', frames_to_skip);
       setPoses(poses);
       tf.dispose([imageTensor]);
       if (rafId.current === 0) {
@@ -1105,26 +1187,6 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
-  const renderUploadingAnimation = () => {
-    return (
-      <AnimatedLoader
-        style={styles.cameraContainer}
-        visible={uploading}
-        overlayColor={'rgba(255, 255, 255, 0.75)'}
-        source={require('./loader.json')}
-        animationStyle={styles.lottie}
-        speed={1}>
-        <Text>{currentStatus}</Text>
-        <Button
-          title={'Cancel upload'}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-      </AnimatedLoader>
-    );
-  };
-
   const camView = () => {
     return (
       <View
@@ -1147,6 +1209,7 @@ const App4: FunctionComponent<Props> = props => {
       </View>
     );
   };
+
   const onLayout = event => {
     const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
@@ -1155,6 +1218,7 @@ const App4: FunctionComponent<Props> = props => {
     cameraLayoutHeight = height;
     setCameraHeight(height);
   };
+
   return (
     <SafeAreaView style={styles_external.main_view}>
       <HeaderWithText
@@ -1175,13 +1239,11 @@ const App4: FunctionComponent<Props> = props => {
               )}
             </View>
           )}
-          {/* {renderPose()} */}
           {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
           {renderCalibration()}
           {renderCameraTypeSwitcher()}
-          {renderUploadingAnimation()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
@@ -1198,7 +1260,7 @@ const App4: FunctionComponent<Props> = props => {
   );
 };
 
-export default App4;
+export default TensorCameraContainer;
 
 const styles = StyleSheet.create({
   container: {
@@ -1329,9 +1391,5 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: cameraLayoutWidth,
     height: cameraLayoutHeight,
-  },
-  lottie: {
-    width: 100,
-    height: 100,
   },
 });

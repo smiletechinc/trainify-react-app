@@ -1,5 +1,3 @@
-
-
 import {StyleSheet, Text, View, Platform} from 'react-native';
 import {StackedBarChart} from 'react-native-chart-kit';
 import React, {useState, useRef, useEffect} from 'react';
@@ -104,30 +102,6 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   data_victory.DGrade[0].y = analysis_data['data'][0][3];
   data_victory.DGrade[1].y = analysis_data['data'][1][3];
   data_victory.DGrade[2].y = analysis_data['data'][2][3];
-
-  // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
-
-  // const renderGraphButton = () => {
-  //   return (
-  //     <SafeAreaView
-  //       style={styles.cameraTypeSwitcher}
-  //       onTouchEnd={handleShowGraphButton}>
-  //       <Text>Show graph</Text>
-  //     </SafeAreaView>
-  //   );
-  // };
-
-  // const renderBackButton = () => {
-  //   return (
-  //     <TouchableOpacity
-  //       // style={styles.backButtonContainer}
-  //       onPress={() => {
-  //         navigation.goBack();
-  //       }}>
-  //       {/* <Image source={backIcon} style={{width: 24, height: 24}} /> */}
-  //     </TouchableOpacity>
-  //   );
-  // };
 
   return (
     <SafeAreaView style={styles.main_view}>

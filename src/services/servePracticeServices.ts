@@ -1,11 +1,11 @@
 import app  from './../config/db';
 import * as firebase from "firebase/auth"
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { getDatabase, ref, set, get, push } from "firebase/database";
+import { getDatabase, ref, set, get, push, query, equalTo, limitToLast, orderByChild } from "firebase/database";
 import { ErrorObject, VideoData} from '../../types';
 import { getStorage, uploadBytes } from "firebase/storage";
 
-export const addVideoService = (video:any, onSuccess?:any, onFailure?:any) => {
+export const addVideoService = (video:any, onSuccess?:any, onFailure?:any, feature?: string,) => {
 
     //   const analysisData = {
     //     labels: ["Flat", "Kick", "Slice"],
@@ -24,8 +24,10 @@ export const addVideoService = (video:any, onSuccess?:any, onFailure?:any) => {
 
     // console.log('Firebase data: ', JSON.stringify(video));
 
-    const branch = `videos`
-    // console.log('Branch: ', branch)
+    let type = feature ? feature : 'servePracticeVideos';
+    const branch = `videos/${type}`;
+    
+    console.log('Branch: ', branch)
     if (app) {
         const db = getDatabase(app);
         push(ref(db, branch), video)
@@ -51,11 +53,16 @@ export const addVideoService = (video:any, onSuccess?:any, onFailure?:any) => {
       }
 }
 
-export const fetchVideosService = (onSuccess?:any, onFailure?:any) => {
-  const branch = 'videos';
+export const fetchVideosService = (onSuccess?:any, onFailure?:any, feature?: string, ) => {
+  let type = feature ? feature : 'servePracticeVideos';
+  const branch = `videos/${type}`;
   console.log('Branch: ', branch)
   if (app) {
     const db = getDatabase(app);
+    const videosRef = ref(db, branch);
+    // const featureQuery = query(ref(db, branch), limitToLast(9));
+    const featureQuery = query(ref(db, branch), equalTo('BALL_MACHINE_PRACTICE'));
+
     get(ref(db, branch)).then((snapshot) => {
       if (snapshot.exists()) {
         console.log(snapshot.val());

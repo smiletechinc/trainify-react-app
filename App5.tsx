@@ -6,7 +6,7 @@ import {
   Dimensions,
   Platform,
   Alert,
-  Button
+  Button,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -54,7 +54,7 @@ type Props = {
   route: any;
 };
 
-const App4: FunctionComponent<Props> = props => {
+const App5: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
@@ -85,8 +85,9 @@ const App4: FunctionComponent<Props> = props => {
 
   const [thumbnail, setThumbnail] = React.useState<any>(null);
   const [videoURL, setVideoURL] = React.useState<string>(null);
-  const [videoData, setVideoData] = React.useState<any>(null);
-  const [savingToGallery, setSavingToGallery] = React.useState(false);
+  const [videoData, setVideoData] = React.useState<string>(null);
+  const [currentUploadStatus, setStatus] = useState('Processing media');
+  const [uploadingVideo, setUploading] = useState(false);
 
   const {
     uploading,
@@ -108,7 +109,6 @@ const App4: FunctionComponent<Props> = props => {
 
   let skipFrameCount = 0;
   var isCalibrated = false;
-  var isStartedVideoRecordingOtr = false;
   var isCompletedRecording = false;
   let response_let = {};
   let thumbURL = '';
@@ -124,17 +124,6 @@ const App4: FunctionComponent<Props> = props => {
     ],
     barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
   };
-
-  // useEffect(() => {
-  //   if (uploadThumbnailFailure) {
-  //     Alert.alert('Could not upload thumbnail');
-  //   }
-  //   if (thumbnailURL) {
-  //     (() => {
-  //       uploadThumbnail(thumbnail);
-  //     })();
-  //   }
-  // }, [thumbnail, uploadThumbnailFailure]);
 
   useEffect(() => {
     if (uploadThumbnailFailure) {
@@ -344,6 +333,9 @@ const App4: FunctionComponent<Props> = props => {
 
   const addVideoSuccess = (video?: any) => {
     // console.log('Added: ', JSON.stringify(video));
+    setStatus('Video added');
+    setUploading(false);
+    Alert.alert('Video added successfully');
     if (video) {
       navigation.replace('VideoPlayerContainer', { video: video });
     }
@@ -351,16 +343,18 @@ const App4: FunctionComponent<Props> = props => {
   };
   const addVideoFailure = (error?: any) => {
     // console.log('Error: ', JSON.stringify(error));
+    setStatus('Video added');
+    setUploading(false);
     if (error) {
       Alert.alert('Trainify', `Error in adding video metadata.`);
     }
   };
   const uploadVideoSuccess = (updatedResponse?: any) => {
     setLoading(false);
-    Alert.alert('Video uploaded successfully');
     setVideoURL(updatedResponse);
     vidURL = updatedResponse;
     console.log('upload video success: ', JSON.stringify(updatedResponse));
+    setUploading(false);
     addVideoToFirebase();
   };
 
@@ -372,24 +366,27 @@ const App4: FunctionComponent<Props> = props => {
       thumbnailURL: thumbURL,
       videoURL: vidURL,
     };
-    console.log('videoMetadata, ', videoMetadata);
+    console.log('videoMetadata, ', JSON.stringify(videoMetadata));
+    setUploading(true);
+    setStatus('Adding to database');
+    setUploading(true);
     addVideoService(videoMetadata, addVideoSuccess, addVideoFailure);
   };
 
   const uploadVideoFailureFirebase = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
+    Alert.alert('upload video failure in firebase: ', JSON.stringify(error));
     if (error) {
       // Alert.alert('Trainify', `Error in adding video.`);
     }
   };
 
-  {/* Stop recording backup */ }
   const stopRecording = async () => {
-
-    const res = await RecordScreen.stopRecording()
+    setUploading(true);
+    setStatus('Saving video in Device!');
+    const responseReocrding = await RecordScreen.stopRecording()
       .then(async res => {
         if (res) {
-          console.log('recording stopped:', res);
+          console.log('recording stopped:', JSON.stringify(res));
           const url = res.result.outputURL;
           await CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' });
 
@@ -400,8 +397,9 @@ const App4: FunctionComponent<Props> = props => {
             uri: url,
             type: 'video/mp4',
           };
-          // Upload using service
-
+          // console.log('videoData for uploading:', JSON.stringify(videoData1));
+          setUploading(true);
+          setStatus('Uploading video!');
           await uploadVideoService(
             videoData1,
             uploadVideoSuccess,
@@ -412,15 +410,13 @@ const App4: FunctionComponent<Props> = props => {
           console.log('Recording detials:', JSON.stringify(res));
           console.log('REOCORDING STOPPED: ', url);
 
-          let date = new Date().toLocaleString();
-
           let videoData = {
             duration: 0.01,
-            fileName: url.substr(-7),
+            fileName: '66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov',
             fileSize: 9363694,
             height: 720,
             id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
-            timestamp: date,
+            timestamp: '2022-02-25T17:02:18.000+0500',
             type: 'video/quicktime',
             uri: url,
             width: 1280,
@@ -440,89 +436,13 @@ const App4: FunctionComponent<Props> = props => {
 
           // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
         }
+        setUploading(true);
       })
       .catch(error => console.log('error...: ', error));
   };
 
-  // const stopRecording = async () => {
-  //   setSavingToGallery(true);
-
-  //   RecordScreen.stopRecording()
-  //     .then(async res => {
-  //       setSavingToGallery(false);
-  //       if (res) {
-  //         console.log('recording stopped:', res);
-  //         const url = res.result.outputURL;
-
-  //         CameraRoll.save(url, { type: 'video', album: 'TrainfyApp' })
-  //           .then((cmaeraRollResponse) => {
-  //             console.log('Video stored successfully, ', cmaeraRollResponse);
-
-  //           })
-  //           .catch((error) => {
-  //             Alert.alert('Error while saving video');
-  //           })
-
-  //         // KAZMI Code Starts here.
-  //         let fileName = url.substr(-7);
-
-  //         let videoData1 = {
-  //           fileName,
-  //           uri: url,
-  //           type: 'video/mp4',
-  //         };
-  //         // Upload using service
-  //         // await uploadVideoService(
-  //         //   videoData1,
-  //         //   uploadVideoSuccess,
-  //         //   uploadVideoFailureFirebase,
-  //         // );
-
-  //         // Kazmi code Ends here
-  //         console.log('Recording detials:', JSON.stringify(res));
-  //         console.log('REOCORDING STOPPED: ', url);
-
-  //         let date = new Date().toLocaleString();
-
-  //         let videoData = {
-  //           fileName,
-  //           name: fileName,
-  //           duration: 0.01,
-  //           fileSize: 9363694,
-  //           height: 720,
-  //           id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
-  //           timestamp: date,
-  //           // type: 'video/quicktime',
-  //           type: 'video/mp4',
-  //           uri: url,
-  //           width: 1280,
-  //         };
-  //         const tempAnalysisData = {
-  //           labels: ['Flat', 'Kick', 'Slice'],
-  //           legend: ['A', 'B', 'C', 'D'],
-  //           data: data,
-  //           barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-  //         };
-  //         const tempVideoData = { ...videoData, analysis_data: tempAnalysisData };
-  //         console.log('analysis_data for firebase, ', JSON.stringify(data));
-  //         console.log('sending to firebase, ', JSON.stringify(tempVideoData));
-  //         response_let = tempVideoData;
-
-  //         // setVideoData(tempVideoData);
-  //         setThumbnail(tempVideoData);
-  //         // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.log('error...: ', error);
-  //       setSavingToGallery(false);
-  //       Alert.alert('Error while saving media!')
-  //     });
-  // };
-
   const handleStopCamera = () => {
     isCompletedRecording = true;
-    console.log('stoppedButtonPressed:', isCompletedRecording);
     stopRecording();
   };
 
@@ -551,11 +471,11 @@ const App4: FunctionComponent<Props> = props => {
     await RecordScreen.startRecording({ mic: false })
       .then(res => {
         setIsStartedVideoRecording(true);
-        Alert.alert('Video recording started.');
+        console.log('Video recording started.');
       })
       .catch(error => {
         console.error(error);
-        Alert.alert('Video recording could not started.');
+        console.log('Video recording could not started.');
       });
   };
 
@@ -1194,25 +1114,6 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
-  const renderUploadingAnimation = () => {
-    return (<AnimatedLoader
-      style={styles.cameraContainer}
-      visible={uploading || uploadingAnalysis || savingToGallery}
-      overlayColor={'rgba(255, 255, 255, 0.75)'}
-      source={require('./loader.json')}
-      animationStyle={styles.lottie}
-      speed={1}>
-      <Text>
-        {uploading
-          ? currentStatus
-          : uploadingAnalysis
-            ? currentAnalysisStatus
-            : savingToGallery ? 'Saving' : 'Processing'}
-      </Text>
-      <Button title={'Cancel upload'} onPress={() => { cancelUploading(); navigation.goBack(); }} />
-    </AnimatedLoader>)
-  }
-
   const renderPose = () => {
     if (poses != null && poses.length > 0) {
       const keypoints = poses[0].keypoints
@@ -1358,7 +1259,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 5) {
         skipFrameCount = skipFrameCount + 1;
         //console.log(skipFrameCount);
       } else {
@@ -1526,9 +1427,7 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
-        if (!isStartedVideoRecording) {
-          startRecording();
-        }
+        // startRecording();
         // console.log('Calibrated Successfully');
       } else {
         // console.log('Please Calibrate Yourself');
@@ -1652,6 +1551,26 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
+  const renderUploadingAnimation = () => {
+    return (
+      <AnimatedLoader
+        style={styles.cameraContainer}
+        visible={uploadingVideo}
+        overlayColor={'rgba(255, 255, 255, 0.75)'}
+        source={require('./loader.json')}
+        animationStyle={styles.lottie}
+        speed={1}>
+        <Text>{currentUploadStatus}</Text>
+        <Button
+          title={'Cancel upload'}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      </AnimatedLoader>
+    );
+  };
+
   const camView = () => {
     return (
       <View
@@ -1689,9 +1608,7 @@ const App4: FunctionComponent<Props> = props => {
         hideProfileSection={true}
         navigation={navigation}
       />
-
       <View style={styles.cameraView}>
-
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady ? (
             camView()
@@ -1727,7 +1644,7 @@ const App4: FunctionComponent<Props> = props => {
   );
 };
 
-export default App4;
+export default App5;
 
 const styles = StyleSheet.create({
   container: {

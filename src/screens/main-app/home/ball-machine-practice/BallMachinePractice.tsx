@@ -23,7 +23,7 @@ import styles from '../../styles';
 import globalStyles from '../../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {AuthContext} from './../../../../context/auth-context';
+import {AuthContext} from '../../../../context/auth-context';
 
 const recordIcon = require('../../../../assets/images/record-icon.png');
 const uploadIcon = require('../../../../assets/images/upload-service.png');
@@ -97,11 +97,10 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                 marginLeft: 23,
               }}
               onPress={() => {
-                // navigation.navigate('RecordPractice');
-                // navigation.navigate('CameraContainer', {title:'RECORD LEFT-HANDED SERVE'});
-                navigation.navigate('BallPracticeTensorCamera', {
-                  title: 'RECORD LEFT-HANDED SERVE',
+                navigation.navigate('TensorCameraContainer', {
+                  title: 'RECORD RIGHT-HANDED SERVE',
                 });
+                // navigation.navigate('App4', {title: 'RECORD LEFT-HANDED SERVE'});
               }}>
               <AutoHeightImage
                 source={recordIcon}
@@ -141,11 +140,10 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               }}
               onPress={() => {
                 // navigation.navigate('RecordPractice');
-                // navigation.navigate('TensorCameraContainer', {title:'RECORD RIGHT-HANDED SERVE'});
-                // navigation.navigate('UsamaCameraContainer', {title: 'RECORD RIGHT-HANDED SERVE'})
-                navigation.navigate('BallPracticeTensorCamera', {
+                navigation.navigate('TensorCameraContainer', {
                   title: 'RECORD RIGHT-HANDED SERVE',
                 });
+                // navigation.navigate('App4', {title: 'RECORD RIGHT-HANDED SERVE'});
               }}>
               <AutoHeightImage
                 source={recordIcon}

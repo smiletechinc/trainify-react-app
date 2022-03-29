@@ -14,7 +14,7 @@ import Video from 'react-native-video';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
-const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
+const BallPracticeVideoPlayer = ({navigation, route}) => {
   const {video} = route.params;
   console.log('video, ', video);
   let fileURI = '';
@@ -98,13 +98,9 @@ const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
   const onSeeking = currentTime => setCurrentTime(currentTime);
 
   const handleShowGraphButton = () => {
-    if (video.analysis_data) {
-      navigation.navigate('BallPracticeRenderGraphScreen', {
-        analysis_data: video.analysis_data,
-      });
-    } else {
-      Alert.alert('Data not found');
-    }
+    navigation.navigate('BallPracticeRenderGraphScreen', {
+      analysis_data: video.analysisData,
+    });
   };
 
   const renderGraphButton = () => {
@@ -157,7 +153,7 @@ const BallPracticeVideoPlayerContainer = ({navigation, route}) => {
   );
 };
 
-export default BallPracticeVideoPlayerContainer;
+export default BallPracticeVideoPlayer;
 
 const styles = StyleSheet.create({
   container: {

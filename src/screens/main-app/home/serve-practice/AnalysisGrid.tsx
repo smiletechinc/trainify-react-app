@@ -41,7 +41,11 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
-    fetchVideosService(fetchVideosSuccess, fetchVideosFailure); //call reducrer action
+    fetchVideosService(
+      fetchVideosSuccess,
+      fetchVideosFailure,
+      'servePracticeVideos',
+    ); //call reducrer action
   }, []);
 
   useEffect(() => {

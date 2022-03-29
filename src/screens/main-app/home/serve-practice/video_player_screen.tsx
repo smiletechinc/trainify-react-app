@@ -98,13 +98,9 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const onSeeking = currentTime => setCurrentTime(currentTime);
 
   const handleShowGraphButton = () => {
-    if (video.analysis_data)
-      navigation.navigate('RenderGraphScreen', {
-        analysis_data: video.analysis_data,
-      });
-    else {
-      Alert.alert('Data not found');
-    }
+    navigation.navigate('RenderGraphScreen', {
+      analysis_data: video.analysisData,
+    });
   };
 
   const renderGraphButton = () => {

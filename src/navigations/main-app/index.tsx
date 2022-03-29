@@ -2,25 +2,14 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import {HomeScreen} from '../../screens';
-import {
-  TensorFlowCameraContainer,
-  TensorCameraContainer,
-  UsamaCameraContainer,
-  App4,
-  App45,
-} from '../../screens';
+import {TensorCameraContainer, App4} from '../../screens';
 
 import {
   BallPracticeContainer,
-  RecordBallPracticeContainer,
-  UploadBallPracticeContainer,
-  BallPracticeTensorCamera,
-  BallPracticeCameraContainer,
-  BallPracticeImagePickerContainer,
-  BallPracticeVideoPlayerContainer,
-  BallPracticeRenderGraphScreen,
   BallPracitceAnalysisGridScreen,
-  UploadBallPracticeScreen,
+  BallPracticeRenderGraphScreen,
+  BallPracticeVideoPlayer,
+  UploadBallMachineContainerHook,
 } from '../../screens';
 
 import {
@@ -44,6 +33,7 @@ import {
   ServePracticeVideoPlayerContainer,
   ServePracticeRenderGraphScreen,
   ServePracticeAnalysisGridScreen,
+  UploadServeContainerHook,
   UploadServePracticeScreen,
   UploadServePracticeScreenHook,
 } from '../../screens';
@@ -56,7 +46,6 @@ function MainAppContainer() {
       initialRouteName="HomeScreen"
       screenOptions={{headerShown: false}}>
       <AppStack.Screen name="App4" component={App4} />
-      <AppStack.Screen name="App45" component={App45} />
 
       <AppStack.Screen name="HomeScreen" component={HomeScreen} />
 
@@ -65,30 +54,17 @@ function MainAppContainer() {
         component={BallPracticeContainer}
       />
       <AppStack.Screen
-        name="UploadBallPracticeScreen"
-        component={UploadBallPracticeScreen}
-      />
-      <AppStack.Screen
-        name="BallPracticeTensorCamera"
-        component={BallPracticeTensorCamera}
-      />
-      <AppStack.Screen
         name="BallPracitceAnalysisGridScreen"
         component={BallPracitceAnalysisGridScreen}
-      />
-      <AppStack.Screen
-        name="BallPracticeVideoPlayer"
-        component={BallPracticeVideoPlayerContainer}
       />
       <AppStack.Screen
         name="BallPracticeRenderGraphScreen"
         component={BallPracticeRenderGraphScreen}
       />
       <AppStack.Screen
-        name="UploadBallPracticeContainer"
-        component={UploadBallPracticeContainer}
+        name="BallPracticeVideoPlayer"
+        component={BallPracticeVideoPlayer}
       />
-
       <AppStack.Screen
         name="HomePracticeHomeScreen"
         component={HomePracticeContainer}
@@ -143,16 +119,8 @@ function MainAppContainer() {
         component={UploadServePracticeContainer}
       />
       <AppStack.Screen
-        name="TensorFlowCameraContainer"
-        component={TensorFlowCameraContainer}
-      />
-      <AppStack.Screen
         name="TensorCameraContainer"
         component={TensorCameraContainer}
-      />
-      <AppStack.Screen
-        name="UsamaCameraContainer"
-        component={UsamaCameraContainer}
       />
     </AppStack.Navigator>
   );

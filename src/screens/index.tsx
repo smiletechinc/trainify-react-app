@@ -1,8 +1,5 @@
-import TensorFlowCameraContainer from '../../App1';
-import TensorCameraContainer from '../../App3';
-import UsamaCameraContainer from '../../App3';
+import TensorCameraContainer from '../../AppPracticeBallMachine';
 import App4 from '../../App4';
-import App45 from '../../App4 copy';
 
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
 import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
@@ -15,15 +12,10 @@ import SplashScreen from '../screens/authentication/SplashScreen';
 import HomeScreen from './main-app/home';
 
 import BallPracitceAnalysisGridScreen from './main-app/home/ball-machine-practice/AnalysisGrid';
-import BallPracticeCameraContainer from './main-app/home/ball-machine-practice/CameraContainer';
-import BallPracticeTensorCamera from './main-app/home/ball-machine-practice/BallPracticeTensorCamera';
-import BallPracticeImagePickerContainer from './main-app/home/ball-machine-practice/ImagePicker';
-import RecordBallPracticeContainer from './main-app/home/ball-machine-practice/RecordService';
-import BallPracticeRenderGraphScreen from './main-app/home/ball-machine-practice/render_graph';
-import BallPracticeContainer from './main-app/home/ball-machine-practice/ServePractice';
-import UploadBallPracticeScreen from './main-app/home/ball-machine-practice/upload_server_practice';
-import UploadBallPracticeContainer from './main-app/home/ball-machine-practice/UploadServe';
-import BallPracticeVideoPlayerContainer from './main-app/home/ball-machine-practice/video_player_screen';
+import BallPracticeContainer from './main-app/home/ball-machine-practice/BallMachinePractice';
+import UploadBallMachineContainerHook from './authentication/UploadBallMachineContainerHook';
+import BallPracticeVideoPlayer from './main-app/home/ball-machine-practice/BallPracticevideoplayerscreen';
+import BallPracticeRenderGraphScreen from './main-app/home/ball-machine-practice/BallPracticerenderGraph';
 
 import HomePracticeAnalysisGridScreen from './main-app/home/practice-at-home/AnalysisGrid';
 import HomePracticeCameraContainer from './main-app/home/practice-at-home/CameraContainer';
@@ -45,15 +37,17 @@ import UploadServePracticeScreen from './main-app/home/serve-practice/upload_ser
 import UploadServePracticeScreenHook from './main-app/home/serve-practice/upload_server_practice_hook';
 import UploadServePracticeContainer from './main-app/home/serve-practice/UploadServe';
 import ServePracticeVideoPlayerContainer from './main-app/home/serve-practice/video_player_screen';
-
+import TestRecordScreenContainer from './authentication/TestRecordScreen';
+import TestRecordScreenContainerHook from './authentication/TestRecordScreenHook';
+import UploadServeContainerHook from './authentication/UploadServeContainerHook';
 export {
-  TensorFlowCameraContainer,
   TensorCameraContainer,
-  UsamaCameraContainer,
   App4,
-  App45,
   LandingScreenContainer,
   LanguageScreenContainer,
+  TestRecordScreenContainer,
+  TestRecordScreenContainerHook,
+  UploadServeContainerHook,
   PaymentPlanContainer,
   ResetPasswordContainer,
   SigninScreen,
@@ -61,15 +55,10 @@ export {
   SplashScreen,
   HomeScreen,
   BallPracitceAnalysisGridScreen,
-  BallPracticeTensorCamera,
-  BallPracticeCameraContainer,
-  BallPracticeImagePickerContainer,
-  RecordBallPracticeContainer,
-  BallPracticeRenderGraphScreen,
   BallPracticeContainer,
-  UploadBallPracticeScreen,
-  UploadBallPracticeContainer,
-  BallPracticeVideoPlayerContainer,
+  UploadBallMachineContainerHook,
+  BallPracticeVideoPlayer,
+  BallPracticeRenderGraphScreen,
   HomePracticeAnalysisGridScreen,
   HomePracticeCameraContainer,
   HomePracticeImagePickerContainer,
