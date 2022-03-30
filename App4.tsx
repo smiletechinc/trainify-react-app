@@ -251,10 +251,11 @@ const App4: FunctionComponent<Props> = props => {
             try {
               const response = await CameraRoll.save(url);
               if (response) {
+                setTfReady(false);
                 setIsRecordingInProgress(false);
                 console.log('Recording saved successfuly.');
                 setVideoURI(url);
-                navigation.navigate('UploadServeContainerHook', {
+                navigation.replace('UploadServeContainerHook', {
                   capturedVideoURI: url,
                   graphData: data,
                 });
