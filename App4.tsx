@@ -35,6 +35,7 @@ import {
   getThumbnailURL,
 } from './src/services/mediaServices';
 import AnimatedLoader from 'react-native-animated-loader';
+import {Countdown} from 'react-native-element-timer';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -86,6 +87,8 @@ const App4: FunctionComponent<Props> = props => {
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
+  const countdownRef = useRef(null);
+  const [remainingTime, setRemainingTime] = useState<Number>(0);
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -255,7 +258,7 @@ const App4: FunctionComponent<Props> = props => {
                 setIsRecordingInProgress(false);
                 console.log('Recording saved successfuly.');
                 setVideoURI(url);
-                navigation.replace('UploadServeContainerHook', {
+                navigation.navigate('UploadServeContainerHook', {
                   capturedVideoURI: url,
                   graphData: data,
                 });
@@ -305,6 +308,7 @@ const App4: FunctionComponent<Props> = props => {
       .then(res => {
         setIsStartedVideoRecording(true);
         console.log('Video recording started.');
+        countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
@@ -1165,10 +1169,35 @@ const App4: FunctionComponent<Props> = props => {
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
+            <Text
+              style={{
+                zIndex: 1000,
+                position: 'absolute',
+                fontSize: 16,
+                color: '#000000',
+              }}>
+              {remainingTime}
+            </Text>
+            <Countdown
+              ref={countdownRef}
+              // style={styles.timer}
+              // textStyle={styles.timerText}
+              initialSeconds={60}
+              onTimes={e => {
+                setRemainingTime(60 - e);
+              }}
+              onPause={e => {}}
+              onEnd={e => {
+                handleStopCamera();
+              }}
+            />
             <IconButton
               styles={styles.recordIcon}
               icon={stopIcon}
-              onPress={handleStopCamera}
+              onPress={() => {
+                countdownRef.current.stop();
+                handleStopCamera();
+              }}
               transparent={true}
             />
           </View>
