@@ -1,5 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Text, View, Platform} from 'react-native';
+import {StackedBarChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -11,9 +12,8 @@ import {
   VictoryPie,
 } from 'victory-native';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-navigation';
-import {Platform} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SCREEN_WIDTH} from '../../../../constants';
 
 var screenWidth = Dimensions.get('window').width;
@@ -85,59 +85,73 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
   // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
 
   return (
-    // Graph Printing
-    <View style={styles.container}>
-      <View style={styles.pieContainer}>
-        <VictoryPie
-          animate={{
-            duration: 1000,
-          }}
-          padding={screenWidth / 3}
-          width={screenWidth}
-          height={screenHeight}
-          colorScale={['tomato', 'orange', 'gold']}
-          data={pie_data.data}
+    <SafeAreaView style={styles.main_view}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        showsVerticalScrollIndicator={false}>
+        <HeaderWithText
+          text="Graph Report"
+          navigation={navigation}
+          hideBackButton={false}
         />
-      </View>
-      <Text>Rally Length Breakdown</Text>
-      <View style={styles.vectorContainer}>
-        <VictoryChart domainPadding={screenWidth / 6} width={screenWidth}>
-          <VictoryAxis
-            dependentAxis
-            domain={{y: [0, 8]}}
-            label={'Total Rally Returns'}
-            style={{axisLabel: {padding: 30}}}></VictoryAxis>
-          <VictoryAxis label={'Type of Return'}></VictoryAxis>
-          <VictoryGroup offset={screenWidth / 8}>
-            <VictoryBar
+        <View style={styles.container}>
+          <View style={styles.pieContainer}>
+            <VictoryPie
               animate={{
-                duration: 2000,
+                duration: 1000,
               }}
-              data={data_victory.AGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
-              labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.BGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
-              labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
-          </VictoryGroup>
-          <VictoryLegend
-            width={screenWidth / 80}
-            x={screenWidth / 4}
-            orientation={'horizontal'}
-            gutter={screenWidth / 10}
-            data={[
-              {name: 'Picked', symbol: {fill: 'blue'}},
-              {name: 'Missed', symbol: {fill: 'orange'}},
-            ]}></VictoryLegend>
-        </VictoryChart>
-      </View>
-    </View>
+              padding={screenWidth / 3.5}
+              width={screenWidth}
+              height={screenHeight / 2}
+              colorScale={['tomato', 'orange', 'gold']}
+              data={pie_data.data}
+            />
+          </View>
+          <View style={{marginTop: -160}}>
+            <Text>Rally Length Breakdown</Text>
+          </View>
+          <View style={styles.vectorContainer}>
+            <VictoryChart domainPadding={screenWidth / 6} width={screenWidth}>
+              <VictoryAxis
+                dependentAxis
+                domain={{y: [0, 8]}}
+                label={'Total Rally Returns'}
+                style={{axisLabel: {padding: 26}}}></VictoryAxis>
+              <VictoryAxis label={'Type of Return'}></VictoryAxis>
+              <VictoryGroup offset={screenWidth / 8}>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.AGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                <VictoryBar
+                  animate={{
+                    duration: 2000,
+                  }}
+                  data={data_victory.BGrade}
+                  labels={({datum}) => datum.y}
+                  style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
+                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+              </VictoryGroup>
+              <VictoryLegend
+                width={screenWidth / 80}
+                x={screenWidth / 4}
+                orientation={'horizontal'}
+                gutter={screenWidth / 10}
+                data={[
+                  {name: 'Picked', symbol: {fill: 'blue'}},
+                  {name: 'Missed', symbol: {fill: 'orange'}},
+                ]}></VictoryLegend>
+            </VictoryChart>
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 export default BallPracticeRenderGraphScreen;
@@ -163,14 +177,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: screenHeight / 1.8,
-    paddingBottom: screenHeight / 8,
+    paddingBottom: screenHeight / 10,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: screenHeight / 3,
+    height: screenHeight / 2,
     paddingLeft: screenWidth / 20,
   },
 

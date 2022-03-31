@@ -128,7 +128,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               data={pie_data.data}
             />
           </View>
-          <View style={{marginTop: -40}}>
+          <View style={{marginTop: -60}}>
             <Text>Distibution of Serves Performed</Text>
           </View>
           <View style={styles.vectorContainer}>
@@ -211,15 +211,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: screenHeight / 1.8,
-    paddingBottom: screenHeight / 8,
+    height: screenHeight / 1.7,
+    paddingBottom: screenHeight / 9,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: screenHeight / 3,
+    height: screenHeight / 2.9,
     paddingLeft: screenWidth / 20,
   },
 
