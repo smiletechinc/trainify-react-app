@@ -1,4 +1,4 @@
-import { useEffect, useState, FunctionComponent, useCallback } from 'react';
+import {useEffect, useState, FunctionComponent, useCallback} from 'react';
 import app from '../config/db';
 import firebase from 'firebase/auth';
 import {
@@ -11,8 +11,8 @@ import {
 } from 'firebase/storage';
 import storage1 from '@react-native-firebase/storage';
 
-import { ErrorObject, VideoData } from '../../types';
-import { Alert, Platform } from 'react-native';
+import {ErrorObject, VideoData} from '../../types';
+import {Alert, Platform} from 'react-native';
 
 // Create a root reference
 const storage = getStorage();
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const useMediaUpload = props => {
-  const { videoData } = props;
+  const {videoData} = props;
   const [currentStatus, setCurrentStatus] = useState('Preparing');
   const [uploading, setUploading] = useState(false);
   const [uploadThumbnailFailure, setUploadThumbnailFailure] = useState(false);
@@ -66,33 +66,34 @@ export const useMediaUpload = props => {
     const fileName = imageData.fileName
       ? imageData.fileName
       : imageData.name
-        ? imageData.name
-        : 'temp-file-name';
+      ? imageData.name
+      : 'temp-file-name';
     const fileURI = imageData.uri;
     const fileType = imageData.type;
 
     const videoReference = storage1().ref(`images/${fileName}`);
 
     const fileImage = JSON.parse(
-      JSON.stringify({ uri: fileURI, type: fileType, name: fileName }),
+      JSON.stringify({uri: fileURI, type: fileType, name: fileName}),
     );
 
     try {
       const task = videoReference.putFile(fileImage.uri);
 
-      task.then((response) => {
-        console.log('Thumbnail uploaded: ', response);
-        let filePath = response.metadata.fullPath;
-        (() => {
-          getThumbnailURL(filePath);
-        })();
-
-      }).catch((error) => {
-        console.error(error);
-        setUploadThumbnailFailure(true);
-        setUploading(false);
-        setUploadThumbnailFailure(true);
-      });
+      task
+        .then(response => {
+          console.log('Thumbnail uploaded: ', response);
+          let filePath = response.metadata.fullPath;
+          (() => {
+            getThumbnailURL(filePath);
+          })();
+        })
+        .catch(error => {
+          console.error(error);
+          setUploadThumbnailFailure(true);
+          setUploading(false);
+          setUploadThumbnailFailure(true);
+        });
     } catch (error) {
       Alert.alert('Error uploading humbnail', JSON.stringify(error));
       setUploading(false);
@@ -126,33 +127,37 @@ export const useMediaUpload = props => {
     const fileName = videoData.fileName
       ? videoData.fileName
       : videoData.name
-        ? videoData.name
-        : 'temp-file-name';
+      ? videoData.name
+      : 'temp-file-name';
     const fileURI = videoData.uri;
 
     const videoReference = storage1().ref(`videos/${fileName}`);
     try {
       const task = videoReference.putFile(fileURI);
       task.on('state_changed', taskSnapshot => {
-        const percentage = Math.round((taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100);
+        const percentage = Math.round(
+          (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
+        );
         setCurrentStatus(`uploading video ${percentage}%`);
       });
-      task.then((response) => {
-        console.log('File uploaded successfully:.... ', response);
-        let filePath = response.metadata.fullPath;
-        (() => {
-          getVideoURL(filePath);
-        })();
-      }).catch((error) => {
-        Alert.alert('Error:.... ', error);
-        console.error(error);
-        setUploadVideoFailure(true);
-        setUploading(false);
-        // onFailure(error);
-      });
+      task
+        .then(response => {
+          console.log('File uploaded successfully:.... ', response);
+          let filePath = response.metadata.fullPath;
+          (() => {
+            getVideoURL(filePath);
+          })();
+        })
+        .catch(error => {
+          Alert.alert('Error:.... ', error);
+          console.error(error);
+          setUploadVideoFailure(true);
+          setUploading(false);
+          // onFailure(error);
+        });
     } catch (error) {
       Alert.alert('Sorry Something went wrong.', error);
-      Alert.alert('Error uploading video, ');
+      Alert.alert('Error uploading video, ', JSON.stringify(error));
       setUploading(false);
       setCurrentStatus('Error uploading video');
     }

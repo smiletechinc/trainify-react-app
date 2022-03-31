@@ -248,13 +248,13 @@ const App4: FunctionComponent<Props> = props => {
     try {
       const responseReocrding = await RecordScreen.stopRecording()
         .then(async res => {
+          setTfReady(false);
           if (res) {
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
             try {
               const response = await CameraRoll.save(url);
               if (response) {
-                setTfReady(false);
                 setIsRecordingInProgress(false);
                 console.log('Recording saved successfuly.');
                 setVideoURI(url);
@@ -994,7 +994,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 5) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
