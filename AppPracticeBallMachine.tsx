@@ -33,6 +33,7 @@ import {
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
+import {Countdown} from 'react-native-element-timer';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -81,6 +82,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
 
+  const countdownRef = useRef(null);
+  const [remainingTime, setRemainingTime] = useState<Number>(0);
   const [thumbnail, setThumbnail] = React.useState<any>(null);
   const [videoURL, setVideoURL] = React.useState<string>(null);
   const [videoData, setVideoData] = React.useState<string>(null);
@@ -103,10 +106,9 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   var isForehandMissed = true;
 
   var analysis_data = {
-    labels: ['Flat', 'Kick', 'Slice'],
+    labels: ['Forehand', 'Backhand'],
     legend: ['A', 'B', 'C', 'D'],
     data: [
-      [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
@@ -241,6 +243,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     try {
       const responseReocrding = await RecordScreen.stopRecording()
         .then(async res => {
+          setTfReady(false);
           if (res) {
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
@@ -250,7 +253,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
                 setIsRecordingInProgress(false);
                 console.log('Recording saved successfuly.');
                 setVideoURI(url);
-                navigation.replace('UploadBallMachineContainerHook', {
+                navigation.navigate('UploadBallMachineContainerHook', {
                   capturedVideoURI: url,
                   graphData: data,
                 });
@@ -300,6 +303,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       .then(res => {
         setIsStartedVideoRecording(true);
         console.log('Video recording started.');
+        countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
@@ -1247,10 +1251,35 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
+            <Text
+              style={{
+                zIndex: 1000,
+                position: 'absolute',
+                fontSize: 16,
+                color: '#000000',
+              }}>
+              {remainingTime}
+            </Text>
+            <Countdown
+              ref={countdownRef}
+              // style={styles.timer}
+              // textStyle={styles.timerText}
+              initialSeconds={60}
+              onTimes={e => {
+                setRemainingTime(60 - e);
+              }}
+              onPause={e => {}}
+              onEnd={e => {
+                handleStopCamera();
+              }}
+            />
             <IconButton
               styles={styles.recordIcon}
               icon={stopIcon}
-              onPress={handleStopCamera}
+              onPress={() => {
+                countdownRef.current.stop();
+                handleStopCamera();
+              }}
               transparent={true}
             />
           </View>

@@ -89,7 +89,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (uploadVideoFailure) {
-      Alert.alert('Could not upload thumbnail');
+      Alert.alert('Could not upload video');
     }
     if (videoURL) {
       (() => {
@@ -100,7 +100,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (uploadThumbnailFailure) {
-      Alert.alert('Could not upload video');
+      Alert.alert('Could not upload Thumbnail');
     }
     if (thumbnailURL) {
       // Alert.alert('Thumbnail uploaded, ', thumbnailURL);
@@ -113,7 +113,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (videoAnalysisData) {
       navigation.navigate('VideoPlayerContainer', {video: videoAnalysisData});
-      Alert.alert('Trainify', `Video added successfully.`);
+      // Alert.alert('Trainify', `Video added successfully.`);
     }
   }, [videoAnalysisData]);
 

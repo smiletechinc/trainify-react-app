@@ -89,7 +89,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (uploadVideoFailure) {
-      Alert.alert('Could not upload thumbnail');
+      Alert.alert('Could not upload video');
     }
     if (videoURL) {
       (() => {
@@ -100,7 +100,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (uploadThumbnailFailure) {
-      Alert.alert('Could not upload video');
+      Alert.alert('Could not upload Thumbnail');
     }
     if (thumbnailURL) {
       // Alert.alert('Thumbnail uploaded, ', thumbnailURL);
@@ -115,15 +115,20 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
       navigation.navigate('BallPracticeVideoPlayer', {
         video: videoAnalysisData,
       });
-      Alert.alert('Trainify', `Video added successfully.`);
+      // Alert.alert('Trainify', `Video added successfully.`);
     }
   }, [videoAnalysisData]);
 
   const proceedToUploadMetaData = async () => {
     var analysis_data = {
-      labels: ['Flat', 'Kick', 'Slice'],
+      labels: ['Forehand', 'Backhand'],
       legend: ['A', 'B', 'C', 'D'],
-      data: graphData,
+      data: graphData
+        ? graphData
+        : [
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+          ],
       barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
     };
     var last = capturedVideoURI.substring(
@@ -131,7 +136,6 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
       capturedVideoURI.length,
     );
     let date = new Date().toLocaleString();
-
     const name = last;
     let videoAnalysisData1 = {
       duration: 0.01,

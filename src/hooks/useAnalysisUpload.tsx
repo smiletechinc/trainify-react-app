@@ -35,7 +35,8 @@ export const useAnalysisUpload = props => {
 
   const addVideoAnalysisToFirebase = useCallback(
     async (video, feature?: string) => {
-      let type = feature ? feature : 'servePracticeVideos';
+      let type = feature ? feature : 'video';
+      console.log('Video for saved in: ', feature);
       const branch = `videos/${type}`;
       setUploadingAnalysis(true);
       setCurrentStatus('Uploading analysis');
