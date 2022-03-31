@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useEffect} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import {SCREEN_WIDTH} from '../../../constants';
+import { SCREEN_WIDTH } from '../../../constants';
 import Header from '../../../global-components/header';
 import styles from '../styles';
 import globalStyles from '../../../global-styles';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
@@ -18,10 +18,10 @@ type Props = {
   navigation: any;
 };
 
-const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
-  useEffect(() => {
-    RecordScreen.startRecording({mic: false});
-  }, []);
+const HomeScreen: FunctionComponent<Props> = ({ navigation }) => {
+  // useEffect(() => {
+  //   RecordScreen.startRecording({mic: false});
+  // }, []);
 
   return (
     <View style={styles.home_main_view}>
@@ -38,10 +38,10 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 60,
           }}
           onPress={() => {
-            RecordScreen.stopRecording().then(response => {
-              const url = response.result.outputURL;
-              CameraRoll.save(url, {type: 'video'});
-            });
+            // RecordScreen.stopRecording().then(response => {
+            //   const url = response.result.outputURL;
+            //   CameraRoll.save(url, {type: 'video'});
+            // });
             navigation.navigate('ServePracticeHomeScreen');
           }}>
           <AutoHeightImage
@@ -60,7 +60,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
-            RecordScreen.stopRecording();
+            // RecordScreen.stopRecording();
             navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
           <AutoHeightImage
@@ -79,7 +79,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 26,
           }}
           onPress={() => {
-            RecordScreen.stopRecording();
+            // RecordScreen.stopRecording();
             // navigation.navigate('HomePracticeHomeScreen')
           }}>
           <AutoHeightImage source={practiceAtHome} width={SCREEN_WIDTH * 0.9} />

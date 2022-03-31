@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -6,7 +6,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import RecordScreen from 'react-native-record-screen';
 import {
@@ -20,9 +20,9 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 
 import styles from '../../styles';
 import globalStyles from '../../../../global-styles';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {AuthContext} from './../../../../context/auth-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from './../../../../context/auth-context';
 
 const recordIcon = require('../../../../assets/images/record-icon.png');
 const uploadIcon = require('../../../../assets/images/upload-service.png');
@@ -31,26 +31,12 @@ const analysisIcon = require('../../../../assets/images/analysis-icon.png');
 type Props = {
   navigation: any;
 };
-const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
-  const {authUser, setAuthUser} = React.useContext(AuthContext);
-  const {playerstyle} = authUser ? authUser : '';
-  const startRecording = () => {
-    RecordScreen.startRecording({mic: false}).catch(error =>
-      console.error(error),
-    );
-  };
-  const stopRecording = async () => {
-    const res = await RecordScreen.stopRecording().catch(error =>
-      console.warn(error),
-    );
-    if (res) {
-      const url = res.result.outputURL;
-      console.log('Recording detials:', JSON.stringify(res));
-      console.log('REOCORDING STOPPED: ', url);
-    }
-  };
+const ServePracticeContainer: FunctionComponent<Props> = ({ navigation }) => {
+  const { authUser, setAuthUser } = React.useContext(AuthContext);
+  const { playerstyle } = authUser ? authUser : '';
+
   // const navigation = useNavigation();
-  useEffect(() => {});
+  useEffect(() => { });
   // const start = () => {
   //   // 30 seconds
   //   setShowVideoRecorder(true);
@@ -69,7 +55,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
         <HeaderWithText text="Serve Practice" navigation={navigation} />
 
         {playerstyle === 'LeftHanded' ? (
-          <View style={{flexDirection: 'row', marginTop: 28}}>
+          <View style={{ flexDirection: 'row', marginTop: 28 }}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
@@ -110,7 +96,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{flexDirection: 'row', marginTop: 28}}>
+          <View style={{ flexDirection: 'row', marginTop: 28 }}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
@@ -152,7 +138,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
           </View>
         )}
 
-        <View style={{flexDirection: 'row', marginTop: 18}}>
+        <View style={{ flexDirection: 'row', marginTop: 18 }}>
           <TouchableOpacity
             activeOpacity={0.8}
             delayPressIn={0}

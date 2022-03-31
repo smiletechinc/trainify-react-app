@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, FunctionComponent} from 'react';
+import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
   Alert,
   Button,
 } from 'react-native';
-import {Camera} from 'expo-camera';
+import { Camera } from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
 import * as posedetection from '@tensorflow-models/pose-detection';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -16,26 +16,26 @@ import {
   bundleResourceIO,
   cameraWithTensors,
 } from '@tensorflow/tfjs-react-native';
-import Svg, {Circle, Line} from 'react-native-svg';
-import {ExpoWebGLRenderingContext} from 'expo-gl';
-import {CameraType} from 'expo-camera/build/Camera.types';
-import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
+import Svg, { Circle, Line } from 'react-native-svg';
+import { ExpoWebGLRenderingContext } from 'expo-gl';
+import { CameraType } from 'expo-camera/build/Camera.types';
+import { CounterContext } from './src/context/counter-context';
+import { addVideoService } from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
-import {IconButton} from './src/components/buttons';
+import { IconButton } from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
 import * as VideoThumbnails from 'expo-video-thumbnails';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
+import { useAnalysisUpload, useMediaUpload } from './src/hooks';
 import {
   uploadPhotoService,
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
 import AnimatedLoader from 'react-native-animated-loader';
-import {Countdown} from 'react-native-element-timer';
+import { Countdown } from 'react-native-element-timer';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -59,14 +59,15 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
+  // console.log('asasdasdasdasdasdasdasdasd:.........');
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
-  const {navigation, route} = props;
-  const {title} = route.params;
+  const { navigation, route } = props;
+  const { title } = route.params;
   // const title = '';
   const [isLoading, setLoading] = React.useState(true);
-  const {increment, reset, count, calibrated, setCalibrated, setData, data} =
+  const { increment, reset, count, calibrated, setCalibrated, setData, data } =
     React.useContext(CounterContext);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -114,7 +115,7 @@ const App4: FunctionComponent<Props> = props => {
 
       const curOrientation = await ScreenOrientation.getOrientationAsync();
       const model = posedetection.SupportedModels.BlazePose;
-      const detectorConfig = {runtime: 'tfjs', modelType: 'full'};
+      const detectorConfig = { runtime: 'tfjs', modelType: 'full' };
       const detector = await posedetection.createDetector(
         model,
         detectorConfig,
@@ -196,7 +197,7 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const startTimer = e => {
-    let {total, hours, minutes, seconds} = getTimeRemaining(e);
+    let { total, hours, minutes, seconds } = getTimeRemaining(e);
     if (total >= 0) {
       setSeconds(seconds);
     }
@@ -253,18 +254,24 @@ const App4: FunctionComponent<Props> = props => {
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
             try {
-              const response = await CameraRoll.save(url);
-              if (response) {
-                setIsRecordingInProgress(false);
-                console.log('Recording saved successfuly.');
-                setVideoURI(url);
-                navigation.navigate('UploadServeContainerHook', {
-                  capturedVideoURI: url,
-                  graphData: data,
-                });
-              } else {
-                Alert.alert('Video could not saved');
-              }
+              const response = await CameraRoll.save(url).then((promise) => {
+                console.log('promise: ', promise);
+                if (promise) {
+                  setIsRecordingInProgress(false);
+                  console.log('Recording saved successfuly.');
+                  setVideoURI(url);
+                  navigation.navigate('UploadServeContainerHook', {
+                    capturedVideoURI: url,
+                    graphData: data,
+                  });
+                } else {
+                  Alert.alert('Video could not saved');
+                }
+              }).catch((e) => {
+                // console.log('error:........................................ ', e);
+                Alert.alert("Sorry! This operation cannot be performed without permission", "Allow the permissions in the settings to continue");
+                navigation.goBack();
+              });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
             }
@@ -304,15 +311,17 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const startRecording = async () => {
-    await RecordScreen.startRecording({mic: false})
+    await RecordScreen.startRecording({ mic: false })
       .then(res => {
         setIsStartedVideoRecording(true);
-        console.log('Video recording started.');
+        // console.log('Video recording started.');
         countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
+        Alert.alert("Sorry! Recording cannot be start at the moment", "Plese check your permissions in the settings");
         console.log('Video recording could not started.');
+        navigation.goBack();
       });
   };
 
@@ -1114,12 +1123,12 @@ const App4: FunctionComponent<Props> = props => {
     return (
       <AnimatedLoader
         style={styles.cameraContainer}
-        visible={uploading}
+        visible={false} // uploading
         overlayColor={'rgba(255, 255, 255, 0.75)'}
         source={require('./loader.json')}
         animationStyle={styles.lottie}
         speed={1}>
-        <Text>{currentStatus}</Text>
+        <Text>{"currentStatus"}</Text>
         <Button
           title={'Cancel upload'}
           onPress={() => {
@@ -1153,7 +1162,7 @@ const App4: FunctionComponent<Props> = props => {
     );
   };
   const onLayout = event => {
-    const {x, y, height, width} = event.nativeEvent.layout;
+    const { x, y, height, width } = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
     cameraLayoutWidth = width;
     setCameraWidth(width);
@@ -1207,7 +1216,7 @@ const App4: FunctionComponent<Props> = props => {
               onTimes={e => {
                 setRemainingTime(60 - e);
               }}
-              onPause={e => {}}
+              onPause={e => { }}
               onEnd={e => {
                 handleStopCamera();
               }}
