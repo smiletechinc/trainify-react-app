@@ -19,6 +19,8 @@ import {SCREEN_WIDTH} from '../../../../constants';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
+const graphIcon = require('../../../../assets/images/graphIcon.png');
+
 const chartConfig = {
   backgroundGradientFrom: '#1E2923',
   backgroundGradientFromOpacity: 0,
@@ -121,7 +123,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               animate={{
                 duration: 1000,
               }}
-              padding={screenWidth / 5}
+              padding={screenWidth / 4}
               width={screenWidth}
               height={screenHeight / 2}
               colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
@@ -137,7 +139,9 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
                 domain={{y: [0, 8]}}
                 dependentAxis
                 label={'Total Serves'}
-                style={{axisLabel: {padding: 30}}}></VictoryAxis>
+                style={{
+                  axisLabel: {paddingRight: 50, paddingLeft: 10},
+                }}></VictoryAxis>
               <VictoryAxis label={'Type of Serve'}></VictoryAxis>
               <VictoryGroup offset={screenWidth / 25}>
                 <VictoryBar

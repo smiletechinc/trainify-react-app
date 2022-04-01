@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
@@ -32,7 +31,10 @@ import {UserObject} from '../../types';
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
 
-const SigninContainer: FunctionComponent = ({navigation}) => {
+type Props = {
+  navigation: any;
+};
+const SigninContainer: FunctionComponent<Props> = ({navigation}) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -107,22 +109,6 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
     }
     return true;
   };
-
-  //   const proceedToSignup = () => {
-  //     const auth = getAuth();
-  // createUserWithEmailAndPassword(auth, email, password)
-  //   .then((userCredential) => {
-  //     // Signed up
-  //     const user = userCredential.user;
-  //     Alert.alert("Trainify", "You've signed up successfully")
-  //     goToHomePage()
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     Alert.alert("Trainify", errorMessage)
-  //   });
-  //   }
 
   return (
     <View style={styles.login_main_container}>

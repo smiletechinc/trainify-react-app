@@ -11,13 +11,14 @@ const styles = StyleSheet.create({
   },
   practice_text: {
     position: 'absolute',
-    top: 50,
-    right: 43,
-    lineHeight: 27,
+    top: 100,
+    right: 16,
+    lineHeight: 20,
     fontWeight: 'bold',
     color: COLORS.white,
     width: SCREEN_WIDTH * 0.5,
     textAlign: 'right',
+    fontSize: 16
   },
   // Service Practice styles.
   main_view: {
@@ -30,12 +31,13 @@ const styles = StyleSheet.create({
   record_and_upload_text: {
     position: 'absolute',
     bottom: 7,
-    left: 6,
+    right: 16,
     lineHeight: 27,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: COLORS.white,
-    width: (SCREEN_WIDTH * 0.9 / 2) - 43,
+    width: SCREEN_WIDTH * 0.5,
     textAlign: 'center',
+    fontSize: 16
   },
   video_duration_text: {
     marginTop: 5 + STATUS_BAR_HEIGHT,
