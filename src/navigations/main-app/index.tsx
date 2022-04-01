@@ -13,28 +13,10 @@ import {
 } from '../../screens';
 
 import {
-  HomePracticeContainer,
-  RecordHomePracticeContainer,
-  UploadHomePracticeContainer,
-  HomePracticeCameraContainer,
-  HomePracticeImagePickerContainer,
-  HomePracticeVideoPlayerContainer,
-  HomePracticeRenderGraphScreen,
-  HomePracticeAnalysisGridScreen,
-  UploadHomePracticeScreen,
-} from '../../screens';
-
-import {
   ServePracticeContainer,
-  RecordServePracticeContainer,
-  UploadServePracticeContainer,
-  ServePracticeCameraContainer,
-  ServePracticeImagePickerContainer,
   ServePracticeVideoPlayerContainer,
   ServePracticeRenderGraphScreen,
   ServePracticeAnalysisGridScreen,
-  UploadServePracticeScreen,
-  UploadServePracticeScreenHook,
 } from '../../screens';
 
 const AppStack = createNativeStackNavigator();
@@ -64,42 +46,10 @@ function MainAppContainer() {
         name="BallPracticeVideoPlayer"
         component={BallPracticeVideoPlayer}
       />
-      <AppStack.Screen
-        name="HomePracticeHomeScreen"
-        component={HomePracticeContainer}
-      />
-      <AppStack.Screen
-        name="UploadHomePracticeScreen"
-        component={UploadHomePracticeScreen}
-      />
-      <AppStack.Screen
-        name="HomePracticeAnalysisGridScreen"
-        component={HomePracticeAnalysisGridScreen}
-      />
-      <AppStack.Screen
-        name="HomePracticeVideoPlayer"
-        component={HomePracticeVideoPlayerContainer}
-      />
-      <AppStack.Screen
-        name="HomePracticeRenderGraphScreen"
-        component={HomePracticeRenderGraphScreen}
-      />
-      <AppStack.Screen
-        name="UploadHomePracticeContainer"
-        component={UploadHomePracticeContainer}
-      />
 
       <AppStack.Screen
         name="ServePracticeHomeScreen"
         component={ServePracticeContainer}
-      />
-      <AppStack.Screen
-        name="UploadServePracticeScreen"
-        component={UploadServePracticeScreen}
-      />
-      <AppStack.Screen
-        name="UploadServePracticeScreenHook"
-        component={UploadServePracticeScreenHook}
       />
       <AppStack.Screen
         name="AnalysisGridScreen"
@@ -112,10 +62,6 @@ function MainAppContainer() {
       <AppStack.Screen
         name="RenderGraphScreen"
         component={ServePracticeRenderGraphScreen}
-      />
-      <AppStack.Screen
-        name="UploadPractice"
-        component={UploadServePracticeContainer}
       />
       <AppStack.Screen
         name="TensorCameraContainer"
