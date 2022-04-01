@@ -21,6 +21,9 @@ import Video from 'react-native-video';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import {SCREEN_WIDTH} from '../../../../constants';
+import {IconButton} from '../../../../components/buttons';
+
+const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const BallPracticeVideoPlayer = ({navigation, route}) => {
   const {video} = route.params;
@@ -113,10 +116,13 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
 
   const renderGraphButton = () => {
     return (
-      <SafeAreaView
-        style={styles.cameraTypeSwitcher}
-        onTouchEnd={handleShowGraphButton}>
-        <Text>Show graph</Text>
+      <SafeAreaView>
+        <IconButton
+          styles={styles.recordIcon}
+          icon={graphIcon}
+          onPress={handleShowGraphButton}
+          transparent={true}
+        />
       </SafeAreaView>
     );
   };
@@ -197,6 +203,20 @@ const styles = StyleSheet.create({
     width: 180,
     alignItems: 'center',
     backgroundColor: 'rgba(240, 230, 230, .9)',
+    borderRadius: 6,
+    padding: 8,
+    zIndex: 100,
+  },
+  recordIcon: {
+    width: 60,
+    height: 40,
+    borderStyle: 'solid',
+    borderWidth: 2,
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .9)',
     borderRadius: 6,
     padding: 8,
     zIndex: 100,

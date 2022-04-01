@@ -38,10 +38,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 100,
           }}
           onPress={() => {
-            // RecordScreen.stopRecording().then(response => {
-            //   const url = response.result.outputURL;
-            //   CameraRoll.save(url, {type: 'video'});
-            // });
+            RecordScreen.stopRecording();
             navigation.navigate('ServePracticeHomeScreen');
           }}>
           <View
@@ -68,10 +65,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 50,
           }}
           onPress={() => {
-            RecordScreen.stopRecording().then(response => {
-              const url = response.result.outputURL;
-              CameraRoll.save(url, {type: 'video'});
-            });
+            RecordScreen.stopRecording();
             navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
           <View
