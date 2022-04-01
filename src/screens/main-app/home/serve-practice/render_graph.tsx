@@ -19,6 +19,8 @@ import {SCREEN_WIDTH} from '../../../../constants';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
+const graphIcon = require('../../../../assets/images/graphIcon.png');
+
 const chartConfig = {
   backgroundGradientFrom: '#1E2923',
   backgroundGradientFromOpacity: 0,

@@ -433,6 +433,8 @@ PODS:
     - React-RCTImage
   - RNSVG (12.3.0):
     - React-Core
+  - RNThumbnail (1.0.0):
+    - React
   - RNVectorIcons (9.1.0):
     - React-Core
   - Yoga (1.14.0)
@@ -520,6 +522,7 @@ DEPENDENCIES:
   - RNIap (from `../node_modules/react-native-iap`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - RNThumbnail (from `../node_modules/react-native-thumbnail/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -669,6 +672,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  RNThumbnail:
+    :path: "../node_modules/react-native-thumbnail/ios"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -757,10 +762,11 @@ SPEC CHECKSUMS:
   RNIap: 2bb5fdc51db7f62f194efdd5e9d613ae48605cb1
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
+  RNThumbnail: f5d3c6e18dd15213ce46e1f631be65d4c6fcb133
   RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 0f3c2f9019cfc3b98716985c4d9d5308ede71db6
+PODFILE CHECKSUM: ca3425c574addbd3b6b051f80e2fcce7a1467ec7
 
 COCOAPODS: 1.11.2
