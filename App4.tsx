@@ -1110,26 +1110,6 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
-  const renderUploadingAnimation = () => {
-    return (
-      <AnimatedLoader
-        style={styles.cameraContainer}
-        visible={uploading}
-        overlayColor={'rgba(255, 255, 255, 0.75)'}
-        source={require('./loader.json')}
-        animationStyle={styles.lottie}
-        speed={1}>
-        <Text>{currentStatus}</Text>
-        <Button
-          title={'Cancel upload'}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-      </AnimatedLoader>
-    );
-  };
-
   const camView = () => {
     return (
       <View
@@ -1186,7 +1166,6 @@ const App4: FunctionComponent<Props> = props => {
           {renderFps()}
           {renderCalibration()}
           {renderCameraTypeSwitcher()}
-          {renderUploadingAnimation()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>

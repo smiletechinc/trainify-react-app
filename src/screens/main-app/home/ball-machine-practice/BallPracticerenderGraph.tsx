@@ -109,7 +109,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
               data={pie_data.data}
             />
           </View>
-          <View style={{marginTop: -160}}>
+          <View style={{marginTop: -140}}>
             <Text>Rally Length Breakdown</Text>
           </View>
           <View style={styles.vectorContainer}>

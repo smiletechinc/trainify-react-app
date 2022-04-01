@@ -23,7 +23,10 @@ require('@tensorflow/tfjs-backend-webgl');
 const logo = require('../../assets/images/logo.png');
 const splashScreen = require('../../assets/images/splash-screen.png');
 
-const SplashScreenContainer: FunctionComponent = ({navigation}) => {
+type Props = {
+  navigation: any;
+};
+const SplashScreenContainer: FunctionComponent<Props> = ({navigation}) => {
   // const navigation = useNavigation();
   const dispatch = useDispatch();
   const UserData = useSelector(
@@ -49,13 +52,12 @@ const SplashScreenContainer: FunctionComponent = ({navigation}) => {
     setTimeout(() => {
       // Getting user from redux
       if (UserData === null) {
-        navigation.navigate('LanguageScreen');
+        navigation.navigate('Signin');
       } else {
         navigation.reset({
           index: 0,
           routes: [{name: 'MainApp'}],
         });
-        // navigation.navigate('MainApp');
       }
     }, 2500);
   });

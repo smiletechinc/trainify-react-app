@@ -5,7 +5,14 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 // import all the components we are going to use
-import {SafeAreaView, StyleSheet, Text, View, Alert} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Platform,
+} from 'react-native';
 
 // Import React Native Video to play video
 import Video from 'react-native-video';
@@ -13,6 +20,7 @@ import Video from 'react-native-video';
 // Media Controls to control Play/Pause/Seek and full screen
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {SCREEN_WIDTH} from '../../../../constants';
 
 const BallPracticeVideoPlayer = ({navigation, route}) => {
   const {video} = route.params;
@@ -114,42 +122,42 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <HeaderWithText
-        text={'Trainify Recorded Video'}
-        hideProfileSection={true}
-        navigation={navigation}
-      />
-      <Video
-        onEnd={onEnd}
-        onLoad={onLoad}
-        onLoadStart={onLoadStart}
-        onProgress={onProgress}
-        paused={paused}
-        ref={videoPlayer}
-        resizeMode={screenType}
-        onFullScreen={isFullScreen}
-        source={{
-          uri: videoURL,
-        }}
-        style={styles.mediaPlayer}
-        volume={10}
-      />
-      <MediaControls
-        duration={duration}
-        isLoading={isLoading}
-        mainColor="#333"
-        onFullScreen={onFullScreen}
-        onPaused={onPaused}
-        onReplay={onReplay}
-        onSeek={onSeek}
-        onSeeking={onSeeking}
-        playerState={playerState}
-        progress={currentTime}
-        toolbar={renderToolbar()}
-      />
-      {renderGraphButton()}
-    </View>
+    <SafeAreaView>
+      <View style={styles.main_view}>
+        <HeaderWithText text={video.name} navigation={navigation} />
+      </View>
+      <View style={{height: 750, marginBottom: 64}}>
+        <Video
+          onEnd={onEnd}
+          onLoad={onLoad}
+          onLoadStart={onLoadStart}
+          onProgress={onProgress}
+          paused={paused}
+          ref={videoPlayer}
+          resizeMode={screenType}
+          onFullScreen={isFullScreen}
+          source={{
+            uri: videoURL,
+          }}
+          style={styles.mediaPlayer}
+          volume={10}
+        />
+        <MediaControls
+          duration={duration}
+          isLoading={isLoading}
+          mainColor="#333"
+          onFullScreen={onFullScreen}
+          onPaused={onPaused}
+          onReplay={onReplay}
+          onSeek={onSeek}
+          onSeeking={onSeeking}
+          playerState={playerState}
+          progress={currentTime}
+          toolbar={renderToolbar()}
+        />
+        {renderGraphButton()}
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -158,6 +166,14 @@ export default BallPracticeVideoPlayer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  main_view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: 48,
+    paddingHorizontal: SCREEN_WIDTH * 0.05,
   },
   toolbar: {
     marginTop: 30,
@@ -176,13 +192,13 @@ const styles = StyleSheet.create({
   },
   cameraTypeSwitcher: {
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: 10,
+    right: 20,
     width: 180,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgba(240, 230, 230, .9)',
+    borderRadius: 6,
     padding: 8,
-    zIndex: 20,
+    zIndex: 100,
   },
 });

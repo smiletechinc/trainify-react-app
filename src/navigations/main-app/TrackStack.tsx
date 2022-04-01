@@ -11,7 +11,6 @@ import {
   LandingScreenContainer,
   ResetPasswordContainer,
   PaymentPlanContainer,
-  LanguageScreenContainer,
 } from '../../screens';
 const AppStack = createNativeStackNavigator();
 
@@ -37,10 +36,6 @@ function TrackStackContainer() {
         />
         <AppStack.Screen name="PaymentPlan" component={PaymentPlanContainer} />
         <AppStack.Screen name="HomeScreen" component={HomeScreen} />
-        <AppStack.Screen
-          name="LanguageScreen"
-          component={LanguageScreenContainer}
-        />
       </AppStack.Navigator>
     </NavigationContainer>
   );

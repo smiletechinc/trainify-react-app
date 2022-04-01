@@ -1,18 +1,14 @@
 import React, {FunctionComponent, useEffect} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
+import {Text, TouchableOpacity, View, Image} from 'react-native';
 import {SCREEN_WIDTH} from '../../../constants';
-import Header from '../../../global-components/header';
 import styles from '../styles';
-import globalStyles from '../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
 
-const servePracticeImage = require('../../../assets/images/serve-practice.png');
-const practiceWithBall = require('../../../assets/images/practice-with-ball.png');
-const practiceAtHome = require('../../../assets/images/practice-at-home.png');
+const servePracticeImage = require('../../../assets/images/serve_icon.png');
+const practiceWithBall = require('../../../assets/images/ballMachine_icon.png');
 
 type Props = {
   navigation: any;
@@ -21,6 +17,7 @@ type Props = {
 const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
   useEffect(() => {
     RecordScreen.startRecording({mic: false});
+    console.log('screenWidth:', SCREEN_WIDTH);
   }, []);
 
   return (
@@ -35,7 +32,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
           activeOpacity={0.8}
           delayPressIn={0}
           style={{
-            marginTop: 60,
+            marginTop: 100,
           }}
           onPress={() => {
             RecordScreen.stopRecording().then(response => {
@@ -44,48 +41,53 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             });
             navigation.navigate('ServePracticeHomeScreen');
           }}>
-          <AutoHeightImage
-            source={servePracticeImage}
-            width={SCREEN_WIDTH * 0.9}
-          />
-          <Text style={[globalStyles.h1, styles.practice_text]}>
-            Serve Practice
-          </Text>
+          <View
+            style={{
+              borderWidth: 2,
+              borderRadius: 30,
+              backgroundColor: '#F2994A',
+              borderColor: '#F2994A',
+              display: 'flex',
+              flex: 1,
+              paddingBottom: 16,
+            }}>
+            <View style={{marginLeft: 10}}>
+              <Image source={servePracticeImage} style={{margin: 12}} />
+              <Text style={styles.practice_text}>Serve Practice</Text>
+            </View>
+          </View>
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={0.8}
           delayPressIn={0}
           style={{
-            marginTop: 26,
+            marginTop: 50,
           }}
           onPress={() => {
-            RecordScreen.stopRecording();
+            RecordScreen.stopRecording().then(response => {
+              const url = response.result.outputURL;
+              CameraRoll.save(url, {type: 'video'});
+            });
             navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
-          <AutoHeightImage
-            source={practiceWithBall}
-            width={SCREEN_WIDTH * 0.9}
-          />
-          <Text style={[globalStyles.h1, styles.practice_text]}>
-            Practice with Ball Machine
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.8}
-          delayPressIn={0}
-          style={{
-            marginTop: 26,
-          }}
-          onPress={() => {
-            RecordScreen.stopRecording();
-            // navigation.navigate('HomePracticeHomeScreen')
-          }}>
-          <AutoHeightImage source={practiceAtHome} width={SCREEN_WIDTH * 0.9} />
-          <Text style={[globalStyles.h1, styles.practice_text]}>
-            Practice at Home/ Posture Workout
-          </Text>
+          <View
+            style={{
+              borderWidth: 2,
+              borderRadius: 30,
+              backgroundColor: '#2D9CDB',
+              borderColor: '#2D9CDB',
+              display: 'flex',
+              flex: 1,
+              paddingBottom: 8,
+            }}>
+            <View style={{marginLeft: 10}}>
+              <Image source={practiceWithBall} style={{margin: 12}} />
+              <Text style={styles.practice_text}>
+                Practice with Ball Machine
+              </Text>
+            </View>
+          </View>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
     </View>

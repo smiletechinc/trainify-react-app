@@ -35,10 +35,6 @@ const ListItem: React.FunctionComponent<Props> = props => {
               style={{height: 185, width: itemWidth - 17}}
             />
           )}
-          {/* <Image
-            source={playerImage}
-            style={{height: 185, width: itemWidth - 17}}
-          /> */}
         </View>
         <View
           style={{

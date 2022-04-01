@@ -1,32 +1,17 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-  Image,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import AutoHeightImage from 'react-native-auto-height-image';
+import {Text, TouchableOpacity, View, Image} from 'react-native';
 import RecordScreen from 'react-native-record-screen';
-import {
-  COLORS,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-  STATUS_BAR_HEIGHT,
-} from '../../../../constants';
+
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-// import VideoRecorder from 'react-native-beautiful-video-recorder';
 
 import styles from '../../styles';
-import globalStyles from '../../../../global-styles';
+
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from './../../../../context/auth-context';
 
-const recordIcon = require('../../../../assets/images/record-icon.png');
-const uploadIcon = require('../../../../assets/images/upload-service.png');
-const analysisIcon = require('../../../../assets/images/analysis-icon.png');
+const recordIcon = require('../../../../assets/images/record_icon_image.png');
+const analysisIcon = require('../../../../assets/images/analysis_icon.png');
 
 type Props = {
   navigation: any;
@@ -49,16 +34,6 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
       console.log('REOCORDING STOPPED: ', url);
     }
   };
-  // const navigation = useNavigation();
-  useEffect(() => {});
-  // const start = () => {
-  //   // 30 seconds
-  //   setShowVideoRecorder(true);
-  //   videoRecorder.open({ maxLength: 5 },(data) => {
-  //     console.log('captured data', data);
-  //   });
-  // }
-
   return (
     <SafeAreaView style={styles.main_view}>
       <KeyboardAwareScrollView
@@ -69,90 +44,84 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
         <HeaderWithText text="Serve Practice" navigation={navigation} />
 
         {playerstyle === 'LeftHanded' ? (
-          <View style={{flexDirection: 'row', marginTop: 28}}>
+          <View style={{marginTop: 100}}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
-              onPress={() => {
-                navigation.navigate('UploadServePracticeScreen', {
-                  title: 'Upload LEFT-Handed Serve',
-                });
-              }}>
-              <AutoHeightImage
-                source={uploadIcon}
-                width={(SCREEN_WIDTH * 0.9) / 2 - 23}
-              />
-              <Text
-                style={[globalStyles.medium, styles.record_and_upload_text]}>
-                Upload LEFT-Handed Serve
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayPressIn={0}
-              style={{
-                marginLeft: 23,
-              }}
               onPress={() => {
                 navigation.navigate('App4', {
                   title: 'RECORD LEFT-HANDED SERVE',
                 });
               }}>
-              <AutoHeightImage
-                source={recordIcon}
-                width={(SCREEN_WIDTH * 0.9) / 2 - 23}
-              />
-              <Text
-                style={[globalStyles.medium, styles.record_and_upload_text]}>
-                Record LEFT-Handed Serve
-              </Text>
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderRadius: 30,
+                  backgroundColor: '#EB5757',
+                  borderColor: '#EB5757',
+                  display: 'flex',
+                  flex: 1,
+                  height: 150,
+                  paddingBottom: 8,
+                }}>
+                <View style={{marginLeft: 10}}>
+                  <Image
+                    source={recordIcon}
+                    style={{
+                      marginLeft: 16,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 40,
+                    }}
+                  />
+                  <Text style={styles.record_and_upload_text}>
+                    Record LEFT-Handed Serve
+                  </Text>
+                </View>
+              </View>
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{flexDirection: 'row', marginTop: 28}}>
+          <View style={{marginTop: 150}}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
-              onPress={() => {
-                navigation.navigate('UploadServePracticeScreen', {
-                  title: 'Upload RIGHT-Handed Serve',
-                });
-              }}>
-              <AutoHeightImage
-                source={uploadIcon}
-                width={(SCREEN_WIDTH * 0.9) / 2 - 23}
-              />
-              <Text
-                style={[globalStyles.medium, styles.record_and_upload_text]}>
-                Upload RIGHT-Handed Serve
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayPressIn={0}
-              style={{
-                marginLeft: 23,
-              }}
               onPress={() => {
                 navigation.navigate('App4', {
                   title: 'RECORD RIGHT-HANDED SERVE',
                 });
               }}>
-              <AutoHeightImage
-                source={recordIcon}
-                width={(SCREEN_WIDTH * 0.9) / 2 - 23}
-              />
-              <Text
-                style={[globalStyles.medium, styles.record_and_upload_text]}>
-                Record RIGHT-Handed Serve
-              </Text>
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderRadius: 30,
+                  backgroundColor: '#EB5757',
+                  borderColor: '#EB5757',
+                  display: 'flex',
+                  flex: 1,
+                  height: 150,
+                  paddingBottom: 8,
+                }}>
+                <View style={{marginLeft: 10}}>
+                  <Image
+                    source={recordIcon}
+                    style={{
+                      marginLeft: 16,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 40,
+                    }}
+                  />
+                  <Text style={styles.record_and_upload_text}>
+                    Record RIGHT-Handed Serve
+                  </Text>
+                </View>
+              </View>
             </TouchableOpacity>
           </View>
         )}
 
-        <View style={{flexDirection: 'row', marginTop: 18}}>
+        <View style={{marginTop: 50}}>
           <TouchableOpacity
             activeOpacity={0.8}
             delayPressIn={0}
@@ -160,15 +129,33 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               navigation.navigate('AnalysisGridScreen', {
                 title: 'Analysis Report',
               });
-              // startRecording();
             }}>
-            <AutoHeightImage
-              source={analysisIcon}
-              width={(SCREEN_WIDTH * 0.9) / 2 - 23}
-            />
-            <Text style={[globalStyles.medium, styles.record_and_upload_text]}>
-              Analysis Report
-            </Text>
+            <View
+              style={{
+                borderWidth: 2,
+                borderRadius: 30,
+                backgroundColor: '#F2994A',
+                borderColor: '#F2994A',
+                display: 'flex',
+                flex: 1,
+                height: 150,
+                paddingBottom: 16,
+              }}>
+              <View style={{marginLeft: 10}}>
+                <Image
+                  source={analysisIcon}
+                  style={{
+                    marginLeft: 16,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 40,
+                  }}
+                />
+                <Text style={styles.record_and_upload_text}>
+                  Analysis Report
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
