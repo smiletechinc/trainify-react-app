@@ -6,7 +6,6 @@ import {
   Dimensions,
   Platform,
   Alert,
-  Button,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -19,27 +18,22 @@ import {
 import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
-import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
-import styles_external from './src/screens/main-app/styles';
+import {CounterContext} from '../../../../context/counter-context';
+import {addVideoService} from '../../../../services/servePracticeServices';
+import styles_external from '../../styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import HeaderWithText from './src/global-components/header/HeaderWithText';
-import {IconButton} from './src/components/buttons';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {IconButton} from '../../../../components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
+import {useAnalysisUpload, useMediaUpload} from '../../../../hooks';
 import {
   uploadPhotoService,
   uploadVideoService,
   getThumbnailURL,
-} from './src/services/mediaServices';
-import AnimatedLoader from 'react-native-animated-loader';
-import {Countdown} from 'react-native-element-timer';
+} from '../../../../services/mediaServices';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
-const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
-
+const stopIcon = require('../../../../assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
 const IS_IOS = Platform.OS === 'ios';
@@ -58,7 +52,7 @@ type Props = {
   route: any;
 };
 
-const App4: FunctionComponent<Props> = props => {
+const BallPracticeTensorCamera: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
@@ -82,13 +76,32 @@ const App4: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
-  const countdownRef = useRef(null);
-  const [remainingTime, setRemainingTime] = useState<Number>(0);
+
+  const [thumbnail, setThumbnail] = React.useState<any>(null);
+  const [videoURL, setVideoURL] = React.useState<string>(null);
+  const [videoData, setVideoData] = React.useState<string>(null);
+
+  const {
+    uploading,
+    uploadThumbnail,
+    uploadVideo,
+    cancelUploading,
+    thumbnailURL,
+    currentStatus,
+    uploadThumbnailFailure,
+    uploadVideoFailure,
+  } = useMediaUpload({image: thumbnail});
+
+  const {
+    videoAnalysisData,
+    uploadingAnalysis,
+    addVideoAnalysisToFirebase,
+    currentAnalysisStatus,
+  } = useAnalysisUpload({videoData: videoData});
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -96,6 +109,13 @@ const App4: FunctionComponent<Props> = props => {
   let response_let = {};
   let thumbURL = '';
   let vidURL = '';
+
+  var [isMissed, setIsMissed] = useState('');
+
+  var rallyRunningFlag = true;
+  var frames_to_skip = 0;
+  var missed = 0;
+  var missTimeCounter = 0;
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -109,6 +129,43 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
+    if (uploadThumbnailFailure) {
+      Alert.alert('Could not upload thumbnail');
+    }
+    if (thumbnailURL) {
+      (() => {
+        uploadVideo(thumbnail);
+      })();
+    }
+  }, [thumbnailURL, uploadThumbnailFailure]);
+
+  useEffect(() => {
+    if (uploadThumbnailFailure) {
+      Alert.alert('Could not upload video');
+    }
+    if (videoURL) {
+      (() => {
+        let res = thumbnail;
+        const videoMetadata = {
+          ...res,
+          thumbnailURL: thumbnailURL,
+          videoURL: videoURL,
+        };
+        setVideoData(videoMetadata);
+      })();
+    }
+  }, [videoURL, uploadVideoFailure]);
+
+  useEffect(() => {
+    if (videoAnalysisData) {
+      (() => {
+        // navigation.navigate('VideoPlayerContainer', { video: videoAnalysisData });
+        // Alert.alert('Trainify', `Video added successfully.`);
+      })();
+    }
+  }, [videoAnalysisData]);
+
+  useEffect(() => {
     async function prepare() {
       rafId.current = null;
 
@@ -119,18 +176,19 @@ const App4: FunctionComponent<Props> = props => {
         model,
         detectorConfig,
       );
-      const model_json = await require('./src/assets/model/model.json');
-      const model_weight = await require('./src/assets/model/group1-shard.bin');
-      const model_tos = await tf.loadLayersModel(
-        bundleResourceIO(model_json, model_weight),
-      );
+      // const model_json = await require('./src/assets/model/model.json');
+      // const model_weight = await require('./src/assets/model/group1-shard.bin');
+      // const model_tos = await tf.loadLayersModel(
+      //   bundleResourceIO(model_json, model_weight),
+      // );
 
       setOrientation(curOrientation);
       setModel(detector);
       console.log('Loading Type of Serve Model');
-      setTypeOfServeDetector(model_tos);
+      // setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
+      // startRecording();
       ScreenOrientation.addOrientationChangeListener(event => {
         setOrientation(event.orientationInfo.orientation);
       });
@@ -138,6 +196,12 @@ const App4: FunctionComponent<Props> = props => {
       await Camera.requestCameraPermissionsAsync();
 
       await tf.ready();
+      // Following is just to check if the screen recording uploading is working by customly recording the video for 3 seconds.
+      // startRecording();
+      // setTimeout(() => {
+      //   console.log('stopped: ');
+      //   stopRecording();
+      // }, 8000);
 
       let test_pose = [
         0.594638705, 0.369584292, 0.999754488, 0.589969754, 0.358422577,
@@ -177,6 +241,35 @@ const App4: FunctionComponent<Props> = props => {
       }
     };
   }, []);
+
+  // const addVideoToFirebase = () => {
+
+  //   let videoData = {
+  //     duration: 9.01,
+  //      fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+  //     fileSize: 9363694,
+  //     height: 720,
+  //     id: "EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001",
+  //      timestamp: "2022-02-25T17:02:18.000+0500",
+  //      type: "video/quicktime",
+  //      uri: "file:///var/mobile/Containers/Data/Application/4EC5C8B3-E530-4B35-83A8-49C844AA23DA/tmp/66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
+  //      width: 1280
+  //     }
+
+  //     const tempAnalysisData = {
+  //       labels: ["Flat", "Kick", "Slice"],
+  //       legend: ["A", "B", "C", "D"],
+  //       data:data,
+  //       barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
+  //     };
+
+  //   const tempVideoData = {...videoData, analysisData: tempAnalysisData}
+
+  //   console.log('analysis_data for firebase, ', JSON.stringify(data));
+  //   console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+
+  //     addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+  // }
 
   const Ref = useRef(null);
   const [timer, setTimer] = useState('10000');
@@ -241,44 +334,106 @@ const App4: FunctionComponent<Props> = props => {
     }
   }, [tfReady]);
 
-  const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
-  const [videoURI, setVideoURI] = useState(null);
+  const addVideoSuccess = (video?: any) => {
+    // console.log('Added: ', JSON.stringify(video));
+    if (video) {
+      navigation.replace('BallPracticeVideoPlayer', {video: video});
+    }
+    // 0
+  };
+  const addVideoFailure = (error?: any) => {
+    // console.log('Error: ', JSON.stringify(error));
+    if (error) {
+      Alert.alert('Trainify', `Error in adding video metadata.`);
+    }
+  };
+  const uploadVideoSuccess = (updatedResponse?: any) => {
+    setLoading(false);
+    Alert.alert('Video uploaded successfully');
+    setVideoURL(updatedResponse);
+    vidURL = updatedResponse;
+    console.log('upload video success: ', JSON.stringify(updatedResponse));
+    addVideoToFirebase();
+  };
 
-  const stopRecording = async () => {
-    try {
-      const responseReocrding = await RecordScreen.stopRecording()
-        .then(async res => {
-          setTfReady(false);
-          if (res) {
-            console.log('recording stopped:', JSON.stringify(res));
-            const url = res.result.outputURL;
-            try {
-              const response = await CameraRoll.save(url);
-              if (response) {
-                setIsRecordingInProgress(false);
-                console.log('Recording saved successfuly.');
-                setVideoURI(url);
-                navigation.navigate('UploadServeContainerHook', {
-                  capturedVideoURI: url,
-                  graphData: data,
-                });
-              } else {
-                Alert.alert('Video could not saved');
-              }
-            } catch (error) {
-              Alert.alert('Failed to save video in gallery', error);
-            }
-          }
-        })
-        .catch(error => Alert.alert('Error in recording...: ', error));
-    } catch (error) {
-      Alert.alert('Error in recording #catch: ', error);
+  const addVideoToFirebase = () => {
+    // uploadVideoService(response, addVideoSuccess, addVideoFailure);
+    let res = response_let;
+    const videoMetadata = {
+      ...res,
+      thumbnailURL: thumbURL,
+      videoURL: vidURL,
+    };
+    console.log('videoMetadata, ', videoMetadata);
+    addVideoService(videoMetadata, addVideoSuccess, addVideoFailure);
+  };
+
+  const uploadVideoFailureFirebase = (error?: any) => {
+    console.log('Error: ', JSON.stringify(error));
+    if (error) {
+      // Alert.alert('Trainify', `Error in adding video.`);
     }
   };
 
+  const stopRecording = async () => {
+    const res = await RecordScreen.stopRecording()
+      .then(async res => {
+        if (res) {
+          console.log('recording stopped:', res);
+          const url = res.result.outputURL;
+          await CameraRoll.save(url, {type: 'video', album: 'TrainfyApp'});
+
+          // KAZMI Code Starts here.
+
+          let videoData1 = {
+            name: 'screen_recording_1.mp4',
+            uri: url,
+            type: 'video/mp4',
+          };
+          await uploadVideoService(
+            videoData1,
+            uploadVideoSuccess,
+            uploadVideoFailureFirebase,
+          );
+
+          // Kazmi code Ends here
+          console.log('Recording detials:', JSON.stringify(res));
+          console.log('REOCORDING STOPPED: ', url);
+
+          let date = new Date().toLocaleString();
+
+          let videoData = {
+            duration: 0.01,
+            fileName: url.substr(-7),
+            fileSize: 9363694,
+            height: 720,
+            id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
+            timestamp: date,
+            type: 'video/quicktime',
+            uri: url,
+            width: 1280,
+          };
+          const tempAnalysisData = {
+            labels: ['Flat', 'Kick', 'Slice'],
+            legend: ['A', 'B', 'C', 'D'],
+            data: data,
+            barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
+          };
+          const tempVideoData = {...videoData, analysis_data: tempAnalysisData};
+          console.log('analysis_data for firebase, ', JSON.stringify(data));
+          console.log('sending to firebase, ', JSON.stringify(tempVideoData));
+          response_let = tempVideoData;
+
+          setVideoData(tempVideoData);
+
+          // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+        }
+      })
+      .catch(error => console.log('error...: ', error));
+  };
+
   const handleStopCamera = () => {
-    setIsRecordingInProgress(false);
-    setIsStartedVideoRecording(false);
+    isCompletedRecording = true;
     stopRecording();
   };
 
@@ -308,7 +463,6 @@ const App4: FunctionComponent<Props> = props => {
       .then(res => {
         setIsStartedVideoRecording(true);
         console.log('Video recording started.');
-        countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
@@ -333,6 +487,18 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const renderCalibrationPoints = () => {
+    // const cx1 = cameraLayoutWidth / 2 - 150;
+    // const cy1 = cameraLayoutHeight - 600;
+
+    // const cx2 = cameraLayoutWidth / 2 + 150;
+    // const cy2 = cameraLayoutHeight - 600;
+
+    // const cx3 = cameraLayoutWidth / 2 - 150;
+    // const cy3 = cameraLayoutHeight - 100;
+
+    // const cx4 = cameraLayoutWidth / 2 + 150;
+    // const cy4 = cameraLayoutHeight - 100;
+
     const cx1 = 100;
     const cy1 = 100;
 
@@ -344,6 +510,19 @@ const App4: FunctionComponent<Props> = props => {
 
     const cx4 = cameraLayoutWidth - 100;
     const cy4 = cameraLayoutHeight - 50;
+
+    // console.log('I amhere');
+    // const cx1 = 400;
+    // const cy1 = 486;
+
+    // const cx2 = 448;
+    // const cy2 = 780;
+
+    // const cx3 = 276;
+    // const cy3 = 780;
+
+    // const cx4 = 295;
+    // const cy4 = 486;
 
     if (isCalibratedp) {
       return (
@@ -380,6 +559,45 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
             strokeWidth="5"
           />
+          {/* <Circle
+            // key={`skeletonkp_${k.name}`}
+            cx={cx1}
+            cy={cy1}
+            r="30"
+            strokeWidth="0"
+            fill="white"
+            stroke="white"
+          />
+          
+          <Circle
+            // key={`skeletonkp_${k.name}`}
+            cx={cx2}
+            cy={cy2}
+            r="30"
+            strokeWidth="0"
+            fill="white"
+            stroke="white"
+          />
+
+          <Circle
+            // key={`skeletonkp_${k.name}`}
+            cx={cx3}
+            cy={cy3}
+            r="30"
+            strokeWidth="0"
+            fill="white"
+            stroke="white"
+          />
+
+          <Circle
+            // key={`skeletonkp_${k.name}`}
+            cx={cx4}
+            cy={cy4}
+            r="30"
+            strokeWidth="0"
+            fill="white"
+            stroke="white"
+          /> */}
         </Svg>
       );
     } else {
@@ -411,7 +629,7 @@ const App4: FunctionComponent<Props> = props => {
       <View style={styles.fpsContainer}>
         <Text>Total {count}</Text>
         <Text>Last Serve Type {serveType}</Text>
-        <Text>Grade {serveGrade}</Text>
+        {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
   };
@@ -620,6 +838,8 @@ const App4: FunctionComponent<Props> = props => {
         (rfy / cameraLayoutHeight) *
         (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
 
+      // console.log(lscx, lscy, rscx, rscy);
+
       const color = 'green';
       const stroke = '2';
 
@@ -629,6 +849,7 @@ const App4: FunctionComponent<Props> = props => {
           height={cameraLayoutHeight}
           width={cameraLayoutWidth}>
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lscx}
             cy={lscy}
             r="4"
@@ -637,6 +858,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rscx}
             cy={rscy}
             r="4"
@@ -645,6 +867,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lhcx}
             cy={lhcy}
             r="4"
@@ -653,6 +876,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rhcx}
             cy={rhcy}
             r="4"
@@ -661,6 +885,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lecx}
             cy={lecy}
             r="4"
@@ -669,6 +894,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={recx}
             cy={recy}
             r="4"
@@ -677,6 +903,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lkcx}
             cy={lkcy}
             r="4"
@@ -685,6 +912,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rkcx}
             cy={rkcy}
             r="4"
@@ -693,6 +921,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={ltcx}
             cy={ltcy}
             r="4"
@@ -701,6 +930,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={rtcx}
             cy={rtcy}
             r="4"
@@ -709,6 +939,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={lacx}
             cy={lacy}
             r="4"
@@ -717,6 +948,7 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={racx}
             cy={racy}
             r="4"
@@ -726,6 +958,7 @@ const App4: FunctionComponent<Props> = props => {
           />
 
           <Circle
+            // key={`skeletonkp_${k.name}`}
             cx={ncx}
             cy={ncy}
             r="4"
@@ -913,7 +1146,85 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
+  const shotDetectionReturn = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+
+      var leftWrist = keypoints.filter(function (item: any) {
+        return item.name === 'left_wrist';
+      });
+
+      var rightWrist = keypoints.filter(function (item: any) {
+        return item.name === 'right_wrist';
+      });
+
+      var nose = keypoints.filter(function (item: any) {
+        return item.name === 'nose';
+      });
+
+      // console.log(
+      //   "Ratio: ",
+      //   rightWrist[0].x - nose[0].x / rightElbow[0].x - nose[0].x
+      // );
+
+      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+        // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
+        increment();
+        analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+        setIsMissed('');
+        skipFrameCount = skipFrameCount + 1;
+        console.log('Forehand Return');
+        setServeType('Forehand Return');
+        missTimeCounter = 0;
+        rallyRunningFlag = true;
+        setData(analysis_data.data);
+      } else if (rightWrist[0].x < rightElbow[0].x) {
+        // console.log("I am here");
+        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+          increment();
+          analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          setIsMissed('');
+          skipFrameCount = skipFrameCount + 1;
+          console.log('Backhand Return');
+          setServeType('Backhand Return');
+          missTimeCounter = 0;
+          rallyRunningFlag = true;
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
+        skipFrameCount = skipFrameCount + 1;
+        missTimeCounter = missTimeCounter + 1;
+      } else {
+        missTimeCounter = missTimeCounter + 1;
+        setServeType('Mid');
+        skipFrameCount = 0;
+        console.log('Mid');
+      }
+
+      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+        missed = missed + 1;
+        setIsMissed('Missed Detected');
+        // console.log("Missed: ", missed);
+        missTimeCounter = 0;
+        rallyRunningFlag = false;
+      }
+      console.log('Missed: ', missed);
+    }
+  };
+
   const serveTypeDetectionthreshold = (poses: any) => {
+    // console.log('Analysis: ', analysis_data.data[0]);
+    // console.log('Analysis: ', analysis_data.data[1]);
+    // console.log('Analysis: ', analysis_data.data[2]);
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
@@ -943,66 +1254,183 @@ const App4: FunctionComponent<Props> = props => {
       });
       var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
       var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
+      // console.log(
+      //   'LeftShoulder and RightSholder',
+      //   l_shoulder_angle2,
+      //   r_hip_angle,
+      // );
 
       if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
         increment();
         skipFrameCount = skipFrameCount + 1;
         if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
           if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+            // console.log(serveGrade);
             setServeGrade('A');
             analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
           } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
             setServeGrade('B');
+            // console.log(serveGrade);
             analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
           } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
             setServeGrade('C');
+            // console.log(serveGrade);
             analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
           } else {
             setServeGrade('D');
+            // console.log(serveGrade);
             analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
           }
           setServeType('Flat');
         } else if (r_hip_angle < 190 && r_hip_angle > 175) {
+          //console.log('Right Hip Angle: ', rightHip);
           if (r_hip_angle < 185 && r_hip_angle > 181) {
             setServeGrade('A');
+            //console.log(serveGrade);
             analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
           } else if (r_hip_angle < 187 && r_hip_angle > 179) {
             setServeGrade('B');
+            //console.log(serveGrade);
             analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
           } else if (r_hip_angle < 188 && r_hip_angle > 177) {
             setServeGrade('C');
+            //console.log(serveGrade);
             analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
           } else {
             setServeGrade('D');
+            //console.log(serveGrade);
             analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
           }
           setServeType('Slice');
         } else {
+          //console.log('Inside kick');
+          //console.log(r_hip_angle);
           if (r_hip_angle > 170) {
             setServeGrade('A');
+            //console.log(serveGrade);
             analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
           } else if (r_hip_angle > 167) {
             setServeGrade('B');
+            //console.log(serveGrade);
             analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
           } else if (r_hip_angle > 164) {
             setServeGrade('C');
+            //console.log(serveGrade);
             analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
           } else {
             setServeGrade('D');
+            //console.log(serveGrade);
             analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
           }
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
         skipFrameCount = skipFrameCount + 1;
+        //console.log(skipFrameCount);
       } else {
         skipFrameCount = 0;
       }
+
+      // if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+      //   increment();
+      //   skipFrameCount = skipFrameCount + 1;
+      //   if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
+      //     if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+      //       console.log(serveGrade);
+      //       setServeGrade('A');
+      //       analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+      //     } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
+      //       setServeGrade('B');
+      //       console.log(serveGrade);
+      //       analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+      //     } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
+      //       setServeGrade('C');
+      //       console.log(serveGrade);
+      //       analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
+      //     } else {
+      //       setServeGrade('D');
+      //       console.log(serveGrade);
+      //       analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
+      //     }
+      //     setServeType('Flat');
+      //   } else if (r_hip_angle < 179 && r_hip_angle > 165) {
+      //     if (r_hip_angle < 174 && r_hip_angle > 172) {
+      //       setServeGrade('A');
+      //       console.log(serveGrade);
+      //       analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
+      //     } else if (r_hip_angle < 176 && r_hip_angle > 170) {
+      //       setServeGrade('B');
+      //       console.log(serveGrade);
+      //       analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
+      //     } else if (r_hip_angle < 178 && r_hip_angle > 168) {
+      //       setServeGrade('C');
+      //       console.log(serveGrade);
+      //       analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
+      //     } else {
+      //       setServeGrade('D');
+      //       console.log(serveGrade);
+      //       analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
+      //     }
+      //     setServeType('Slice');
+      //   } else {
+      //     console.log('Inside kick');
+      //     console.log(r_hip_angle);
+      //     if (r_hip_angle < 182) {
+      //       setServeGrade('A');
+      //       console.log(serveGrade);
+      //       analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+      //     } else if (r_hip_angle < 185) {
+      //       setServeGrade('B');
+      //       console.log(serveGrade);
+      //       analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+      //     } else if (r_hip_angle < 188) {
+      //       setServeGrade('C');
+      //       console.log(serveGrade);
+      //       analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
+      //     } else {
+      //       setServeGrade('D');
+      //       console.log(serveGrade);
+      //       analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
+      //     }
+      //     setServeType('Kick');
+      //   }
+      //   setData(analysis_data.data);
+      // } else if (skipFrameCount > 0 && skipFrameCount < 5) {
+      //   skipFrameCount = skipFrameCount + 1;
+      //   console.log(skipFrameCount);
+      // } else {
+      //   skipFrameCount = 0;
+      // }
     }
   };
 
   const calibrate = (poses: any) => {
+    // console.log("I am here");
+    // const cx1 = 400;
+    // const cy1 = 486;
+
+    // const cx2 = 448;
+    // const cy2 = 780;
+
+    // const cx3 = 276;
+    // const cy3 = 780;
+
+    // const cx4 = 295;
+    // const cy4 = 486;
+
+    // const cx1 = cameraLayoutWidth / 2 - 150;
+    // const cy1 = cameraLayoutHeight - 600;
+
+    // const cx2 = cameraLayoutWidth / 2 + 150;
+    // const cy2 = cameraLayoutHeight - 600;
+
+    // const cx3 = cameraLayoutWidth / 2 - 150;
+    // const cy3 = cameraLayoutHeight - 100;
+
+    // const cx4 = cameraLayoutWidth / 2 + 150;
+    // const cy4 = cameraLayoutHeight - 100;
+
     const cx1 = 100;
     const cy1 = 100;
 
@@ -1022,6 +1450,9 @@ const App4: FunctionComponent<Props> = props => {
       let tempCount = 0;
 
       for (var i = 0; i < keypoints.length; i++) {
+        // console.log(keypoints[i].score);
+        // console.log("Next");
+
         const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
         const x = flipX ? cameraLayoutWidth - keypoints[i].x : keypoints[i].x;
         const y = keypoints[i].y;
@@ -1032,19 +1463,28 @@ const App4: FunctionComponent<Props> = props => {
           (y / cameraLayoutHeight) *
           (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
 
+        // console.log('CX', cx, 'CX2', cx2);
+        // console.log('CX: ', cx, ' CY: ', cy);
+        // console.log('X: ', cx1, ' Y: ', cx2);
+
         if (keypoints[i].score && keypoints[i].score * 100 < 60) {
           tempCount = tempCount + 1;
+          // console.log('Score');
         }
         if (cx < cx1) {
+          // console.log('First');
           tempCount = tempCount + 1;
         }
         if (cx > cx2) {
+          // console.log('Second');
           tempCount = tempCount + 1;
         }
         if (cy < cy1) {
+          // console.log('Third');
           tempCount = tempCount + 1;
         }
         if (cy > cy3) {
+          // console.log('Fourth');
           tempCount = tempCount + 1;
         }
       }
@@ -1054,7 +1494,72 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedp(false);
         isCalibrated = true;
         startRecording();
+        // console.log('Calibrated Successfully');
+      } else {
+        // console.log('Please Calibrate Yourself');
       }
+
+      // var leftWrist = keypoints.filter(function (item: any) {
+      //   return item.name === "left_index";
+      // });
+
+      // var rightWrist = keypoints.filter(function (item: any) {
+      //   return item.name === "right_index";
+      // });
+
+      // var leftAnkle = keypoints.filter(function (item: any) {
+      //   return item.name === "left_foot_index";
+      // });
+
+      // var rightAnkle = keypoints.filter(function (item: any) {
+      //   return item.name === "right_foot_index";
+      // });
+
+      // if (true) {
+      //   // console.log("temp  Count");
+      //   console.log(
+      //     leftWrist[0].x,
+      //     leftWrist[0].y,
+      //     rightWrist[0].x,
+      //     rightWrist[0].y
+      //   );
+      //   if (
+      //     leftWrist[0].x < cx1 + 50 &&
+      //     leftWrist[0].x > cx1 - 50 &&
+      //     leftWrist[0].y < cy1 + 50 &&
+      //     leftWrist[0].y > cy1 - 50
+      //   ) {
+      //     console.log("Temp Count");
+      //     if (
+      //       rightWrist[0].x < cx4 + 50 &&
+      //       rightWrist[0].x > cx4 - 50 &&
+      //       rightWrist[0].y < cy4 + 50 &&
+      //       rightWrist[0].y > cy4 - 50
+      //     ) {
+      //       console.log("Temp Count");
+      //       if (
+      //         leftAnkle[0].x < cx2 + 50 &&
+      //         leftAnkle[0].x > cx2 - 50 &&
+      //         leftAnkle[0].y < cy2 + 50 &&
+      //         leftAnkle[0].y > cy2 - 50
+      //       ) {
+      //         console.log("Temp Count");
+      //         if (
+      //           rightAnkle[0].x < cx3 + 50 &&
+      //           rightAnkle[0].x > cx3 - 50 &&
+      //           rightAnkle[0].y < cy3 + 50 &&
+      //           rightAnkle[0].y > cy3 - 50
+      //         ) {
+      //           console.log("Temp Count");
+      //           setIsCalibratedr(true);
+      //           setIsCalibratedp(false);
+      //           isCalibrated = true;
+      //           // console.log("inside", isCalibrated);
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
     }
   };
 
@@ -1066,6 +1571,7 @@ const App4: FunctionComponent<Props> = props => {
     console.log('images, ', JSON.stringify(images));
     const loop = async () => {
       const imageTensor = images.next().value as tf.Tensor3D;
+      // console.log('imageTensor, ', JSON.stringify(imageTensor));
       const startTs = Date.now();
       const poses = await model!.estimatePoses(
         imageTensor,
@@ -1074,12 +1580,16 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
+        // serveTypeDetectionthreshold(poses);
+        shotDetectionReturn(poses);
+        // console.log();
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
+      frames_to_skip = Math.floor(1000 / latency) * 1.5;
+      console.log('FramesSkip: ', frames_to_skip);
       setPoses(poses);
       tf.dispose([imageTensor]);
       if (rafId.current === 0) {
@@ -1108,26 +1618,6 @@ const App4: FunctionComponent<Props> = props => {
       default:
         return 0;
     }
-  };
-
-  const renderUploadingAnimation = () => {
-    return (
-      <AnimatedLoader
-        style={styles.cameraContainer}
-        visible={uploading}
-        overlayColor={'rgba(255, 255, 255, 0.75)'}
-        source={require('./loader.json')}
-        animationStyle={styles.lottie}
-        speed={1}>
-        <Text>{currentStatus}</Text>
-        <Button
-          title={'Cancel upload'}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-      </AnimatedLoader>
-    );
   };
 
   const camView = () => {
@@ -1186,39 +1676,13 @@ const App4: FunctionComponent<Props> = props => {
           {renderFps()}
           {renderCalibration()}
           {renderCameraTypeSwitcher()}
-          {renderUploadingAnimation()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
-            <Text
-              style={{
-                zIndex: 1000,
-                position: 'absolute',
-                fontSize: 16,
-                color: '#000000',
-              }}>
-              {remainingTime}
-            </Text>
-            <Countdown
-              ref={countdownRef}
-              // style={styles.timer}
-              // textStyle={styles.timerText}
-              initialSeconds={60}
-              onTimes={e => {
-                setRemainingTime(60 - e);
-              }}
-              onPause={e => {}}
-              onEnd={e => {
-                handleStopCamera();
-              }}
-            />
             <IconButton
               styles={styles.recordIcon}
               icon={stopIcon}
-              onPress={() => {
-                countdownRef.current.stop();
-                handleStopCamera();
-              }}
+              onPress={handleStopCamera}
               transparent={true}
             />
           </View>
@@ -1228,7 +1692,7 @@ const App4: FunctionComponent<Props> = props => {
   );
 };
 
-export default App4;
+export default BallPracticeTensorCamera;
 
 const styles = StyleSheet.create({
   container: {
@@ -1359,9 +1823,5 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: cameraLayoutWidth,
     height: cameraLayoutHeight,
-  },
-  lottie: {
-    width: 100,
-    height: 100,
   },
 });
