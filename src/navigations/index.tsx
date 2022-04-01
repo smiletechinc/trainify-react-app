@@ -10,7 +10,6 @@ import {
   LandingScreenContainer,
   ResetPasswordContainer,
   PaymentPlanContainer,
-  LanguageScreenContainer,
   TestRecordScreenContainer,
   TestRecordScreenContainerHook,
   UploadBallMachineContainerHook,
@@ -40,10 +39,6 @@ function AppContainer() {
           component={ResetPasswordContainer}
         />
         <AppStack.Screen name="PaymentPlan" component={PaymentPlanContainer} />
-        <AppStack.Screen
-          name="LanguageScreen"
-          component={LanguageScreenContainer}
-        />
         <AppStack.Screen name="MainApp" component={MainAppContainer} />
 
         <AppStack.Screen

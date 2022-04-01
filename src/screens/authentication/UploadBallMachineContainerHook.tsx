@@ -8,6 +8,7 @@ import {
   Alert,
   Button,
   Image,
+  SafeAreaView,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -43,6 +44,7 @@ const uploadAnimation = require('./../../assets/animations/uploading-animation.j
 
 import {useMediaUpload} from '../../hooks/useMediaUpload';
 import {useAnalysisUpload} from '../../hooks';
+import HeaderWithText from '../../global-components/header/HeaderWithText';
 
 type Props = {
   navigation: any;
@@ -190,43 +192,55 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   };
 
   return (
-    <View style={styles.login_main_container}>
-      <KeyboardAwareScrollView
-        bounces={false}
-        contentContainerStyle={{
-          flexGrow: 1,
+    <SafeAreaView>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'flex-start',
+          backgroundColor: 'white',
+          paddingTop: Platform.OS === 'ios' ? 15 : 15,
+          paddingHorizontal: SCREEN_WIDTH * 0.05,
         }}>
-        <View
-          style={{
-            flex: 1,
-            marginTop: 47,
-            paddingHorizontal: SCREEN_WIDTH * 0.05,
+        <HeaderWithText text="uploading" navigation={navigation} />
+      </View>
+      <View style={styles.login_main_container}>
+        <KeyboardAwareScrollView
+          bounces={false}
+          contentContainerStyle={{
+            flexGrow: 1,
           }}>
-          <AutoHeightImage source={languagePic} width={SCREEN_WIDTH * 0.9} />
-          <AnimatedLoader
-            visible={uploading || uploadingAnalysis}
-            overlayColor={'rgba(255, 255, 255, 0.75)'}
-            source={uploadAnimation}
-            animationStyle={styles.lottie}
-            speed={1}>
-            <Text>
-              {uploading
-                ? currentStatus
-                : uploadingAnalysis
-                ? currentAnalysisStatus
-                : false}
-            </Text>
-            <Button
-              title={'Cancel upload'}
-              onPress={() => {
-                cancelUploading();
-                navigation.goBack();
-              }}
-            />
-          </AnimatedLoader>
-        </View>
-      </KeyboardAwareScrollView>
-    </View>
+          <View
+            style={{
+              flex: 1,
+              marginTop: 47,
+              paddingHorizontal: SCREEN_WIDTH * 0.05,
+            }}>
+            <AutoHeightImage source={languagePic} width={SCREEN_WIDTH * 0.9} />
+            <AnimatedLoader
+              visible={uploading || uploadingAnalysis}
+              overlayColor={'rgba(255, 255, 255, 0.75)'}
+              source={uploadAnimation}
+              animationStyle={styles.lottie}
+              speed={1}>
+              <Text>
+                {uploading
+                  ? currentStatus
+                  : uploadingAnalysis
+                  ? currentAnalysisStatus
+                  : false}
+              </Text>
+              <Button
+                title={'Cancel upload'}
+                onPress={() => {
+                  cancelUploading();
+                  navigation.goBack();
+                }}
+              />
+            </AnimatedLoader>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 export default UploadBallMachineContainerHook;

@@ -2,7 +2,6 @@ import TensorCameraContainer from '../../AppPracticeBallMachine';
 import App4 from '../../App4';
 
 import LandingScreenContainer from '../screens//authentication/LandingScreen';
-import LanguageScreenContainer from '../screens/authentication/LanguageScreen';
 import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
 import SigninScreen from '../screens/authentication/SigninScreen';
@@ -28,7 +27,6 @@ export {
   TensorCameraContainer,
   App4,
   LandingScreenContainer,
-  LanguageScreenContainer,
   TestRecordScreenContainer,
   TestRecordScreenContainerHook,
   UploadServeContainerHook,
