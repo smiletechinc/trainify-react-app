@@ -106,7 +106,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
             <Image source={backIcon} style={{width: 24, height: 24}} />
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: 16, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+        <View style={{marginTop: 8, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <View style={{alignItems: 'center'}}>
             <AutoHeightImage source={signupMainImage} width={163} />
           </View>
