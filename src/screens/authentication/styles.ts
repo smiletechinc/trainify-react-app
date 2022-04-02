@@ -82,6 +82,17 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-
+  textStyle: {
+    marginLeft: 8,
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  boxStyle: {
+    flexDirection: 'row',
+    width: 120,
+    justifyContent: 'space-around',
+    borderStyle: 'solid',
+  },
+  
 });
 export default styles;

@@ -381,7 +381,8 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
             <SubscriptionItem
               leftText="Basic"
-              price="$1.0/yr"
+              rightText="Serve Practice Only"
+              price="Free"
               isSelected={subscriptionPlan === 1 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(1);
@@ -391,7 +392,8 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
             />
             <SubscriptionItem
               leftText="Silver"
-              price="$2.0/yr"
+              rightText="Serve Practice/Practice with Ball Machine"
+              price="$74.99/yr"
               isSelected={subscriptionPlan === 2 ? true : false}
               onPress={() => {
                 setSubscriptionPlan(2);
@@ -399,7 +401,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
                 // proceedToPurchase();
               }}
             />
-            <SubscriptionItem
+            {/* <SubscriptionItem
               leftText="Platinum"
               price="$3.0/yr"
               isSelected={subscriptionPlan === 3 ? true : false}
@@ -408,7 +410,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
                 requestPurchase(trainProducts[3], onSuccess);
                 // proceedToPurchase();
               }}
-            />
+            /> */}
           </View>
 
           <SimpleButton

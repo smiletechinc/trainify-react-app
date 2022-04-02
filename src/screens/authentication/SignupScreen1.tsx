@@ -165,10 +165,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 justifyContent: 'space-around',
                 borderStyle: 'solid',
               }}
-              textStyle={{
-                fontSize: 13,
-                fontWeight: 'bold',
-              }}
+              textStyle={styles.textStyle}
               icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
             />
           </View>
@@ -251,7 +248,6 @@ const SignupContainer: FunctionComponent<Props> = props => {
           <SignupFooterComponent
             navigation={navigation}
             isButtonDisabled={!validateForInputs()}
-            // onPress={proceedToSignup}
             onPress={proceedForPayments}
           />
         </View>

@@ -6,14 +6,13 @@ const styles = StyleSheet.create({
   subscription_item_main: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     borderWidth: 1,
-    height: 46,
+    height: 66,
     width: SCREEN_WIDTH * 0.9,
     borderRadius: 25,
     marginTop: 13,
-    paddingLeft: 21,
-    paddingRight: 22,
+    paddingLeft: 10,
   },
   price_selected: {
     color: COLORS.white,
