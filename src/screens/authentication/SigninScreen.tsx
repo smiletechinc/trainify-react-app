@@ -43,7 +43,7 @@ type Props = {
   route?: any;
 };
 
-const SigninContainer: FunctionComponent<Props> = props => {
+const SigninScreen: FunctionComponent<Props> = props => {
   const {authUser, setAuthUser, setAuthObject} = React.useContext(AuthContext);
   // console.log('UserData: ', UserData);
   const {navigation, route} = props;
@@ -269,4 +269,4 @@ const SigninContainer: FunctionComponent<Props> = props => {
     </View>
   );
 };
-export default SigninContainer;
+export default SigninScreen;

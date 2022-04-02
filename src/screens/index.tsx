@@ -6,6 +6,7 @@ import PaymentPlanContainer from '../screens/authentication/PaymentPlan';
 import ResetPasswordContainer from '../screens/authentication/ResetPassword';
 import SigninScreen from '../screens/authentication/SigninScreen';
 import SignupScreen from '../screens/authentication/SignupScreen';
+import SignupContainer from './authentication/SignupScreen1';
 import SplashScreen from '../screens/authentication/SplashScreen';
 
 import HomeScreen from './main-app/home';
@@ -34,6 +35,7 @@ export {
   ResetPasswordContainer,
   SigninScreen,
   SignupScreen,
+  SignupContainer,
   SplashScreen,
   HomeScreen,
   BallPracitceAnalysisGridScreen,
