@@ -15,7 +15,8 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
 import PlayingStyle from './components/YourPlayingStyle';
-
+import RadioButtonRN from 'radio-buttons-react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
@@ -44,6 +45,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const firstName = route.params.signupObject.firstName;
   const middleName = route.params.signupObject.middleName;
   const lastName = route.params.signupObject.lastName;
+  const [gender, setGender] = useState<string>('');
   const [height, setHeight] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
   const [location, setLocation] = useState<string>('');
@@ -62,7 +64,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
       location,
       rating,
       nationality,
-      gender: 'male',
+      gender,
       playerstyle: handStyle === 0 ? 'LeftHanded' : 'RightHanded',
     };
 
@@ -89,6 +91,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
     }
     return true;
   };
+
+  const data = [
+    {
+      label: 'Male',
+    },
+    {
+      label: 'Female',
+    },
+    {
+      label: 'Other',
+    },
+  ];
 
   return (
     <View style={styles.login_main_container}>
@@ -118,6 +132,46 @@ const SignupContainer: FunctionComponent<Props> = props => {
             ]}>
             SIGN UP
           </Text>
+          <View
+            style={{
+              width: SCREEN_WIDTH * 0.9,
+              paddingLeft: 8,
+              backgroundColor: COLORS.white,
+              marginTop: 8,
+            }}>
+            <Text
+              style={[
+                globalStyles.h1,
+                {color: COLORS.dark_black, marginTop: 16, fontWeight: 'bold'},
+              ]}>
+              Gender
+            </Text>
+            <RadioButtonRN
+              data={data}
+              box={false}
+              selectedBtn={e => setGender(e)}
+              animationTypes={['shake']}
+              style={{
+                borderStyle: 'solid',
+
+                marginLeft: 0,
+                display: 'flex',
+                flexDirection: 'row',
+              }}
+              boxStyle={{
+                dipslay: 'flex',
+                flexDirection: 'row',
+                width: 120,
+                justifyContent: 'space-around',
+                borderStyle: 'solid',
+              }}
+              textStyle={{
+                fontSize: 13,
+                fontWeight: 'bold',
+              }}
+              icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
+            />
+          </View>
           <TextInput
             value={height}
             placeholder="Height"
