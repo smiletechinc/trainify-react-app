@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
     right: 20,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .9)',
+    borderColor: '#008EC1',
     borderRadius: 6,
-    padding: 8,
     zIndex: 100,
   },
 });
