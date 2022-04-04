@@ -585,7 +585,7 @@
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 103;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_TEAM = F67F944Q22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
@@ -618,7 +618,7 @@
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 103;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_TEAM = F67F944Q22;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;

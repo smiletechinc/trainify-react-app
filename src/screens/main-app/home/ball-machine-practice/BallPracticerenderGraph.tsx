@@ -123,16 +123,16 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
                   }}
                   data={data_victory.AGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
-                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                  style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
+                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.BGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
-                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                  style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
+                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
               </VictoryGroup>
               <VictoryLegend
                 width={screenWidth / 80}

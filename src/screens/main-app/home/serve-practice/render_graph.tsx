@@ -100,6 +100,8 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   data_victory.DGrade[1].y = analysis_data['data'][1][3];
   data_victory.DGrade[2].y = analysis_data['data'][2][3];
 
+  console.log('DataVictory.AGrade', data_victory.AGrade);
+
   return (
     <SafeAreaView>
       <KeyboardAwareScrollView
@@ -127,7 +129,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               data={pie_data.data}
             />
           </View>
-          <View style={{marginTop: -150}}>
+          <View style={{marginTop: -120}}>
             <Text>Distibution of Serves Performed</Text>
           </View>
           <View style={styles.vectorContainer}>
@@ -147,32 +149,32 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
                   }}
                   data={data_victory.AGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'blue'}, labels: {fill: 'blue'}}}
-                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                  style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
+                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.BGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'orange'}, labels: {fill: 'orange'}}}
-                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                  style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
+                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.CGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'red'}, labels: {fill: 'red'}}}
-                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                  style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
+                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
                 <VictoryBar
                   animate={{
                     duration: 2000,
                   }}
                   data={data_victory.DGrade}
                   labels={({datum}) => datum.y}
-                  style={{data: {fill: 'green'}, labels: {fill: 'green'}}}
-                  labelComponent={<VictoryLabel dy={0} />}></VictoryBar>
+                  style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
+                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
               </VictoryGroup>
               <VictoryLegend
                 x={Dimensions.get('screen').width / 30}
