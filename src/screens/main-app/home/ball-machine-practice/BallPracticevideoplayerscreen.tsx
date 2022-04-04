@@ -1,18 +1,8 @@
-// React Native Video Library to Play Video in Android and IOS
-// https://aboutreact.com/react-native-video/
-
 // import React in our code
 import React, {useState, useRef, useEffect} from 'react';
 
 // import all the components we are going to use
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Alert,
-  Platform,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, Platform} from 'react-native';
 
 // Import React Native Video to play video
 import Video from 'react-native-video';
@@ -48,24 +38,20 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   const [screenType, setScreenType] = useState('content');
 
   const onSeek = seek => {
-    //Handler for change in seekbar
     videoPlayer.current.seek(seek);
   };
 
   const onPaused = playerState => {
-    //Handler for Video Pause
     setPaused(!paused);
     setPlayerState(playerState);
   };
 
   const onReplay = () => {
-    //Handler for Replay
     setPlayerState(PLAYER_STATES.PLAYING);
     videoPlayer.current.seek(0);
   };
 
   const onProgress = data => {
-    // Video Player will progress continue even if it ends
     if (!isLoading && playerState !== PLAYER_STATES.ENDED) {
       setCurrentTime(data.currentTime);
     }
@@ -179,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
     minHeight: 48,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   toolbar: {
     marginTop: 30,
@@ -193,7 +179,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   cameraTypeSwitcher: {

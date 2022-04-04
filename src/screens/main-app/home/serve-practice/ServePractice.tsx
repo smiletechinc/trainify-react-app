@@ -1,6 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import AutoHeightImage from 'react-native-auto-height-image';
+import React, {FunctionComponent} from 'react';
 import {Text, TouchableOpacity, View, Image} from 'react-native';
 import RecordScreen from 'react-native-record-screen';
 
@@ -43,8 +41,9 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Serve Practice" navigation={navigation} />
-
+        <View style={styles.navigationBar}>
+          <HeaderWithText text="Serve Practice" navigation={navigation} />
+        </View>
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
             <TouchableOpacity

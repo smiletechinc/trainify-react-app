@@ -100,7 +100,9 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Analysis Report" navigation={navigation} />
+        <View style={styles.navigationBar}>
+          <HeaderWithText text="Analysis Report" navigation={navigation} />
+        </View>
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}

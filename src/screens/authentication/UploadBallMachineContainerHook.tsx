@@ -199,7 +199,8 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
           justifyContent: 'flex-start',
           backgroundColor: 'white',
           paddingTop: Platform.OS === 'ios' ? 15 : 15,
-          paddingHorizontal: SCREEN_WIDTH * 0.05,
+          minHeight: 48,
+          paddingHorizontal: SCREEN_WIDTH * 0.03,
         }}>
         <HeaderWithText text="uploading" navigation={navigation} />
       </View>

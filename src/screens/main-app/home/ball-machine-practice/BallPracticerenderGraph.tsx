@@ -1,6 +1,5 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, View, Platform} from 'react-native';
-import {StackedBarChart} from 'react-native-chart-kit';
+import React, {FunctionComponent} from 'react';
+import {StyleSheet, Text, View, Platform} from 'react-native';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -41,8 +40,6 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
 
   console.log('Graph Screen: ', analysis_data);
 
-  // Data Format that Victory Graph Receives
-  // Data Format that Victory Graph Receives
   const data_victory = {
     AGrade: [
       {x: 'Forehand Return', y: 30},
@@ -75,34 +72,33 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
     ],
   };
 
-  // Converting the Data Received from Firebase to the Format that Victory Graph Accepts to form Graph
   data_victory.AGrade[0].y = analysis_data['data'][0][0];
   data_victory.AGrade[1].y = analysis_data['data'][1][0];
 
   data_victory.BGrade[0].y = analysis_data['data'][0][1];
   data_victory.BGrade[1].y = analysis_data['data'][1][1];
 
-  // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
-
   return (
-    <SafeAreaView style={styles.main_view}>
+    <SafeAreaView>
       <KeyboardAwareScrollView
         contentContainerStyle={{
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText
-          text="Graph Report"
-          navigation={navigation}
-          hideBackButton={false}
-        />
+        <View style={styles.navigationBar}>
+          <HeaderWithText
+            text="Graph Report"
+            navigation={navigation}
+            hideBackButton={false}
+          />
+        </View>
         <View style={styles.container}>
           <View style={styles.pieContainer}>
             <VictoryPie
               animate={{
                 duration: 1000,
               }}
-              padding={screenWidth / 3.5}
+              padding={screenWidth / 3.48}
               width={screenWidth}
               height={screenHeight / 2}
               colorScale={['tomato', 'orange', 'gold']}
@@ -164,12 +160,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  navigationBar: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: 48,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
+  },
   main_view: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 15 : 15,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.02,
   },
   pieContainer: {
     display: 'flex',

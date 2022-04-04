@@ -26,11 +26,13 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
   return (
     <View style={styles.home_main_view}>
       <KeyboardAwareScrollView>
-        <HeaderWithText
-          text={''}
-          navigation={navigation}
-          hideBackButton={true}
-        />
+        <View style={styles.navigationBar}>
+          <HeaderWithText
+            text={''}
+            navigation={navigation}
+            hideBackButton={true}
+          />
+        </View>
         <TouchableOpacity
           activeOpacity={0.8}
           delayPressIn={0}

@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   login_back_icon: {
     width: 32,
     height: 32,
+    marginTop: 8
   },
   login_forgot_view: {
     flexDirection: 'row',

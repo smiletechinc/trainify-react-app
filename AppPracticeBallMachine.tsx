@@ -1241,11 +1241,13 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <HeaderWithText
-        text={title}
-        hideProfileSection={true}
-        navigation={navigation}
-      />
+      <View style={{marginTop: 10}}>
+        <HeaderWithText
+          text={title}
+          hideProfileSection={true}
+          navigation={navigation}
+        />
+      </View>
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady ? (

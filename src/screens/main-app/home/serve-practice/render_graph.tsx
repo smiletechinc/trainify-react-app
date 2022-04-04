@@ -1,6 +1,5 @@
 import {StyleSheet, Text, View, Platform} from 'react-native';
-import {StackedBarChart} from 'react-native-chart-kit';
-import React, {useState, useRef, useEffect} from 'react';
+import React from 'react';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -34,7 +33,6 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   // Data coming from Firebase
   const {analysis_data} = route.params;
 
-  // Data Format that Victory Graph Receives
   const data_victory = {
     AGrade: [
       {x: 'Flat', y: 30},
@@ -86,7 +84,6 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
     ],
   };
 
-  // Converting the Data Received from Firebase to the Format that Victory Graph Accepts to form Graph
   data_victory.AGrade[0].y = analysis_data['data'][0][0];
   data_victory.AGrade[1].y = analysis_data['data'][1][0];
   data_victory.AGrade[2].y = analysis_data['data'][2][0];
@@ -104,31 +101,33 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   data_victory.DGrade[2].y = analysis_data['data'][2][3];
 
   return (
-    <SafeAreaView style={styles.main_view}>
+    <SafeAreaView>
       <KeyboardAwareScrollView
         contentContainerStyle={{
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText
-          text="Graph Report"
-          navigation={navigation}
-          hideBackButton={false}
-        />
+        <View style={styles.navigationBar}>
+          <HeaderWithText
+            text="Graph Report"
+            navigation={navigation}
+            hideBackButton={false}
+          />
+        </View>
         <View style={styles.container}>
           <View style={styles.pieContainer}>
             <VictoryPie
               animate={{
                 duration: 1000,
               }}
-              padding={screenWidth / 4}
+              padding={screenWidth / 3.9}
               width={screenWidth}
               height={screenHeight / 2}
               colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
               data={pie_data.data}
             />
           </View>
-          <View style={{marginTop: -60}}>
+          <View style={{marginTop: -150}}>
             <Text>Distibution of Serves Performed</Text>
           </View>
           <View style={styles.vectorContainer}>
@@ -178,7 +177,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
               <VictoryLegend
                 x={Dimensions.get('screen').width / 30}
                 orientation={'horizontal'}
-                gutter={screenWidth / 30}
+                gutter={screenWidth / 25}
                 data={[
                   {name: 'A Grade', symbol: {fill: 'blue'}},
                   {name: 'B Grade', symbol: {fill: 'orange'}},
@@ -201,27 +200,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  navigationBar: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: 48,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
+  },
   main_view: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 15 : 15,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.02,
   },
   pieContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: screenHeight / 1.7,
-    paddingBottom: screenHeight / 9,
+    height: screenHeight / 1.8,
+    paddingBottom: screenHeight / 10,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: screenHeight / 2.9,
+    height: screenHeight / 1.9,
     paddingLeft: screenWidth / 20,
   },
 
