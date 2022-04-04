@@ -10,12 +10,20 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 15 : 15,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
   },
+  navigationBar: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: 48,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
+  },
   main_view: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 15 : 15,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   flatcontainer: {
     paddingTop: 50,

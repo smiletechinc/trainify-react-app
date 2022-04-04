@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
     minHeight: 48,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   toolbar: {
     marginTop: 30,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   cameraTypeSwitcher: {
@@ -214,8 +214,8 @@ const styles = StyleSheet.create({
     right: 20,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .9)',
+    borderColor: '#008EC1',
     borderRadius: 6,
-    padding: 8,
     zIndex: 100,
   },
 });

@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent} from 'react';
 import {Text, TouchableOpacity, View, Image} from 'react-native';
 import RecordScreen from 'react-native-record-screen';
 
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
 import styles from '../../styles';
-
+import globalStyles from '../../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from './../../../../context/auth-context';
@@ -41,8 +41,9 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Serve Practice" navigation={navigation} />
-
+        <View style={styles.navigationBar}>
+          <HeaderWithText text="Serve Practice" navigation={navigation} />
+        </View>
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
             <TouchableOpacity
