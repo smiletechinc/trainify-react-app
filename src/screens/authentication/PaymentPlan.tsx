@@ -288,9 +288,11 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       if (errorCode === 'auth/email-already-in-use') {
         Alert.alert('Trainify', 'User already exists!');
       } else {
+        console.log('signup error: ', errorMessage);
         Alert.alert('Trainify', 'Error in signup!');
       }
     } else {
+      console.log('signup error: ', 'Unknown');
       Alert.alert('Trainify', 'Error in signup!');
     }
   };

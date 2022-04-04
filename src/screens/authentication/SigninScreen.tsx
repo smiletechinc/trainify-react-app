@@ -195,16 +195,6 @@ const SigninScreen: FunctionComponent<Props> = props => {
   return (
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView bounces={false}>
-        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
-          <TouchableOpacity
-            style={styles.login_back_icon}
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <Image source={backIcon} style={{width: 24, height: 24}} />
-          </TouchableOpacity>
-        </View>
-
         <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <AutoHeightImage
             source={signinMainImage}
