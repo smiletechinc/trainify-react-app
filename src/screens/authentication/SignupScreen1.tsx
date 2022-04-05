@@ -7,6 +7,9 @@ import {
   Image,
   Platform,
   Alert,
+  Button,
+  Modal,
+  Pressable,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -17,10 +20,11 @@ import SignupFooterComponent from './components/SignupFooterComponent';
 import PlayingStyle from './components/YourPlayingStyle';
 import RadioButtonRN from 'radio-buttons-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
-
+import DatePickerModal from '../../modals/DateTimePicekr';
 import {StackActions, NavigationActions} from 'react-navigation';
 import {
   signUpService,
@@ -51,6 +55,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const [location, setLocation] = useState<string>('');
   const [rating, setRating] = useState<string>('');
   const [nationality, setNationality] = useState<string>('');
+  const [datepickermodalVisible, setDatePickerModalVisible] = useState(false);
 
   const proceedForPayments = () => {
     const signupObject = {
@@ -103,7 +108,6 @@ const SignupContainer: FunctionComponent<Props> = props => {
       label: 'Other',
     },
   ];
-
   return (
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView
@@ -188,9 +192,13 @@ const SignupContainer: FunctionComponent<Props> = props => {
             value={birthday}
             placeholder="Birthday"
             placeholderTextColor={COLORS.dark_black}
+            editable={false}
             // secureTextEntry={true}
             onChangeText={(value: string) => {
               setBirthday(value);
+            }}
+            onClick={() => {
+              setDatePickerModalVisible(true);
             }}
             inputStyles={{
               fontWeight: 'bold',
@@ -244,7 +252,13 @@ const SignupContainer: FunctionComponent<Props> = props => {
               marginTop: 29,
             }}
           />
-
+          {datepickermodalVisible && (
+            <DatePickerModal
+              visible={datepickermodalVisible}
+              setBirthday={setBirthday}
+              close={setDatePickerModalVisible}
+            />
+          )}
           <SignupFooterComponent
             navigation={navigation}
             isButtonDisabled={!validateForInputs()}

@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.white,
     width: SCREEN_WIDTH * 0.6,
-    textAlign: 'right',
-    fontSize: 16
+    textAlign: 'center',
+    fontSize: 14
   },
   // Service Practice styles.
   main_view: {

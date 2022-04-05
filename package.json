@@ -13,6 +13,7 @@
     "@mediapipe/pose": "^0.5.1635988162",
     "@react-native-async-storage/async-storage": "^1.16.1",
     "@react-native-community/cameraroll": "^4.1.2",
+    "@react-native-community/datetimepicker": "^6.1.1",
     "@react-native-firebase/app": "^14.7.0",
     "@react-native-firebase/storage": "^14.7.0",
     "@react-native-picker/picker": "^2.4.0",
