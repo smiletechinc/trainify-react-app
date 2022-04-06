@@ -114,7 +114,9 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (videoAnalysisData) {
-      navigation.navigate('VideoPlayerContainer', {video: videoAnalysisData});
+      navigation.navigate('VideoPlayerContainer', {
+        video: videoAnalysisData,
+      });
       // Alert.alert('Trainify', `Video added successfully.`);
     }
   }, [videoAnalysisData]);

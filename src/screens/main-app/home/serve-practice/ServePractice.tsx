@@ -51,7 +51,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('App4', {
-                  title: 'RECORD LEFT-HANDED SERVE',
+                  title: 'RECORD SERVE PRACITCE',
                 });
               }}>
               <View
@@ -76,7 +76,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record LEFT-Handed Serve
+                    Record Serve Practice
                   </Text>
                 </View>
               </View>
@@ -89,7 +89,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('App4', {
-                  title: 'RECORD RIGHT-HANDED SERVE',
+                  title: 'RECORD SERVE PRACTICE',
                 });
               }}>
               <View
@@ -114,7 +114,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record RIGHT-Handed Serve
+                    Record Serve Practice
                   </Text>
                 </View>
               </View>

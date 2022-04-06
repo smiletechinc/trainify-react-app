@@ -39,7 +39,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('TensorCameraContainer', {
-                  title: 'RECORD RIGHT-HANDED SERVE',
+                  title: 'RECORD VOLLEY / BALL MACHINE',
                 });
               }}>
               <View
@@ -64,7 +64,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record LEFT-Handed Serve
+                    Record Volley / Ball Machine
                   </Text>
                 </View>
               </View>
@@ -77,7 +77,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('TensorCameraContainer', {
-                  title: 'RECORD RIGHT-HANDED SERVE',
+                  title: 'RECORD VOLLEY / BALL MACHINE',
                 });
               }}>
               <View
@@ -102,7 +102,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record RIGHT-Handed Serve
+                    Record Volley / Ball Machine
                   </Text>
                 </View>
               </View>

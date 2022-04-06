@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from 'react-native';
 import {VideoData} from '../../../types';
 import {styles} from './index';
 
@@ -17,6 +24,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
   const [image, setImage] = useState(null);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
+
   useEffect(() => {
     console.log('VideoThumbnail:', video.thumbnailURL);
     setImage(video.thumbnailURL);
@@ -54,7 +62,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
           }}>
           <View>
             <Text style={[styles.itemName, {width: (itemWidth - 15) / 2}]}>
-              Train_{index ? index : 'video'}
+              Trainify_{index ? index : 'video'}
             </Text>
           </View>
           <View style={{width: (itemWidth - 15) / 2, paddingRight: 8}}>

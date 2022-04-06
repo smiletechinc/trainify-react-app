@@ -71,6 +71,10 @@ const HeaderWithText: FunctionComponent<Props> = props => {
     <View style={styles.header_with_text_main_view}>
       {!hideBackButton && (
         <TouchableOpacity
+          style={{
+            width: 40,
+            height: 40,
+          }}
           onPress={() => {
             navigation.goBack();
           }}>

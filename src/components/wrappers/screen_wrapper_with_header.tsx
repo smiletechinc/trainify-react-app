@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     // paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    paddingTop: STATUS_BAR_HEIGHT,
+    paddingTop: STATUS_BAR_HEIGHT * 1,
     minHeight: 48,
     paddingHorizontal: SCREEN_WIDTH * 0.03,
   },

@@ -36,6 +36,7 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   const [paused, setPaused] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
   const [screenType, setScreenType] = useState('content');
+  const [date, setDate] = useState('');
 
   const onSeek = seek => {
     videoPlayer.current.seek(seek);
@@ -83,6 +84,8 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   useEffect(() => {
     if (video) {
       console.log('video, ', video);
+      const dateTimeArray = video.timestamp.split(',');
+      setDate(dateTimeArray[0]);
     }
   }, [video]);
 
@@ -116,7 +119,7 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   return (
     <SafeAreaView>
       <View style={styles.main_view}>
-        <HeaderWithText text={video.name} navigation={navigation} />
+        <HeaderWithText text={date} navigation={navigation} />
       </View>
       <View style={{height: 750, marginBottom: 64}}>
         <Video
