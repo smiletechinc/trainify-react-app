@@ -3,18 +3,11 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-    container: {
-        borderStyle:"solid",
-        marginVertical: 64,
-        alignItems: 'center',
-        justifyContent: 'center', 
-    },
     picker: {
-        marginVertical: 30,
-        width: 150,
-        height: 50,
-        padding: 10,
-        borderWidth: 1,
+        marginVertical: 0,
+        width: '100%',
+        height: 200,
+        padding: 8,
         borderColor: "#666",
       },
 });

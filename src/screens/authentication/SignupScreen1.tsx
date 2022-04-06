@@ -24,7 +24,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
-import DatePickerModal from '../../modals/DateTimePicekr';
+import {
+  DatePickerModal,
+  InchHeightPickerModal,
+  FeetHeightPickerModal,
+} from '../../modals';
 import {StackActions, NavigationActions} from 'react-navigation';
 import {
   signUpService,
@@ -56,6 +60,12 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const [rating, setRating] = useState<string>('');
   const [nationality, setNationality] = useState<string>('');
   const [datepickermodalVisible, setDatePickerModalVisible] = useState(false);
+  const [inchHeightPickerModalVisible, setinchHeightPickerModalVisible] =
+    useState(false);
+  const [feetHeightPickerModalVisible, setfeetHeightPickerModalVisible] =
+    useState(false);
+  const [inchHeight, setInchHeight] = useState('');
+  const [feetHeight, setFeetHeight] = useState('');
 
   const proceedForPayments = () => {
     const signupObject = {
@@ -77,9 +87,11 @@ const SignupContainer: FunctionComponent<Props> = props => {
 
     navigation.navigate('PaymentPlan', {signupObject, authObject});
   };
-
   const validateForInputs = () => {
-    if (height === '') {
+    if (feetHeight === '') {
+      return false;
+    }
+    if (inchHeight === '') {
       return false;
     }
     if (birthday === '') {
@@ -173,21 +185,70 @@ const SignupContainer: FunctionComponent<Props> = props => {
               icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
             />
           </View>
-          <TextInput
-            value={height}
-            placeholder="Height"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setHeight(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
+          <View
+            style={{
+              width: SCREEN_WIDTH * 0.9,
+              paddingLeft: 8,
+              backgroundColor: COLORS.white,
+              marginTop: 16,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text
+              style={[
+                globalStyles.h1,
+                {
+                  color: COLORS.dark_black,
+                  marginTop: 16,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  paddingTop: 10,
+                },
+              ]}>
+              Height
+            </Text>
+            <TextInput
+              value={feetHeight}
+              placeholder="Feet"
+              placeholderTextColor={COLORS.dark_black}
+              // secureTextEntry={true}
+              onChangeText={(value: string) => {
+                setFeetHeight(value);
+              }}
+              editable={false}
+              onClick={() => {
+                setfeetHeightPickerModalVisible(true);
+              }}
+              inputStyles={{
+                fontWeight: 'bold',
+              }}
+              inputParentStyles={{
+                marginTop: 16,
+                width: 100,
+              }}
+            />
+            <TextInput
+              value={inchHeight}
+              placeholder="Inch"
+              editable={false}
+              placeholderTextColor={COLORS.dark_black}
+              // secureTextEntry={true}
+              onChangeText={(value: string) => {
+                setInchHeight(value);
+              }}
+              onClick={() => {
+                setinchHeightPickerModalVisible(true);
+              }}
+              inputStyles={{
+                fontWeight: 'bold',
+              }}
+              inputParentStyles={{
+                marginTop: 16,
+                width: 100,
+              }}
+            />
+          </View>
           <TextInput
             value={birthday}
             placeholder="Birthday"
@@ -257,6 +318,20 @@ const SignupContainer: FunctionComponent<Props> = props => {
               visible={datepickermodalVisible}
               setBirthday={setBirthday}
               close={setDatePickerModalVisible}
+            />
+          )}
+          {inchHeightPickerModalVisible && (
+            <InchHeightPickerModal
+              visible={inchHeightPickerModalVisible}
+              setInch={setInchHeight}
+              close={setinchHeightPickerModalVisible}
+            />
+          )}
+          {feetHeightPickerModalVisible && (
+            <FeetHeightPickerModal
+              visible={feetHeightPickerModalVisible}
+              setFeet={setFeetHeight}
+              close={setfeetHeightPickerModalVisible}
             />
           )}
           <SignupFooterComponent
