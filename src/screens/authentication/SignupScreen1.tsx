@@ -1,23 +1,11 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-  Image,
-  Platform,
-  Alert,
-  Button,
-  Modal,
-  Pressable,
-} from 'react-native';
+import React, {FunctionComponent, useState} from 'react';
+import {Text, TouchableOpacity, View, Image} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
-import PlayingStyle from './components/YourPlayingStyle';
 import RadioButtonRN from 'radio-buttons-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -28,14 +16,9 @@ import {
   DatePickerModal,
   InchHeightPickerModal,
   FeetHeightPickerModal,
+  CountryPickerModal,
+  RatingPickerModal,
 } from '../../modals';
-import {StackActions, NavigationActions} from 'react-navigation';
-import {
-  signUpService,
-  signInService,
-  registerUserService,
-} from '../../services/authenticationServices';
-import {UserObject} from '../../types';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
@@ -53,8 +36,8 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const firstName = route.params.signupObject.firstName;
   const middleName = route.params.signupObject.middleName;
   const lastName = route.params.signupObject.lastName;
+
   const [gender, setGender] = useState<string>('');
-  const [height, setHeight] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [rating, setRating] = useState<string>('');
@@ -62,7 +45,11 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const [datepickermodalVisible, setDatePickerModalVisible] = useState(false);
   const [inchHeightPickerModalVisible, setinchHeightPickerModalVisible] =
     useState(false);
+  const [ratingPickerModalVisible, setratingPickerModalVisible] =
+    useState(false);
   const [feetHeightPickerModalVisible, setfeetHeightPickerModalVisible] =
+    useState(false);
+  const [countryPickerModalVisible, setcountryPickerModalVisible] =
     useState(false);
   const [inchHeight, setInchHeight] = useState('');
   const [feetHeight, setFeetHeight] = useState('');
@@ -74,7 +61,8 @@ const SignupContainer: FunctionComponent<Props> = props => {
       firstName,
       middleName,
       lastName,
-      height,
+      feetHeight,
+      inchHeight,
       birthday,
       location,
       rating,
@@ -291,6 +279,10 @@ const SignupContainer: FunctionComponent<Props> = props => {
             onChangeText={(value: string) => {
               setRating(value);
             }}
+            editable={false}
+            onClick={() => {
+              setratingPickerModalVisible(true);
+            }}
             inputStyles={{
               fontWeight: 'bold',
             }}
@@ -305,6 +297,10 @@ const SignupContainer: FunctionComponent<Props> = props => {
             // secureTextEntry={true}
             onChangeText={(value: string) => {
               setNationality(value);
+            }}
+            editable={false}
+            onClick={() => {
+              setcountryPickerModalVisible(true);
             }}
             inputStyles={{
               fontWeight: 'bold',
@@ -332,6 +328,20 @@ const SignupContainer: FunctionComponent<Props> = props => {
               visible={feetHeightPickerModalVisible}
               setFeet={setFeetHeight}
               close={setfeetHeightPickerModalVisible}
+            />
+          )}
+          {ratingPickerModalVisible && (
+            <RatingPickerModal
+              visible={ratingPickerModalVisible}
+              setRating={setRating}
+              close={setratingPickerModalVisible}
+            />
+          )}
+          {countryPickerModalVisible && (
+            <CountryPickerModal
+              visible={countryPickerModalVisible}
+              setNation={setNationality}
+              close={setcountryPickerModalVisible}
             />
           )}
           <SignupFooterComponent

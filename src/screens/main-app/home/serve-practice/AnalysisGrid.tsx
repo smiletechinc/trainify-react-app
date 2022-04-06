@@ -67,8 +67,10 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   const handleOnClickVideo = item => {
     // console.log('ColorID:', item.id);
     setSelectedID(item.id);
-    // console.log('selectedid is :', selectedID);
-    navigation.navigate('VideoPlayerContainer', { video: item });
+    console.log('selectedid is :', selectedID);
+    navigation.navigate('VideoPlayerContainer', {
+      video: item,
+    });
   };
 
   const onRefresh = () => {

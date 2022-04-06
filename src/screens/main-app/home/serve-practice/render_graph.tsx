@@ -14,6 +14,7 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 import {SafeAreaView} from 'react-navigation';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SCREEN_WIDTH} from '../../../../constants';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -103,94 +104,84 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   console.log('DataVictory.AGrade', data_victory.AGrade);
 
   return (
-    <SafeAreaView>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.navigationBar}>
-          <HeaderWithText
-            text="Graph Report"
-            navigation={navigation}
-            hideBackButton={false}
+    <ScreenWrapperWithHeader
+      title="Graph"
+      navigation={navigation}
+      route={route}>
+      <View style={styles.container}>
+        <View style={styles.pieContainer}>
+          <VictoryPie
+            animate={{
+              duration: 1000,
+            }}
+            padding={screenWidth / 3.9}
+            width={screenWidth}
+            height={screenHeight / 2}
+            colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
+            data={pie_data.data}
           />
         </View>
-        <View style={styles.container}>
-          <View style={styles.pieContainer}>
-            <VictoryPie
-              animate={{
-                duration: 1000,
-              }}
-              padding={screenWidth / 3.9}
-              width={screenWidth}
-              height={screenHeight / 2}
-              colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
-              data={pie_data.data}
-            />
-          </View>
-          <View style={{marginTop: -120}}>
-            <Text>Distibution of Serves Performed</Text>
-          </View>
-          <View style={styles.vectorContainer}>
-            <VictoryChart domainPadding={screenWidth / 4}>
-              <VictoryAxis
-                domain={{y: [0, 8]}}
-                dependentAxis
-                label={'Total Serves'}
-                style={{
-                  axisLabel: {paddingRight: 50, paddingLeft: 10},
-                }}></VictoryAxis>
-              <VictoryAxis label={'Type of Serve'}></VictoryAxis>
-              <VictoryGroup offset={screenWidth / 25}>
-                <VictoryBar
-                  animate={{
-                    duration: 2000,
-                  }}
-                  data={data_victory.AGrade}
-                  labels={({datum}) => datum.y}
-                  style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
-                <VictoryBar
-                  animate={{
-                    duration: 2000,
-                  }}
-                  data={data_victory.BGrade}
-                  labels={({datum}) => datum.y}
-                  style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
-                <VictoryBar
-                  animate={{
-                    duration: 2000,
-                  }}
-                  data={data_victory.CGrade}
-                  labels={({datum}) => datum.y}
-                  style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
-                <VictoryBar
-                  animate={{
-                    duration: 2000,
-                  }}
-                  data={data_victory.DGrade}
-                  labels={({datum}) => datum.y}
-                  style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
-                  labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
-              </VictoryGroup>
-              <VictoryLegend
-                x={Dimensions.get('screen').width / 30}
-                orientation={'horizontal'}
-                gutter={screenWidth / 25}
-                data={[
-                  {name: 'A Grade', symbol: {fill: 'blue'}},
-                  {name: 'B Grade', symbol: {fill: 'orange'}},
-                  {name: 'C Grade', symbol: {fill: 'red'}},
-                  {name: 'D Grade', symbol: {fill: 'green'}},
-                ]}></VictoryLegend>
-            </VictoryChart>
-          </View>
+        <View style={{marginTop: -120}}>
+          <Text>Distibution of Serves Performed</Text>
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+        <View style={styles.vectorContainer}>
+          <VictoryChart domainPadding={screenWidth / 4}>
+            <VictoryAxis
+              domain={{y: [0, 8]}}
+              dependentAxis
+              label={'Total Serves'}
+              style={{
+                axisLabel: {paddingRight: 50, paddingLeft: 10},
+              }}></VictoryAxis>
+            <VictoryAxis label={'Type of Serve'}></VictoryAxis>
+            <VictoryGroup offset={screenWidth / 25}>
+              <VictoryBar
+                animate={{
+                  duration: 2000,
+                }}
+                data={data_victory.AGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+              <VictoryBar
+                animate={{
+                  duration: 2000,
+                }}
+                data={data_victory.BGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+              <VictoryBar
+                animate={{
+                  duration: 2000,
+                }}
+                data={data_victory.CGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+              <VictoryBar
+                animate={{
+                  duration: 2000,
+                }}
+                data={data_victory.DGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+            </VictoryGroup>
+            <VictoryLegend
+              x={Dimensions.get('screen').width / 30}
+              orientation={'horizontal'}
+              gutter={screenWidth / 25}
+              data={[
+                {name: 'A Grade', symbol: {fill: 'blue'}},
+                {name: 'B Grade', symbol: {fill: 'orange'}},
+                {name: 'C Grade', symbol: {fill: 'red'}},
+                {name: 'D Grade', symbol: {fill: 'green'}},
+              ]}></VictoryLegend>
+          </VictoryChart>
+        </View>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 }
 

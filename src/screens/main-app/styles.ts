@@ -1,5 +1,5 @@
 import {StyleSheet, Platform} from 'react-native';
-import {COLORS, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
+import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
 
 const styles = StyleSheet.create({
   home_main_view: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    minHeight: 48,
+    minHeight: SCREEN_HEIGHT - 764,
     paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   practice_text: {
