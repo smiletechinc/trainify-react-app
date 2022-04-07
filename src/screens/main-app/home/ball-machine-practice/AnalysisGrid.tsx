@@ -1,12 +1,13 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {View, FlatList, Text} from 'react-native';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { View, FlatList, Text } from 'react-native';
 import styles from './analysis_screen_style';
-import {ListItem} from '../../../../components/grid/index';
+import { ListItem } from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
-import {fetchVideosService} from './../../../../services/servePracticeServices';
+import { fetchVideosService } from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import {SCREEN_WIDTH} from '../../../../constants';
+import { SCREEN_WIDTH } from '../../../../constants';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import { AuthContext } from '../../../../context/auth-context';
 
 type Props = {
   navigation: any;
@@ -17,11 +18,18 @@ type Props = {
 };
 
 const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
-  const {navigation, route, reduxColors, updated, add} = props;
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+  const { navigation, route, reduxColors, updated, add } = props;
   const [isFetching, setIsFetching] = useState(false);
   const [videos, setVideos] = useState(reduxColors);
   const [updatingColors, setUpdatingColors] = useState<boolean>(false);
   const [selectedID, setSelectedID] = useState();
+  const [filterValue, setFilterValue] = useState<string>("Daily");
   const [index, setIndex] = useState(0);
   const [flatListWidth, setFlatListWith] = useState(0);
   const [NumberOfColumns, setNumberOfColumns] = useState(0);
@@ -57,37 +65,73 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
     console.log('ColorID:', item.id);
     setSelectedID(item.id);
     console.log('selectedid is :', selectedID);
-    navigation.navigate('BallPracticeVideoPlayer', {video: item});
+    navigation.navigate('BallPracticeVideoPlayer', { video: item });
   };
 
   const onRefresh = () => {
     setIsFetching(!isFetching);
   };
 
-  const renderItem = ({item, index}) => {
-    if (item.id === selectedID) {
-      return (
-        <ListItem
-          video={item}
-          index={index + 1}
-          itemWidth={flatListWidth}
-          onPress={() => handleOnClickVideo(item)}
-        />
-      );
-    } else {
-      return (
-        <ListItem
-          video={item}
-          index={index + 1}
-          itemWidth={flatListWidth}
-          onPress={() => handleOnClickVideo(item)}
-        />
-      );
+  const renderItem = ({ item, index }) => {
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const firstDate = new Date(item.timestamp).getTime();
+    const secondDate = new Date().getTime();
+
+    const diffDays = Math.round(Math.abs((firstDate - secondDate) / (1000 * 60 * 60 * 24)));
+    // console.log(filterValue, item.createrId);
+    if (filterValue === "Daily") {
+      if (authObject.id === item.createrId && diffDays <= 1) {
+        //console.log('item: ', diffDays, item.timestamp);
+        return (
+          <ListItem
+            video={item}
+            index={index + 1}
+            itemWidth={flatListWidth}
+            onPress={() => handleOnClickVideo(item)}
+          />
+        );
+      }
     }
+    if (filterValue === "Weekly") {
+      if (authObject.id === item.createrId && diffDays <= 7) {
+        //console.log('item: ', diffDays, item.timestamp);
+        return (
+          <ListItem
+            video={item}
+            index={index + 1}
+            itemWidth={flatListWidth}
+            onPress={() => handleOnClickVideo(item)}
+          />
+        );
+      }
+    }
+    if (filterValue === "Monthly") {
+      if (authObject.id === item.createrId && diffDays <= 30) {
+        //console.log('item: ', diffDays, item.timestamp);
+        return (
+          <ListItem
+            video={item}
+            index={index + 1}
+            itemWidth={flatListWidth}
+            onPress={() => handleOnClickVideo(item)}
+          />
+        );
+      }
+    }
+    // else {
+    //   return (
+    //     <ListItem
+    //       video={item}
+    //       index={index + 1}
+    //       itemWidth={flatListWidth}
+    //       onPress={() => handleOnClickVideo(item)}
+    //     />
+    //   );
+    // }
   };
 
   const onLayout = event => {
-    const {x, y, height, width} = event.nativeEvent.layout;
+    const { x, y, height, width } = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
     setFlatListWith(width / NumberOfColumns);
   };
@@ -98,16 +142,17 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
       navigation={navigation}
       route={route}>
       <View style={styles.main_view}>
-        <View style={{marginTop: 32, justifyContent: 'center'}}>
+        <View style={{ marginTop: 32, justifyContent: 'center' }}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
             selectedIndex={index}
             onChange={event => {
+              setFilterValue(event.nativeEvent.value);
               setIndex(event.nativeEvent.selectedSegmentIndex);
             }}
             tintColor="#0096FF"
             backgroundColor="#D3D3D3"
-            style={{height: 32}}
+            style={{ height: 32 }}
           />
         </View>
         <View style={styles.flatcontainer}>

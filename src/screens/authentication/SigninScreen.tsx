@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -9,13 +9,13 @@ import {
   Alert,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {GooglePay} from 'react-native-google-pay';
-import {useDispatch, useSelector} from 'react-redux';
-import {setUserObject} from '../../redux/slices/AuthSlice';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { GooglePay } from 'react-native-google-pay';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserObject } from '../../redux/slices/AuthSlice';
 // Custom UI components.
-import {COLORS, SCREEN_WIDTH} from '../../constants';
-import {TextInput} from '../../global-components/input';
+import { COLORS, SCREEN_WIDTH } from '../../constants';
+import { TextInput } from '../../global-components/input';
 import SigninFooterComponent from './components/SigninFooterComponent';
 
 // Custom Styles
@@ -26,16 +26,16 @@ const signinMainImage = require('../../assets/images/signin-main-image.png');
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 import {
   signInService,
   getUserWithIdService,
 } from './../../services/authenticationServices';
-import {UserObject} from '../../types';
-import {AuthContext} from './../../context/auth-context';
-import {RootState} from '../../../store';
+import { UserObject } from '../../types';
+import { AuthContext } from './../../context/auth-context';
+import { RootState } from '../../../store';
 const backIcon = require('../../assets/images/back-icon.png');
 
 type Props = {
@@ -44,11 +44,11 @@ type Props = {
 };
 
 const SigninScreen: FunctionComponent<Props> = props => {
-  const {authUser, setAuthUser, setAuthObject} = React.useContext(AuthContext);
+  const { authUser, setAuthUser, setAuthObject } = React.useContext(AuthContext);
   // console.log('UserData: ', UserData);
-  const {navigation, route} = props;
-  const [email, setEmail] = useState<string>(''); // Testing@gmail.com
-  const [password, setPassword] = useState<string>(''); // 123456
+  const { navigation, route } = props;
+  const [email, setEmail] = useState<string>('test@gmail.com'); // Testing@gmail.com
+  const [password, setPassword] = useState<string>('123456'); // 123456
 
   const [loading, setLoading] = useState(false);
 
@@ -62,7 +62,7 @@ const SigninScreen: FunctionComponent<Props> = props => {
     dispatch(setUserObject(user));
     navigation.reset({
       index: 0,
-      routes: [{name: 'MainApp'}],
+      routes: [{ name: 'MainApp' }],
     });
     // navigation.navigate('MainApp');
   };
@@ -195,7 +195,7 @@ const SigninScreen: FunctionComponent<Props> = props => {
   return (
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView bounces={false}>
-        <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+        <View style={{ marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
           <AutoHeightImage
             source={signinMainImage}
             width={SCREEN_WIDTH * 0.76}
