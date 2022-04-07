@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -11,18 +11,18 @@ import {
   SafeAreaView,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {GooglePay} from 'react-native-google-pay';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { GooglePay } from 'react-native-google-pay';
 
 // Custom UI components.
-import {COLORS, SCREEN_WIDTH} from '../../constants';
+import { COLORS, SCREEN_WIDTH } from '../../constants';
 import AppUserItem from './components/AppUserItem';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
-import {SimpleButton} from '../../global-components/button';
-import {IconButton} from '../../components/buttons';
+import { SimpleButton } from '../../global-components/button';
+import { IconButton } from '../../components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
 import * as VideoThumbnails from 'expo-video-thumbnails';
@@ -42,8 +42,8 @@ const startIcon = require('./../../assets/images/icon_record_start.png');
 const stopIcon = require('./../../assets/images/icon_record_stop.png');
 const uploadAnimation = require('./../../assets/animations/uploading-animation.json');
 
-import {useMediaUpload} from '../../hooks/useMediaUpload';
-import {useAnalysisUpload} from '../../hooks';
+import { useMediaUpload } from '../../hooks/useMediaUpload';
+import { useAnalysisUpload } from '../../hooks';
 import HeaderWithText from '../../global-components/header/HeaderWithText';
 
 type Props = {
@@ -52,8 +52,9 @@ type Props = {
 };
 
 const UploadServeContainerHook: FunctionComponent<Props> = props => {
-  const {navigation, route} = props;
-  const {capturedVideoURI, graphData} = route.params;
+  const { navigation, route } = props;
+  const { capturedVideoURI, graphData, createrId } = route.params;
+  console.log(createrId);
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
   const [response, setResponse] = React.useState<any>(null);
   const [thumbnailData, setThumbnailData] = React.useState<any>(null);
@@ -72,14 +73,14 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
     currentStatus,
     uploadThumbnailFailure,
     uploadVideoFailure,
-  } = useMediaUpload({videoData: videoData});
+  } = useMediaUpload({ videoData: videoData });
 
   const {
     videoAnalysisData,
     uploadingAnalysis,
     addVideoAnalysisToFirebase,
     currentAnalysisStatus,
-  } = useAnalysisUpload({videoMetaData: videoMetaData});
+  } = useAnalysisUpload({ videoMetaData: videoMetaData });
 
   useEffect(() => {
     if (capturedVideoURI) {
@@ -122,6 +123,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
   }, [videoAnalysisData]);
 
   const proceedToUploadMetaData = async () => {
+    // console.log('user: ', createrId);
     var analysis_data = {
       labels: ['Flat', 'Kick', 'Slice'],
       legend: ['A', 'B', 'C', 'D'],
@@ -149,6 +151,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       thumbnailURL: thumbnailURL ? thumbnailURL : 'No url',
       width: 1280,
       analysisData: analysis_data,
+      createrId: createrId,
     };
     // Alert.alert('Adding metadata 1');
     addVideoAnalysisToFirebase(videoAnalysisData1, 'servePracticeVideos');
@@ -156,7 +159,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
 
   const proceedToUploadThumbnail = async () => {
     if (capturedVideoURI) {
-      const {uri} = await VideoThumbnails.getThumbnailAsync(capturedVideoURI, {
+      const { uri } = await VideoThumbnails.getThumbnailAsync(capturedVideoURI, {
         time: 200,
       });
       var last = uri.substring(uri.lastIndexOf('/') + 1, uri.length);
@@ -222,8 +225,8 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
                 {uploading
                   ? currentStatus
                   : uploadingAnalysis
-                  ? currentAnalysisStatus
-                  : false}
+                    ? currentAnalysisStatus
+                    : false}
               </Text>
               <Button
                 title={'Cancel upload'}

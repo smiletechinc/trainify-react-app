@@ -1,15 +1,16 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {View, FlatList, Text} from 'react-native';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { View, FlatList, Text } from 'react-native';
 import styles from './analysis_screen_style';
-import {connect, useDispatch} from 'react-redux';
-import {ListItem} from '../../../../components/grid/index';
+import { connect, useDispatch } from 'react-redux';
+import { ListItem } from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
-import {fetchVideosService} from './../../../../services/servePracticeServices';
+import { fetchVideosService } from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {SafeAreaView} from 'react-navigation';
-import {SCREEN_WIDTH} from '../../../../constants';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-navigation';
+import { SCREEN_WIDTH } from '../../../../constants';
+import { AuthContext } from '../../../../../src/context/auth-context';
 
 type Props = {
   navigation: any;
@@ -20,7 +21,13 @@ type Props = {
 };
 
 const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
-  const {navigation, route, reduxColors, updated, add} = props;
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+  const { navigation, route, reduxColors, updated, add } = props;
   const [isFetching, setIsFetching] = useState(false);
   const [videos, setVideos] = useState(reduxColors);
   const [updatingColors, setUpdatingColors] = useState<boolean>(false);
@@ -30,13 +37,13 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   const [NumberOfColumns, setNumberOfColumns] = useState(0);
 
   const fetchVideosFailure = colorsError => {
-    console.log('videosError: ', colorsError);
+    // console.log('videosError: ', colorsError);
   };
 
   const fetchVideosSuccess = videosData => {
-    console.log('videosData:', Object.values(videosData));
+    // console.log('videosData:', Object.values(videosData));
     const videos = Object.values(videosData);
-    console.log('videos ', videos);
+    // console.log('videos ', videos);
     setVideos(videos);
   };
 
@@ -49,6 +56,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   }, []);
 
   useEffect(() => {
+    console.log('here:.........');
     if (SCREEN_WIDTH <= 375) {
       setNumberOfColumns(2);
     } else {
@@ -57,7 +65,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   });
 
   const handleOnClickVideo = item => {
-    console.log('ColorID:', item.id);
+    // console.log('ColorID:', item.id);
     setSelectedID(item.id);
     console.log('selectedid is :', selectedID);
     navigation.navigate('VideoPlayerContainer', {
@@ -69,17 +77,9 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     setIsFetching(!isFetching);
   };
 
-  const renderItem = ({item, index}) => {
-    if (item.id === selectedID) {
-      return (
-        <ListItem
-          video={item}
-          index={index + 1}
-          itemWidth={flatListWidth}
-          onPress={() => handleOnClickVideo(item)}
-        />
-      );
-    } else {
+  const renderItem = ({ item, index }) => {
+    // console.log(item.createrId);
+    if (authObject.id === item.createrId) {
       return (
         <ListItem
           video={item}
@@ -89,11 +89,21 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
         />
       );
     }
+    // else {
+    //   return (
+    //     <ListItem
+    //       video={item}
+    //       index={index + 1}
+    //       itemWidth={flatListWidth}
+    //       onPress={() => handleOnClickVideo(item)}
+    //     />
+    //   );
+    // }
   };
 
   const onLayout = event => {
-    const {x, y, height, width} = event.nativeEvent.layout;
-    console.log('Dimensions : ', x, y, height, width);
+    const { x, y, height, width } = event.nativeEvent.layout;
+    //console.log('Dimensions : ', x, y, height, width);
     setFlatListWith(width / NumberOfColumns);
   };
 
@@ -107,7 +117,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
         <View style={styles.navigationBar}>
           <HeaderWithText text="Analysis Report" navigation={navigation} />
         </View>
-        <View style={{marginTop: 32, justifyContent: 'center'}}>
+        <View style={{ marginTop: 32, justifyContent: 'center' }}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
             selectedIndex={index}
@@ -116,7 +126,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
             }}
             tintColor="#0096FF"
             backgroundColor="#D3D3D3"
-            style={{height: 32}}
+            style={{ height: 32 }}
           />
         </View>
         <View style={styles.flatcontainer}>
