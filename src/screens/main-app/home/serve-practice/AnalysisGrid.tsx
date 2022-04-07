@@ -1,16 +1,17 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { View, FlatList, Text } from 'react-native';
+import React, {FunctionComponent, useEffect, useState} from 'react';
+import {View, FlatList, Text} from 'react-native';
 import styles from './analysis_screen_style';
-import { connect, useDispatch } from 'react-redux';
-import { ListItem } from '../../../../components/grid/index';
+import {connect, useDispatch} from 'react-redux';
+import {ListItem} from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
-import { fetchVideosService } from './../../../../services/servePracticeServices';
+import {fetchVideosService} from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView } from 'react-navigation';
-import { SCREEN_WIDTH } from '../../../../constants';
-import { AuthContext } from '../../../../../src/context/auth-context';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {SafeAreaView} from 'react-navigation';
+import {SCREEN_WIDTH} from '../../../../constants';
+import {AuthContext} from '../../../../../src/context/auth-context';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 type Props = {
   navigation: any;
@@ -27,7 +28,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     setAuthUser: setUser,
     logoutUser,
   } = React.useContext(AuthContext);
-  const { navigation, route, reduxColors, updated, add } = props;
+  const {navigation, route, reduxColors, updated, add} = props;
   const [isFetching, setIsFetching] = useState(false);
   const [videos, setVideos] = useState(reduxColors);
   const [updatingColors, setUpdatingColors] = useState<boolean>(false);
@@ -77,7 +78,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     setIsFetching(!isFetching);
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({item, index}) => {
     // console.log(item.createrId);
     if (authObject.id === item.createrId) {
       return (
@@ -102,22 +103,18 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   const onLayout = event => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const {x, y, height, width} = event.nativeEvent.layout;
     //console.log('Dimensions : ', x, y, height, width);
     setFlatListWith(width / NumberOfColumns);
   };
 
   return (
-    <SafeAreaView style={styles.main_view}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.navigationBar}>
-          <HeaderWithText text="Analysis Report" navigation={navigation} />
-        </View>
-        <View style={{ marginTop: 32, justifyContent: 'center' }}>
+    <ScreenWrapperWithHeader
+      title="Anaylsis Report"
+      navigation={navigation}
+      route={route}>
+      <View style={styles.main_view}>
+        <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
             selectedIndex={index}
@@ -126,7 +123,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
             }}
             tintColor="#0096FF"
             backgroundColor="#D3D3D3"
-            style={{ height: 32 }}
+            style={{height: 32}}
           />
         </View>
         <View style={styles.flatcontainer}>
@@ -151,8 +148,8 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
             />
           )}
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 export default ServePracticeAnalysisGridScreen;

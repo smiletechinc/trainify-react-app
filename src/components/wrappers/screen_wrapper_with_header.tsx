@@ -10,12 +10,13 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 type Props = {
   title?: string;
   navigation: any;
-  route: any;
+  route?: any;
   children?: any;
+  hideBackButton?: boolean;
 };
 
 const ScreenWrapperWithHeader: FunctionComponent<Props> = props => {
-  const {title, children, navigation} = props;
+  const {title, children, navigation, hideBackButton} = props;
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={{
@@ -23,7 +24,11 @@ const ScreenWrapperWithHeader: FunctionComponent<Props> = props => {
       }}
       showsVerticalScrollIndicator={false}>
       <View style={styles.header_view}>
-        <HeaderWithText text={title} navigation={navigation} />
+        <HeaderWithText
+          text={title}
+          navigation={navigation}
+          hideBackButton={hideBackButton}
+        />
       </View>
       <View>{children}</View>
     </KeyboardAwareScrollView>

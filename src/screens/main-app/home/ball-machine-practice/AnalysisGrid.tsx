@@ -1,15 +1,12 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {View, FlatList, Text} from 'react-native';
 import styles from './analysis_screen_style';
-import {connect, useDispatch} from 'react-redux';
 import {ListItem} from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
 import {fetchVideosService} from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {SafeAreaView} from 'react-navigation';
 import {SCREEN_WIDTH} from '../../../../constants';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 type Props = {
   navigation: any;
@@ -96,15 +93,11 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   return (
-    <SafeAreaView style={styles.main_view}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.navigationBar}>
-          <HeaderWithText text="Analysis Report" navigation={navigation} />
-        </View>
+    <ScreenWrapperWithHeader
+      title="Anaylsis Report"
+      navigation={navigation}
+      route={route}>
+      <View style={styles.main_view}>
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
@@ -134,13 +127,13 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
             <EmptyState
               heading="No videos to show"
               description="Please upload videos to be previewd"
-              buttonTitle="Add Video"
+              buttonTitle="Add COlor"
               onPress={handleOnClickVideo}
             />
           )}
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 export default BallPracitceAnalysisGridScreen;

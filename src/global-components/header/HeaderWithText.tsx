@@ -73,7 +73,10 @@ const HeaderWithText: FunctionComponent<Props> = props => {
         <TouchableOpacity
           style={{
             width: 40,
+            display: 'flex',
+            justifyContent: 'center',
             height: 40,
+            alignItems: 'flex-start',
           }}
           onPress={() => {
             navigation.goBack();

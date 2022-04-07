@@ -9,6 +9,7 @@ import {Text, TouchableOpacity, View, Image} from 'react-native';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
+import ScreenWrapperWithHeader from '../../../components/wrappers/screen_wrapper_with_header';
 
 const servePracticeImage = require('../../../assets/images/serve_icon.png');
 const practiceWithBall = require('../../../assets/images/ballMachine_icon.png');
@@ -24,15 +25,11 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
   }, []);
 
   return (
-    <View style={styles.home_main_view}>
-      <KeyboardAwareScrollView>
-        <View style={styles.navigationBar}>
-          <HeaderWithText
-            text={''}
-            navigation={navigation}
-            hideBackButton={true}
-          />
-        </View>
+    <ScreenWrapperWithHeader
+      title=""
+      navigation={navigation}
+      hideBackButton={true}>
+      <View style={styles.home_main_view}>
         <TouchableOpacity
           activeOpacity={0.8}
           delayPressIn={0}
@@ -88,8 +85,8 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             </View>
           </View>
         </TouchableOpacity>
-      </KeyboardAwareScrollView>
-    </View>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 

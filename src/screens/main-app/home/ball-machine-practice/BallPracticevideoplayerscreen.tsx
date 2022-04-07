@@ -12,6 +12,7 @@ import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import {SCREEN_WIDTH} from '../../../../constants';
 import {IconButton} from '../../../../components/buttons';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 const graphIcon = require('../../../../assets/images/graphIcon.png');
 
@@ -117,10 +118,7 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={styles.main_view}>
-        <HeaderWithText text={date} navigation={navigation} />
-      </View>
+    <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
       <View style={{height: 750, marginBottom: 64}}>
         <Video
           onEnd={onEnd}
@@ -152,7 +150,7 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
         />
         {renderGraphButton()}
       </View>
-    </SafeAreaView>
+    </ScreenWrapperWithHeader>
   );
 };
 

@@ -7,31 +7,28 @@ import globalStyles from '../../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from '../../../../context/auth-context';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 const recordIcon = require('../../../../assets/images/record_icon_image.png');
 const analysisIcon = require('../../../../assets/images/analysis_icon.png');
 
 type Props = {
   navigation: any;
+  route: any;
 };
 
-const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
+const BallPracticeContainer: FunctionComponent<Props> = ({
+  navigation,
+  route,
+}) => {
   const {authUser, setAuthUser} = React.useContext(AuthContext);
   const {playerstyle} = authUser ? authUser : '';
   return (
-    <SafeAreaView style={styles.main_view}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.navigationBar}>
-          <HeaderWithText
-            text="Ball Machine Practice"
-            navigation={navigation}
-          />
-        </View>
-
+    <ScreenWrapperWithHeader
+      title="Ball Machine Practice"
+      navigation={navigation}
+      route={route}>
+      <View style={styles.home_main_view}>
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
             <TouchableOpacity
@@ -71,7 +68,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{marginTop: 100}}>
+          <View style={{marginTop: 150}}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
@@ -147,8 +144,8 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 export default BallPracticeContainer;

@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT + 15 : 15,
+    paddingTop: Platform.OS === 'ios' ? 10  : 10,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
   },
   navigationBar: {
