@@ -36,28 +36,51 @@ const CountryPickerModal: FunctionComponent<Props> = props => {
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          <Text style={styles.modalText}>Select Country</Text>
           <CountryPicker
             InputFieldStyle={{
-              borderWidth: 2,
-              borderRadius: 10,
-              marginVertical: 8,
-              borderColor: '#008EC1',
+              borderWidth: 1,
+              marginTop: 8,
+              borderColor: 'gray',
+              flexDirection: 'row',
+              alignItems: 'center',
+              width: '100%',
+              paddingHorizontal: 6,
+              borderBottomWidth: 1,
             }}
             DropdownContainerStyle={{
-              borderColor: 'blue',
+              opacity: 10,
+              width: '100%',
+              // borderWidth: 0.5,
+              // borderTopWidth: 0,
+              // borderBottomWidth: 0.5,
+              minHeight: 250,
+              marginBottom: 8,
             }}
             DropdownRowStyle={{
-              borderColor: 'green',
+              flex: 1,
+              borderBottomWidth: 1,
+              borderBottomColor: 'gray',
+              justifyContent: 'flex-start',
+              paddingHorizontal: 7,
+              width: '100%',
             }}
-            Placeholder="choose country ..."
+            Placeholder="Search Country"
             DropdownCountryTextStyle={{
-              borderColor: 'purple',
-              fontSize: 16,
+              fontSize: 20,
+              marginVertical: 5,
+              width: '100%',
+              paddingStart: 15,
+              color: 'black',
             }}
             countryNameStyle={{
-              borderColor: 'yellow',
+              paddingVertical: 8,
+              fontSize: 18,
+              paddingStart: 10,
+              flex: 1,
+              color: 'black',
             }}
-            flagSize={24}
+            flagSize={32}
             selectedItem={handleSelection}
           />
           <Pressable
