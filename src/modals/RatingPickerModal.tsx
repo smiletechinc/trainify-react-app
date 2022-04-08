@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import styles from './styles';
 import RatingPicker from '../components/ratingPicker/RatingPicker';
+import ModalWrapper from '../components/wrappers/ModalWrapper';
 
 type Props = {
   visible: boolean;
@@ -22,14 +23,7 @@ type Props = {
 const RatingPickerModal: FunctionComponent<Props> = props => {
   const {visible, setRating, close} = props;
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-        close();
-      }}>
+    <ModalWrapper visible={visible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Select Rating</Text>
@@ -41,7 +35,7 @@ const RatingPickerModal: FunctionComponent<Props> = props => {
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

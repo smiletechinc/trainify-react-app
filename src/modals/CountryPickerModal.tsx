@@ -12,6 +12,7 @@ import {
   Pressable,
 } from 'react-native';
 import CountryPicker from 'rn-country-dropdown-picker';
+import ModalWrapper from '../components/wrappers/ModalWrapper';
 import styles from './styles';
 
 type Props = {
@@ -26,14 +27,7 @@ const CountryPickerModal: FunctionComponent<Props> = props => {
     console.log(e.country);
   }
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-        close();
-      }}>
+    <ModalWrapper visible={visible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Select Country</Text>
@@ -90,7 +84,7 @@ const CountryPickerModal: FunctionComponent<Props> = props => {
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

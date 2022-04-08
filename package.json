@@ -70,6 +70,7 @@
     "react-native-fs": "^2.19.0",
     "react-native-gesture-handler": "^2.1.0",
     "react-native-google-pay": "^2.1.0",
+    "react-native-google-place-picker": "^1.2.1",
     "react-native-iap": "^8.0.0",
     "react-native-image-picker": "^4.7.3",
     "react-native-keep-awake": "^4.0.0",

@@ -18,6 +18,7 @@ import {
   FeetHeightPickerModal,
   CountryPickerModal,
   RatingPickerModal,
+  LocationPickerModal,
 } from '../../modals';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
@@ -43,6 +44,8 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const [rating, setRating] = useState<string>('');
   const [nationality, setNationality] = useState<string>('');
   const [datepickermodalVisible, setDatePickerModalVisible] = useState(false);
+  const [loctaionPickerModalVisible, setLocationPickerModalVisible] =
+    useState(false);
   const [inchHeightPickerModalVisible, setinchHeightPickerModalVisible] =
     useState(false);
   const [ratingPickerModalVisible, setratingPickerModalVisible] =
@@ -330,6 +333,13 @@ const SignupContainer: FunctionComponent<Props> = props => {
               close={setfeetHeightPickerModalVisible}
             />
           )}
+          {/* {loctaionPickerModalVisible && (
+            <LocationPickerModal
+              visible={loctaionPickerModalVisible}
+              setLocation={setLocation}
+              close={setLocationPickerModalVisible}
+            />
+          )} */}
           {ratingPickerModalVisible && (
             <RatingPickerModal
               visible={ratingPickerModalVisible}
