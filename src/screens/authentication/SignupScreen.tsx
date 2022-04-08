@@ -59,6 +59,8 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
         password,
       };
 
+      Alert.alert('playerstyle', JSON.stringify(handStyle));
+
       navigation.navigate('SignupContainer', {signupObject, authObject});
     } else {
       Alert.alert('Trainify', 'Password and Confirm password does not match');

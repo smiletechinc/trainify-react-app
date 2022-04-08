@@ -1040,7 +1040,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         return item.name === 'nose';
       });
 
-      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+      if (rightWrist[0].x < rightElbow[0].x + 20 && skipFrameCount === 0) {
         // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
         increment();
         analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
@@ -1052,9 +1052,9 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         missTimeCounter = 0;
         rallyRunningFlag = true;
         setData(analysis_data.data);
-      } else if (rightWrist[0].x < rightElbow[0].x) {
+      } else if (leftWrist[0].x > leftElbow[0].x) {
         // console.log("I am here");
-        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+        if (rightWrist[0].x > rightElbow[0].x - 20 && skipFrameCount === 0) {
           increment();
           analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
           setIsMissed('');
@@ -1263,8 +1263,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       if (isCalibrated && !isCompletedRecording) {
         if (
           authObject &&
-          authObject.playerstyle &&
-          authObject.playerstyle === 'RightHanded'
+          authObject.handStyle &&
+          authObject.handStyle === 'RightHanded'
         ) {
           shotDetectionReturnRightHanded(poses);
         } else {

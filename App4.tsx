@@ -1057,10 +1057,10 @@ const App4: FunctionComponent<Props> = props => {
       var rightKnee = keypoints.filter(function (item: any) {
         return item.name === 'right_knee';
       });
-      var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
-      var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
+      var l_shoulder_angle2 = find_angle(leftHip, leftShoulder, leftElbow);
+      var r_hip_angle = find_angle(leftShoulder, leftHip, leftKnee);
 
-      if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+      if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         increment();
         skipFrameCount = skipFrameCount + 1;
         if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
@@ -1192,8 +1192,8 @@ const App4: FunctionComponent<Props> = props => {
       if (isCalibrated && !isCompletedRecording) {
         if (
           authObject &&
-          authObject.playerstyle &&
-          authObject.playerstyle === 'RightHanded'
+          authObject.handStyle &&
+          authObject.handStyle === 'RightHanded'
         ) {
           serveTypeDetectionthresholdRightHanded(poses);
         } else {
