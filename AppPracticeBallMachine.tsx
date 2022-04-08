@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
+import React, {useEffect, useState, useRef, FunctionComponent} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { Camera } from 'expo-camera';
+import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
 import * as posedetection from '@tensorflow-models/pose-detection';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -15,26 +15,26 @@ import {
   bundleResourceIO,
   cameraWithTensors,
 } from '@tensorflow/tfjs-react-native';
-import Svg, { Circle, Line } from 'react-native-svg';
-import { ExpoWebGLRenderingContext } from 'expo-gl';
-import { CameraType } from 'expo-camera/build/Camera.types';
-import { CounterContext } from './src/context/counter-context';
-import { addVideoService } from './src/services/servePracticeServices';
+import Svg, {Circle, Line} from 'react-native-svg';
+import {ExpoWebGLRenderingContext} from 'expo-gl';
+import {CameraType} from 'expo-camera/build/Camera.types';
+import {CounterContext} from './src/context/counter-context';
+import {addVideoService} from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
-import { IconButton } from './src/components/buttons';
+import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
 import * as VideoThumbnails from 'expo-video-thumbnails';
-import { useAnalysisUpload, useMediaUpload } from './src/hooks';
+import {useAnalysisUpload, useMediaUpload} from './src/hooks';
 import {
   uploadPhotoService,
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
-import { Countdown } from 'react-native-element-timer';
-import { AuthContext } from './src/context/auth-context';
+import {Countdown} from 'react-native-element-timer';
+import {AuthContext} from './src/context/auth-context';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -65,10 +65,10 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
-  const { navigation, route } = props;
-  const { title } = route.params;
+  const {navigation, route} = props;
+  const {title} = route.params;
   const [isLoading, setLoading] = React.useState(true);
-  const { increment, reset, count, calibrated, setCalibrated, setData, data } =
+  const {increment, reset, count, calibrated, setCalibrated, setData, data} =
     React.useContext(CounterContext);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -128,7 +128,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
       const curOrientation = await ScreenOrientation.getOrientationAsync();
       const model = posedetection.SupportedModels.BlazePose;
-      const detectorConfig = { runtime: 'tfjs', modelType: 'full' };
+      const detectorConfig = {runtime: 'tfjs', modelType: 'full'};
       const detector = await posedetection.createDetector(
         model,
         detectorConfig,
@@ -203,7 +203,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const startTimer = e => {
-    let { total, hours, minutes, seconds } = getTimeRemaining(e);
+    let {total, hours, minutes, seconds} = getTimeRemaining(e);
     if (total >= 0) {
       setSeconds(seconds);
     }
@@ -318,7 +318,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const startRecording = async () => {
-    await RecordScreen.startRecording({ mic: false })
+    await RecordScreen.startRecording({mic: false})
       .then(res => {
         setIsStartedVideoRecording(true);
         // console.log('Video recording started.');
@@ -931,7 +931,91 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     return angle;
   };
 
-  const shotDetectionReturn = (poses: any) => {
+  const shotDetectionReturnRightHanded = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+
+      var leftWrist = keypoints.filter(function (item: any) {
+        return item.name === 'left_wrist';
+      });
+
+      var rightWrist = keypoints.filter(function (item: any) {
+        return item.name === 'right_wrist';
+      });
+
+      var nose = keypoints.filter(function (item: any) {
+        return item.name === 'nose';
+      });
+
+      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+        // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
+        increment();
+        analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+        setIsMissed('');
+        skipFrameCount = skipFrameCount + 1;
+        console.log('Forehand Return');
+        isForehandMissed = true;
+        setServeType('Forehand Return');
+        missTimeCounter = 0;
+        rallyRunningFlag = true;
+        setData(analysis_data.data);
+      } else if (rightWrist[0].x < rightElbow[0].x) {
+        // console.log("I am here");
+        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+          increment();
+          analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          setIsMissed('');
+          skipFrameCount = skipFrameCount + 1;
+          console.log('Backhand Return');
+          isForehandMissed = false;
+          setServeType('Backhand Return');
+          missTimeCounter = 0;
+          rallyRunningFlag = true;
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
+        skipFrameCount = skipFrameCount + 1;
+        missTimeCounter = missTimeCounter + 1;
+      } else {
+        missTimeCounter = missTimeCounter + 1;
+        setServeType('Mid');
+        skipFrameCount = 0;
+        console.log('Mid');
+      }
+
+      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+        missed = missed + 1;
+        setIsMissed('Missed Detected');
+        if (isForehandMissed) {
+          // Setting missed detection
+          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+        } else {
+          // Setting missed detection
+          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+        }
+
+        // console.log("Missed: ", missed);
+        missTimeCounter = 0;
+        rallyRunningFlag = false;
+        setData(analysis_data.data);
+      }
+      console.log('Missed: ', missed);
+    }
+
+    console.log('ANALYSIS DATA: ', analysis_data.data);
+  };
+  const shotDetectionReturnLeftHanded = (poses: any) => {
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
@@ -1177,7 +1261,15 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        shotDetectionReturn(poses);
+        if (
+          authObject &&
+          authObject.playerstyle &&
+          authObject.playerstyle === 'RightHanded'
+        ) {
+          shotDetectionReturnRightHanded(poses);
+        } else {
+          shotDetectionReturnLeftHanded(poses);
+        }
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }
@@ -1239,7 +1331,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const onLayout = event => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
     cameraLayoutWidth = width;
     setCameraWidth(width);
@@ -1249,7 +1341,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <View style={{ marginTop: 10 }}>
+      <View style={{marginTop: 10}}>
         <HeaderWithText
           text={title}
           hideProfileSection={true}
@@ -1294,7 +1386,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
               onTimes={e => {
                 setRemainingTime(60 - e);
               }}
-              onPause={e => { }}
+              onPause={e => {}}
               onEnd={e => {
                 handleStopCamera();
               }}
