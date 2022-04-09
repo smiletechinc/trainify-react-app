@@ -22,6 +22,7 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 import {SCREEN_WIDTH} from '../../../../constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {IconButton} from '../../../../components/buttons';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 const graphIcon = require('../../../../assets/images/graphIcon.png');
 
@@ -46,6 +47,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const [paused, setPaused] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
   const [screenType, setScreenType] = useState('content');
+  const [date, setDate] = useState('');
 
   const onSeek = seek => {
     videoPlayer.current.seek(seek);
@@ -94,6 +96,8 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
     if (video) {
       console.log('video, ', video);
       console.log('Platform', Platform.OS);
+      const dateTimeArray = video.timestamp.split(',');
+      setDate(dateTimeArray[0]);
     }
   }, [video]);
 
@@ -125,10 +129,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={styles.main_view}>
-        <HeaderWithText text={video.name} navigation={navigation} />
-      </View>
+    <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
       <View style={{height: 750, marginBottom: 64}}>
         <Video
           onEnd={onEnd}
@@ -160,7 +161,7 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
         />
         {renderGraphButton()}
       </View>
-    </SafeAreaView>
+    </ScreenWrapperWithHeader>
   );
 };
 

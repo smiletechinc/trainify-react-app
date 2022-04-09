@@ -36,6 +36,7 @@ import {
 } from './src/services/mediaServices';
 import AnimatedLoader from 'react-native-animated-loader';
 import {Countdown} from 'react-native-element-timer';
+import {AuthContext} from './src/context/auth-context';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -60,6 +61,15 @@ type Props = {
 
 const App4: FunctionComponent<Props> = props => {
   // console.log('asasdasdasdasdasdasdasdasd:.........');
+  // const { _currentValue, authUser } = React.useContext(AuthContext);
+  // console.log('user: ', AuthContext._currentValue.authObject);
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
@@ -94,9 +104,6 @@ const App4: FunctionComponent<Props> = props => {
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  let response_let = {};
-  let thumbURL = '';
-  let vidURL = '';
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -168,6 +175,8 @@ const App4: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     return () => {
+      setTfReady(false);
+      setIsStartedVideoRecording(false);
       RecordScreen.clean();
       reset();
       setCalibrated(false);
@@ -264,6 +273,7 @@ const App4: FunctionComponent<Props> = props => {
                     navigation.navigate('UploadServeContainerHook', {
                       capturedVideoURI: url,
                       graphData: data,
+                      createrId: authObject.id,
                     });
                   } else {
                     Alert.alert('Video could not saved');
@@ -930,7 +940,7 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
-  const serveTypeDetectionthreshold = (poses: any) => {
+  const serveTypeDetectionthresholdRightHanded = (poses: any) => {
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
@@ -962,6 +972,94 @@ const App4: FunctionComponent<Props> = props => {
       var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
 
       if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+        increment();
+        skipFrameCount = skipFrameCount + 1;
+        if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
+          if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+            setServeGrade('A');
+            analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+          } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
+            setServeGrade('B');
+            analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
+            setServeGrade('C');
+            analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
+          }
+          setServeType('Flat');
+        } else if (r_hip_angle < 190 && r_hip_angle > 175) {
+          if (r_hip_angle < 185 && r_hip_angle > 181) {
+            setServeGrade('A');
+            analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
+          } else if (r_hip_angle < 187 && r_hip_angle > 179) {
+            setServeGrade('B');
+            analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
+          } else if (r_hip_angle < 188 && r_hip_angle > 177) {
+            setServeGrade('C');
+            analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
+          }
+          setServeType('Slice');
+        } else {
+          if (r_hip_angle > 170) {
+            setServeGrade('A');
+            analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          } else if (r_hip_angle > 167) {
+            setServeGrade('B');
+            analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          } else if (r_hip_angle > 164) {
+            setServeGrade('C');
+            analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
+          }
+          setServeType('Kick');
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+        skipFrameCount = skipFrameCount + 1;
+      } else {
+        skipFrameCount = 0;
+      }
+    }
+  };
+  const serveTypeDetectionthresholdLeftHanded = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+      var leftShoulder = keypoints.filter(function (item: any) {
+        return item.name === 'left_shoulder';
+      });
+      var rightShoulder = keypoints.filter(function (item: any) {
+        return item.name === 'right_shoulder';
+      });
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+      var rightHip = keypoints.filter(function (item: any) {
+        return item.name === 'right_hip';
+      });
+      var leftHip = keypoints.filter(function (item: any) {
+        return item.name === 'left_hip';
+      });
+      var leftKnee = keypoints.filter(function (item: any) {
+        return item.name === 'left_knee';
+      });
+      var rightKnee = keypoints.filter(function (item: any) {
+        return item.name === 'right_knee';
+      });
+      var l_shoulder_angle2 = find_angle(leftHip, leftShoulder, leftElbow);
+      var r_hip_angle = find_angle(leftShoulder, leftHip, leftKnee);
+
+      if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         increment();
         skipFrameCount = skipFrameCount + 1;
         if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
@@ -1091,7 +1189,15 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
+        if (
+          authObject &&
+          authObject.handStyle &&
+          authObject.handStyle === 'RightHanded'
+        ) {
+          serveTypeDetectionthresholdRightHanded(poses);
+        } else {
+          serveTypeDetectionthresholdLeftHanded(poses);
+        }
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }

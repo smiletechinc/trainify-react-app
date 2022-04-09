@@ -1,33 +1,25 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-  Image,
-  Platform,
-  Alert,
-} from 'react-native';
+import {Text, TouchableOpacity, View, Image, Alert} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
-import PlayingStyle from './components/YourPlayingStyle';
 import RadioButtonRN from 'radio-buttons-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
-
-import {StackActions, NavigationActions} from 'react-navigation';
 import {
-  signUpService,
-  signInService,
-  registerUserService,
-} from '../../services/authenticationServices';
-import {UserObject} from '../../types';
+  DatePickerModal,
+  InchHeightPickerModal,
+  FeetHeightPickerModal,
+  CountryPickerModal,
+  RatingPickerModal,
+  LocationPickerModal,
+} from '../../modals';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
@@ -45,12 +37,25 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const firstName = route.params.signupObject.firstName;
   const middleName = route.params.signupObject.middleName;
   const lastName = route.params.signupObject.lastName;
+
   const [gender, setGender] = useState<string>('');
-  const [height, setHeight] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [rating, setRating] = useState<string>('');
   const [nationality, setNationality] = useState<string>('');
+  const [datepickermodalVisible, setDatePickerModalVisible] = useState(false);
+  const [loctaionPickerModalVisible, setLocationPickerModalVisible] =
+    useState(false);
+  const [inchHeightPickerModalVisible, setinchHeightPickerModalVisible] =
+    useState(false);
+  const [ratingPickerModalVisible, setratingPickerModalVisible] =
+    useState(false);
+  const [feetHeightPickerModalVisible, setfeetHeightPickerModalVisible] =
+    useState(false);
+  const [countryPickerModalVisible, setcountryPickerModalVisible] =
+    useState(false);
+  const [inchHeight, setInchHeight] = useState('');
+  const [feetHeight, setFeetHeight] = useState('');
 
   const proceedForPayments = () => {
     const signupObject = {
@@ -59,22 +64,25 @@ const SignupContainer: FunctionComponent<Props> = props => {
       firstName,
       middleName,
       lastName,
-      height,
+      feetHeight,
+      inchHeight,
       birthday,
       location,
       rating,
       nationality,
       gender,
-      playerstyle: handStyle === 0 ? 'LeftHanded' : 'RightHanded',
+      handStyle,
     };
 
     const authObject = route.params.authObject;
 
     navigation.navigate('PaymentPlan', {signupObject, authObject});
   };
-
   const validateForInputs = () => {
-    if (height === '') {
+    if (feetHeight === '') {
+      return false;
+    }
+    if (inchHeight === '') {
       return false;
     }
     if (birthday === '') {
@@ -92,6 +100,9 @@ const SignupContainer: FunctionComponent<Props> = props => {
     return true;
   };
 
+  useEffect(() => {
+    Alert.alert(handStyle);
+  }, [route.params.signupObject.playerstyle]);
   const data = [
     {
       label: 'Male',
@@ -103,7 +114,6 @@ const SignupContainer: FunctionComponent<Props> = props => {
       label: 'Other',
     },
   ];
-
   return (
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView
@@ -169,28 +179,81 @@ const SignupContainer: FunctionComponent<Props> = props => {
               icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
             />
           </View>
-          <TextInput
-            value={height}
-            placeholder="Height"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setHeight(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
+          <View
+            style={{
+              width: SCREEN_WIDTH * 0.9,
+              paddingLeft: 8,
+              backgroundColor: COLORS.white,
+              marginTop: 16,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text
+              style={[
+                globalStyles.h1,
+                {
+                  color: COLORS.dark_black,
+                  marginTop: 16,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  paddingTop: 10,
+                },
+              ]}>
+              Height
+            </Text>
+            <TextInput
+              value={feetHeight}
+              placeholder="Feet"
+              placeholderTextColor={COLORS.dark_black}
+              // secureTextEntry={true}
+              onChangeText={(value: string) => {
+                setFeetHeight(value);
+              }}
+              editable={false}
+              onClick={() => {
+                setfeetHeightPickerModalVisible(true);
+              }}
+              inputStyles={{
+                fontWeight: 'bold',
+              }}
+              inputParentStyles={{
+                marginTop: 16,
+                width: 100,
+              }}
+            />
+            <TextInput
+              value={inchHeight}
+              placeholder="Inch"
+              editable={false}
+              placeholderTextColor={COLORS.dark_black}
+              // secureTextEntry={true}
+              onChangeText={(value: string) => {
+                setInchHeight(value);
+              }}
+              onClick={() => {
+                setinchHeightPickerModalVisible(true);
+              }}
+              inputStyles={{
+                fontWeight: 'bold',
+              }}
+              inputParentStyles={{
+                marginTop: 16,
+                width: 100,
+              }}
+            />
+          </View>
           <TextInput
             value={birthday}
             placeholder="Birthday"
             placeholderTextColor={COLORS.dark_black}
+            editable={false}
             // secureTextEntry={true}
             onChangeText={(value: string) => {
               setBirthday(value);
+            }}
+            onClick={() => {
+              setDatePickerModalVisible(true);
             }}
             inputStyles={{
               fontWeight: 'bold',
@@ -222,6 +285,10 @@ const SignupContainer: FunctionComponent<Props> = props => {
             onChangeText={(value: string) => {
               setRating(value);
             }}
+            editable={false}
+            onClick={() => {
+              setratingPickerModalVisible(true);
+            }}
             inputStyles={{
               fontWeight: 'bold',
             }}
@@ -237,6 +304,10 @@ const SignupContainer: FunctionComponent<Props> = props => {
             onChangeText={(value: string) => {
               setNationality(value);
             }}
+            editable={false}
+            onClick={() => {
+              setcountryPickerModalVisible(true);
+            }}
             inputStyles={{
               fontWeight: 'bold',
             }}
@@ -244,7 +315,48 @@ const SignupContainer: FunctionComponent<Props> = props => {
               marginTop: 29,
             }}
           />
-
+          {datepickermodalVisible && (
+            <DatePickerModal
+              visible={datepickermodalVisible}
+              setBirthday={setBirthday}
+              close={setDatePickerModalVisible}
+            />
+          )}
+          {inchHeightPickerModalVisible && (
+            <InchHeightPickerModal
+              visible={inchHeightPickerModalVisible}
+              setInch={setInchHeight}
+              close={setinchHeightPickerModalVisible}
+            />
+          )}
+          {feetHeightPickerModalVisible && (
+            <FeetHeightPickerModal
+              visible={feetHeightPickerModalVisible}
+              setFeet={setFeetHeight}
+              close={setfeetHeightPickerModalVisible}
+            />
+          )}
+          {/* {loctaionPickerModalVisible && (
+            <LocationPickerModal
+              visible={loctaionPickerModalVisible}
+              setLocation={setLocation}
+              close={setLocationPickerModalVisible}
+            />
+          )} */}
+          {ratingPickerModalVisible && (
+            <RatingPickerModal
+              visible={ratingPickerModalVisible}
+              setRating={setRating}
+              close={setratingPickerModalVisible}
+            />
+          )}
+          {countryPickerModalVisible && (
+            <CountryPickerModal
+              visible={countryPickerModalVisible}
+              setNation={setNationality}
+              close={setcountryPickerModalVisible}
+            />
+          )}
           <SignupFooterComponent
             navigation={navigation}
             isButtonDisabled={!validateForInputs()}

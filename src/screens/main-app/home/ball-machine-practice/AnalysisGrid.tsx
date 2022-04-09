@@ -1,15 +1,13 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {View, FlatList, Text} from 'react-native';
 import styles from './analysis_screen_style';
-import {connect, useDispatch} from 'react-redux';
 import {ListItem} from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
 import {fetchVideosService} from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {SafeAreaView} from 'react-navigation';
 import {SCREEN_WIDTH} from '../../../../constants';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {AuthContext} from '../../../../context/auth-context';
 
 type Props = {
   navigation: any;
@@ -20,11 +18,18 @@ type Props = {
 };
 
 const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
   const {navigation, route, reduxColors, updated, add} = props;
   const [isFetching, setIsFetching] = useState(false);
   const [videos, setVideos] = useState(reduxColors);
   const [updatingColors, setUpdatingColors] = useState<boolean>(false);
   const [selectedID, setSelectedID] = useState();
+  const [filterValue, setFilterValue] = useState<string>('Daily');
   const [index, setIndex] = useState(0);
   const [flatListWidth, setFlatListWith] = useState(0);
   const [NumberOfColumns, setNumberOfColumns] = useState(0);
@@ -63,29 +68,50 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
     navigation.navigate('BallPracticeVideoPlayer', {video: item});
   };
 
-  const onRefresh = () => {
-    setIsFetching(!isFetching);
-  };
-
   const renderItem = ({item, index}) => {
-    if (item.id === selectedID) {
-      return (
-        <ListItem
-          video={item}
-          index={index + 1}
-          itemWidth={flatListWidth}
-          onPress={() => handleOnClickVideo(item)}
-        />
-      );
-    } else {
-      return (
-        <ListItem
-          video={item}
-          index={index + 1}
-          itemWidth={flatListWidth}
-          onPress={() => handleOnClickVideo(item)}
-        />
-      );
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const firstDate = new Date(item.timestamp).getTime();
+    const secondDate = new Date().getTime();
+
+    const diffDays = Math.round(
+      Math.abs((firstDate - secondDate) / (1000 * 60 * 60 * 24)),
+    );
+    // console.log(filterValue, item.createrId);
+    if (filterValue === 'Daily') {
+      if (authObject && authObject.id === item.createrId && diffDays <= 1) {
+        return (
+          <ListItem
+            video={item}
+            index={index + 1}
+            itemWidth={flatListWidth}
+            onPress={() => handleOnClickVideo(item)}
+          />
+        );
+      }
+    }
+    if (filterValue === 'Weekly') {
+      if (authObject && authObject.id === item.createrId && diffDays <= 7) {
+        return (
+          <ListItem
+            video={item}
+            index={index + 1}
+            itemWidth={flatListWidth}
+            onPress={() => handleOnClickVideo(item)}
+          />
+        );
+      }
+    }
+    if (filterValue === 'Monthly') {
+      if (authObject && authObject.id === item.createrId && diffDays <= 30) {
+        return (
+          <ListItem
+            video={item}
+            index={index + 1}
+            itemWidth={flatListWidth}
+            onPress={() => handleOnClickVideo(item)}
+          />
+        );
+      }
     }
   };
 
@@ -96,20 +122,17 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   return (
-    <SafeAreaView style={styles.main_view}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.navigationBar}>
-          <HeaderWithText text="Analysis Report" navigation={navigation} />
-        </View>
+    <ScreenWrapperWithHeader
+      title="Anaylsis Report"
+      navigation={navigation}
+      route={route}>
+      <View style={styles.main_view}>
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
             selectedIndex={index}
             onChange={event => {
+              setFilterValue(event.nativeEvent.value);
               setIndex(event.nativeEvent.selectedSegmentIndex);
             }}
             tintColor="#0096FF"
@@ -134,13 +157,13 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
             <EmptyState
               heading="No videos to show"
               description="Please upload videos to be previewd"
-              buttonTitle="Add Video"
+              buttonTitle="Add COlor"
               onPress={handleOnClickVideo}
             />
           )}
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 export default BallPracitceAnalysisGridScreen;
