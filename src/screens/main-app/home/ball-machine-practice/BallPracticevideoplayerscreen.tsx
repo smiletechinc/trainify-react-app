@@ -1,18 +1,8 @@
-// React Native Video Library to Play Video in Android and IOS
-// https://aboutreact.com/react-native-video/
-
 // import React in our code
 import React, {useState, useRef, useEffect} from 'react';
 
 // import all the components we are going to use
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Alert,
-  Platform,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, Platform} from 'react-native';
 
 // Import React Native Video to play video
 import Video from 'react-native-video';
@@ -21,6 +11,9 @@ import Video from 'react-native-video';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 import {SCREEN_WIDTH} from '../../../../constants';
+import {IconButton} from '../../../../components/buttons';
+
+const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const BallPracticeVideoPlayer = ({navigation, route}) => {
   const {video} = route.params;
@@ -45,24 +38,20 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   const [screenType, setScreenType] = useState('content');
 
   const onSeek = seek => {
-    //Handler for change in seekbar
     videoPlayer.current.seek(seek);
   };
 
   const onPaused = playerState => {
-    //Handler for Video Pause
     setPaused(!paused);
     setPlayerState(playerState);
   };
 
   const onReplay = () => {
-    //Handler for Replay
     setPlayerState(PLAYER_STATES.PLAYING);
     videoPlayer.current.seek(0);
   };
 
   const onProgress = data => {
-    // Video Player will progress continue even if it ends
     if (!isLoading && playerState !== PLAYER_STATES.ENDED) {
       setCurrentTime(data.currentTime);
     }
@@ -113,10 +102,13 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
 
   const renderGraphButton = () => {
     return (
-      <SafeAreaView
-        style={styles.cameraTypeSwitcher}
-        onTouchEnd={handleShowGraphButton}>
-        <Text>Show graph</Text>
+      <SafeAreaView>
+        <IconButton
+          styles={styles.recordIcon}
+          icon={graphIcon}
+          onPress={handleShowGraphButton}
+          transparent={true}
+        />
       </SafeAreaView>
     );
   };
@@ -173,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
     minHeight: 48,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   toolbar: {
     marginTop: 30,
@@ -187,7 +179,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   cameraTypeSwitcher: {
@@ -199,6 +191,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(240, 230, 230, .9)',
     borderRadius: 6,
     padding: 8,
+    zIndex: 100,
+  },
+  recordIcon: {
+    width: 60,
+    height: 40,
+    borderStyle: 'solid',
+    borderWidth: 2,
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .9)',
+    borderColor: '#008EC1',
+    borderRadius: 6,
     zIndex: 100,
   },
 });

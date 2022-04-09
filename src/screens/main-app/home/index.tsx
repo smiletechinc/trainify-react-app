@@ -1,8 +1,11 @@
 import React, {FunctionComponent, useEffect} from 'react';
-import {Text, TouchableOpacity, View, Image} from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import {SCREEN_WIDTH} from '../../../constants';
+import Header from '../../../global-components/header';
 import styles from '../styles';
+import globalStyles from '../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Text, TouchableOpacity, View, Image} from 'react-native';
 import HeaderWithText from '../../../global-components/header/HeaderWithText';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
@@ -23,11 +26,13 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
   return (
     <View style={styles.home_main_view}>
       <KeyboardAwareScrollView>
-        <HeaderWithText
-          text={''}
-          navigation={navigation}
-          hideBackButton={true}
-        />
+        <View style={styles.navigationBar}>
+          <HeaderWithText
+            text={''}
+            navigation={navigation}
+            hideBackButton={true}
+          />
+        </View>
         <TouchableOpacity
           activeOpacity={0.8}
           delayPressIn={0}
@@ -35,10 +40,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 100,
           }}
           onPress={() => {
-            RecordScreen.stopRecording().then(response => {
-              const url = response.result.outputURL;
-              CameraRoll.save(url, {type: 'video'});
-            });
+            RecordScreen.stopRecording();
             navigation.navigate('ServePracticeHomeScreen');
           }}>
           <View
@@ -65,10 +67,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             marginTop: 50,
           }}
           onPress={() => {
-            RecordScreen.stopRecording().then(response => {
-              const url = response.result.outputURL;
-              CameraRoll.save(url, {type: 'video'});
-            });
+            RecordScreen.stopRecording();
             navigation.navigate('BallMachinePracticeHomeScreen');
           }}>
           <View

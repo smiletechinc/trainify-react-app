@@ -1,23 +1,6 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-  Image,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import AutoHeightImage from 'react-native-auto-height-image';
-import RecordScreen from 'react-native-record-screen';
-
-import {
-  COLORS,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-  STATUS_BAR_HEIGHT,
-} from '../../../../constants';
+import React, {FunctionComponent} from 'react';
+import {Text, TouchableOpacity, View, Image} from 'react-native';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-// import VideoRecorder from 'react-native-beautiful-video-recorder';
 
 import styles from '../../styles';
 import globalStyles from '../../../../global-styles';
@@ -35,31 +18,6 @@ type Props = {
 const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
   const {authUser, setAuthUser} = React.useContext(AuthContext);
   const {playerstyle} = authUser ? authUser : '';
-  const startRecording = () => {
-    RecordScreen.startRecording({mic: false}).catch(error =>
-      console.error(error),
-    );
-  };
-  const stopRecording = async () => {
-    const res = await RecordScreen.stopRecording().catch(error =>
-      console.warn(error),
-    );
-    if (res) {
-      const url = res.result.outputURL;
-      console.log('Recording detials:', JSON.stringify(res));
-      console.log('REOCORDING STOPPED: ', url);
-    }
-  };
-  // const navigation = useNavigation();
-  useEffect(() => {});
-  // const start = () => {
-  //   // 30 seconds
-  //   setShowVideoRecorder(true);
-  //   videoRecorder.open({ maxLength: 5 },(data) => {
-  //     console.log('captured data', data);
-  //   });
-  // }
-
   return (
     <SafeAreaView style={styles.main_view}>
       <KeyboardAwareScrollView
@@ -67,7 +25,12 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Ball Machine Practice" navigation={navigation} />
+        <View style={styles.navigationBar}>
+          <HeaderWithText
+            text="Ball Machine Practice"
+            navigation={navigation}
+          />
+        </View>
 
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
@@ -81,7 +44,6 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               }}>
               <View
                 style={{
-                  // borderStyle: 'solid',
                   borderWidth: 2,
                   borderRadius: 30,
                   backgroundColor: '#EB5757',
@@ -120,7 +82,6 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               }}>
               <View
                 style={{
-                  // borderStyle: 'solid',
                   borderWidth: 2,
                   borderRadius: 30,
                   backgroundColor: '#EB5757',
@@ -160,7 +121,6 @@ const BallPracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             }}>
             <View
               style={{
-                // borderStyle: 'solid',
                 borderWidth: 2,
                 borderRadius: 30,
                 backgroundColor: '#F2994A',

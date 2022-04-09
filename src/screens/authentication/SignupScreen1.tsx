@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -15,7 +15,8 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
 import PlayingStyle from './components/YourPlayingStyle';
-
+import RadioButtonRN from 'radio-buttons-react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
@@ -25,7 +26,7 @@ import {
   signUpService,
   signInService,
   registerUserService,
-} from './../../services/authenticationServices';
+} from '../../services/authenticationServices';
 import {UserObject} from '../../types';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
@@ -33,56 +34,75 @@ const backIcon = require('../../assets/images/back-icon.png');
 
 type Props = {
   navigation: any;
+  route: any;
 };
-const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [handStyle, setHandStyle] = useState<number>(0);
-  const [firstName, setFirstName] = useState<string>('');
-  const [middleName, setMiddleName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
+const SignupContainer: FunctionComponent<Props> = props => {
+  const {navigation, route} = props;
 
-  const navigtaionNext = () => {
-    if (password === confirmPassword) {
-      const signupObject = {
-        email,
-        password,
-        firstName,
-        middleName,
-        lastName,
-        playerstyle: handStyle === 0 ? 'LeftHanded' : 'RightHanded',
-      };
+  const email = route.params.signupObject.email;
+  const password = route.params.signupObject.password;
+  const handStyle = route.params.signupObject.playerstyle;
+  const firstName = route.params.signupObject.firstName;
+  const middleName = route.params.signupObject.middleName;
+  const lastName = route.params.signupObject.lastName;
+  const [gender, setGender] = useState<string>('');
+  const [height, setHeight] = useState<string>('');
+  const [birthday, setBirthday] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
+  const [rating, setRating] = useState<string>('');
+  const [nationality, setNationality] = useState<string>('');
 
-      const authObject = {
-        email,
-        password,
-      };
+  const proceedForPayments = () => {
+    const signupObject = {
+      email,
+      password,
+      firstName,
+      middleName,
+      lastName,
+      height,
+      birthday,
+      location,
+      rating,
+      nationality,
+      gender,
+      playerstyle: handStyle === 0 ? 'LeftHanded' : 'RightHanded',
+    };
 
-      navigation.navigate('SignupContainer', {signupObject, authObject});
-    } else {
-      Alert.alert('Trainify', 'Password and Confirm password does not match');
-    }
+    const authObject = route.params.authObject;
+
+    navigation.navigate('PaymentPlan', {signupObject, authObject});
   };
 
   const validateForInputs = () => {
-    if (email === '') {
+    if (height === '') {
       return false;
     }
-    if (password === '') {
+    if (birthday === '') {
       return false;
     }
-    if (confirmPassword === '') {
+    if (location === '') {
       return false;
     }
-    if (firstName === '') {
+    if (rating === '') {
       return false;
     }
-    if (lastName === '') {
+    if (nationality === '') {
       return false;
     }
     return true;
   };
+
+  const data = [
+    {
+      label: 'Male',
+    },
+    {
+      label: 'Female',
+    },
+    {
+      label: 'Other',
+    },
+  ];
 
   return (
     <View style={styles.login_main_container}>
@@ -112,59 +132,50 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
             ]}>
             SIGN UP
           </Text>
+          <View
+            style={{
+              width: SCREEN_WIDTH * 0.9,
+              paddingLeft: 8,
+              backgroundColor: COLORS.white,
+              marginTop: 8,
+            }}>
+            <Text
+              style={[
+                globalStyles.h1,
+                {color: COLORS.dark_black, marginTop: 16, fontWeight: 'bold'},
+              ]}>
+              Gender
+            </Text>
+            <RadioButtonRN
+              data={data}
+              box={false}
+              selectedBtn={e => setGender(e)}
+              animationTypes={['shake']}
+              style={{
+                borderStyle: 'solid',
+
+                marginLeft: 0,
+                display: 'flex',
+                flexDirection: 'row',
+              }}
+              boxStyle={{
+                dipslay: 'flex',
+                flexDirection: 'row',
+                width: 120,
+                justifyContent: 'space-around',
+                borderStyle: 'solid',
+              }}
+              textStyle={styles.textStyle}
+              icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
+            />
+          </View>
           <TextInput
-            value={email}
-            placeholder="Email"
-            placeholderTextColor={COLORS.dark_black}
-            keyboardType="email-address"
-            onChangeText={(value: string) => {
-              setEmail(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 42,
-            }}
-          />
-          <TextInput
-            value={password}
-            placeholder="Password"
-            placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setPassword(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <TextInput
-            value={confirmPassword}
-            placeholder="Confirm Password"
-            placeholderTextColor={COLORS.dark_black}
-            secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setConfirmPassword(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <PlayingStyle handStyle={handStyle} setHandStyle={setHandStyle} />
-          <TextInput
-            value={firstName}
-            placeholder="First name"
+            value={height}
+            placeholder="Height"
             placeholderTextColor={COLORS.dark_black}
             // secureTextEntry={true}
             onChangeText={(value: string) => {
-              setFirstName(value);
+              setHeight(value);
             }}
             inputStyles={{
               fontWeight: 'bold',
@@ -174,12 +185,12 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
             }}
           />
           <TextInput
-            value={middleName}
-            placeholder="Middle name"
+            value={birthday}
+            placeholder="Birthday"
             placeholderTextColor={COLORS.dark_black}
             // secureTextEntry={true}
             onChangeText={(value: string) => {
-              setMiddleName(value);
+              setBirthday(value);
             }}
             inputStyles={{
               fontWeight: 'bold',
@@ -189,12 +200,12 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
             }}
           />
           <TextInput
-            value={lastName}
-            placeholder="Last name"
+            value={location}
+            placeholder="Location"
             placeholderTextColor={COLORS.dark_black}
             // secureTextEntry={true}
             onChangeText={(value: string) => {
-              setLastName(value);
+              setLocation(value);
             }}
             inputStyles={{
               fontWeight: 'bold',
@@ -203,15 +214,45 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               marginTop: 29,
             }}
           />
+          <TextInput
+            value={rating}
+            placeholder="Rating"
+            placeholderTextColor={COLORS.dark_black}
+            // secureTextEntry={true}
+            onChangeText={(value: string) => {
+              setRating(value);
+            }}
+            inputStyles={{
+              fontWeight: 'bold',
+            }}
+            inputParentStyles={{
+              marginTop: 29,
+            }}
+          />
+          <TextInput
+            value={nationality}
+            placeholder="Nationality"
+            placeholderTextColor={COLORS.dark_black}
+            // secureTextEntry={true}
+            onChangeText={(value: string) => {
+              setNationality(value);
+            }}
+            inputStyles={{
+              fontWeight: 'bold',
+            }}
+            inputParentStyles={{
+              marginTop: 29,
+            }}
+          />
+
           <SignupFooterComponent
             navigation={navigation}
             isButtonDisabled={!validateForInputs()}
-            // onPress={proceedToSignup}
-            onPress={navigtaionNext}
+            onPress={proceedForPayments}
           />
         </View>
       </KeyboardAwareScrollView>
     </View>
   );
 };
-export default SignupScreen;
+export default SignupContainer;

@@ -73,10 +73,6 @@ const SplashScreenContainer: FunctionComponent<Props> = ({navigation}) => {
         }}>
         <Image source={logo} style={{width: 268, height: 86}} />
       </View>
-
-      {/* <View style={{flexDirecton: 'row', alignItems: 'flex-end'}}>
-        <Image source={splashScreen} style={{width: '100%', height: 331,}}/>
-      </View> */}
     </View>
   );
 };

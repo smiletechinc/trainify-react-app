@@ -67,11 +67,12 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
     setIsFetching(!isFetching);
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     if (item.id === selectedID) {
       return (
         <ListItem
           video={item}
+          index={index + 1}
           itemWidth={flatListWidth}
           onPress={() => handleOnClickVideo(item)}
         />
@@ -80,6 +81,7 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
       return (
         <ListItem
           video={item}
+          index={index + 1}
           itemWidth={flatListWidth}
           onPress={() => handleOnClickVideo(item)}
         />
@@ -100,7 +102,9 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
           paddingBottom: 20,
         }}
         showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Analysis Report" navigation={navigation} />
+        <View style={styles.navigationBar}>
+          <HeaderWithText text="Analysis Report" navigation={navigation} />
+        </View>
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}

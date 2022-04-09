@@ -26,7 +26,7 @@ type Props = {
 };
 const HeaderWithText: FunctionComponent<Props> = props => {
   // const navigation = useNavigation();
-  const [userLastName, setUserLastName] = useState('User');
+  const [userFirstName, setuserFirstName] = useState('User');
   const UserData = useSelector(
     (state: RootState) => state.RegisterReducer.UserData,
   );
@@ -42,8 +42,8 @@ const HeaderWithText: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (authObject) {
       console.log('authObject ', authObject);
-      const {lastName} = authObject;
-      setUserLastName(lastName);
+      const {firstName} = authObject;
+      setuserFirstName(firstName);
     }
     if (authUser) {
       console.log('authUser ', authUser);
@@ -64,7 +64,7 @@ const HeaderWithText: FunctionComponent<Props> = props => {
   const proceedToLogout = () => {
     logoutUser();
     Alert.alert('You are logged out');
-    navigation.replace('LanguageScreen');
+    navigation.replace('Signin');
   };
 
   return (
@@ -94,7 +94,7 @@ const HeaderWithText: FunctionComponent<Props> = props => {
             globalStyles.medium,
             {color: COLORS.light_blue, fontWeight: '600'},
           ]}>
-          {userLastName}
+          {userFirstName}
         </Text>
         <Image source={profileIcon} style={styles.header_profile_icon} />
       </TouchableOpacity>

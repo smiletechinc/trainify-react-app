@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   login_back_icon: {
     width: 32,
     height: 32,
+    marginTop: 8
   },
   login_forgot_view: {
     flexDirection: 'row',
@@ -82,6 +83,17 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-
+  textStyle: {
+    marginLeft: 8,
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  boxStyle: {
+    flexDirection: 'row',
+    width: 120,
+    justifyContent: 'space-around',
+    borderStyle: 'solid',
+  },
+  
 });
 export default styles;

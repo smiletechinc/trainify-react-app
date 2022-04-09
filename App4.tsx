@@ -59,6 +59,7 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
+  // console.log('asasdasdasdasdasdasdasdasd:.........');
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
@@ -253,18 +254,29 @@ const App4: FunctionComponent<Props> = props => {
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
             try {
-              const response = await CameraRoll.save(url);
-              if (response) {
-                setIsRecordingInProgress(false);
-                console.log('Recording saved successfuly.');
-                setVideoURI(url);
-                navigation.navigate('UploadServeContainerHook', {
-                  capturedVideoURI: url,
-                  graphData: data,
+              const response = await CameraRoll.save(url)
+                .then(promise => {
+                  console.log('promise: ', promise);
+                  if (promise) {
+                    setIsRecordingInProgress(false);
+                    console.log('Recording saved successfuly.');
+                    setVideoURI(url);
+                    navigation.navigate('UploadServeContainerHook', {
+                      capturedVideoURI: url,
+                      graphData: data,
+                    });
+                  } else {
+                    Alert.alert('Video could not saved');
+                  }
+                })
+                .catch(e => {
+                  // console.log('error:........................................ ', e);
+                  Alert.alert(
+                    'Sorry! This operation cannot be performed without permission',
+                    'Allow the permissions in the settings to continue',
+                  );
+                  navigation.goBack();
                 });
-              } else {
-                Alert.alert('Video could not saved');
-              }
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
             }
@@ -307,12 +319,17 @@ const App4: FunctionComponent<Props> = props => {
     await RecordScreen.startRecording({mic: false})
       .then(res => {
         setIsStartedVideoRecording(true);
-        console.log('Video recording started.');
+        // console.log('Video recording started.');
         countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
+        Alert.alert(
+          'Sorry! Recording cannot be start at the moment',
+          'Plese check your permissions in the settings',
+        );
         console.log('Video recording could not started.');
+        navigation.goBack();
       });
   };
 
@@ -1142,11 +1159,13 @@ const App4: FunctionComponent<Props> = props => {
   };
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <HeaderWithText
-        text={title}
-        hideProfileSection={true}
-        navigation={navigation}
-      />
+      <View style={{marginTop: 10}}>
+        <HeaderWithText
+          text={title}
+          hideProfileSection={true}
+          navigation={navigation}
+        />
+      </View>
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady ? (
