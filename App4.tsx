@@ -104,9 +104,6 @@ const App4: FunctionComponent<Props> = props => {
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  let response_let = {};
-  let thumbURL = '';
-  let vidURL = '';
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -178,6 +175,8 @@ const App4: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     return () => {
+      setTfReady(false);
+      setIsStartedVideoRecording(false);
       RecordScreen.clean();
       reset();
       setCalibrated(false);
