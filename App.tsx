@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
+import type { Node } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -20,8 +20,9 @@ import {
 import AppContainer from './src/navigations';
 import { AuthContextProvider } from './src/context/auth-context';
 import { CounterContextProvider } from './src/context/counter-context';
-import {store} from './store';
-import {Provider} from 'react-redux';
+import { PermissionsContextProvider } from './src/context/permissions-context';
+import { store } from './store';
+import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 
@@ -32,10 +33,12 @@ const App: () => Node = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <AuthContextProvider>
             <CounterContextProvider>
-              <AppContainer />
+              <PermissionsContextProvider>
+                <AppContainer />
+              </PermissionsContextProvider>
             </CounterContextProvider>
           </AuthContextProvider>
         </View>
