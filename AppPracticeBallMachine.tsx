@@ -34,6 +34,7 @@ import {
   getThumbnailURL,
 } from './src/services/mediaServices';
 import {Countdown} from 'react-native-element-timer';
+import {AuthContext} from './src/context/auth-context';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const TensorCamera = cameraWithTensors(Camera);
@@ -55,6 +56,12 @@ type Props = {
 };
 
 const TensorCameraContainer: FunctionComponent<Props> = props => {
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
@@ -167,6 +174,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     return () => {
+      setTfReady(false);
+      setIsStartedVideoRecording(false);
       RecordScreen.clean();
       reset();
       setCalibrated(false);
@@ -258,6 +267,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
                     navigation.navigate('UploadBallMachineContainerHook', {
                       capturedVideoURI: url,
                       graphData: data,
+                      createrId: authObject.id,
                     });
                   } else {
                     Alert.alert('Video could not saved');
@@ -923,7 +933,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     return angle;
   };
 
-  const shotDetectionReturn = (poses: any) => {
+  const shotDetectionReturnRightHanded = (poses: any) => {
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
@@ -948,7 +958,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         return item.name === 'nose';
       });
 
-      if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+      if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
         // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
         increment();
         analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
@@ -960,9 +970,93 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         missTimeCounter = 0;
         rallyRunningFlag = true;
         setData(analysis_data.data);
-      } else if (rightWrist[0].x < rightElbow[0].x) {
+      } else if (rightWrist[0].x > rightElbow[0].x) {
         // console.log("I am here");
-        if (leftWrist[0].x < leftElbow[0].x - 20 && skipFrameCount === 0) {
+        if (leftWrist[0].x > leftElbow[0].x + 20 && skipFrameCount === 0) {
+          increment();
+          analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          setIsMissed('');
+          skipFrameCount = skipFrameCount + 1;
+          console.log('Backhand Return');
+          isForehandMissed = false;
+          setServeType('Backhand Return');
+          missTimeCounter = 0;
+          rallyRunningFlag = true;
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < frames_to_skip) {
+        skipFrameCount = skipFrameCount + 1;
+        missTimeCounter = missTimeCounter + 1;
+      } else {
+        missTimeCounter = missTimeCounter + 1;
+        setServeType('Mid');
+        skipFrameCount = 0;
+        console.log('Mid');
+      }
+
+      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+        missed = missed + 1;
+        setIsMissed('Missed Detected');
+        if (isForehandMissed) {
+          // Setting missed detection
+          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+        } else {
+          // Setting missed detection
+          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+        }
+
+        // console.log("Missed: ", missed);
+        missTimeCounter = 0;
+        rallyRunningFlag = false;
+        setData(analysis_data.data);
+      }
+      console.log('Missed: ', missed);
+    }
+
+    console.log('ANALYSIS DATA: ', analysis_data.data);
+  };
+  const shotDetectionReturnLeftHanded = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+
+      var leftWrist = keypoints.filter(function (item: any) {
+        return item.name === 'left_wrist';
+      });
+
+      var rightWrist = keypoints.filter(function (item: any) {
+        return item.name === 'right_wrist';
+      });
+
+      var nose = keypoints.filter(function (item: any) {
+        return item.name === 'nose';
+      });
+
+      if (rightWrist[0].x > rightElbow[0].x + 20 && skipFrameCount === 0) {
+        // console.log("Left Wrist: ", leftWrist[0], "Left Elbow: ", leftElbow[0]);
+        increment();
+        analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+        setIsMissed('');
+        skipFrameCount = skipFrameCount + 1;
+        console.log('Forehand Return');
+        isForehandMissed = true;
+        setServeType('Forehand Return');
+        missTimeCounter = 0;
+        rallyRunningFlag = true;
+        setData(analysis_data.data);
+      } else if (leftWrist[0].x < leftElbow[0].x) {
+        // console.log("I am here");
+        if (rightWrist[0].x < rightElbow[0].x - 20 && skipFrameCount === 0) {
           increment();
           analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
           setIsMissed('');
@@ -1169,7 +1263,15 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        shotDetectionReturn(poses);
+        if (
+          authObject &&
+          authObject.handStyle &&
+          authObject.handStyle === 'RightHanded'
+        ) {
+          shotDetectionReturnRightHanded(poses);
+        } else {
+          shotDetectionReturnLeftHanded(poses);
+        }
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }

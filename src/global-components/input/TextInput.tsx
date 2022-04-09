@@ -5,11 +5,13 @@ import {
   Text,
   View,
   KeyboardTypeOptions,
+  Alert,
 } from 'react-native';
 import styles from './styles';
 import globalStyles from '../../global-styles';
 import {COLORS} from '../../constants';
 import {Metadata} from '../../types';
+import {onFocus} from '@reduxjs/toolkit/dist/query/core/setupListeners';
 
 type Props = {
   value: string;
@@ -25,6 +27,8 @@ type Props = {
   RightComponent?: any;
   multiline?: boolean | undefined;
   secureTextEntry?: boolean;
+  onClick?: any;
+  editable?: boolean;
 };
 
 const TextInputComponent: FunctionComponent<Props> =
@@ -36,7 +40,9 @@ const TextInputComponent: FunctionComponent<Props> =
       autoCapitalize,
       onChangeText,
       placeholder,
+      onClick,
       inputStyles,
+      editable,
       inputParentStyles,
       placeholderTextColor,
       RightComponent,
@@ -50,6 +56,7 @@ const TextInputComponent: FunctionComponent<Props> =
       <TouchableOpacity
         delayPressIn={0}
         activeOpacity={0.9}
+        onPress={onClick}
         style={[styles.input_parent_container, {...inputParentStyles}]}>
         <View
           style={{
@@ -63,6 +70,7 @@ const TextInputComponent: FunctionComponent<Props> =
             maxLength={maxLength || 10000}
             returnKeyType={returnKeyType || 'done'}
             value={value || ''}
+            editable={editable}
             onChangeText={(text: string) => {
               if (onChangeText) {
                 onChangeText(text);
@@ -70,9 +78,8 @@ const TextInputComponent: FunctionComponent<Props> =
             }}
             placeholder={placeholder || 'Input'}
             placeholderTextColor={placeholderTextColor}
-            onFocus={() => {
-              // console.log('focused');
-              // setIsOnFocused(true);
+            onPressIn={() => {
+              onClick && onClick();
             }}
             onBlur={() => {
               // console.log('blur');

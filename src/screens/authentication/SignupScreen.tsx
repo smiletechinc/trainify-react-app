@@ -59,6 +59,8 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
         password,
       };
 
+      Alert.alert('playerstyle', JSON.stringify(handStyle));
+
       navigation.navigate('SignupContainer', {signupObject, authObject});
     } else {
       Alert.alert('Trainify', 'Password and Confirm password does not match');
@@ -91,7 +93,12 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
         contentContainerStyle={{
           paddingBottom: 55,
         }}>
-        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+        <View
+          style={{
+            paddingHorizontal: SCREEN_WIDTH * 0.05,
+            display: 'flex',
+            flexDirection: 'row',
+          }}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
@@ -99,16 +106,21 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
             }}>
             <Image source={backIcon} style={{width: 24, height: 24}} />
           </TouchableOpacity>
-        </View>
-        <View style={{marginTop: 8, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
-          <View style={{alignItems: 'center'}}>
+          <View
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flex: 1,
+            }}>
             <AutoHeightImage source={signupMainImage} width={163} />
           </View>
+        </View>
+        <View style={{marginTop: 4, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <Text
             style={[
               globalStyles.title,
               globalStyles.bold,
-              {color: COLORS.medium_dark_blue, marginTop: 16},
+              {color: COLORS.medium_dark_blue, marginTop: 8},
             ]}>
             SIGN UP
           </Text>
@@ -124,7 +136,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 42,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -139,7 +151,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -154,7 +166,8 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
+              marginBottom: 12,
             }}
           />
           <PlayingStyle handStyle={handStyle} setHandStyle={setHandStyle} />
@@ -170,7 +183,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -185,7 +198,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -200,7 +213,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <SignupFooterComponent

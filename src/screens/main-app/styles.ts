@@ -1,12 +1,12 @@
 import {StyleSheet, Platform} from 'react-native';
-import {COLORS, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
+import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
 
 const styles = StyleSheet.create({
   home_main_view: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT + 15 : 15,
+    paddingTop: Platform.OS === 'ios' ? 10  : 10,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
   },
   navigationBar: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    minHeight: 48,
+    minHeight: SCREEN_HEIGHT - 764,
     paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   practice_text: {
@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.white,
     width: SCREEN_WIDTH * 0.6,
-    textAlign: 'right',
-    fontSize: 16
+    textAlign: 'center',
+    fontSize: 14
   },
   // Service Practice styles.
   main_view: {

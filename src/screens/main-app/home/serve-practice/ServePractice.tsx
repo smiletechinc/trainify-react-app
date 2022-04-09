@@ -9,14 +9,19 @@ import globalStyles from '../../../../global-styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from './../../../../context/auth-context';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 const recordIcon = require('../../../../assets/images/record_icon_image.png');
 const analysisIcon = require('../../../../assets/images/analysis_icon.png');
 
 type Props = {
   navigation: any;
+  route: any;
 };
-const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
+const ServePracticeContainer: FunctionComponent<Props> = ({
+  navigation,
+  route,
+}) => {
   const {authUser, setAuthUser} = React.useContext(AuthContext);
   const {playerstyle} = authUser ? authUser : '';
   const startRecording = () => {
@@ -35,15 +40,11 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={styles.main_view}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.navigationBar}>
-          <HeaderWithText text="Serve Practice" navigation={navigation} />
-        </View>
+    <ScreenWrapperWithHeader
+      title="Serve Practice"
+      navigation={navigation}
+      route={route}>
+      <View style={styles.home_main_view}>
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
             <TouchableOpacity
@@ -51,7 +52,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('App4', {
-                  title: 'RECORD LEFT-HANDED SERVE',
+                  title: 'RECORD SERVE PRACITCE',
                 });
               }}>
               <View
@@ -76,7 +77,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record LEFT-Handed Serve
+                    Record Serve Practice
                   </Text>
                 </View>
               </View>
@@ -89,7 +90,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('App4', {
-                  title: 'RECORD RIGHT-HANDED SERVE',
+                  title: 'RECORD SERVE PRACTICE',
                 });
               }}>
               <View
@@ -114,7 +115,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record RIGHT-Handed Serve
+                    Record Serve Practice
                   </Text>
                 </View>
               </View>
@@ -159,8 +160,8 @@ const ServePracticeContainer: FunctionComponent<Props> = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 export default ServePracticeContainer;
