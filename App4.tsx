@@ -39,7 +39,7 @@ import AnimatedLoader from 'react-native-animated-loader';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
-import AlertModal from './src/modals/AlertModal';
+import {AlertModal} from './src/modals/index';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -268,6 +268,25 @@ const App4: FunctionComponent<Props> = props => {
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
   const [videoURI, setVideoURI] = useState(null);
 
+  const goSettings = () => {
+    Linking.openSettings();
+  };
+  const proceedToLogout = () => {
+    navigation.goBack();
+  };
+
+  const logoutAlert = () => {
+    Alert.alert(
+      'Alert  ',
+      'Are you sure to logout ',
+      [
+        {text: 'GoBack', onPress: () => proceedToLogout()},
+        {text: 'GotoSettings', onPress: () => goSettings()},
+      ],
+      {cancelable: false},
+    );
+  };
+
   const stopRecording = async () => {
     try {
       const responseReocrding = await RecordScreen.stopRecording()
@@ -295,14 +314,8 @@ const App4: FunctionComponent<Props> = props => {
                   }
                 })
                 .catch(e => {
-                  setGalleryPermissions(false);
-                  setAlertVisibleModal(true);
-                  setTitleText('Gallery Permission Denined');
-                  setDescText(
-                    'Sorry! This operation cannot be performed without permission, Allow the permissions in the settings to continue',
-                  );
-                  setButtonText('Go to Settings');
-                  navigation.goBack();
+                  console.log('Permission Denied');
+                  logoutAlert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
@@ -1273,10 +1286,6 @@ const App4: FunctionComponent<Props> = props => {
     );
   };
 
-  const goSettings = () => {
-    Linking.openSettings();
-  };
-
   const onLayout = event => {
     const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
@@ -1348,16 +1357,6 @@ const App4: FunctionComponent<Props> = props => {
           </View>
         )}
       </View>
-      {alertModalVisible && (
-        <AlertModal
-          visible={alertModalVisible}
-          title={titleText}
-          desc={descText}
-          buttonTitle={buttonText}
-          onAcceptButton={goSettings}
-          onCancelButton={setAlertVisibleModal(false)}
-        />
-      )}
     </SafeAreaView>
   );
 };

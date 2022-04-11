@@ -6,6 +6,7 @@ import {
   Dimensions,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -248,6 +249,25 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     }
   }, [tfReady]);
 
+  const goSettings = () => {
+    Linking.openSettings();
+  };
+  const proceedToLogout = () => {
+    navigation.goBack();
+  };
+
+  const logoutAlert = () => {
+    Alert.alert(
+      'Alert  ',
+      'Are you sure to logout ',
+      [
+        {text: 'GoBack', onPress: () => proceedToLogout()},
+        {text: 'GotoSettings', onPress: () => goSettings()},
+      ],
+      {cancelable: false},
+    );
+  };
+
   const stopRecording = async () => {
     try {
       const responseReocrding = await RecordScreen.stopRecording()
@@ -275,11 +295,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
                 })
                 .catch(e => {
                   // console.log('error:........................................ ', e);
-                  Alert.alert(
-                    'Sorry! This operation cannot be performed without permission',
-                    'Allow the permissions in the settings to continue',
-                  );
-                  navigation.goBack();
+                  console.log('Permission Denied');
+                  logoutAlert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
