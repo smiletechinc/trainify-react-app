@@ -44,6 +44,8 @@ const HeaderWithText: FunctionComponent<Props> = props => {
       console.log('authObject ', authObject);
       const {firstName} = authObject;
       setuserFirstName(firstName);
+    } else {
+      proceedToLogout();
     }
     if (authUser) {
       console.log('authUser ', authUser);

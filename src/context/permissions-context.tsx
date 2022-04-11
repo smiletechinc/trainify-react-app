@@ -1,4 +1,5 @@
 // CounterContext.tsx
+import {string} from '@tensorflow/tfjs-core';
 import React from 'react';
 
 // Declaring the state object globally.
@@ -6,6 +7,7 @@ const initialPermissionsState = {
   isCameraPermissions: false,
   isRecordingPermissions: false,
   isGalleryPermissions: false,
+  cameraPermissionsStatus: 'unknown',
 };
 
 const permissionsContextWrapper = (component?: React.Component) => ({
@@ -14,28 +16,31 @@ const permissionsContextWrapper = (component?: React.Component) => ({
     initialPermissionsState.isCameraPermissions = false;
     initialPermissionsState.isGalleryPermissions = false;
     initialPermissionsState.isRecordingPermissions = false;
-    component?.setState({ context: permissionsContextWrapper(component) });
+    component?.setState({context: permissionsContextWrapper(component)});
   },
-  setCameraPermissions: (isCameraPermissions) => {
-    initialPermissionsState.isCameraPermissions
-      = isCameraPermissions
-    component?.setState({ context: permissionsContextWrapper(component) });
+  setCameraPermissionsStatus: cameraPermissionsStatus => {
+    initialPermissionsState.cameraPermissionsStatus = cameraPermissionsStatus;
+    component?.setState({context: permissionsContextWrapper(component)});
   },
-  setGalleryPermissions: (isGalleryPermissions) => {
-    initialPermissionsState.isGalleryPermissions
-      = isGalleryPermissions
-    component?.setState({ context: permissionsContextWrapper(component) });
+  setCameraPermissions: isCameraPermissions => {
+    initialPermissionsState.isCameraPermissions = isCameraPermissions;
+    component?.setState({context: permissionsContextWrapper(component)});
   },
-  setRecordigPermissions: (isRecordingPermissions) => {
-    initialPermissionsState.isRecordingPermissions
-      = isRecordingPermissions
-    component?.setState({ context: permissionsContextWrapper(component) });
+  setGalleryPermissions: isGalleryPermissions => {
+    initialPermissionsState.isGalleryPermissions = isGalleryPermissions;
+    component?.setState({context: permissionsContextWrapper(component)});
+  },
+  setRecordigPermissions: isRecordingPermissions => {
+    initialPermissionsState.isRecordingPermissions = isRecordingPermissions;
+    component?.setState({context: permissionsContextWrapper(component)});
   },
 });
 
 type Context = ReturnType<typeof permissionsContextWrapper>;
 
-export const CounterContext = React.createContext<Context>(permissionsContextWrapper());
+export const PermissionContext = React.createContext<Context>(
+  permissionsContextWrapper(),
+);
 
 interface State {
   context: Context;
@@ -48,9 +53,9 @@ export class PermissionsContextProvider extends React.Component {
 
   render() {
     return (
-      <CounterContext.Provider value={this.state.context}>
+      <PermissionContext.Provider value={this.state.context}>
         {this.props.children}
-      </CounterContext.Provider>
+      </PermissionContext.Provider>
     );
   }
 }

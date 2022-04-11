@@ -249,7 +249,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     registerUserService(userObject, registrationSuccess, registrationFailure);
   };
 
-  const goToHomePage = () => {
+  const goToSigninPage = () => {
     navigation.replace('Signin');
     //     const resetAction = StackActions.reset({
     //   index: 0, // <-- currect active route from actions array
@@ -261,7 +261,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   const registrationSuccess = (userCredential?: any) => {
     Alert.alert('Trainify', `You've signed up successfully.`);
-    goToHomePage();
+    goToSigninPage();
   };
 
   const registrationFailure = error => {

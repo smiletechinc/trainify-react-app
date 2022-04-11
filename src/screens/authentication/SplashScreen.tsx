@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   View,
   Image,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN_WIDTH} from '../../constants';
@@ -51,16 +52,16 @@ const SplashScreenContainer: FunctionComponent<Props> = ({navigation}) => {
     })();
     setTimeout(() => {
       // Getting user from redux
-      if (UserData === null) {
-        navigation.navigate('Signin');
-      } else {
+      if (UserData) {
         navigation.reset({
           index: 0,
           routes: [{name: 'MainApp'}],
         });
+      } else {
+        navigation.navigate('Signin');
       }
     }, 2500);
-  });
+  }, []);
 
   return (
     <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>

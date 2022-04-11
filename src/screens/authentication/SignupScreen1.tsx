@@ -101,7 +101,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
-    Alert.alert(handStyle);
+    // Alert.alert(handStyle);
   }, [route.params.signupObject.playerstyle]);
   const data = [
     {

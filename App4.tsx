@@ -7,6 +7,7 @@ import {
   Platform,
   Alert,
   Button,
+  Linking,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -37,6 +38,8 @@ import {
 import AnimatedLoader from 'react-native-animated-loader';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
+import {PermissionContext} from './src/context/permissions-context';
+import AlertModal from './src/modals/AlertModal';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -60,9 +63,16 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
-  // console.log('asasdasdasdasdasdasdasdasd:.........');
-  // const { _currentValue, authUser } = React.useContext(AuthContext);
-  // console.log('user: ', AuthContext._currentValue.authObject);
+  const {
+    setCameraPermissions,
+    setGalleryPermissions,
+    setRecordigPermissions,
+    isCameraPermissions,
+    isGalleryPermissions,
+    isRecordingPermissions,
+    resetPermissions,
+  } = React.useContext(PermissionContext);
+
   const {
     authUser,
     authObject,
@@ -100,6 +110,10 @@ const App4: FunctionComponent<Props> = props => {
   const rafId = useRef<number | null>(null);
   const countdownRef = useRef(null);
   const [remainingTime, setRemainingTime] = useState<Number>(0);
+  const [alertModalVisible, setAlertVisibleModal] = useState(false);
+  const [titleText, setTitleText] = useState('');
+  const [descText, setDescText] = useState('');
+  const [buttonText, setButtonText] = useState('');
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -266,6 +280,7 @@ const App4: FunctionComponent<Props> = props => {
               const response = await CameraRoll.save(url)
                 .then(promise => {
                   console.log('promise: ', promise);
+                  setGalleryPermissions(true);
                   if (promise) {
                     setIsRecordingInProgress(false);
                     console.log('Recording saved successfuly.');
@@ -280,11 +295,13 @@ const App4: FunctionComponent<Props> = props => {
                   }
                 })
                 .catch(e => {
-                  // console.log('error:........................................ ', e);
-                  Alert.alert(
-                    'Sorry! This operation cannot be performed without permission',
-                    'Allow the permissions in the settings to continue',
+                  setGalleryPermissions(false);
+                  setAlertVisibleModal(true);
+                  setTitleText('Gallery Permission Denined');
+                  setDescText(
+                    'Sorry! This operation cannot be performed without permission, Allow the permissions in the settings to continue',
                   );
+                  setButtonText('Go to Settings');
                   navigation.goBack();
                 });
             } catch (error) {
@@ -1255,6 +1272,11 @@ const App4: FunctionComponent<Props> = props => {
       </View>
     );
   };
+
+  const goSettings = () => {
+    Linking.openSettings();
+  };
+
   const onLayout = event => {
     const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
@@ -1305,8 +1327,6 @@ const App4: FunctionComponent<Props> = props => {
             </Text>
             <Countdown
               ref={countdownRef}
-              // style={styles.timer}
-              // textStyle={styles.timerText}
               initialSeconds={60}
               onTimes={e => {
                 setRemainingTime(60 - e);
@@ -1328,6 +1348,16 @@ const App4: FunctionComponent<Props> = props => {
           </View>
         )}
       </View>
+      {alertModalVisible && (
+        <AlertModal
+          visible={alertModalVisible}
+          title={titleText}
+          desc={descText}
+          buttonTitle={buttonText}
+          onAcceptButton={goSettings}
+          onCancelButton={setAlertVisibleModal(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };
