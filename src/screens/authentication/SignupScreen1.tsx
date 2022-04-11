@@ -1,10 +1,10 @@
-import React, {FunctionComponent, useState} from 'react';
-import {Text, TouchableOpacity, View, Image} from 'react-native';
+import React, { FunctionComponent, useState } from 'react';
+import { Text, TouchableOpacity, View, Image } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 // Custom UI components.
-import {COLORS, SCREEN_WIDTH} from '../../constants';
-import {TextInput} from '../../global-components/input';
+import { COLORS, SCREEN_WIDTH } from '../../constants';
+import { TextInput } from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
 import RadioButtonRN from 'radio-buttons-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -28,7 +28,7 @@ type Props = {
   route: any;
 };
 const SignupContainer: FunctionComponent<Props> = props => {
-  const {navigation, route} = props;
+  const { navigation, route } = props;
 
   const email = route.params.signupObject.email;
   const password = route.params.signupObject.password;
@@ -73,7 +73,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
 
     const authObject = route.params.authObject;
 
-    navigation.navigate('PaymentPlan', {signupObject, authObject});
+    navigation.navigate('PaymentPlan', { signupObject, authObject });
   };
   const validateForInputs = () => {
     if (feetHeight === '') {
@@ -82,18 +82,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
     if (inchHeight === '') {
       return false;
     }
-    if (birthday === '') {
-      return false;
-    }
+    // if (birthday === '') {
+    //   return false;
+    // }
     if (location === '') {
       return false;
     }
     if (rating === '') {
       return false;
     }
-    if (nationality === '') {
-      return false;
-    }
+    // if (nationality === '') {
+    //   return false;
+    // }
     return true;
   };
 
@@ -105,7 +105,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
       label: 'Female',
     },
     {
-      label: 'Other',
+      label: 'No Response',
     },
   ];
   return (
@@ -115,24 +115,24 @@ const SignupContainer: FunctionComponent<Props> = props => {
         contentContainerStyle={{
           paddingBottom: 55,
         }}>
-        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+        <View style={{ paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
               navigation.goBack();
             }}>
-            <Image source={backIcon} style={{width: 24, height: 24}} />
+            <Image source={backIcon} style={{ width: 24, height: 24 }} />
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: 8, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
-          <View style={{alignItems: 'center'}}>
+        <View style={{ marginTop: 8, paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
+          <View style={{ alignItems: 'center' }}>
             <AutoHeightImage source={signupMainImage} width={163} />
           </View>
           <Text
             style={[
               globalStyles.title,
               globalStyles.bold,
-              {color: COLORS.medium_dark_blue, marginTop: 16},
+              { color: COLORS.medium_dark_blue, marginTop: 16 },
             ]}>
             SIGN UP
           </Text>
@@ -146,7 +146,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
             <Text
               style={[
                 globalStyles.h1,
-                {color: COLORS.dark_black, marginTop: 16, fontWeight: 'bold'},
+                { color: COLORS.dark_black, marginTop: 16, fontWeight: 'bold' },
               ]}>
               Gender
             </Text>
@@ -256,6 +256,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
               marginTop: 29,
             }}
           />
+          <Text style={[globalStyles.small, styles.optional_text]}>Optional</Text>
           <TextInput
             value={location}
             placeholder="Location"
@@ -309,6 +310,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
               marginTop: 29,
             }}
           />
+          <Text style={[globalStyles.small, styles.optional_text]}>Optional</Text>
           {datepickermodalVisible && (
             <DatePickerModal
               visible={datepickermodalVisible}
