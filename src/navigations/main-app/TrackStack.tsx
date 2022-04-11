@@ -5,7 +5,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import {
   SplashScreen,
-  HomeScreen,
   SigninScreen,
   SignupScreen,
   LandingScreenContainer,
@@ -35,7 +34,6 @@ function TrackStackContainer() {
           component={ResetPasswordContainer}
         />
         <AppStack.Screen name="PaymentPlan" component={PaymentPlanContainer} />
-        <AppStack.Screen name="HomeScreen" component={HomeScreen} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

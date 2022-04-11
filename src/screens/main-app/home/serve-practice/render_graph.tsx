@@ -77,13 +77,41 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
 
   console.log(flatServes);
 
-  const pie_data = {
-    data: [
-      {x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`},
-      {x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`},
-      {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
-    ],
-  };
+  var pie_data;
+
+  if (flatServes == 0 && kickServes == 0 && sliceServes == 0) {
+    pie_data = {
+      data: [],
+    };
+  } else if (flatServes == 0 && kickServes == 0) {
+    pie_data = {
+      data: [{x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`}],
+    };
+  } else if (sliceServes == 0 && kickServes == 0) {
+    pie_data = {
+      data: [{x: 'Flat', y: flatServes, label: `Forehand: ${flatServes}`}],
+    };
+  } else if (sliceServes == 0 && flatServes == 0) {
+    pie_data = {
+      data: [{x: 'Kick', y: kickServes, label: `Backhand: ${kickServes}`}],
+    };
+  } else {
+    pie_data = {
+      data: [
+        {x: 'Flat', y: flatServes, label: `Forehand: ${flatServes}`},
+        {x: 'Kick', y: kickServes, label: `Backhand: ${kickServes}`},
+        {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
+      ],
+    };
+  }
+
+  // const pie_data = {
+  //   data: [
+  //     {x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`},
+  //     {x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`},
+  //     {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
+  //   ],
+  // };
 
   data_victory.AGrade[0].y = analysis_data['data'][0][0];
   data_victory.AGrade[1].y = analysis_data['data'][1][0];
@@ -105,7 +133,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
 
   return (
     <ScreenWrapperWithHeader
-      title="Graph"
+      title="Serve Practice Analysis"
       navigation={navigation}
       route={route}>
       <View style={styles.container}>

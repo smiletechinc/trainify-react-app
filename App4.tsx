@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, FunctionComponent } from 'react';
+import React, {useEffect, useState, useRef, FunctionComponent} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,8 +7,9 @@ import {
   Platform,
   Alert,
   Button,
+  Linking,
 } from 'react-native';
-import { Camera } from 'expo-camera';
+import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
 import * as posedetection from '@tensorflow-models/pose-detection';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -16,27 +17,29 @@ import {
   bundleResourceIO,
   cameraWithTensors,
 } from '@tensorflow/tfjs-react-native';
-import Svg, { Circle, Line } from 'react-native-svg';
-import { ExpoWebGLRenderingContext } from 'expo-gl';
-import { CameraType } from 'expo-camera/build/Camera.types';
-import { CounterContext } from './src/context/counter-context';
-import { addVideoService } from './src/services/servePracticeServices';
+import Svg, {Circle, Line} from 'react-native-svg';
+import {ExpoWebGLRenderingContext} from 'expo-gl';
+import {CameraType} from 'expo-camera/build/Camera.types';
+import {CounterContext} from './src/context/counter-context';
+import {addVideoService} from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
-import { IconButton } from './src/components/buttons';
+import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
 import * as VideoThumbnails from 'expo-video-thumbnails';
-import { useAnalysisUpload, useMediaUpload } from './src/hooks';
+import {useAnalysisUpload, useMediaUpload} from './src/hooks';
 import {
   uploadPhotoService,
   uploadVideoService,
   getThumbnailURL,
 } from './src/services/mediaServices';
 import AnimatedLoader from 'react-native-animated-loader';
-import { Countdown } from 'react-native-element-timer';
-import { AuthContext } from './src/context/auth-context';
+import {Countdown} from 'react-native-element-timer';
+import {AuthContext} from './src/context/auth-context';
+import {PermissionContext} from './src/context/permissions-context';
+import AlertModal from './src/modals/AlertModal';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -60,9 +63,16 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
-  // console.log('asasdasdasdasdasdasdasdasd:.........');
-  // const { _currentValue, authUser } = React.useContext(AuthContext);
-  // console.log('user: ', AuthContext._currentValue.authObject);
+  const {
+    setCameraPermissions,
+    setGalleryPermissions,
+    setRecordigPermissions,
+    isCameraPermissions,
+    isGalleryPermissions,
+    isRecordingPermissions,
+    resetPermissions,
+  } = React.useContext(PermissionContext);
+
   const {
     authUser,
     authObject,
@@ -73,11 +83,11 @@ const App4: FunctionComponent<Props> = props => {
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
   const cameraRef = React.useRef();
-  const { navigation, route } = props;
-  const { title } = route.params;
+  const {navigation, route} = props;
+  const {title} = route.params;
   // const title = '';
   const [isLoading, setLoading] = React.useState(true);
-  const { increment, reset, count, calibrated, setCalibrated, setData, data } =
+  const {increment, reset, count, calibrated, setCalibrated, setData, data} =
     React.useContext(CounterContext);
   const [tfReady, setTfReady] = useState(false);
   const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -100,13 +110,14 @@ const App4: FunctionComponent<Props> = props => {
   const rafId = useRef<number | null>(null);
   const countdownRef = useRef(null);
   const [remainingTime, setRemainingTime] = useState<Number>(0);
+  const [alertModalVisible, setAlertVisibleModal] = useState(false);
+  const [titleText, setTitleText] = useState('');
+  const [descText, setDescText] = useState('');
+  const [buttonText, setButtonText] = useState('');
 
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  let response_let = {};
-  let thumbURL = '';
-  let vidURL = '';
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -125,7 +136,7 @@ const App4: FunctionComponent<Props> = props => {
 
       const curOrientation = await ScreenOrientation.getOrientationAsync();
       const model = posedetection.SupportedModels.BlazePose;
-      const detectorConfig = { runtime: 'tfjs', modelType: 'full' };
+      const detectorConfig = {runtime: 'tfjs', modelType: 'full'};
       const detector = await posedetection.createDetector(
         model,
         detectorConfig,
@@ -178,6 +189,8 @@ const App4: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     return () => {
+      setTfReady(false);
+      setIsStartedVideoRecording(false);
       RecordScreen.clean();
       reset();
       setCalibrated(false);
@@ -207,7 +220,7 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const startTimer = e => {
-    let { total, hours, minutes, seconds } = getTimeRemaining(e);
+    let {total, hours, minutes, seconds} = getTimeRemaining(e);
     if (total >= 0) {
       setSeconds(seconds);
     }
@@ -267,6 +280,7 @@ const App4: FunctionComponent<Props> = props => {
               const response = await CameraRoll.save(url)
                 .then(promise => {
                   console.log('promise: ', promise);
+                  setGalleryPermissions(true);
                   if (promise) {
                     setIsRecordingInProgress(false);
                     console.log('Recording saved successfuly.');
@@ -281,11 +295,13 @@ const App4: FunctionComponent<Props> = props => {
                   }
                 })
                 .catch(e => {
-                  // console.log('error:........................................ ', e);
-                  Alert.alert(
-                    'Sorry! This operation cannot be performed without permission',
-                    'Allow the permissions in the settings to continue',
+                  setGalleryPermissions(false);
+                  setAlertVisibleModal(true);
+                  setTitleText('Gallery Permission Denined');
+                  setDescText(
+                    'Sorry! This operation cannot be performed without permission, Allow the permissions in the settings to continue',
                   );
+                  setButtonText('Go to Settings');
                   navigation.goBack();
                 });
             } catch (error) {
@@ -327,7 +343,7 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const startRecording = async () => {
-    await RecordScreen.startRecording({ mic: false })
+    await RecordScreen.startRecording({mic: false})
       .then(res => {
         setIsStartedVideoRecording(true);
         // console.log('Video recording started.');
@@ -941,7 +957,7 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
-  const serveTypeDetectionthreshold = (poses: any) => {
+  const serveTypeDetectionthresholdRightHanded = (poses: any) => {
     if (poses && poses.length > 0) {
       const object = poses[0];
       const keypoints = object.keypoints;
@@ -973,6 +989,94 @@ const App4: FunctionComponent<Props> = props => {
       var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
 
       if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
+        increment();
+        skipFrameCount = skipFrameCount + 1;
+        if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
+          if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+            setServeGrade('A');
+            analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+          } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
+            setServeGrade('B');
+            analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
+            setServeGrade('C');
+            analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
+          }
+          setServeType('Flat');
+        } else if (r_hip_angle < 190 && r_hip_angle > 175) {
+          if (r_hip_angle < 185 && r_hip_angle > 181) {
+            setServeGrade('A');
+            analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
+          } else if (r_hip_angle < 187 && r_hip_angle > 179) {
+            setServeGrade('B');
+            analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
+          } else if (r_hip_angle < 188 && r_hip_angle > 177) {
+            setServeGrade('C');
+            analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
+          }
+          setServeType('Slice');
+        } else {
+          if (r_hip_angle > 170) {
+            setServeGrade('A');
+            analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          } else if (r_hip_angle > 167) {
+            setServeGrade('B');
+            analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          } else if (r_hip_angle > 164) {
+            setServeGrade('C');
+            analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
+          }
+          setServeType('Kick');
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+        skipFrameCount = skipFrameCount + 1;
+      } else {
+        skipFrameCount = 0;
+      }
+    }
+  };
+  const serveTypeDetectionthresholdLeftHanded = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+      var leftShoulder = keypoints.filter(function (item: any) {
+        return item.name === 'left_shoulder';
+      });
+      var rightShoulder = keypoints.filter(function (item: any) {
+        return item.name === 'right_shoulder';
+      });
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+      var rightHip = keypoints.filter(function (item: any) {
+        return item.name === 'right_hip';
+      });
+      var leftHip = keypoints.filter(function (item: any) {
+        return item.name === 'left_hip';
+      });
+      var leftKnee = keypoints.filter(function (item: any) {
+        return item.name === 'left_knee';
+      });
+      var rightKnee = keypoints.filter(function (item: any) {
+        return item.name === 'right_knee';
+      });
+      var l_shoulder_angle2 = find_angle(leftHip, leftShoulder, leftElbow);
+      var r_hip_angle = find_angle(leftShoulder, leftHip, leftKnee);
+
+      if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
         increment();
         skipFrameCount = skipFrameCount + 1;
         if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
@@ -1102,7 +1206,15 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
+        if (
+          authObject &&
+          authObject.handStyle &&
+          authObject.handStyle === 'RightHanded'
+        ) {
+          serveTypeDetectionthresholdRightHanded(poses);
+        } else {
+          serveTypeDetectionthresholdLeftHanded(poses);
+        }
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }
@@ -1160,8 +1272,13 @@ const App4: FunctionComponent<Props> = props => {
       </View>
     );
   };
+
+  const goSettings = () => {
+    Linking.openSettings();
+  };
+
   const onLayout = event => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
     cameraLayoutWidth = width;
     setCameraWidth(width);
@@ -1170,7 +1287,7 @@ const App4: FunctionComponent<Props> = props => {
   };
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <View style={{ marginTop: 10 }}>
+      <View style={{marginTop: 10}}>
         <HeaderWithText
           text={title}
           hideProfileSection={true}
@@ -1210,13 +1327,11 @@ const App4: FunctionComponent<Props> = props => {
             </Text>
             <Countdown
               ref={countdownRef}
-              // style={styles.timer}
-              // textStyle={styles.timerText}
               initialSeconds={60}
               onTimes={e => {
                 setRemainingTime(60 - e);
               }}
-              onPause={e => { }}
+              onPause={e => {}}
               onEnd={e => {
                 handleStopCamera();
               }}
@@ -1233,6 +1348,16 @@ const App4: FunctionComponent<Props> = props => {
           </View>
         )}
       </View>
+      {alertModalVisible && (
+        <AlertModal
+          visible={alertModalVisible}
+          title={titleText}
+          desc={descText}
+          buttonTitle={buttonText}
+          onAcceptButton={goSettings}
+          onCancelButton={setAlertVisibleModal(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };

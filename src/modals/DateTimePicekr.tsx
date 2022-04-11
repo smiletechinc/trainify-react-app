@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './styles';
+import ModalWrapper from '../components/wrappers/ModalWrapper';
 
 type Props = {
   visible: boolean;
@@ -115,14 +116,7 @@ const DatePickerModal: FunctionComponent<Props> = props => {
     setMode(currentMode);
   };
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-        close();
-      }}>
+    <ModalWrapper visible={visible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Select Date of Birth</Text>
@@ -144,7 +138,7 @@ const DatePickerModal: FunctionComponent<Props> = props => {
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

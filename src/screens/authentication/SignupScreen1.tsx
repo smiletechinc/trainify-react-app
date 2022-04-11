@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useState } from 'react';
-import { Text, TouchableOpacity, View, Image } from 'react-native';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Text, TouchableOpacity, View, Image, Alert } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 // Custom UI components.
@@ -18,6 +18,7 @@ import {
   FeetHeightPickerModal,
   CountryPickerModal,
   RatingPickerModal,
+  LocationPickerModal,
 } from '../../modals';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
@@ -43,6 +44,8 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const [rating, setRating] = useState<string>('');
   const [nationality, setNationality] = useState<string>('');
   const [datepickermodalVisible, setDatePickerModalVisible] = useState(false);
+  const [loctaionPickerModalVisible, setLocationPickerModalVisible] =
+    useState(false);
   const [inchHeightPickerModalVisible, setinchHeightPickerModalVisible] =
     useState(false);
   const [ratingPickerModalVisible, setratingPickerModalVisible] =
@@ -68,7 +71,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
       rating,
       nationality,
       gender,
-      playerstyle: handStyle === 0 ? 'LeftHanded' : 'RightHanded',
+      handStyle,
     };
 
     const authObject = route.params.authObject;
@@ -97,6 +100,9 @@ const SignupContainer: FunctionComponent<Props> = props => {
     return true;
   };
 
+  useEffect(() => {
+    // Alert.alert(handStyle);
+  }, [route.params.signupObject.playerstyle]);
   const data = [
     {
       label: 'Male',
@@ -332,6 +338,13 @@ const SignupContainer: FunctionComponent<Props> = props => {
               close={setfeetHeightPickerModalVisible}
             />
           )}
+          {/* {loctaionPickerModalVisible && (
+            <LocationPickerModal
+              visible={loctaionPickerModalVisible}
+              setLocation={setLocation}
+              close={setLocationPickerModalVisible}
+            />
+          )} */}
           {ratingPickerModalVisible && (
             <RatingPickerModal
               visible={ratingPickerModalVisible}

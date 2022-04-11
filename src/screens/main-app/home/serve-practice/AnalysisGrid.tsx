@@ -1,16 +1,16 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { View, FlatList, Text } from 'react-native';
+import React, {FunctionComponent, useEffect, useState} from 'react';
+import {View, FlatList, Text} from 'react-native';
 import styles from './analysis_screen_style';
-import { connect, useDispatch } from 'react-redux';
-import { ListItem } from '../../../../components/grid/index';
+import {connect, useDispatch} from 'react-redux';
+import {ListItem} from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
-import { fetchVideosService } from './../../../../services/servePracticeServices';
+import {fetchVideosService} from './../../../../services/servePracticeServices';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView } from 'react-navigation';
-import { SCREEN_WIDTH } from '../../../../constants';
-import { AuthContext } from '../../../../../src/context/auth-context';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {SafeAreaView} from 'react-navigation';
+import {SCREEN_WIDTH} from '../../../../constants';
+import {AuthContext} from '../../../../../src/context/auth-context';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 
 type Props = {
@@ -28,24 +28,22 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     setAuthUser: setUser,
     logoutUser,
   } = React.useContext(AuthContext);
-  const { navigation, route, reduxColors, updated, add } = props;
+  const {navigation, route, reduxColors, updated, add} = props;
   const [isFetching, setIsFetching] = useState(false);
   const [videos, setVideos] = useState(reduxColors);
   const [updatingColors, setUpdatingColors] = useState<boolean>(false);
   const [selectedID, setSelectedID] = useState();
   const [index, setIndex] = useState(0);
-  const [filterValue, setFilterValue] = useState<string>("Daily");
+  const [filterValue, setFilterValue] = useState<string>('Daily');
   const [flatListWidth, setFlatListWith] = useState(0);
   const [NumberOfColumns, setNumberOfColumns] = useState(0);
 
   const fetchVideosFailure = colorsError => {
-    // console.log('videosError: ', colorsError);
+    console.log('videosError: ', colorsError);
   };
 
   const fetchVideosSuccess = videosData => {
-    // console.log('videosData:', Object.values(videosData));
     const videos = Object.values(videosData);
-    // console.log('videos ', videos);
     setVideos(videos);
   };
 
@@ -58,7 +56,6 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   }, []);
 
   useEffect(() => {
-    // console.log('here:.........');
     if (SCREEN_WIDTH <= 375) {
       setNumberOfColumns(2);
     } else {
@@ -67,7 +64,6 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   });
 
   const handleOnClickVideo = item => {
-    // console.log('ColorID:', item.id);
     setSelectedID(item.id);
     console.log('selectedid is :', selectedID);
     navigation.navigate('VideoPlayerContainer', {
@@ -80,26 +76,31 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   function DaysBetween(StartDate, EndDate) {
-    // The number of milliseconds in all UTC days (no DST)
     const oneDay = 1000 * 60 * 60 * 24;
 
-    // A day in UTC always lasts 24 hours (unlike in other time formats)
-    const start = Date.UTC(EndDate.getFullYear(), EndDate.getMonth(), EndDate.getDate());
-    const end = Date.UTC(StartDate.getFullYear(), StartDate.getMonth(), StartDate.getDate());
+    const start = Date.UTC(
+      EndDate.getFullYear(),
+      EndDate.getMonth(),
+      EndDate.getDate(),
+    );
+    const end = Date.UTC(
+      StartDate.getFullYear(),
+      StartDate.getMonth(),
+      StartDate.getDate(),
+    );
 
-    // so it's safe to divide by 24 hours
     return (start - end) / oneDay;
   }
-  const renderItem = ({ item, index }) => {
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+  const renderItem = ({item, index}) => {
+    const oneDay = 24 * 60 * 60 * 1000;
     const firstDate = new Date(item.timestamp).getTime();
     const secondDate = new Date().getTime();
 
-    const diffDays = Math.round(Math.abs((firstDate - secondDate) / (1000 * 60 * 60 * 24)));
-    // console.log(diffDays);
-    if (filterValue === "Daily") {
-      if (authObject.id === item.createrId && diffDays <= 1) {
-        //console.log('item: ', diffDays, item.timestamp);
+    const diffDays = Math.round(
+      Math.abs((firstDate - secondDate) / (1000 * 60 * 60 * 24)),
+    );
+    if (filterValue === 'Daily') {
+      if (authObject && authObject.id === item.createrId && diffDays <= 1) {
         return (
           <ListItem
             video={item}
@@ -110,9 +111,8 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
         );
       }
     }
-    if (filterValue === "Weekly") {
-      if (authObject.id === item.createrId && diffDays <= 7) {
-        //console.log('item: ', diffDays, item.timestamp);
+    if (filterValue === 'Weekly') {
+      if (authObject && authObject.id === item.createrId && diffDays <= 7) {
         return (
           <ListItem
             video={item}
@@ -123,9 +123,8 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
         );
       }
     }
-    if (filterValue === "Monthly") {
-      if (authObject.id === item.createrId && diffDays <= 30) {
-        //console.log('item: ', diffDays, item.timestamp);
+    if (filterValue === 'Monthly') {
+      if (authObject && authObject.id === item.createrId && diffDays <= 30) {
         return (
           <ListItem
             video={item}
@@ -136,21 +135,10 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
         );
       }
     }
-    // else {
-    //   return (
-    //     <ListItem
-    //       video={item}
-    //       index={index + 1}
-    //       itemWidth={flatListWidth}
-    //       onPress={() => handleOnClickVideo(item)}
-    //     />
-    //   );
-    // }
   };
 
   const onLayout = event => {
-    const { x, y, height, width } = event.nativeEvent.layout;
-    //console.log('Dimensions : ', x, y, height, width);
+    const {x, y, height, width} = event.nativeEvent.layout;
     setFlatListWith(width / NumberOfColumns);
   };
 
@@ -160,7 +148,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
       navigation={navigation}
       route={route}>
       <View style={styles.main_view}>
-        <View style={{ marginTop: 32, justifyContent: 'center' }}>
+        <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
             selectedIndex={index}
@@ -170,7 +158,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
             }}
             tintColor="#0096FF"
             backgroundColor="#D3D3D3"
-            style={{ height: 32 }}
+            style={{height: 32}}
           />
         </View>
         <View style={styles.flatcontainer}>

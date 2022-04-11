@@ -14,6 +14,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './styles';
 import {FeetHeightPicker} from '../components/heightpicker';
+import ModalWrapper from '../components/wrappers/ModalWrapper';
 
 type Props = {
   visible: boolean;
@@ -24,14 +25,7 @@ const FeetHeightPickerModal: FunctionComponent<Props> = props => {
   const {visible, setFeet, close} = props;
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-        close();
-      }}>
+    <ModalWrapper visible={visible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Select Feet</Text>
@@ -43,7 +37,7 @@ const FeetHeightPickerModal: FunctionComponent<Props> = props => {
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

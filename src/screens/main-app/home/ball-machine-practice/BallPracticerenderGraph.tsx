@@ -81,7 +81,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
 
   return (
     <ScreenWrapperWithHeader
-      title="Graph"
+      title="Volley / Ball Machine Analysis"
       navigation={navigation}
       route={route}>
       <View style={styles.container}>
