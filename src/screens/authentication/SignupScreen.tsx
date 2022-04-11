@@ -59,7 +59,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
         password,
       };
 
-      Alert.alert('playerstyle', JSON.stringify(handStyle));
+      // Alert.alert('playerstyle', JSON.stringify(handStyle));
 
       navigation.navigate('SignupContainer', {signupObject, authObject});
     } else {
