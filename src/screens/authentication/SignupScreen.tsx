@@ -44,7 +44,11 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
   const [lastName, setLastName] = useState<string>('');
 
   const navigtaionNext = () => {
-    if (password === confirmPassword) {
+    if (password !== confirmPassword) {
+      Alert.alert('Trainify', 'Password and Confirm password does not match');
+    } else if (password.length < 6) {
+      Alert.alert('Trainify', 'Password should contain at-lease 6 characters.');
+    } else {
       const signupObject = {
         email,
         password,
@@ -58,12 +62,7 @@ const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
         email,
         password,
       };
-
-      // Alert.alert('playerstyle', JSON.stringify(handStyle));
-
       navigation.navigate('SignupContainer', {signupObject, authObject});
-    } else {
-      Alert.alert('Trainify', 'Password and Confirm password does not match');
     }
   };
 

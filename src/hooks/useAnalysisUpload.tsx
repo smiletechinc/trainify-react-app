@@ -1,15 +1,7 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import app from './../config/db';
-import * as firebase from 'firebase/auth';
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-} from 'firebase/auth';
-import {getDatabase, ref, set, get, push} from 'firebase/database';
-import {ErrorObject, VideoData} from '../../types';
-import {getStorage, uploadBytes} from 'firebase/storage';
+import {getDatabase, ref, push} from 'firebase/database';
+import {ErrorObject} from '../../types';
 
 interface Props {
   videoMetaData: any;
@@ -22,16 +14,6 @@ export const useAnalysisUpload = props => {
   const [videoAnalysisData, setVideoAnalysisData] = useState('');
   const [addVideoAnalysisFailure, setAddVideoAnalysisFailure] = useState(false);
   const [addVideoAnalysisSuccess, setAddVideoAnalysisSuccess] = useState(false);
-
-  // useEffect(() => {
-  //   (() => {
-  //     (() => {
-  //       if (videoMetaData) {
-  //         addVideoAnalysisToFirebase(videoMetaData);
-  //       }
-  //     })();
-  //   })();
-  // }, [videoMetaData]);
 
   const addVideoAnalysisToFirebase = useCallback(
     async (video, feature?: string) => {

@@ -1,13 +1,14 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View, Image, Alert } from 'react-native';
+import React, {FunctionComponent, useEffect, useState} from 'react';
+import {Text, TouchableOpacity, View, Image, Alert} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // Custom UI components.
-import { COLORS, SCREEN_WIDTH } from '../../constants';
-import { TextInput } from '../../global-components/input';
+import {COLORS, SCREEN_WIDTH} from '../../constants';
+import {TextInput} from '../../global-components/input';
 import SignupFooterComponent from './components/SignupFooterComponent';
 import RadioButtonRN from 'radio-buttons-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CountryPicker from 'react-native-country-picker-modal';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
@@ -20,6 +21,8 @@ import {
   RatingPickerModal,
   LocationPickerModal,
 } from '../../modals';
+import {CountryCode, Country} from '../../modals/country';
+import TextInputWrapper from './../../global-components/input/TextInputWrapper';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
@@ -29,7 +32,7 @@ type Props = {
   route: any;
 };
 const SignupContainer: FunctionComponent<Props> = props => {
-  const { navigation, route } = props;
+  const {navigation, route} = props;
 
   const email = route.params.signupObject.email;
   const password = route.params.signupObject.password;
@@ -57,6 +60,21 @@ const SignupContainer: FunctionComponent<Props> = props => {
   const [inchHeight, setInchHeight] = useState('');
   const [feetHeight, setFeetHeight] = useState('');
 
+  //Country picker:
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode>();
+  const [withFlag, setWithFlag] = useState<boolean>(true);
+  const [withflagButton, setWithFlagButton] = useState<boolean>(false);
+  const [withFilter, setWithFilter] = useState<boolean>(true);
+  const [withCountryNameButton, setWithCountryNameButton] =
+    useState<boolean>(false);
+
+  const onSelect = (country: Country) => {
+    setSelectedCountry(country.cca2);
+    setWithFlagButton(true);
+    setWithCountryNameButton(true);
+    setNationality(country.name.toString());
+  };
+
   const proceedForPayments = () => {
     const signupObject = {
       email,
@@ -76,7 +94,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
 
     const authObject = route.params.authObject;
 
-    navigation.navigate('PaymentPlan', { signupObject, authObject });
+    navigation.navigate('PaymentPlan', {signupObject, authObject});
   };
   const validateForInputs = () => {
     if (feetHeight === '') {
@@ -111,7 +129,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
       label: 'Female',
     },
     {
-      label: 'No Response',
+      label: 'Other',
     },
   ];
   return (
@@ -121,24 +139,24 @@ const SignupContainer: FunctionComponent<Props> = props => {
         contentContainerStyle={{
           paddingBottom: 55,
         }}>
-        <View style={{ paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
+        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
               navigation.goBack();
             }}>
-            <Image source={backIcon} style={{ width: 24, height: 24 }} />
+            <Image source={backIcon} style={{width: 24, height: 24}} />
           </TouchableOpacity>
         </View>
-        <View style={{ marginTop: 8, paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
-          <View style={{ alignItems: 'center' }}>
+        <View style={{marginTop: 8, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+          <View style={{alignItems: 'center'}}>
             <AutoHeightImage source={signupMainImage} width={163} />
           </View>
           <Text
             style={[
               globalStyles.title,
               globalStyles.bold,
-              { color: COLORS.medium_dark_blue, marginTop: 16 },
+              {color: COLORS.medium_dark_blue, marginTop: 16},
             ]}>
             SIGN UP
           </Text>
@@ -148,11 +166,12 @@ const SignupContainer: FunctionComponent<Props> = props => {
               paddingLeft: 8,
               backgroundColor: COLORS.white,
               marginTop: 8,
+              marginBottom: 16,
             }}>
             <Text
               style={[
                 globalStyles.h1,
-                { color: COLORS.dark_black, marginTop: 16, fontWeight: 'bold' },
+                {color: COLORS.dark_black, marginTop: 16, fontWeight: 'bold'},
               ]}>
               Gender
             </Text>
@@ -179,12 +198,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
               icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
             />
           </View>
+
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
+
           <View
             style={{
               width: SCREEN_WIDTH * 0.9,
               paddingLeft: 8,
               backgroundColor: COLORS.white,
-              marginTop: 16,
+              marginTop: 4,
+              marginBottom: 12,
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -194,7 +219,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 globalStyles.h1,
                 {
                   color: COLORS.dark_black,
-                  marginTop: 16,
+                  marginTop: 4,
                   fontWeight: 'bold',
                   textAlign: 'center',
                   paddingTop: 10,
@@ -206,7 +231,6 @@ const SignupContainer: FunctionComponent<Props> = props => {
               value={feetHeight}
               placeholder="Feet"
               placeholderTextColor={COLORS.dark_black}
-              // secureTextEntry={true}
               onChangeText={(value: string) => {
                 setFeetHeight(value);
               }}
@@ -218,7 +242,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 fontWeight: 'bold',
               }}
               inputParentStyles={{
-                marginTop: 16,
+                marginTop: 4,
                 width: 100,
               }}
             />
@@ -227,7 +251,6 @@ const SignupContainer: FunctionComponent<Props> = props => {
               placeholder="Inch"
               editable={false}
               placeholderTextColor={COLORS.dark_black}
-              // secureTextEntry={true}
               onChangeText={(value: string) => {
                 setInchHeight(value);
               }}
@@ -238,17 +261,19 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 fontWeight: 'bold',
               }}
               inputParentStyles={{
-                marginTop: 16,
+                marginTop: 4,
                 width: 100,
               }}
             />
           </View>
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInput
             value={birthday}
             placeholder="Birthday"
             placeholderTextColor={COLORS.dark_black}
             editable={false}
-            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setBirthday(value);
             }}
@@ -259,15 +284,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
+              marginBottom: 12,
             }}
           />
-          <Text style={[globalStyles.small, styles.optional_text]}>Optional</Text>
+
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInput
             value={location}
             placeholder="Location"
             placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setLocation(value);
             }}
@@ -275,14 +303,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
+              marginBottom: 16,
             }}
           />
+
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInput
             value={rating}
             placeholder="Rating"
             placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
             onChangeText={(value: string) => {
               setRating(value);
             }}
@@ -294,29 +326,29 @@ const SignupContainer: FunctionComponent<Props> = props => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
+              marginBottom: 16,
             }}
           />
-          <TextInput
-            value={nationality}
-            placeholder="Nationality"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setNationality(value);
-            }}
-            editable={false}
-            onClick={() => {
-              setcountryPickerModalVisible(true);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
+          <TextInputWrapper
             inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <Text style={[globalStyles.small, styles.optional_text]}>Optional</Text>
+              marginTop: 4,
+            }}>
+            <CountryPicker
+              {...{
+                countryCode: selectedCountry,
+                withFilter,
+                withFlag,
+                withflagButton,
+                withCountryNameButton,
+                onSelect,
+              }}
+            />
+          </TextInputWrapper>
+
           {datepickermodalVisible && (
             <DatePickerModal
               visible={datepickermodalVisible}
@@ -338,13 +370,6 @@ const SignupContainer: FunctionComponent<Props> = props => {
               close={setfeetHeightPickerModalVisible}
             />
           )}
-          {/* {loctaionPickerModalVisible && (
-            <LocationPickerModal
-              visible={loctaionPickerModalVisible}
-              setLocation={setLocation}
-              close={setLocationPickerModalVisible}
-            />
-          )} */}
           {ratingPickerModalVisible && (
             <RatingPickerModal
               visible={ratingPickerModalVisible}
@@ -352,16 +377,10 @@ const SignupContainer: FunctionComponent<Props> = props => {
               close={setratingPickerModalVisible}
             />
           )}
-          {countryPickerModalVisible && (
-            <CountryPickerModal
-              visible={countryPickerModalVisible}
-              setNation={setNationality}
-              close={setcountryPickerModalVisible}
-            />
-          )}
+
           <SignupFooterComponent
             navigation={navigation}
-            isButtonDisabled={!validateForInputs()}
+            isButtonDisabled={false}
             onPress={proceedForPayments}
           />
         </View>

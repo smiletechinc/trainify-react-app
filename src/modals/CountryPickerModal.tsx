@@ -5,14 +5,17 @@ import {
   ActivityIndicator,
   View,
   Image,
+  PixelRatio,
   Platform,
   Alert,
   Button,
   Modal,
   Pressable,
 } from 'react-native';
-import CountryPicker from 'rn-country-dropdown-picker';
+// import CountryPicker from 'rn-country-dropdown-picker';
+import CountryPicker from 'react-native-country-picker-modal';
 import ModalWrapper from '../components/wrappers/ModalWrapper';
+import {CountryCode, Country} from './country';
 import styles from './styles';
 
 type Props = {
@@ -22,69 +25,110 @@ type Props = {
 };
 const CountryPickerModal: FunctionComponent<Props> = props => {
   const {visible, setNation, close} = props;
-  function handleSelection(e) {
-    setNation(e.country);
-    console.log(e.country);
-  }
+
+  const [countryCode, setCountryCode] = useState<CountryCode>('FR');
+  const [country, setCountry] = useState<Country>(null);
+  const [withCountryNameButton, setWithCountryNameButton] =
+    useState<boolean>(false);
+  const [withFlag, setWithFlag] = useState<boolean>(true);
+  const [withEmoji, setWithEmoji] = useState<boolean>(true);
+  const [withFilter, setWithFilter] = useState<boolean>(true);
+  const [withAlphaFilter, setWithAlphaFilter] = useState<boolean>(false);
+  const [withCallingCode, setWithCallingCode] = useState<boolean>(false);
+  const [visibleModal, setVisible] = useState<boolean>(false);
+  const onSelect = (country: Country) => {
+    setCountryCode(country.cca2);
+    setNation(country.name);
+    setCountry(country);
+  };
+  const switchVisible = () => setVisible(!visible);
   return (
-    <ModalWrapper visible={visible}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Select Country</Text>
-          <CountryPicker
-            InputFieldStyle={{
-              borderWidth: 1,
-              marginTop: 8,
-              borderColor: 'gray',
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: '100%',
-              paddingHorizontal: 6,
-              borderBottomWidth: 1,
-            }}
-            DropdownContainerStyle={{
-              opacity: 10,
-              width: '100%',
-              // borderWidth: 0.5,
-              // borderTopWidth: 0,
-              // borderBottomWidth: 0.5,
-              minHeight: 250,
-              marginBottom: 8,
-            }}
-            DropdownRowStyle={{
-              flex: 1,
-              borderBottomWidth: 1,
-              borderBottomColor: 'gray',
-              justifyContent: 'flex-start',
-              paddingHorizontal: 7,
-              width: '100%',
-            }}
-            Placeholder="Search Country"
-            DropdownCountryTextStyle={{
-              fontSize: 20,
-              marginVertical: 5,
-              width: '100%',
-              paddingStart: 15,
-              color: 'black',
-            }}
-            countryNameStyle={{
-              paddingVertical: 8,
-              fontSize: 18,
-              paddingStart: 10,
-              flex: 1,
-              color: 'black',
-            }}
-            flagSize={32}
-            selectedItem={handleSelection}
-          />
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => close()}>
-            <Text style={styles.textStyle1}>Select</Text>
-          </Pressable>
-        </View>
-      </View>
-    </ModalWrapper>
+    // <ModalWrapper visible={visible}>
+    //   <View style={styles.centeredView}>
+    //     <View style={styles.modalView}>
+    //       <Text style={styles.modalText}>Select Country</Text>
+    //       <View
+    //         style={{
+    //           paddingVertical: 10,
+    //           justifyContent: 'center',
+    //           alignItems: 'center',
+    //         }}>
+    //         <CountryPicker
+    //           {...{
+    //             countryCode,
+    //             withFilter,
+    //             withFlag,
+    //             withCountryNameButton,
+    //             withAlphaFilter,
+    //             withCallingCode,
+    //             withEmoji,
+    //             onSelect,
+    //           }}
+    //         />
+    //         {/* <Button
+    //           title={'Clcik flag to choose the co'}
+    //           onPress={switchVisible}
+    //         /> */}
+    //         {country !== null && (
+    //           <Text
+    //             style={{
+    //               maxWidth: 250,
+    //               padding: 10,
+    //               marginTop: 7,
+    //               backgroundColor: '#ddd',
+    //               borderColor: '#888',
+    //               borderWidth: 1 / PixelRatio.get(),
+    //               color: '#777',
+    //             }}>
+    //             {JSON.stringify(country.name, null, 2)}
+    //           </Text>
+    //         )}
+    //       </View>
+    //       <Pressable
+    //         style={[styles.button, styles.buttonClose]}
+    //         onPress={() => close()}>
+    //         <Text style={styles.textStyle1}>Select</Text>
+    //       </Pressable>
+    //     </View>
+    //   </View>
+    // </ModalWrapper>
+    <View
+      style={{
+        paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <CountryPicker
+        {...{
+          countryCode,
+          withFilter,
+          withFlag,
+          withCountryNameButton,
+          withAlphaFilter,
+          withCallingCode,
+          withEmoji,
+          onSelect,
+        }}
+      />
+      {/* <Button
+      title={'Clcik flag to choose the co'}
+      onPress={switchVisible}
+    /> */}
+      {/* {country !== null && (
+        <Text
+          style={{
+            maxWidth: 250,
+            padding: 10,
+            marginTop: 7,
+            backgroundColor: '#ddd',
+            borderColor: '#888',
+            borderWidth: 1 / PixelRatio.get(),
+            color: '#777',
+          }}>
+          {JSON.stringify(country.name, null, 2)}
+        </Text>
+      )} */}
+    </View>
   );
 };
 

@@ -65,7 +65,6 @@ const HeaderWithText: FunctionComponent<Props> = props => {
   };
   const proceedToLogout = () => {
     logoutUser();
-    Alert.alert('You are logged out');
     navigation.replace('Signin');
   };
 

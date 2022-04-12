@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
     marginTop: 11,
     paddingRight: 24,
   },
-  optional_text: { color: 'red', marginTop: 8, marginLeft: 8 },
+  optional_text: { color: 'red', marginTop: 2, marginLeft: 8 },
   // Reset password styles.
   reset_password_text: {
     color: COLORS.medium_dark_blue,
-    marginTop: 16,
+    marginTop: 4,
   },
   reset_password_details: {
     color: COLORS.medium_grey,
