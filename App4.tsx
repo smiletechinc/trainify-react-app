@@ -466,9 +466,9 @@ const App4: FunctionComponent<Props> = props => {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Total {count}</Text>
-        <Text>Last Serve Type {serveType}</Text>
-        <Text>Grade {serveGrade}</Text>
+        {/* <Text>Total {count}</Text> */}
+        <Text>Serve: {serveType}</Text>
+        {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
   };

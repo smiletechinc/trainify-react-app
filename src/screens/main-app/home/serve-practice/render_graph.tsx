@@ -89,17 +89,17 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
     };
   } else if (sliceServes == 0 && kickServes == 0) {
     pie_data = {
-      data: [{x: 'Flat', y: flatServes, label: `Forehand: ${flatServes}`}],
+      data: [{x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`}],
     };
   } else if (sliceServes == 0 && flatServes == 0) {
     pie_data = {
-      data: [{x: 'Kick', y: kickServes, label: `Backhand: ${kickServes}`}],
+      data: [{x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`}],
     };
   } else {
     pie_data = {
       data: [
-        {x: 'Flat', y: flatServes, label: `Forehand: ${flatServes}`},
-        {x: 'Kick', y: kickServes, label: `Backhand: ${kickServes}`},
+        {x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`},
+        {x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`},
         {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
       ],
     };

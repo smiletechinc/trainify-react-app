@@ -1,5 +1,5 @@
-import {StyleSheet, Platform} from 'react-native';
-import {SCREEN_WIDTH, COLORS, SCREEN_HEIGHT, STATUS_BAR_HEIGHT} from '../../constants';
+import { StyleSheet, Platform } from 'react-native';
+import { SCREEN_WIDTH, COLORS, SCREEN_HEIGHT, STATUS_BAR_HEIGHT } from '../../constants';
 
 const styles = StyleSheet.create({
   main_view_container: {
@@ -8,12 +8,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: SCREEN_WIDTH * 0.05,
     paddingBottom: 70
   },
- landing_image_background: {
-  flex: 1,
-  width: SCREEN_WIDTH,
-  height: SCREEN_HEIGHT,
- },
- // Signin styles.
+  landing_image_background: {
+    flex: 1,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+  },
+  // Signin styles.
   login_main_container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -31,10 +31,11 @@ const styles = StyleSheet.create({
     marginTop: 11,
     paddingRight: 24,
   },
+  optional_text: { color: 'red', marginTop: 2, marginLeft: 8 },
   // Reset password styles.
   reset_password_text: {
     color: COLORS.medium_dark_blue,
-    marginTop: 16,
+    marginTop: 4,
   },
   reset_password_details: {
     color: COLORS.medium_grey,
@@ -44,8 +45,8 @@ const styles = StyleSheet.create({
   recordButtonContainer: {
     flex: 1,
     backgroundColor: 'white',
-    borderColor:'gray',
-    borderWidth:1,
+    borderColor: 'gray',
+    borderWidth: 1,
     flexDirection: 'row',
     margin: 0,
   },
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     shadowColor: "#000",
-    width:SCREEN_WIDTH * 0.85,
+    width: SCREEN_WIDTH * 0.85,
     shadowOffset: {
       width: 0,
       height: 2
@@ -118,8 +119,8 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 10,
-    paddingVertical:10,
-    paddingHorizontal:20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     elevation: 2
   },
   buttonOpen: {

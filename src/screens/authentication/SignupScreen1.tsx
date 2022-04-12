@@ -103,18 +103,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
     if (inchHeight === '') {
       return false;
     }
-    if (birthday === '') {
-      return false;
-    }
+    // if (birthday === '') {
+    //   return false;
+    // }
     if (location === '') {
       return false;
     }
     if (rating === '') {
       return false;
     }
-    if (nationality === '') {
-      return false;
-    }
+    // if (nationality === '') {
+    //   return false;
+    // }
     return true;
   };
 
@@ -166,6 +166,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
               paddingLeft: 8,
               backgroundColor: COLORS.white,
               marginTop: 8,
+              marginBottom: 16,
             }}>
             <Text
               style={[
@@ -197,12 +198,18 @@ const SignupContainer: FunctionComponent<Props> = props => {
               icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
             />
           </View>
+
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
+
           <View
             style={{
               width: SCREEN_WIDTH * 0.9,
               paddingLeft: 8,
               backgroundColor: COLORS.white,
-              marginTop: 16,
+              marginTop: 4,
+              marginBottom: 12,
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -212,7 +219,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 globalStyles.h1,
                 {
                   color: COLORS.dark_black,
-                  marginTop: 16,
+                  marginTop: 4,
                   fontWeight: 'bold',
                   textAlign: 'center',
                   paddingTop: 10,
@@ -235,7 +242,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 fontWeight: 'bold',
               }}
               inputParentStyles={{
-                marginTop: 16,
+                marginTop: 4,
                 width: 100,
               }}
             />
@@ -254,11 +261,14 @@ const SignupContainer: FunctionComponent<Props> = props => {
                 fontWeight: 'bold',
               }}
               inputParentStyles={{
-                marginTop: 16,
+                marginTop: 4,
                 width: 100,
               }}
             />
           </View>
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInput
             value={birthday}
             placeholder="Birthday"
@@ -274,9 +284,14 @@ const SignupContainer: FunctionComponent<Props> = props => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
+              marginBottom: 12,
             }}
           />
+
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInput
             value={location}
             placeholder="Location"
@@ -288,9 +303,14 @@ const SignupContainer: FunctionComponent<Props> = props => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
+              marginBottom: 16,
             }}
           />
+
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInput
             value={rating}
             placeholder="Rating"
@@ -306,12 +326,16 @@ const SignupContainer: FunctionComponent<Props> = props => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
+              marginBottom: 16,
             }}
           />
+          <Text style={[globalStyles.small, styles.optional_text]}>
+            Optional
+          </Text>
           <TextInputWrapper
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 4,
             }}>
             <CountryPicker
               {...{
@@ -356,7 +380,7 @@ const SignupContainer: FunctionComponent<Props> = props => {
 
           <SignupFooterComponent
             navigation={navigation}
-            isButtonDisabled={!validateForInputs()}
+            isButtonDisabled={false}
             onPress={proceedForPayments}
           />
         </View>
