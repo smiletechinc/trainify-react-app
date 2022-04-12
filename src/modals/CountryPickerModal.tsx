@@ -45,10 +45,7 @@ const CountryPickerModal: FunctionComponent<Props> = props => {
             DropdownContainerStyle={{
               opacity: 10,
               width: '100%',
-              // borderWidth: 0.5,
-              // borderTopWidth: 0,
-              // borderBottomWidth: 0.5,
-              minHeight: 250,
+              // minHeight: 100,
               marginBottom: 8,
             }}
             DropdownRowStyle={{

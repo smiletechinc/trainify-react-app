@@ -90,7 +90,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     try {
       const result = await RNIap.initConnection();
       console.log('connection is => ', result);
-      // await RNIap.consumeAllItemsAndroid();
     } catch (err) {
       console.log('error in cdm => ', err);
     }
@@ -100,12 +99,8 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         console.log('purchase');
         if (purchase.productId === membershipProduct) {
           console.log('purchase.productId', purchase.productId);
-          // await this.finishMembershipPurchase(purchase);
-          // await requestPurchase(purchase)
         } else {
           console.log('finish purchase.productId', purchase.productId);
-          // await this.finishCoursePurchase(purchase);
-          // await requestPurchase(purchase)
         }
       },
     );
@@ -117,10 +112,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         if (error.code === 'E_USER_CANCELLED') return;
 
         if (error.code === 'E_ALREADY_OWNED') {
-          // @TODO When Android subscriptions fixed:
-          // Check if user already has a subscription in owned products
-          // If so, retry creating  membership on YI servers
-          // const subscriptions = await RNIap.getSubscriptions(itemSubs);
           return;
         }
 
@@ -145,7 +136,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       const products: Product[] = await RNIap.getProducts(itemSkus);
       console.log('Products', products);
       setProductList(products);
-      // requestPurchase(itemSkus[0]);
     } catch (err) {
       console.log('getItems || purchase error => ', err);
     }
@@ -189,20 +179,12 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         sku,
         dangerouslyFinishTransactionAutomatically,
       ).then(res => {
-        alert(`Purchase success, ${res}`);
+        console.log(`Purchase success, ${res}`);
       });
     } catch (err) {
       alert(`requestPurchase error => , ${err}`);
     }
   }
-
-  // async function requestPurchase (sku)  {
-  //   try {
-  //     RNIap.requestPurchase(sku);
-  //   } catch (err) {
-  //     console.log('requestPurchase error => ', err);
-  //   }
-  // };
 
   async function requestSubscription(sku) {
     try {
@@ -212,35 +194,12 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
   }
 
-  function purchaseConfirmed() {
-    //you can code here for what changes you want to do in db on purchase successfull
-  }
-
   const onSuccess = () => {
-    alert('successfully puchased');
+    console.log('successfully puchased');
   };
 
   function proceedToPurchase() {
-    // getSubscriptions();
-    // getAvailablePurchases();
     requestSubscription(trainProducts[subscriptionPlan]);
-    // getAvailablePurchases();
-
-    // RNIap.getProducts(trainProducts)
-    // .then(success => {
-    //   let product = success[0];
-    //   console.log("product:", JSON.stringify(success));
-    //   RNIap.requestPurchase(product.productId)
-    //   .then(ok => {
-    //     alert('requested to purchase');
-    //   })
-    //   .catch(error => {
-    //     alert(error);
-    //   })
-    // })
-    // .catch(error => {
-    //    alert( JSON.stringify(error));
-    // })
   }
 
   const proceedToRegister = user => {
@@ -251,12 +210,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   const goToSigninPage = () => {
     navigation.replace('Signin');
-    //     const resetAction = StackActions.reset({
-    //   index: 0, // <-- currect active route from actions array
-    //   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
-    // });
-
-    //   navigation.dispatch(resetAction);
   };
 
   const registrationSuccess = (userCredential?: any) => {
@@ -289,11 +242,11 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         Alert.alert('Trainify', 'User already exists!');
       } else {
         console.log('signup error: ', errorMessage);
-        Alert.alert('Trainify', 'Error in signup!');
+        Alert.alert('Trainify', 'Error in signup from firebase!');
       }
     } else {
       console.log('signup error: ', 'Unknown');
-      Alert.alert('Trainify', 'Error in signup!');
+      Alert.alert('Trainify', 'Error in signup unhandle!');
     }
   };
 

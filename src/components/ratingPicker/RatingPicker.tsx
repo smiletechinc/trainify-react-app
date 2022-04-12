@@ -20,16 +20,19 @@ const InchHeightPicker: React.FunctionComponent<Props> = props => {
       selectedValue={currentLanguage}
       onValueChange={(value, index) => proceedToChangeLanguage(value)}
       style={styles.picker}>
-      <Picker.Item label="1" value="1" />
-      <Picker.Item label="2" value="2" />
-      <Picker.Item label="3" value="3" />
-      <Picker.Item label="4" value="4" />
-      <Picker.Item label="5" value="5" />
-      <Picker.Item label="6" value="6" />
-      <Picker.Item label="7" value="7" />
-      <Picker.Item label="8" value="8" />
-      <Picker.Item label="9" value="9" />
-      <Picker.Item label="10" value="10" />
+      <Picker.Item label="Beginner 1.0" value="Beginner 1.0" />
+      <Picker.Item label="Beginner 1.5" value="Beginner 1.5" />
+      <Picker.Item label="Beginner 2.0" value="Beginner 2.0" />
+      <Picker.Item label="Intermediate 2.5" value="Intermediate 2.5" />
+      <Picker.Item label="Intermediate 3.0" value="Intermediate 3.0" />
+      <Picker.Item label="Intermediate 3.5" value="Intermediate 3.5" />
+      <Picker.Item label="Advance 4.0" value="Advance 4.0" />
+      <Picker.Item label="Advance 4.5" value="Advance 4.5" />
+      <Picker.Item label="Advance 5.0" value="Advance 5.0" />
+      <Picker.Item label="Advance 5.5" value="Advance 5.5" />
+      <Picker.Item label="Advance 6.0" value="Advance 6.0" />
+      <Picker.Item label="Advance 6.5" value="Advance 6.5" />
+      <Picker.Item label="Advance 7.0" value="Advance 7.0" />
     </Picker>
   );
 };

@@ -271,17 +271,17 @@ const App4: FunctionComponent<Props> = props => {
   const goSettings = () => {
     Linking.openSettings();
   };
-  const proceedToLogout = () => {
+  const proceedtoback = () => {
     navigation.goBack();
   };
 
-  const logoutAlert = () => {
+  const gallerypermissionAlert = () => {
     Alert.alert(
-      'Alert  ',
-      'Are you sure to logout ',
+      'Gallery Permission Denied',
+      'Please check gallery permission from iPhone settings ',
       [
-        {text: 'GoBack', onPress: () => proceedToLogout()},
-        {text: 'GotoSettings', onPress: () => goSettings()},
+        {text: 'Go Back', onPress: () => proceedtoback()},
+        {text: 'Go To Settings', onPress: () => goSettings()},
       ],
       {cancelable: false},
     );
@@ -315,7 +315,7 @@ const App4: FunctionComponent<Props> = props => {
                 })
                 .catch(e => {
                   console.log('Permission Denied');
-                  logoutAlert();
+                  gallerypermissionAlert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
