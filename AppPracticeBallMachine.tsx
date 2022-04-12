@@ -6,6 +6,7 @@ import {
   Dimensions,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -248,6 +249,25 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     }
   }, [tfReady]);
 
+  const goSettings = () => {
+    Linking.openSettings();
+  };
+  const proceedtoback = () => {
+    navigation.goBack();
+  };
+
+  const gallerypermissionalert = () => {
+    Alert.alert(
+      'Gallery Permission Denied',
+      'Please check gallery permission from iPhone settings ',
+      [
+        {text: 'Go Back', onPress: () => proceedtoback()},
+        {text: 'Go To Settings', onPress: () => goSettings()},
+      ],
+      {cancelable: false},
+    );
+  };
+
   const stopRecording = async () => {
     try {
       const responseReocrding = await RecordScreen.stopRecording()
@@ -275,11 +295,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
                 })
                 .catch(e => {
                   // console.log('error:........................................ ', e);
-                  Alert.alert(
-                    'Sorry! This operation cannot be performed without permission',
-                    'Allow the permissions in the settings to continue',
-                  );
-                  navigation.goBack();
+                  console.log('Permission Denied');
+                  gallerypermissionalert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);

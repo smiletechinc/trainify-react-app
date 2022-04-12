@@ -4,6 +4,7 @@ import FeetHeightPickerModal from './feetHeightPickerModal';
 import CountryPickerModal from './CountryPickerModal';
 import RatingPickerModal from './RatingPickerModal';
 import LocationPickerModal from './LocationPickerModal';
+import AlertModal from './AlertModal';
 
 export {
   DatePickerModal,
@@ -11,5 +12,6 @@ export {
   FeetHeightPickerModal,
   CountryPickerModal,
   RatingPickerModal,
+  AlertModal,
   LocationPickerModal,
 };
