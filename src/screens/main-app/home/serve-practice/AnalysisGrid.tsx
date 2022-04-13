@@ -156,7 +156,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
               setFilterValue(event.nativeEvent.value);
               setIndex(event.nativeEvent.selectedSegmentIndex);
             }}
-            tintColor="#0096FF"
+            tintColor="#008EC1"
             backgroundColor="#D3D3D3"
             style={{height: 32}}
           />
