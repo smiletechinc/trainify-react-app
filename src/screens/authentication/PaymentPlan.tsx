@@ -115,7 +115,11 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
           return;
         }
 
-        alert(`${JSON.stringify(error)}, IAP purchaseErrorListener`);
+        alert(
+          `Subscription Purchase Error, ${JSON.stringify(
+            error,
+          )}, IAP purchaseErrorListener`,
+        );
       },
     );
   }
@@ -190,7 +194,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     try {
       RNIap.requestSubscription(sku);
     } catch (err) {
-      alert(err.toLocaleString());
+      alert(`request Subscription failed =>, ${err.toLocaleString()}`);
     }
   }
 
@@ -356,16 +360,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
                 // proceedToPurchase();
               }}
             />
-            {/* <SubscriptionItem
-              leftText="Platinum"
-              price="$3.0/yr"
-              isSelected={subscriptionPlan === 3 ? true : false}
-              onPress={() => {
-                setSubscriptionPlan(3);
-                requestPurchase(trainProducts[3], onSuccess);
-                // proceedToPurchase();
-              }}
-            /> */}
           </View>
 
           <SimpleButton

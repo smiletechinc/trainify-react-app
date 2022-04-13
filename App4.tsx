@@ -43,6 +43,8 @@ import {AlertModal} from './src/modals/index';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
+const fronCamera = require('./src/assets/images/frontCamera.png');
+const backCamera = require('./src/assets/images/backCamera.png');
 
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
@@ -344,13 +346,20 @@ const App4: FunctionComponent<Props> = props => {
 
   const renderCameraTypeSwitcher = () => {
     return (
-      <View
-        style={styles.cameraTypeSwitcher}
-        onTouchEnd={handleSwitchCameraType}>
-        <Text>
-          Switch to{' '}
-          {cameraType === Camera.Constants.Type.back ? 'front' : 'back'} camera
-        </Text>
+      <View style={styles.recordIcon} onTouchEnd={handleSwitchCameraType}>
+        {cameraType === Camera.Constants.Type.back ? (
+          <IconButton
+            icon={fronCamera}
+            onPress={handleSwitchCameraType}
+            transparent={true}
+          />
+        ) : (
+          <IconButton
+            icon={backCamera}
+            onPress={handleSwitchCameraType}
+            transparent={true}
+          />
+        )}
       </View>
     );
   };
@@ -1438,10 +1447,17 @@ const styles = StyleSheet.create({
   },
   recordIcon: {
     width: 60,
-    height: 60,
+    height: 50,
     position: 'absolute',
     bottom: 36,
-    zIndex: 1000,
+    top: 2,
+    right: 10,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .7)',
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
+    marginTop: 16,
   },
   loadingMsg: {
     position: 'absolute',
@@ -1452,18 +1468,6 @@ const styles = StyleSheet.create({
   },
   loadingMsgText: {
     color: 'red',
-  },
-  cameraTypeSwitcher: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 180,
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
-    padding: 8,
-    zIndex: 20,
-    marginTop: 16,
   },
   fpsContainer: {
     position: 'absolute',
