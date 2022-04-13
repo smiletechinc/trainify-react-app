@@ -76,13 +76,15 @@ export const resetPasswordService = (email:string, onSuccess?:any, onFailure?:an
 }
 
 export const registerUserService = (userObject:UserObject, onSuccess?:any, onFailure?:any) => {
-    const branch = `/users/${userObject.id}`
+  console.log("userObject", userObject);  
+  const branch = `/users/${userObject.id}`
     console.log('Branch: ', branch)
     if (app) {
       const db = getDatabase(app);
         set(ref(db, branch), userObject)
         .then((user) => {
         // Signed in
+        console.log(user);
         onSuccess(user);
       })
       .catch((error) => {

@@ -44,6 +44,7 @@ import RNIap, {
   SubscriptionPurchase,
 } from 'react-native-iap';
 import {UserObject} from '../../types';
+import {useAuthentication, useRegisterd} from '../../hooks';
 
 const itemSkus =
   Platform.select({
@@ -77,6 +78,12 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const [productList, setProductList] = useState([]);
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
+
+  const {signUpService, signInService, authObjectId, uploadAuthObjectFailure} =
+    useAuthentication({
+      authObject: authObject,
+    });
+  const {registerUserService} = useRegisterd();
 
   useEffect(() => {
     proceedForApplePay();
@@ -207,9 +214,9 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   }
 
   const proceedToRegister = user => {
-    const id = user.uid;
-    const userObject: UserObject = {...signupObject, id: user.uid};
-    registerUserService(userObject, registrationSuccess, registrationFailure);
+    const userObject: UserObject = {...signupObject, id: user};
+    registerUserService(userObject);
+    // registerUserService(userObject, registrationSuccess, registrationFailure);
   };
 
   const goToSigninPage = () => {
@@ -218,7 +225,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   const registrationSuccess = (userCredential?: any) => {
     Alert.alert('Trainify', `You've signed up successfully.`);
-    goToSigninPage();
+    // goToSigninPage();
   };
 
   const registrationFailure = error => {
@@ -231,31 +238,15 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
   };
 
-  const signupSuccess = (user?: any) => {
-    if (user) {
-      proceedToRegister(user);
+  useEffect(() => {
+    if (authObjectId) {
+      proceedToRegister(authObjectId);
     }
-  };
-
-  const signupFailure = error => {
-    if (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      if (errorCode === 'auth/email-already-in-use') {
-        Alert.alert('Signup error', 'User already exists!');
-      } else {
-        console.log('signup error: ', errorMessage);
-        Alert.alert('Signup error', 'Please enter a valid email and password');
-      }
-    } else {
-      console.log('signup error: ', 'Unknown');
-      Alert.alert('Signup error', 'Error in signup!');
-    }
-  };
+  }, [authObjectId, uploadAuthObjectFailure]);
 
   const proceedToSignup = () => {
-    signUpService(authObject, signupSuccess, signupFailure);
+    // signUpService(authObject, signupSuccess, signupFailure);
+    signUpService(authObject);
   };
 
   return (

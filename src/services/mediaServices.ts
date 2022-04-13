@@ -6,10 +6,6 @@ import storage from '@react-native-firebase/storage';
 import { ErrorObject, VideoData } from '../../types';
 import { Alert, Platform } from 'react-native';
 
-// Create a root reference
-// const storage = getStorage();
-// storage.maxOperationRetryTime = 15000;
-
 export const uploadVideoService = async (videoData, onSuccess?: any, onFailure?: any) => {
   const fileName = videoData.fileName ? videoData.fileName : videoData.name ? videoData.name : 'temp-file-name';
   const fileURI = videoData.uri;
@@ -28,26 +24,6 @@ export const uploadVideoService = async (videoData, onSuccess?: any, onFailure?:
   } catch (error) {
     Alert.alert('Sorry Something went wrong.', error);
   }
-
-  // const img = await fetch(fileImage.uri);
-  // const bytes = await img.blob();
-
-  // try{
-  //   uploadBytes(storageRef, bytes)
-  //   .then((response) => {
-  //     console.log('Video uploaded: ', response);
-  //     // let fileName = response.metadata.name
-  //     console.log('success: ', response);
-  //     let filePath = response.ref._location.path_;
-  //     getVideoURL(filePath, onSuccess, onFailure);
-  //   })
-  //   .catch((error) => {
-  //     Alert.alert('Error: ', error);
-  //     onFailure(error);
-  //   })
-  // } catch (error) {
-  //   Alert.alert(error);
-  // }
 
 }
 
