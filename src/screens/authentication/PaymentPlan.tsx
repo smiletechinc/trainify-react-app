@@ -2,21 +2,19 @@ import React, {FunctionComponent, useState, useEffect} from 'react';
 import {
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   View,
   Image,
   Platform,
   Alert,
+  Button,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// const PaymentRequest = require('react-native-payments').PaymentRequest;
 
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
-import {TextInput} from '../../global-components/input';
-import SignupFooterComponent from './components/SignupFooterComponent';
 import AppUserItem from './components/AppUserItem';
+import AnimatedLoader from 'react-native-animated-loader';
 import SubscriptionItem from './components/SubscriptionItem';
 import {
   signUpService,
@@ -32,27 +30,24 @@ import {trainProducts, membershipProduct} from './products';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
+const registerUserAnimation = require('./../../assets/animations/register-user-animation.json');
+const profileUserAnimation = require('./../../assets/animations/create-profile-animation.json');
 
 import RNIap, {
   InAppPurchase,
   Product,
-  ProductPurchase,
   PurchaseError,
-  acknowledgePurchaseAndroid,
   purchaseErrorListener,
   purchaseUpdatedListener,
   SubscriptionPurchase,
 } from 'react-native-iap';
 import {UserObject} from '../../types';
-import {useAuthentication, useRegisterd} from '../../hooks';
+import {useAuthentication, useProfile} from '../../hooks';
 
 const itemSkus =
   Platform.select({
     ios: trainProducts,
-    android: [
-      ...trainProducts,
-      // ...androidStaticTestProducts,
-    ],
+    android: [...trainProducts],
   }) || [];
 
 const itemSubs =
@@ -74,16 +69,29 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const {authObject, signupObject} = route.params;
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(-1);
-  const [products, setProducts] = useState([]);
   const [productList, setProductList] = useState([]);
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
 
-  const {signUpService, signInService, authObjectId, uploadAuthObjectFailure} =
-    useAuthentication({
-      authObject: authObject,
-    });
-  const {registerUserService} = useRegisterd();
+  const {
+    creatingAccount,
+    registerUserStatus,
+    registerErrorStatus,
+    signUpService,
+    signInService,
+    cancelUploading,
+    registeredUserObject,
+  } = useAuthentication({
+    authObject: authObject,
+  });
+
+  // const {
+  //   profileUser,
+  //   creatingProfile,
+  //   profileErrorStatus,
+  //   profileUserStatus,
+  //   registerProfileService,
+  // } = useProfile();
 
   useEffect(() => {
     proceedForApplePay();
@@ -91,6 +99,26 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       removeApplePay();
     };
   }, []);
+
+  // useEffect(() => {
+  //   if (profileErrorStatus) {
+  //     Alert.alert(profileErrorStatus);
+  //   } else if (profileUser) {
+  //     (() => {
+  //       goToSigninPage();
+  //     })();
+  //   }
+  // }, [profileUser, profileErrorStatus]);
+
+  useEffect(() => {
+    if (registerErrorStatus) {
+      Alert.alert(registerErrorStatus);
+    } else if (registeredUserObject) {
+      (() => {
+        proceedToCreateProfile(registeredUserObject);
+      })();
+    }
+  }, [registeredUserObject, registerErrorStatus]);
 
   async function proceedForApplePay() {
     getItems();
@@ -213,10 +241,11 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     requestSubscription(trainProducts[subscriptionPlan]);
   }
 
-  const proceedToRegister = user => {
-    const userObject: UserObject = {...signupObject, id: user};
-    registerUserService(userObject);
-    // registerUserService(userObject, registrationSuccess, registrationFailure);
+  const proceedToCreateProfile = firebaseObject => {
+    console.log('firebase object:', firebaseObject);
+    const userObject: UserObject = {...signupObject, id: firebaseObject.uid};
+    // registerProfileService(userObject);
+    registerUserService(userObject, registrationSuccess, registrationFailure);
   };
 
   const goToSigninPage = () => {
@@ -224,8 +253,9 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   };
 
   const registrationSuccess = (userCredential?: any) => {
+    console.log('userCredential', userCredential);
     Alert.alert('Trainify', `You've signed up successfully.`);
-    // goToSigninPage();
+    goToSigninPage();
   };
 
   const registrationFailure = error => {
@@ -237,12 +267,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       Alert.alert('Trainify', 'Error in user registration!');
     }
   };
-
-  useEffect(() => {
-    if (authObjectId) {
-      proceedToRegister(authObjectId);
-    }
-  }, [authObjectId, uploadAuthObjectFailure]);
 
   const proceedToSignup = () => {
     // signUpService(authObject, signupSuccess, signupFailure);
@@ -363,6 +387,30 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               marginTop: 33,
             }}
           />
+        </View>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 47,
+            paddingHorizontal: SCREEN_WIDTH * 0.05,
+          }}>
+          <AnimatedLoader
+            visible={creatingAccount}
+            overlayColor={'rgba(255, 255, 255, 0.75)'}
+            source={
+              creatingAccount ? registerUserAnimation : profileUserAnimation
+            }
+            animationStyle={styles.lottie}
+            speed={1}>
+            <Text>{creatingAccount ? registerUserStatus : false}</Text>
+            <Button
+              title={'Cancel'}
+              onPress={() => {
+                cancelUploading();
+                navigation.navigate('Signup');
+              }}
+            />
+          </AnimatedLoader>
         </View>
       </KeyboardAwareScrollView>
     </View>

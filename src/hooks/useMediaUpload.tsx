@@ -147,12 +147,14 @@ export const useMediaUpload = props => {
         console.log('Video url response success: ', response);
         setVideoURL(response);
         setUploading(false);
+        setCurrentStatus('Video uploded!');
       })
       .catch(error => {
         console.log('Video url response error: ', error);
         console.error(error);
         setUploadVideoFailure(true);
         setUploading(false);
+        setCurrentStatus('Error uploading video!');
       });
     // return downloadURL;
   };

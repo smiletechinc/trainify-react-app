@@ -1,4 +1,4 @@
-import {useState, useCallback} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import app from '../config/db';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import firebase from 'firebase/auth';
@@ -12,10 +12,17 @@ interface Props {
 
 export const useAuthentication = props => {
   const {authObject} = props;
-  const [authObjectId, setAuthObjectId] = useState('');
-  const [uploadAuthObjectFailure, setUploadAuthObjectFailure] = useState(false);
+  const [registeredUserObject, setRegisteredUserObject] =
+    useState<firebase.User>();
+  const [registerUserStatus, setRegisterUserStatus] =
+    useState('Setting up account');
+  const [registerErrorStatus, setErrorStatus] = useState('');
+  const [creatingAccount, setCreatingAccount] = useState(false);
 
   const signUpService = useCallback(async authObject => {
+    setCreatingAccount(true);
+    setRegisterUserStatus('Creating account !');
+    setErrorStatus('');
     console.log('Auth Oject: ', authObject);
     const {email, password} = authObject;
     if (app) {
@@ -26,25 +33,32 @@ export const useAuthentication = props => {
             // Signed in
             const user = userCredential.user;
             console.log('User: ', JSON.stringify(userCredential));
-            setAuthObjectId(user.uid);
+            if (user) {
+              setRegisterUserStatus('Account created successfully!');
+              setRegisteredUserObject(user);
+            }
+            setCreatingAccount(false);
+            // setErrorRegisterObject('');
           })
           .catch(error => {
-            setUploadAuthObjectFailure(true);
+            // setErrorRegisterObject(error);
             const errorCode = error.code;
             const errorMessage = error.message;
             if (errorCode === 'auth/email-already-in-use') {
-              Alert.alert('Signup error', 'User already exists!');
+              // console.log('User already exists!');
+              setErrorStatus('User already exists!');
             } else {
               console.log('signup error: ', errorMessage);
-              Alert.alert(
-                'Signup error',
-                'Please enter a valid email and password',
-              );
+              setErrorStatus('Invalid email or password');
             }
+            setCreatingAccount(false);
+            // setRegisteredUserObject('');
           });
       } catch (error) {
         Alert.alert('Auth Object not uploaded.', error);
         Alert.alert('Error Signup AuthObject, ', JSON.stringify(error));
+        setCreatingAccount(false);
+        setErrorStatus('Error Creating account');
       }
     } else {
       const error: ErrorObject = {
@@ -52,6 +66,8 @@ export const useAuthentication = props => {
       };
       console.log('signup error: ', 'Unknown');
       Alert.alert('Signup error', 'Error in signup!');
+      setCreatingAccount(false);
+      setErrorStatus('Error in server');
     }
   }, []);
 
@@ -87,10 +103,18 @@ export const useAuthentication = props => {
     }
   }, []);
 
+  const cancelUploading = () => {
+    setCreatingAccount(false);
+    console.log('Uploading cancelled');
+  };
+
   return {
+    registeredUserObject,
+    creatingAccount,
+    registerUserStatus,
+    registerErrorStatus,
     signUpService,
     signInService,
-    authObjectId,
-    uploadAuthObjectFailure,
+    cancelUploading,
   };
 };
