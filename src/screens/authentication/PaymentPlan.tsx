@@ -269,7 +269,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   };
 
   const proceedToSignup = () => {
-    // signUpService(authObject, signupSuccess, signupFailure);
     signUpService(authObject);
   };
 
@@ -342,17 +341,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               SUBSCRIPTION TIERS
             </Text>
 
-            {/* <SubscriptionItem
-              leftText="Free"
-              price="0 PKR"
-              isSelected = {subscriptionPlan === 0 ? true : false}
-              onPress={() => {
-                setSubscriptionPlan(0);
-                requestPurchase(trainProducts[0], onSuccess);
-                proceedToPurchase();
-              }}
-            /> */}
-
             <SubscriptionItem
               leftText="Basic"
               rightText="Serve Practice Only"
@@ -361,7 +349,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               onPress={() => {
                 setSubscriptionPlan(1);
                 requestPurchase(trainProducts[1], onSuccess);
-                // proceedToPurchase();
               }}
             />
             <SubscriptionItem
@@ -372,7 +359,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               onPress={() => {
                 setSubscriptionPlan(2);
                 requestPurchase(trainProducts[2], onSuccess);
-                // proceedToPurchase();
               }}
             />
           </View>

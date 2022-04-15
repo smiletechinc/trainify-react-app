@@ -145,7 +145,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
             padding={screenWidth / 3.9}
             width={screenWidth}
             height={screenHeight / 2}
-            colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
+            colorScale={['gold', 'cyan', 'gray']}
             data={pie_data.data}
           />
         </View>

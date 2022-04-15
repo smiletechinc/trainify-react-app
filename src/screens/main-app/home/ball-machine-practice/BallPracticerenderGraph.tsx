@@ -44,10 +44,10 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
   const data_victory = {
     AGrade: [
       {x: 'Forehand Return', y: 30},
-      {x: 'Backhand Return', y: 20},
+      // {x: 'Backhand Return', y: 20},
     ],
     BGrade: [
-      {x: 'Forehand Return', y: 50},
+      // {x: 'Forehand Return', y: 50},
       {x: 'Backhand Return', y: 80},
     ],
   };
@@ -74,10 +74,10 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
   };
 
   data_victory.AGrade[0].y = analysis_data['data'][0][0];
-  data_victory.AGrade[1].y = analysis_data['data'][1][0];
+  // data_victory.AGrade[1].y = analysis_data['data'][1][0];
 
-  data_victory.BGrade[0].y = analysis_data['data'][0][1];
-  data_victory.BGrade[1].y = analysis_data['data'][1][1];
+  data_victory.BGrade[0].y = analysis_data['data'][1][0];
+  // data_victory.BGrade[1].y = analysis_data['data'][1][1];
 
   return (
     <ScreenWrapperWithHeader
@@ -101,7 +101,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
           <Text>Rally Length Breakdown</Text>
         </View>
         <View style={styles.vectorContainer}>
-          <VictoryChart domainPadding={screenWidth / 6} width={screenWidth}>
+          <VictoryChart domainPadding={screenWidth / 4} width={screenWidth}>
             <VictoryAxis
               dependentAxis
               domain={{y: [0, 8]}}
@@ -115,7 +115,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
                 }}
                 data={data_victory.AGrade}
                 labels={({datum}) => datum.y}
-                style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
+                style={{data: {fill: 'tomato'}, labels: {fill: 'white'}}}
                 labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
               <VictoryBar
                 animate={{
@@ -126,7 +126,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
                 style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
                 labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
             </VictoryGroup>
-            <VictoryLegend
+            {/* <VictoryLegend
               width={screenWidth / 80}
               x={screenWidth / 4}
               orientation={'horizontal'}
@@ -134,7 +134,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
               data={[
                 {name: 'Picked', symbol: {fill: 'blue'}},
                 {name: 'Missed', symbol: {fill: 'orange'}},
-              ]}></VictoryLegend>
+              ]}></VictoryLegend> */}
           </VictoryChart>
         </View>
       </View>

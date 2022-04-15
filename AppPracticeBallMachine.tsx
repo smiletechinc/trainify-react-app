@@ -1021,24 +1021,24 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         console.log('Mid');
       }
 
-      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
-        missed = missed + 1;
-        setIsMissed('Missed Detected');
-        if (isForehandMissed) {
-          // Setting missed detection
-          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
-          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
-        } else {
-          // Setting missed detection
-          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
-          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
-        }
+      // if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+      //   missed = missed + 1;
+      //   setIsMissed('Missed Detected');
+      //   if (isForehandMissed) {
+      //     // Setting missed detection
+      //     analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+      //     analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+      //   } else {
+      //     // Setting missed detection
+      //     analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+      //     analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+      //   }
 
-        // console.log("Missed: ", missed);
-        missTimeCounter = 0;
-        rallyRunningFlag = false;
-        setData(analysis_data.data);
-      }
+      //   // console.log("Missed: ", missed);
+      //   missTimeCounter = 0;
+      //   rallyRunningFlag = false;
+      //   setData(analysis_data.data);
+      // }
       console.log('Missed: ', missed);
     }
 
@@ -1105,24 +1105,24 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         console.log('Mid');
       }
 
-      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
-        missed = missed + 1;
-        setIsMissed('Missed Detected');
-        if (isForehandMissed) {
-          // Setting missed detection
-          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
-          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
-        } else {
-          // Setting missed detection
-          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
-          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
-        }
+      // if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+      //   missed = missed + 1;
+      //   setIsMissed('Missed Detected');
+      //   if (isForehandMissed) {
+      //     // Setting missed detection
+      //     analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+      //     analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+      //   } else {
+      //     // Setting missed detection
+      //     analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+      //     analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+      //   }
 
-        // console.log("Missed: ", missed);
-        missTimeCounter = 0;
-        rallyRunningFlag = false;
-        setData(analysis_data.data);
-      }
+      //   // console.log("Missed: ", missed);
+      //   missTimeCounter = 0;
+      //   rallyRunningFlag = false;
+      //   setData(analysis_data.data);
+      // }
       console.log('Missed: ', missed);
     }
 
