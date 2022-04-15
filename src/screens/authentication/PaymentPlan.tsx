@@ -150,7 +150,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
           return;
         }
 
-        alert(
+        console.log(
           `Subscription Purchase Error, ${JSON.stringify(
             error,
           )}, IAP purchaseErrorListener`,
@@ -221,7 +221,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         console.log(`Purchase success, ${res}`);
       });
     } catch (err) {
-      alert(`requestPurchase error => , ${err}`);
+      console.log(`requestPurchase error => , ${err}`);
     }
   }
 
@@ -229,7 +229,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     try {
       RNIap.requestSubscription(sku);
     } catch (err) {
-      alert(`request Subscription failed =>, ${err.toLocaleString()}`);
+      console.log(`request Subscription failed =>, ${err.toLocaleString()}`);
     }
   }
 

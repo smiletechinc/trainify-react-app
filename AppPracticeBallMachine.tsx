@@ -428,6 +428,29 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
             stroke="white"
             strokeWidth="5"
           />
+          <View
+            style={{
+              position: 'absolute',
+              left: cx1,
+              top: cy1 + 10,
+              right: cx3,
+              height: cx2,
+              borderRadius: 2,
+              borderStyle: 'solid',
+              justifyContent: 'center',
+              padding: 8,
+              zIndex: 30,
+            }}>
+            {isLoading ? (
+              <Text style={styles.loadingMsgText}>
+                Preparing live camera photages...
+              </Text>
+            ) : (
+              <Text style={styles.loadingMsgText}>
+                Please callibrate your self so that your whole body is visible.
+              </Text>
+            )}
+          </View>
         </Svg>
       );
     } else {
@@ -457,8 +480,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Total {count}</Text>
-        <Text>Last Return Type {serveType}</Text>
+        {/* <Text>Total {count}</Text> */}
+        <Text>{serveType ? `${serveType}` : 'Last Return Type'}</Text>
       </View>
     );
   };
@@ -1379,21 +1402,11 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       </View>
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
-          {tfReady ? (
-            camView()
-          ) : (
-            <View style={styles.loadingMsg}>
-              {isLoading && (
-                <Text style={styles.loadingMsgText}>
-                  Preparing live camera photages...
-                </Text>
-              )}
-            </View>
-          )}
+          {tfReady && camView()}
           {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
-          {renderCalibration()}
+          {/* {renderCalibration()} */}
           {renderCameraTypeSwitcher()}
         </View>
         {isStartedVideoRecording && (
@@ -1533,7 +1546,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingMsgText: {
+    textAlign: 'center',
     color: 'red',
+    fontSize: 28,
   },
   fpsContainer: {
     position: 'absolute',

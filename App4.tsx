@@ -40,6 +40,7 @@ import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
 import {AlertModal} from './src/modals/index';
+import {stringLength} from '@firebase/util';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -446,6 +447,30 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
             strokeWidth="5"
           />
+
+          <View
+            style={{
+              position: 'absolute',
+              left: cx1,
+              top: cy1 + 10,
+              right: cx3,
+              height: cx2,
+              borderRadius: 2,
+              borderStyle: 'solid',
+              justifyContent: 'center',
+              padding: 8,
+              zIndex: 30,
+            }}>
+            {isLoading ? (
+              <Text style={styles.loadingMsgText}>
+                Preparing live camera photages...
+              </Text>
+            ) : (
+              <Text style={styles.loadingMsgText}>
+                Please callibrate your self so that your whole body is visible.
+              </Text>
+            )}
+          </View>
         </Svg>
       );
     } else {
@@ -1060,7 +1085,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1148,7 +1173,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1305,7 +1330,7 @@ const App4: FunctionComponent<Props> = props => {
   };
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <View style={{marginTop: 10}}>
+      <View style={{marginTop: 4}}>
         <HeaderWithText
           text={title}
           hideProfileSection={true}
@@ -1314,22 +1339,12 @@ const App4: FunctionComponent<Props> = props => {
       </View>
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
-          {tfReady ? (
-            camView()
-          ) : (
-            <View style={styles.loadingMsg}>
-              {isLoading && (
-                <Text style={styles.loadingMsgText}>
-                  Preparing live camera photages...
-                </Text>
-              )}
-            </View>
-          )}
+          {tfReady && camView()}
           {/* {renderPose()} */}
           {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
-          {renderCalibration()}
+          {/* {renderCalibration()} */}
           {renderCameraTypeSwitcher()}
         </View>
         {isStartedVideoRecording && (
@@ -1380,15 +1395,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
   },
   calibrationContainer: {
-    position: 'absolute',
-    top: 10,
+    top: 160,
     left: 100,
-    width: 80,
+    width: 150,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
-    padding: 8,
-    zIndex: 20,
+    borderStyle: 'solid',
+    padding: 16,
+    zIndex: 30,
   },
   cameraContainer: {
     display: 'flex',
@@ -1402,7 +1417,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'black',
     borderStyle: 'solid',
     padding: 0,
   },
@@ -1467,7 +1481,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingMsgText: {
+    textAlign: 'center',
     color: 'red',
+    fontSize: 28,
   },
   fpsContainer: {
     position: 'absolute',
