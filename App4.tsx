@@ -383,22 +383,6 @@ const App4: FunctionComponent<Props> = props => {
       });
   };
 
-  const renderCalibration = () => {
-    let text;
-    if (isCalibratedr) {
-      text = (
-        <Text>You are calibrated. Please dont move recording is starting.</Text>
-      );
-    } else {
-      text = (
-        <Text>
-          Please callibrate your self so that your whole body is visible.
-        </Text>
-      );
-    }
-    return <View style={styles.calibrationContainer}>{text}</View>;
-  };
-
   const renderCalibrationPoints = () => {
     const cx1 = 100;
     const cy1 = 100;
@@ -1344,11 +1328,19 @@ const App4: FunctionComponent<Props> = props => {
           {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
-          {/* {renderCalibration()} */}
           {renderCameraTypeSwitcher()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
+            <IconButton
+              styles={styles.recordIcon}
+              icon={stopIcon}
+              onPress={() => {
+                countdownRef.current.stop();
+                handleStopCamera();
+              }}
+              transparent={true}
+            />
             <Text
               style={{
                 zIndex: 1000,
@@ -1369,15 +1361,6 @@ const App4: FunctionComponent<Props> = props => {
                 handleStopCamera();
               }}
             />
-            <IconButton
-              styles={styles.recordIcon}
-              icon={stopIcon}
-              onPress={() => {
-                countdownRef.current.stop();
-                handleStopCamera();
-              }}
-              transparent={true}
-            />
           </View>
         )}
       </View>
@@ -1395,14 +1378,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
   },
   calibrationContainer: {
-    top: 160,
-    left: 100,
-    width: 150,
+    position: 'relative',
+    // top: 10,
+    // left: 100,
+    width: 80,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
-    borderStyle: 'solid',
-    padding: 16,
+    padding: 8,
     zIndex: 30,
   },
   cameraContainer: {
