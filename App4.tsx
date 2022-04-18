@@ -21,26 +21,15 @@ import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
 import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
 import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
-import {
-  uploadPhotoService,
-  uploadVideoService,
-  getThumbnailURL,
-} from './src/services/mediaServices';
-import AnimatedLoader from 'react-native-animated-loader';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
-import {AlertModal} from './src/modals/index';
-import {stringLength} from '@firebase/util';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -1325,7 +1314,7 @@ const App4: FunctionComponent<Props> = props => {
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
           {/* {renderPose()} */}
-          {renderSkeleton()}
+          {/* {renderSkeleton()} */}
           {renderCalibrationPoints()}
           {renderFps()}
           {renderCameraTypeSwitcher()}

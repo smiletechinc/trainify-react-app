@@ -6,6 +6,7 @@ import {
   Image,
   Alert,
   Linking,
+  Platform,
 } from 'react-native';
 import styles from '../styles';
 import RecordScreen from 'react-native-record-screen';
@@ -13,6 +14,9 @@ import CameraRoll from '@react-native-community/cameraroll';
 import ScreenWrapperWithHeader from '../../../components/wrappers/screen_wrapper_with_header';
 import AlertModal from '../../../modals/AlertModal';
 import {useeCameraPermissionsHook} from '../../../hooks';
+import {getDownloadURL} from 'firebase/storage';
+// import * as MediaLibrary from 'expo-media-library';
+import {usePermissions} from 'expo-media-library';
 
 const servePracticeImage = require('../../../assets/images/serve_icon.png');
 const practiceWithBall = require('../../../assets/images/ballMachine_icon.png');
@@ -28,6 +32,8 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
   const [titleText, setTitleText] = useState('');
   const [descText, setDescText] = useState('');
   const [buttonText, setButtonText] = useState('');
+  const [status, requestPermission] = usePermissions();
+  const [galleryPermission, setGalleryPermission] = useState(false);
 
   const startScreenRecording = () => {
     RecordScreen.startRecording({mic: false})
@@ -38,6 +44,27 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
         Alert.alert('Could not started screen recording, ', error);
       });
   };
+
+  useEffect(() => {
+    console.log('gallery Permission:', status);
+    if (status) {
+      console.log('gallery Permission:', status.accessPrivileges);
+      if (status.status === 'undetermined') {
+        requestPermission();
+      } else if (status.accessPrivileges === 'all') {
+        setGalleryPermission(true);
+      } else if (status.accessPrivileges === 'limited') {
+        showGalleryPermiisonModal();
+      } else if (
+        status.status === 'denied' &&
+        status.accessPrivileges === 'none'
+      ) {
+        // showGalleryPermiisonModal();
+      }
+    } else {
+      requestPermission();
+    }
+  }, [status]);
 
   useEffect(() => {
     console.log('cameraPermissionsStatus, ', permissionStatus);
@@ -52,6 +79,13 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
       startScreenRecording();
     }
   }, [permissionStatus]);
+
+  const showGalleryPermiisonModal = () => {
+    setAlertVisibleModal(true);
+    setTitleText('Gallery Permission Denied');
+    setDescText('Please Allow the All Permissions of Gallery Permission');
+    setButtonText('Go to Settings');
+  };
 
   const showCameraPermissionsModal = () => {
     setAlertVisibleModal(true);
@@ -71,7 +105,12 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
       showCameraPermissionsModal();
     } else if (permissionStatus === 'granted') {
       RecordScreen.stopRecording();
-      navigation.navigate('ServePracticeHomeScreen');
+      requestPermission();
+      if (galleryPermission) {
+        navigation.navigate('ServePracticeHomeScreen');
+      } else {
+        showGalleryPermiisonModal();
+      }
     }
   };
 
@@ -86,7 +125,12 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
       showCameraPermissionsModal();
     } else if (permissionStatus === 'granted') {
       RecordScreen.stopRecording();
-      navigation.navigate('BallMachinePracticeHomeScreen');
+      requestPermission();
+      if (galleryPermission) {
+        navigation.navigate('BallMachinePracticeHomeScreen');
+      } else {
+        showGalleryPermiisonModal();
+      }
     }
   };
 

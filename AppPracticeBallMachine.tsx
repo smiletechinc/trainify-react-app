@@ -1403,7 +1403,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
-          {renderSkeleton()}
+          {/* {renderSkeleton()} */}
           {renderCalibrationPoints()}
           {renderFps()}
           {/* {renderCalibration()} */}
