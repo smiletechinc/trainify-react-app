@@ -1314,7 +1314,7 @@ const App4: FunctionComponent<Props> = props => {
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
           {/* {renderPose()} */}
-          {/* {renderSkeleton()} */}
+          {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
           {renderCameraTypeSwitcher()}

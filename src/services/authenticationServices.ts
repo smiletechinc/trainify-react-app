@@ -1,7 +1,7 @@
 import app  from './../config/db';
 import * as firebase from "firebase/auth"
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { getDatabase, ref, push, get } from "firebase/database";
+import { getDatabase, ref, push, get, set } from "firebase/database";
 import {UserObject, ErrorObject, AuthObject} from '../../types';
 
 export const signInService = (authObject:AuthObject, onSuccess?:any,onFailure?:any) => {
@@ -81,7 +81,7 @@ export const registerUserService = (userObject:UserObject, onSuccess?:any, onFai
     console.log('Branch: ', branch)
     if (app) {
       const db = getDatabase(app);
-        push(ref(db, branch), userObject)
+        set(ref(db, branch), userObject)
         .then((user) => {
         // Signed in
         console.log(user);

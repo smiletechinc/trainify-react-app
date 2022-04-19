@@ -364,22 +364,6 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       });
   };
 
-  const renderCalibration = () => {
-    let text;
-    if (isCalibratedr) {
-      text = (
-        <Text>You are calibrated. Please dont move recording is starting.</Text>
-      );
-    } else {
-      text = (
-        <Text>
-          Please callibrate your self so that your whole body is visible.
-        </Text>
-      );
-    }
-    return <View style={styles.calibrationContainer}>{text}</View>;
-  };
-
   const renderCalibrationPoints = () => {
     const cx1 = 100;
     const cy1 = 100;
@@ -1403,10 +1387,9 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
-          {/* {renderSkeleton()} */}
+          {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
-          {/* {renderCalibration()} */}
           {renderCameraTypeSwitcher()}
         </View>
         {isStartedVideoRecording && (
