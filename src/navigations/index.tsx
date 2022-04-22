@@ -27,6 +27,7 @@ function AppContainer() {
         initialRouteName="SplashScreen"
         screenOptions={{
           headerShown: false,
+          orientation: 'portrait',
         }}>
         <AppStack.Screen name="SplashScreen" component={SplashScreen} />
         <AppStack.Screen name="Signin" component={SigninScreen} />

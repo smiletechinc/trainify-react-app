@@ -25,8 +25,12 @@ function MainAppContainer() {
   return (
     <AppStack.Navigator
       initialRouteName="HomeScreen"
-      screenOptions={{headerShown: false}}>
-      <AppStack.Screen name="App4" component={App4} />
+      screenOptions={{headerShown: false, orientation: 'portrait'}}>
+      <AppStack.Screen
+        name="App4"
+        component={App4}
+        options={{orientation: 'landscape'}}
+      />
 
       <AppStack.Screen name="HomeScreen" component={HomeScreen} />
 
@@ -66,6 +70,7 @@ function MainAppContainer() {
       <AppStack.Screen
         name="TensorCameraContainer"
         component={TensorCameraContainer}
+        options={{orientation: 'landscape'}}
       />
     </AppStack.Navigator>
   );
