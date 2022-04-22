@@ -1,7 +1,7 @@
 import app  from './../config/db';
 import * as firebase from "firebase/auth"
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { getDatabase, ref, set, get } from "firebase/database";
+import { getDatabase, ref, push, get, set } from "firebase/database";
 import {UserObject, ErrorObject, AuthObject} from '../../types';
 
 export const signInService = (authObject:AuthObject, onSuccess?:any,onFailure?:any) => {
@@ -76,13 +76,15 @@ export const resetPasswordService = (email:string, onSuccess?:any, onFailure?:an
 }
 
 export const registerUserService = (userObject:UserObject, onSuccess?:any, onFailure?:any) => {
-    const branch = `/users/${userObject.id}`
+  console.log("userObject", userObject);  
+  const branch = `/users/${userObject.id}`
     console.log('Branch: ', branch)
     if (app) {
       const db = getDatabase(app);
         set(ref(db, branch), userObject)
         .then((user) => {
         // Signed in
+        console.log(user);
         onSuccess(user);
       })
       .catch((error) => {

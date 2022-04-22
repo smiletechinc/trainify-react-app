@@ -73,7 +73,7 @@ const SigninScreen: FunctionComponent<Props> = props => {
     let uid = userCredential.uid;
     // console.log('uid : ', uid);
     setAuthUser(userCredential);
-    getUserWithIdService(uid, goToHomePage, authenticationFailure);
+    getUserWithIdService(uid, goToHomePage, fetchUserFailure);
 
     // getUserWithIdService(uid, goToHomePage, authenticationFailure)
   };
@@ -88,6 +88,24 @@ const SigninScreen: FunctionComponent<Props> = props => {
       getUsrObject(userCredential);
     } else {
       Alert.alert('Trainify', 'Error in login!');
+    }
+  };
+
+  const fetchUserFailure = error => {
+    setLoading(false);
+    if (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      if (errorCode === 'auth/user-not-found') {
+        Alert.alert(
+          'Trainify',
+          'Account not found, Please register for account!',
+        );
+      } else {
+        Alert.alert('Trainify', 'Error in fetching user data!');
+      }
+    } else {
+      Alert.alert('Trainify', 'Error in fetching user data!');
     }
   };
 
@@ -117,26 +135,6 @@ const SigninScreen: FunctionComponent<Props> = props => {
     };
     signInService(authObject, authenticationSuccess, authenticationFailure);
   };
-
-  // const proceedToLogin = () => {
-  //   if(app){
-  //     const auth = getAuth();
-  //     signInWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     Alert.alert("Trainify", "You've logged in successfully")
-  //     goToHomePage()
-
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     Alert.alert("Trainify", errorMessage)
-  //   });
-  //   }
-
-  // }
 
   const requestData = {
     cardPaymentMethod: {

@@ -19,6 +19,9 @@ PODS:
     - React-jsi
   - EXKeepAwake (10.0.2):
     - ExpoModulesCore
+  - EXMediaLibrary (14.0.1):
+    - ExpoModulesCore
+    - React-Core
   - Expo (44.0.0):
     - ExpoModulesCore
   - ExpoModulesCore (0.6.3):
@@ -455,6 +458,7 @@ DEPENDENCIES:
   - EXGL (from `../node_modules/expo-gl/ios`)
   - EXGL_CPP (from `../node_modules/expo-gl-cpp/cpp`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - EXMediaLibrary (from `../node_modules/expo-media-library/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
   - EXScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
@@ -578,6 +582,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-gl-cpp/cpp"
   EXKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  EXMediaLibrary:
+    :path: "../node_modules/expo-media-library/ios"
   Expo:
     :path: "../node_modules/expo/ios"
   ExpoModulesCore:
@@ -701,12 +707,13 @@ SPEC CHECKSUMS:
   EXGL: e3def34c0735591c89f62e6649b157d0985c3a8b
   EXGL_CPP: 23709fa188f51702294bf93e19a4fe6dec4f0472
   EXKeepAwake: bf48d7f740a5cd2befed6cf9a49911d385c6c47d
+  EXMediaLibrary: 843669e1d9d38965057830138609ee99ef260cf1
   Expo: 6ca1d5ca8c8264a7131a608afcd01561f79f1e6e
   ExpoModulesCore: d04e519b3e8e21523b195bb21a40144e30f1e163
   EXScreenOrientation: ca9375ec57e5706128062867516da0b03a97ef64
   EXVideoThumbnails: 847d648d6f4bc0c1afad05caa56a487dc543445e
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: fbe621ec059e99550795d0a06ea871d188ae09e8
+  FBReactNativeSpec: 7a40fd4b3aaf909710d3ecb9a5e076cad29c1aac
   Firebase: 7e8fe528c161b9271d365217a74c16aaf834578e
   FirebaseCore: b84a44ee7ba999e0f9f76d198a9c7f60a797b848
   FirebaseCoreDiagnostics: fd0c8490f34287229c1d6c103d3a55f81ec85712
@@ -781,4 +788,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ca3425c574addbd3b6b051f80e2fcce7a1467ec7
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

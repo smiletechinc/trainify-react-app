@@ -35,30 +35,6 @@ export const useMediaUpload = props => {
   const [uploadVideoSuccess, setUploadVideoSuccess] = useState(false);
   const [videoURL, setVideoURL] = useState('');
 
-  // useEffect(() => {
-  //   (() => {
-  //     //   Alert.alert('File is being set');
-  //     setThumbnailURL('');
-  //     (() => {
-  //       if (thumbnailData) {
-  //         uploadThumbnail(thumbnailData);
-  //       }
-  //     })();
-  //   })();
-  // }, [thumbnailData]);
-
-  // useEffect(() => {
-  //   (() => {
-  //     //   Alert.alert('File is being set');
-  //     setVideoURL('');
-  //     (() => {
-  //       if (videoData && videoData.uri) {
-  //         uploadVideo(videoData);
-  //       }
-  //     })();
-  //   })();
-  // }, [videoData]);
-
   const uploadThumbnail = useCallback(async imageData => {
     setUploading(true);
     setCurrentStatus('Uploading thumbnail');
@@ -95,7 +71,7 @@ export const useMediaUpload = props => {
           setUploadThumbnailFailure(true);
         });
     } catch (error) {
-      Alert.alert('Error uploading humbnail', JSON.stringify(error));
+      Alert.alert('Error uploading thumbnail', JSON.stringify(error));
       setUploading(false);
       setCurrentStatus('Error uploading thumbnail');
     }
@@ -171,12 +147,14 @@ export const useMediaUpload = props => {
         console.log('Video url response success: ', response);
         setVideoURL(response);
         setUploading(false);
+        setCurrentStatus('Video uploded!');
       })
       .catch(error => {
         console.log('Video url response error: ', error);
         console.error(error);
         setUploadVideoFailure(true);
         setUploading(false);
+        setCurrentStatus('Error uploading video!');
       });
     // return downloadURL;
   };

@@ -364,22 +364,6 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       });
   };
 
-  const renderCalibration = () => {
-    let text;
-    if (isCalibratedr) {
-      text = (
-        <Text>You are calibrated. Please dont move recording is starting.</Text>
-      );
-    } else {
-      text = (
-        <Text>
-          Please callibrate your self so that your whole body is visible.
-        </Text>
-      );
-    }
-    return <View style={styles.calibrationContainer}>{text}</View>;
-  };
-
   const renderCalibrationPoints = () => {
     const cx1 = 100;
     const cy1 = 100;
@@ -428,6 +412,29 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
             stroke="white"
             strokeWidth="5"
           />
+          <View
+            style={{
+              position: 'absolute',
+              left: cx1,
+              top: cy1 + 10,
+              right: cx3,
+              height: cx2,
+              borderRadius: 2,
+              borderStyle: 'solid',
+              justifyContent: 'center',
+              padding: 8,
+              zIndex: 30,
+            }}>
+            {isLoading ? (
+              <Text style={styles.loadingMsgText}>
+                Preparing live camera photages...
+              </Text>
+            ) : (
+              <Text style={styles.loadingMsgText}>
+                Please callibrate your self so that your whole body is visible.
+              </Text>
+            )}
+          </View>
         </Svg>
       );
     } else {
@@ -457,8 +464,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Total {count}</Text>
-        <Text>Last Return Type {serveType}</Text>
+        {/* <Text>Total {count}</Text> */}
+        <Text>{serveType ? `${serveType}` : 'Last Return Type'}</Text>
       </View>
     );
   };
@@ -1021,24 +1028,24 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         console.log('Mid');
       }
 
-      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
-        missed = missed + 1;
-        setIsMissed('Missed Detected');
-        if (isForehandMissed) {
-          // Setting missed detection
-          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
-          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
-        } else {
-          // Setting missed detection
-          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
-          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
-        }
+      // if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+      //   missed = missed + 1;
+      //   setIsMissed('Missed Detected');
+      //   if (isForehandMissed) {
+      //     // Setting missed detection
+      //     analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+      //     analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+      //   } else {
+      //     // Setting missed detection
+      //     analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+      //     analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+      //   }
 
-        // console.log("Missed: ", missed);
-        missTimeCounter = 0;
-        rallyRunningFlag = false;
-        setData(analysis_data.data);
-      }
+      //   // console.log("Missed: ", missed);
+      //   missTimeCounter = 0;
+      //   rallyRunningFlag = false;
+      //   setData(analysis_data.data);
+      // }
       console.log('Missed: ', missed);
     }
 
@@ -1105,24 +1112,24 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         console.log('Mid');
       }
 
-      if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
-        missed = missed + 1;
-        setIsMissed('Missed Detected');
-        if (isForehandMissed) {
-          // Setting missed detection
-          analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
-          analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
-        } else {
-          // Setting missed detection
-          analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
-          analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
-        }
+      // if (missTimeCounter > frames_to_skip * 2 && rallyRunningFlag == true) {
+      //   missed = missed + 1;
+      //   setIsMissed('Missed Detected');
+      //   if (isForehandMissed) {
+      //     // Setting missed detection
+      //     analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+      //     analysis_data.data[0][0] = analysis_data.data[0][0] - 1;
+      //   } else {
+      //     // Setting missed detection
+      //     analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+      //     analysis_data.data[1][0] = analysis_data.data[1][0] - 1;
+      //   }
 
-        // console.log("Missed: ", missed);
-        missTimeCounter = 0;
-        rallyRunningFlag = false;
-        setData(analysis_data.data);
-      }
+      //   // console.log("Missed: ", missed);
+      //   missTimeCounter = 0;
+      //   rallyRunningFlag = false;
+      //   setData(analysis_data.data);
+      // }
       console.log('Missed: ', missed);
     }
 
@@ -1379,21 +1386,10 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       </View>
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
-          {tfReady ? (
-            camView()
-          ) : (
-            <View style={styles.loadingMsg}>
-              {isLoading && (
-                <Text style={styles.loadingMsgText}>
-                  Preparing live camera photages...
-                </Text>
-              )}
-            </View>
-          )}
+          {tfReady && camView()}
           {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
-          {renderCalibration()}
           {renderCameraTypeSwitcher()}
         </View>
         {isStartedVideoRecording && (
@@ -1533,7 +1529,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingMsgText: {
+    textAlign: 'center',
     color: 'red',
+    fontSize: 28,
   },
   fpsContainer: {
     position: 'absolute',

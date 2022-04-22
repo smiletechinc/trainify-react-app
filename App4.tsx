@@ -21,25 +21,15 @@ import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
 import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
 import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
-import {
-  uploadPhotoService,
-  uploadVideoService,
-  getThumbnailURL,
-} from './src/services/mediaServices';
-import AnimatedLoader from 'react-native-animated-loader';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
-import {AlertModal} from './src/modals/index';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -382,22 +372,6 @@ const App4: FunctionComponent<Props> = props => {
       });
   };
 
-  const renderCalibration = () => {
-    let text;
-    if (isCalibratedr) {
-      text = (
-        <Text>You are calibrated. Please dont move recording is starting.</Text>
-      );
-    } else {
-      text = (
-        <Text>
-          Please callibrate your self so that your whole body is visible.
-        </Text>
-      );
-    }
-    return <View style={styles.calibrationContainer}>{text}</View>;
-  };
-
   const renderCalibrationPoints = () => {
     const cx1 = 100;
     const cy1 = 100;
@@ -446,6 +420,30 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
             strokeWidth="5"
           />
+
+          <View
+            style={{
+              position: 'absolute',
+              left: cx1,
+              top: cy1 + 10,
+              right: cx3,
+              height: cx2,
+              borderRadius: 2,
+              borderStyle: 'solid',
+              justifyContent: 'center',
+              padding: 8,
+              zIndex: 30,
+            }}>
+            {isLoading ? (
+              <Text style={styles.loadingMsgText}>
+                Preparing live camera photages...
+              </Text>
+            ) : (
+              <Text style={styles.loadingMsgText}>
+                Please callibrate your self so that your whole body is visible.
+              </Text>
+            )}
+          </View>
         </Svg>
       );
     } else {
@@ -1060,7 +1058,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1148,7 +1146,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1305,7 +1303,7 @@ const App4: FunctionComponent<Props> = props => {
   };
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <View style={{marginTop: 10}}>
+      <View style={{marginTop: 4}}>
         <HeaderWithText
           text={title}
           hideProfileSection={true}
@@ -1314,26 +1312,24 @@ const App4: FunctionComponent<Props> = props => {
       </View>
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
-          {tfReady ? (
-            camView()
-          ) : (
-            <View style={styles.loadingMsg}>
-              {isLoading && (
-                <Text style={styles.loadingMsgText}>
-                  Preparing live camera photages...
-                </Text>
-              )}
-            </View>
-          )}
+          {tfReady && camView()}
           {/* {renderPose()} */}
           {renderSkeleton()}
           {renderCalibrationPoints()}
           {renderFps()}
-          {renderCalibration()}
           {renderCameraTypeSwitcher()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
+            <IconButton
+              styles={styles.recordIcon}
+              icon={stopIcon}
+              onPress={() => {
+                countdownRef.current.stop();
+                handleStopCamera();
+              }}
+              transparent={true}
+            />
             <Text
               style={{
                 zIndex: 1000,
@@ -1354,15 +1350,6 @@ const App4: FunctionComponent<Props> = props => {
                 handleStopCamera();
               }}
             />
-            <IconButton
-              styles={styles.recordIcon}
-              icon={stopIcon}
-              onPress={() => {
-                countdownRef.current.stop();
-                handleStopCamera();
-              }}
-              transparent={true}
-            />
           </View>
         )}
       </View>
@@ -1380,15 +1367,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
   },
   calibrationContainer: {
-    position: 'absolute',
-    top: 10,
-    left: 100,
+    position: 'relative',
+    // top: 10,
+    // left: 100,
     width: 80,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
+    zIndex: 30,
   },
   cameraContainer: {
     display: 'flex',
@@ -1402,7 +1389,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'black',
     borderStyle: 'solid',
     padding: 0,
   },
@@ -1467,7 +1453,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingMsgText: {
+    textAlign: 'center',
     color: 'red',
+    fontSize: 28,
   },
   fpsContainer: {
     position: 'absolute',

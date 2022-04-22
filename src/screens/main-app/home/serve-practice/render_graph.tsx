@@ -78,20 +78,24 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   console.log(flatServes);
 
   var pie_data;
+  var clrs = ['gold', 'cyan', 'gray'];
 
   if (flatServes == 0 && kickServes == 0 && sliceServes == 0) {
     pie_data = {
       data: [],
     };
   } else if (flatServes == 0 && kickServes == 0) {
+    clrs = ['gray'];
     pie_data = {
       data: [{x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`}],
     };
   } else if (sliceServes == 0 && kickServes == 0) {
+    clrs = ['gold'];
     pie_data = {
       data: [{x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`}],
     };
   } else if (sliceServes == 0 && flatServes == 0) {
+    clrs = ['cyan'];
     pie_data = {
       data: [{x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`}],
     };
@@ -145,7 +149,7 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
             padding={screenWidth / 3.9}
             width={screenWidth}
             height={screenHeight / 2}
-            colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
+            colorScale={clrs}
             data={pie_data.data}
           />
         </View>
