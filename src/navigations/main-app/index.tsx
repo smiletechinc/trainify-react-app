@@ -26,11 +26,7 @@ function MainAppContainer() {
     <AppStack.Navigator
       initialRouteName="HomeScreen"
       screenOptions={{headerShown: false, orientation: 'portrait'}}>
-      <AppStack.Screen
-        name="App4"
-        component={App4}
-        options={{orientation: 'landscape'}}
-      />
+      <AppStack.Screen name="App4" component={App4} />
 
       <AppStack.Screen name="HomeScreen" component={HomeScreen} />
 

@@ -7,6 +7,8 @@ import {
   Platform,
   Alert,
   Linking,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -36,10 +38,12 @@ import {
 } from './src/services/mediaServices';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from './src/constants';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const fronCamera = require('./src/assets/images/frontCamera.png');
 const backCamera = require('./src/assets/images/backCamera.png');
+const backIcon = require('./src/assets/images/back-icon.png');
 
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
@@ -98,6 +102,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const [thumbnail, setThumbnail] = React.useState<any>(null);
   const [videoURL, setVideoURL] = React.useState<string>(null);
   const [videoData, setVideoData] = React.useState<string>(null);
+  const [orientationScreen, setOrientationScreen] = useState('');
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -124,6 +129,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       [0, 0, 0, 0],
     ],
     barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
+  };
+
+  const determineAndSetOrientation = () => {
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+
+    if (width < height) {
+      setOrientationScreen('PORTRAIT');
+    } else {
+      setOrientationScreen('LANDSCAPE');
+    }
   };
 
   useEffect(() => {
@@ -259,10 +275,10 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     navigation.goBack();
   };
 
-  const gallerypermissionalert = () => {
+  const failedToSaveAlert = () => {
     Alert.alert(
-      'Gallery Permission Denied',
-      'Please check gallery permission from iPhone settings ',
+      'Failed to save video.',
+      'Please check your phone memory.',
       [
         {text: 'Go Back', onPress: () => proceedtoback()},
         {text: 'Go To Settings', onPress: () => goSettings()},
@@ -299,7 +315,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
                 .catch(e => {
                   // console.log('error:........................................ ', e);
                   console.log('Permission Denied');
-                  gallerypermissionalert();
+                  failedToSaveAlert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
@@ -342,6 +358,20 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
             transparent={true}
           />
         )}
+      </View>
+    );
+  };
+
+  const renderBackButton = () => {
+    return (
+      <View style={styles.backIcon}>
+        <IconButton
+          icon={backIcon}
+          onPress={() => {
+            navigation.goBack();
+          }}
+          transparent={true}
+        />
       </View>
     );
   };
@@ -1331,13 +1361,13 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     if (IS_ANDROID) {
       return 0;
     }
-    switch (orientation) {
-      case ScreenOrientation.Orientation.PORTRAIT_DOWN:
-        return 180;
-      case ScreenOrientation.Orientation.LANDSCAPE_LEFT:
-        return cameraType === Camera.Constants.Type.front ? 270 : 90;
-      case ScreenOrientation.Orientation.LANDSCAPE_RIGHT:
+    switch (orientationScreen) {
+      // case ScreenOrientation.Orientation.PORTRAIT_DOWN:
+      //   return 180;
+      case 'LANDSCAPE':
         return cameraType === Camera.Constants.Type.front ? 90 : 270;
+      // case ScreenOrientation.Orientation.LANDSCAPE_RIGHT:
+      //   return cameraType === Camera.Constants.Type.front ? 90 : 270;
       default:
         return 0;
     }
@@ -1373,17 +1403,18 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     setCameraWidth(width);
     cameraLayoutHeight = height;
     setCameraHeight(height);
+    determineAndSetOrientation();
   };
 
   return (
-    <SafeAreaView style={styles_external.main_view}>
-      <View style={{marginTop: 10}}>
+    <View style={styles.mainContainer}>
+      {/* <View style={{marginTop: 10}}>
         <HeaderWithText
           text={title}
           hideProfileSection={true}
           navigation={navigation}
         />
-      </View>
+      </View> */}
       <View style={styles.cameraView}>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
@@ -1391,6 +1422,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           {renderCalibrationPoints()}
           {renderFps()}
           {renderCameraTypeSwitcher()}
+          {renderBackButton()}
         </View>
         {isStartedVideoRecording && (
           <View style={styles.buttonContainer}>
@@ -1417,8 +1449,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
               }}
             />
             <IconButton
-              styles={styles.recordIcon}
-              icon={stopIcon}
+              styles={styles.backIconStyle}
+              icon={backIcon}
               onPress={() => {
                 countdownRef.current.stop();
                 handleStopCamera();
@@ -1428,13 +1460,29 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           </View>
         )}
       </View>
-    </SafeAreaView>
+      {isStartedVideoRecording && (
+        <IconButton
+          styles={styles.stopIcon}
+          icon={stopIcon}
+          onPress={() => {
+            countdownRef.current.stop();
+            handleStopCamera();
+          }}
+          transparent={true}
+        />
+      )}
+    </View>
   );
 };
 
 export default TensorCameraContainer;
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
     alignContent: 'center',
@@ -1454,27 +1502,32 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    flexGrow: 1,
+
+    // flexDirection: 'column',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // width: CAM_PREVIEW_WIDTH,
+    // height: '100%',
     backgroundColor: 'black',
-    marginTop: 0,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'black',
-    borderStyle: 'solid',
-    padding: 0,
+    // marginTop: 0,
+    // borderRadius: 12,
+    // overflow: 'hidden',
+    // borderWidth: 1,
+    // borderColor: 'black',
+    // borderStyle: 'solid',
+    // padding: 0,
   },
   cameraView: {
+    backgroundColor: 'black',
     display: 'flex',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 128,
-    marginTop: 32,
+    flexGrow: 1,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // marginBottom: 128,
+    // marginTop: 32,
   },
   camera: {
     display: 'flex',
@@ -1482,10 +1535,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    backgroundColor: 'blue',
+    backgroundColor: 'black',
     zIndex: 500,
   },
   buttonContainer: {
+    position: 'absolute',
     flex: 1,
     backgroundColor: 'blue',
     flexDirection: 'row',
@@ -1507,6 +1561,15 @@ const styles = StyleSheet.create({
     bottom: 36,
     zIndex: 1000,
   },
+
+  backIconStyle: {
+    width: 1200,
+    height: 1200,
+    position: 'absolute',
+    left: 36,
+    zIndex: 1000,
+    backgroundColor: 'transparent',
+  },
   recordIcon: {
     width: 60,
     height: 50,
@@ -1516,6 +1579,34 @@ const styles = StyleSheet.create({
     right: 10,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
+    marginTop: 16,
+  },
+  stopIcon: {
+    width: 60,
+    height: 50,
+    position: 'absolute',
+    bottom: 36,
+    right: 16,
+    top: '50%',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 2,
+    padding: 8,
+    zIndex: 20,
+    marginTop: 16,
+  },
+  backIcon: {
+    width: 100,
+    height: 100,
+    position: 'absolute',
+    bottom: 36,
+    top: 12,
+    left: 12,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
@@ -1536,7 +1627,7 @@ const styles = StyleSheet.create({
   fpsContainer: {
     position: 'absolute',
     top: 10,
-    left: 10,
+    left: '50%',
     width: 80,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
@@ -1544,6 +1635,7 @@ const styles = StyleSheet.create({
     padding: 8,
     zIndex: 20,
     marginTop: 16,
+    alignSelf: 'center',
   },
   svg: {
     width: '100%',

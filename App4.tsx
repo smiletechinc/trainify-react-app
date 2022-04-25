@@ -267,10 +267,10 @@ const App4: FunctionComponent<Props> = props => {
     navigation.goBack();
   };
 
-  const gallerypermissionAlert = () => {
+  const failedToSaveAlert = () => {
     Alert.alert(
-      'Gallery Permission Denied',
-      'Please check gallery permission from iPhone settings ',
+      'Failed to save video.',
+      'Please check your phone memory.',
       [
         {text: 'Go Back', onPress: () => proceedtoback()},
         {text: 'Go To Settings', onPress: () => goSettings()},
@@ -307,7 +307,7 @@ const App4: FunctionComponent<Props> = props => {
                 })
                 .catch(e => {
                   console.log('Permission Denied');
-                  gallerypermissionAlert();
+                  failedToSaveAlert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
