@@ -13,10 +13,12 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 import {SCREEN_WIDTH} from '../../../../constants';
 import {IconButton} from '../../../../components/buttons';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const BallPracticeVideoPlayer = ({navigation, route}) => {
+  useKeepAwake();
   const {video} = route.params;
   console.log('video, ', video);
   let fileURI = '';

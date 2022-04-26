@@ -39,6 +39,7 @@ import {
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from './src/constants';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const fronCamera = require('./src/assets/images/frontCamera.png');
@@ -64,6 +65,7 @@ type Props = {
 };
 
 const TensorCameraContainer: FunctionComponent<Props> = props => {
+  useKeepAwake();
   const {
     authUser,
     authObject,
@@ -92,6 +94,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -106,6 +109,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
   let skipFrameCount = 0;
   var isCalibrated = false;
+  var stoppedVideoRecording = false;
   var isCompletedRecording = false;
   let response_let = {};
   let thumbURL = '';
@@ -329,9 +333,21 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const handleStopCamera = () => {
+    stoppedVideoRecording = true;
+    countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
+    setIsTimerRunning(false);
     stopRecording();
+  };
+
+  const handleStopTiemer = () => {
+    if (isTimerRunning && isRecordingInProgress && !stoppedVideoRecording) {
+      setIsRecordingInProgress(false);
+      setIsStartedVideoRecording(false);
+      setIsTimerRunning(false);
+      stopRecording();
+    }
   };
 
   const handleSwitchCameraType = () => {
@@ -377,9 +393,14 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const startRecording = async () => {
-    await RecordScreen.startRecording({mic: false})
+    await RecordScreen.startRecording({
+      mic: false,
+      width: SCREEN_HEIGHT,
+      height: SCREEN_WIDTH,
+    })
       .then(res => {
         setIsStartedVideoRecording(true);
+        setIsTimerRunning(true);
         // console.log('Video recording started.');
         countdownRef.current.start();
       })
@@ -1424,53 +1445,49 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           {renderCameraTypeSwitcher()}
           {renderBackButton()}
         </View>
-        {isStartedVideoRecording && (
-          <View style={styles.buttonContainer}>
-            <Text
-              style={{
-                zIndex: 1000,
-                position: 'absolute',
-                fontSize: 16,
-                color: '#000000',
-              }}>
-              {remainingTime}
-            </Text>
-            <Countdown
-              ref={countdownRef}
-              // style={styles.timer}
-              // textStyle={styles.timerText}
-              initialSeconds={60}
-              onTimes={e => {
-                setRemainingTime(60 - e);
-              }}
-              onPause={e => {}}
-              onEnd={e => {
-                handleStopCamera();
-              }}
-            />
-            <IconButton
-              styles={styles.backIconStyle}
-              icon={backIcon}
-              onPress={() => {
-                countdownRef.current.stop();
-                handleStopCamera();
-              }}
-              transparent={true}
-            />
-          </View>
-        )}
       </View>
       {isStartedVideoRecording && (
         <IconButton
           styles={styles.stopIcon}
           icon={stopIcon}
           onPress={() => {
-            countdownRef.current.stop();
+            // setIsTimerRunning(false);
             handleStopCamera();
           }}
           transparent={true}
         />
       )}
+      {isStartedVideoRecording && isTimerRunning && (
+        <View style={styles.calibrationContainer}>
+          {/* <Text
+            style={{
+              zIndex: 1000,
+              position: 'absolute',
+              fontSize: 16,
+              color: '#000000',
+            }}>
+            {remainingTime}
+          </Text> */}
+          <Countdown
+            ref={countdownRef}
+            // style={styles.timer}
+            // textStyle={styles.timerText}
+            initialSeconds={60}
+            onTimes={e => {
+              setRemainingTime(60 - e);
+              console.log('current time, ', e);
+            }}
+            onPause={e => {}}
+            onEnd={e => {
+              handleStopTiemer();
+              // Alert.alert('Stopping timer');
+            }}
+          />
+        </View>
+      )}
+      {/* {isStartedVideoRecording && (
+        
+      )} */}
     </View>
   );
 };
@@ -1593,6 +1610,7 @@ const styles = StyleSheet.create({
     top: '50%',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    borderWidth: 2,
     borderRadius: 2,
     padding: 8,
     zIndex: 20,

@@ -30,6 +30,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const stopIcon = require('./src/assets/images/icon_record_stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -55,6 +56,7 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
+  useKeepAwake();
   const {
     setCameraPermissions,
     setGalleryPermissions,
@@ -95,7 +97,7 @@ const App4: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -110,6 +112,7 @@ const App4: FunctionComponent<Props> = props => {
   let skipFrameCount = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
+  var stoppedVideoRecording = false;
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -321,9 +324,21 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const handleStopCamera = () => {
+    stoppedVideoRecording = true;
+    countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
+    setIsTimerRunning(false);
     stopRecording();
+  };
+
+  const handleStopTiemer = () => {
+    if (isTimerRunning && isRecordingInProgress && !stoppedVideoRecording) {
+      setIsRecordingInProgress(false);
+      setIsStartedVideoRecording(false);
+      setIsTimerRunning(false);
+      stopRecording();
+    }
   };
 
   const handleSwitchCameraType = () => {
@@ -1326,6 +1341,7 @@ const App4: FunctionComponent<Props> = props => {
               icon={stopIcon}
               onPress={() => {
                 countdownRef.current.stop();
+                countdownRef.current.clear();
                 handleStopCamera();
               }}
               transparent={true}
@@ -1344,10 +1360,11 @@ const App4: FunctionComponent<Props> = props => {
               initialSeconds={60}
               onTimes={e => {
                 setRemainingTime(60 - e);
+                console.log('current time, ', e);
               }}
               onPause={e => {}}
               onEnd={e => {
-                handleStopCamera();
+                handleStopTiemer();
               }}
             />
           </View>

@@ -23,10 +23,12 @@ import {SCREEN_WIDTH} from '../../../../constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {IconButton} from '../../../../components/buttons';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
+  useKeepAwake();
   const {video} = route.params;
   console.log('video, ', video);
   let fileURI = '';

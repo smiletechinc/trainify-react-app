@@ -15,6 +15,7 @@ import {SafeAreaView} from 'react-navigation';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SCREEN_WIDTH} from '../../../../constants';
 import ScreenWrapperWithHeader from './../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -36,6 +37,7 @@ type Props = {
 };
 
 const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
+  useKeepAwake();
   const {navigation, route} = props;
   const {analysis_data} = route.params;
 

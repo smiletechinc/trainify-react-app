@@ -17,6 +17,7 @@ import {useeCameraPermissionsHook} from '../../../hooks';
 import {getDownloadURL} from 'firebase/storage';
 // import * as MediaLibrary from 'expo-media-library';
 import {usePermissions} from 'expo-media-library';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const servePracticeImage = require('../../../assets/images/serve_icon.png');
 const practiceWithBall = require('../../../assets/images/ballMachine_icon.png');
@@ -26,6 +27,7 @@ type Props = {
 };
 
 const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
+  useKeepAwake();
   const {getCameraPermission, requestCameraPermission, permissionStatus} =
     useeCameraPermissionsHook();
   const [alertModalVisible, setAlertVisibleModal] = useState(false);

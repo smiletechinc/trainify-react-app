@@ -8,6 +8,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from '../../../../context/auth-context';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const recordIcon = require('../../../../assets/images/record_icon_image.png');
 const analysisIcon = require('../../../../assets/images/analysis_icon.png');
@@ -21,6 +22,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
   navigation,
   route,
 }) => {
+  useKeepAwake();
   const {authUser, setAuthUser} = React.useContext(AuthContext);
   const {playerstyle} = authUser ? authUser : '';
   return (
