@@ -121,7 +121,7 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
 
   return (
     <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
-      <View style={{height: 750, marginBottom: 64}}>
+      <View style={{height: 290, marginBottom: 64}}>
         <Video
           onEnd={onEnd}
           onLoad={onLoad}
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    minHeight: 48,
+    // minHeight: 48,
     paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   toolbar: {

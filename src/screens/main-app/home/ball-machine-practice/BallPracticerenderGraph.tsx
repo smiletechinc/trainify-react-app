@@ -92,25 +92,27 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
             animate={{
               duration: 1000,
             }}
-            padding={screenWidth / 3.48}
-            width={screenWidth}
-            height={screenHeight / 2}
+            padding={screenHeight / 3.448}
+            width={screenHeight}
+            height={screenWidth / 2.5}
             colorScale={['tomato', 'orange', 'gold']}
             data={pie_data.data}
           />
         </View>
-        <View style={{marginTop: -140}}>
+        {/* <View style={{marginTop: -140}}>
           <Text>Rally Length Breakdown</Text>
-        </View>
+        </View> */}
         <View style={styles.vectorContainer}>
-          <VictoryChart domainPadding={screenWidth / 4} width={screenWidth}>
+          <VictoryChart
+            domainPadding={screenWidth / 4}
+            width={screenWidth * 0.65}>
             <VictoryAxis
               dependentAxis
               domain={{y: [0, 8]}}
               label={'Total Rally Returns'}
-              style={{axisLabel: {padding: 26}}}></VictoryAxis>
+              style={{axisLabel: {padding: 28}}}></VictoryAxis>
             <VictoryAxis label={'Type of Return'}></VictoryAxis>
-            <VictoryGroup offset={screenWidth / 8}>
+            <VictoryGroup offset={screenHeight / 8}>
               <VictoryBar
                 animate={{
                   duration: 2000,
@@ -149,40 +151,48 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
+    flexDirection: 'row',
+    borderStyle: 'solid',
+    borderWidth: 3,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navigationBar: {
-    flex: 1,
+    alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    minHeight: 48,
-    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
-  main_view: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? 15 : 15,
-    paddingHorizontal: SCREEN_WIDTH * 0.02,
-  },
+  // navigationBar: {
+  //   flex: 1,
+  //   justifyContent: 'flex-start',
+  //   backgroundColor: 'white',
+  //   paddingTop: Platform.OS === 'ios' ? 10 : 10,
+  //   minHeight: 48,
+  //   paddingHorizontal: SCREEN_WIDTH * 0.03,
+  // },
+  // main_view: {
+  //   flex: 1,
+  //   justifyContent: 'flex-start',
+  //   backgroundColor: 'white',
+  //   paddingTop: Platform.OS === 'ios' ? 15 : 15,
+  //   paddingHorizontal: SCREEN_WIDTH * 0.02,
+  // },
   pieContainer: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    height: screenHeight / 1.8,
-    paddingBottom: screenHeight / 10,
+    height: screenHeight * 0.8,
+    marginTop: -18,
+    paddingBottom: screenHeight * 0.08,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: screenHeight / 2,
-    paddingLeft: screenWidth / 20,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    height: screenHeight * 0.8,
+    marginTop: -18,
+    paddingRight: screenHeight * 0.45,
+    paddingLeft: screenHeight * 0.01,
   },
 
   calibrationContainer: {
