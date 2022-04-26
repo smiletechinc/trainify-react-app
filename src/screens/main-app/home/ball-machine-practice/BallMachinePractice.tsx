@@ -70,7 +70,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{marginTop: 150}}>
+          <View style={{marginTop: 16}}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
@@ -87,8 +87,8 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                   borderColor: '#EB5757',
                   display: 'flex',
                   flex: 1,
-                  height: 150,
-                  paddingBottom: 8,
+                  marginHorizontal: 64,
+                  paddingBottom: 20,
                 }}>
                 <View style={{marginLeft: 10}}>
                   <Image
@@ -97,7 +97,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                       marginLeft: 16,
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginTop: 40,
+                      marginTop: 16,
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
@@ -109,7 +109,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
           </View>
         )}
 
-        <View style={{marginTop: 50}}>
+        <View style={{marginTop: 20}}>
           <TouchableOpacity
             activeOpacity={0.8}
             delayPressIn={0}
@@ -125,8 +125,8 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                 backgroundColor: '#F2994A',
                 borderColor: '#F2994A',
                 display: 'flex',
+                marginHorizontal: 64,
                 flex: 1,
-                height: 150,
                 paddingBottom: 16,
               }}>
               <View style={{marginLeft: 10}}>
@@ -136,7 +136,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                     marginLeft: 16,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginTop: 40,
+                    marginTop: 16,
                   }}
                 />
                 <Text style={styles.record_and_upload_text}>

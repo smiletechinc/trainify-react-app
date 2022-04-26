@@ -33,6 +33,7 @@ function MainAppContainer() {
       <AppStack.Screen
         name="BallMachinePracticeHomeScreen"
         component={BallPracticeContainer}
+        options={{orientation: 'landscape'}}
       />
       <AppStack.Screen
         name="BallPracitceAnalysisGridScreen"

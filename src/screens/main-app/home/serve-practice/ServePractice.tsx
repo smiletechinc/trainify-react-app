@@ -44,7 +44,7 @@ const ServePracticeContainer: FunctionComponent<Props> = ({
       title="Serve Practice"
       navigation={navigation}
       route={route}>
-      <View style={styles.home_main_view}>
+      <View style={[styles.home_main_view, {paddingBottom: 200}]}>
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
             <TouchableOpacity
