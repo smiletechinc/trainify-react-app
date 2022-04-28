@@ -72,6 +72,11 @@ function MainAppContainer() {
         component={TensorCameraContainer}
         options={{orientation: 'landscape'}}
       />
+      <AppStack.Screen
+        name="UploadBallMachineContainerHook"
+        component={UploadBallMachineContainerHook}
+        options={{orientation: 'landscape'}}
+      />
     </AppStack.Navigator>
   );
 }

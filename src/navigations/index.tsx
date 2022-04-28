@@ -56,10 +56,11 @@ function AppContainer() {
           name="UploadServeContainerHook"
           component={UploadServeContainerHook}
         />
-        <AppStack.Screen
+        {/* <AppStack.Screen
           name="UploadBallMachineContainerHook"
           component={UploadBallMachineContainerHook}
-        />
+          options={{orientation: 'landscape'}}
+        /> */}
       </AppStack.Navigator>
     </NavigationContainer>
   );

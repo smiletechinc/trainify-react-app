@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,8 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { VideoData } from '../../../types';
-import { styles } from './index';
+import {VideoData} from '../../../types';
+import {styles} from './index';
 
 const playerImage = require('../../assets/images/player_Grid.jpeg');
 
@@ -20,7 +20,7 @@ type Props = {
 };
 
 const ListItem: React.FunctionComponent<Props> = props => {
-  const { video, onPress, itemWidth, index } = props;
+  const {video, onPress, itemWidth, index} = props;
   const [image, setImage] = useState(null);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
@@ -44,15 +44,15 @@ const ListItem: React.FunctionComponent<Props> = props => {
             width: itemWidth - 12,
           },
         ]}>
-        <View style={{ marginLeft: -10 }}>
+        <View style={{marginLeft: -10}}>
           {image && (
             <Image
-              source={{ uri: image }}
-              style={{ height: 182, width: itemWidth - 18 }}
+              source={{uri: image}}
+              style={{height: 182, width: itemWidth - 18}}
             />
           )}
         </View>
-        <View
+        {/* <View
           style={{
             marginLeft: -12,
             height: 110,
@@ -69,23 +69,17 @@ const ListItem: React.FunctionComponent<Props> = props => {
           </View>
           <View style={{ width: (itemWidth - 15) / 2, paddingRight: 8 }}>
             <View style={{ marginTop: 0 }}>
-              {/* <Text style={[styles.itemCode, {width: (itemWidth - 15) / 2}]}>
-                {video.duration}
-              </Text> */}
               <Text style={[styles.itemCode, { textAlign: 'right' }]}>
                 {time}
               </Text>
             </View>
             <View style={{ marginTop: 0 }}>
-              {/* <Text style={[styles.itemCode, {width: (itemWidth - 15) / 2}]}>
-                {video.duration}
-              </Text> */}
               <Text style={[styles.itemCode, { textAlign: 'right' }]}>
                 {date}
               </Text>
             </View>
           </View>
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   );

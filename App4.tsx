@@ -1341,7 +1341,6 @@ const App4: FunctionComponent<Props> = props => {
               icon={stopIcon}
               onPress={() => {
                 countdownRef.current.stop();
-                countdownRef.current.clear();
                 handleStopCamera();
               }}
               transparent={true}

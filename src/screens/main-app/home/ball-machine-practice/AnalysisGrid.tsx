@@ -55,9 +55,9 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (SCREEN_WIDTH <= 375) {
-      setNumberOfColumns(2);
-    } else {
       setNumberOfColumns(3);
+    } else {
+      setNumberOfColumns(4);
     }
   });
 

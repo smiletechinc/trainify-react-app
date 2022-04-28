@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    paddingBottom: Platform.OS === 'ios' ? 180 : 180,
+    paddingTop: Platform.OS === 'ios' ? (SCREEN_WIDTH / 100) * 2 : 10,
+    // paddingBottom: Platform.OS === 'ios' ? 810 : 1080,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
   },
   navigationBar: {

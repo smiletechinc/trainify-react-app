@@ -1,5 +1,5 @@
-import React, {FunctionComponent} from 'react';
-import {Text, TouchableOpacity, View, Image} from 'react-native';
+import React, {FunctionComponent, useEffect} from 'react';
+import {Text, TouchableOpacity, View, Image, Alert} from 'react-native';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
 
 import styles from '../../styles';
@@ -9,6 +9,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from '../../../../context/auth-context';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../../../constants';
 
 const recordIcon = require('../../../../assets/images/record_icon_image.png');
 const analysisIcon = require('../../../../assets/images/analysis_icon.png');
@@ -30,9 +31,20 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
       title="Ball Machine Practice"
       navigation={navigation}
       route={route}>
-      <View style={styles.home_main_view}>
+      <View
+        style={[
+          styles.home_main_view,
+          {
+            paddingBottom: SCREEN_WIDTH * 0.01,
+            minHeight: SCREEN_WIDTH * 0.92,
+          },
+        ]}>
         {playerstyle === 'LeftHanded' ? (
-          <View style={{marginTop: 100}}>
+          <View
+            style={{
+              marginTop: (SCREEN_WIDTH / 100) * 8.5,
+              paddingBottom: SCREEN_WIDTH * 0.01,
+            }}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
@@ -49,17 +61,17 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                   borderColor: '#EB5757',
                   display: 'flex',
                   flex: 1,
-                  height: 150,
-                  paddingBottom: 8,
+                  marginHorizontal: (SCREEN_HEIGHT / 100) * 10.5,
+                  paddingBottom: (SCREEN_WIDTH / 100) * 4.5,
                 }}>
-                <View style={{marginLeft: 10}}>
+                <View style={{marginLeft: (SCREEN_HEIGHT / 100) * 3.5}}>
                   <Image
                     source={recordIcon}
                     style={{
-                      marginLeft: 16,
+                      marginLeft: (SCREEN_HEIGHT / 100) * 0.5,
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginTop: 40,
+                      marginTop: (SCREEN_WIDTH / 100) * 4.5,
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
@@ -70,7 +82,11 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{marginTop: 16}}>
+          <View
+            style={{
+              marginTop: (SCREEN_WIDTH / 100) * 8.5,
+              paddingBottom: SCREEN_WIDTH * 0.01,
+            }}>
             <TouchableOpacity
               activeOpacity={0.8}
               delayPressIn={0}
@@ -87,17 +103,17 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                   borderColor: '#EB5757',
                   display: 'flex',
                   flex: 1,
-                  marginHorizontal: 64,
-                  paddingBottom: 20,
+                  marginHorizontal: (SCREEN_HEIGHT / 100) * 10.5,
+                  paddingBottom: (SCREEN_WIDTH / 100) * 4.5,
                 }}>
-                <View style={{marginLeft: 10}}>
+                <View style={{marginLeft: (SCREEN_HEIGHT / 100) * 3.5}}>
                   <Image
                     source={recordIcon}
                     style={{
-                      marginLeft: 16,
+                      marginLeft: (SCREEN_HEIGHT / 100) * 0.5,
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginTop: 16,
+                      marginTop: (SCREEN_WIDTH / 100) * 4.5,
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
@@ -109,7 +125,11 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
           </View>
         )}
 
-        <View style={{marginTop: 20}}>
+        <View
+          style={{
+            marginTop: (SCREEN_WIDTH / 100) * 5.5,
+            justifyContent: 'center',
+          }}>
           <TouchableOpacity
             activeOpacity={0.8}
             delayPressIn={0}
@@ -125,18 +145,18 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                 backgroundColor: '#F2994A',
                 borderColor: '#F2994A',
                 display: 'flex',
-                marginHorizontal: 64,
+                marginHorizontal: (SCREEN_HEIGHT / 100) * 10.5,
                 flex: 1,
-                paddingBottom: 16,
+                paddingBottom: (SCREEN_WIDTH / 100) * 4.5,
               }}>
-              <View style={{marginLeft: 10}}>
+              <View style={{marginLeft: (SCREEN_HEIGHT / 100) * 3.5}}>
                 <Image
                   source={analysisIcon}
                   style={{
-                    marginLeft: 16,
+                    marginLeft: (SCREEN_HEIGHT / 100) * 0.5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginTop: 16,
+                    marginTop: (SCREEN_WIDTH / 100) * 3.5,
                   }}
                 />
                 <Text style={styles.record_and_upload_text}>

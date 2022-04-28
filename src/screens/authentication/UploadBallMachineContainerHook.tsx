@@ -15,7 +15,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {GooglePay} from 'react-native-google-pay';
 
 // Custom UI components.
-import {COLORS, SCREEN_WIDTH} from '../../constants';
+import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH} from '../../constants';
 import AppUserItem from './components/AppUserItem';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
@@ -46,6 +46,9 @@ const uploadAnimation = require('./../../assets/animations/uploading-animation.j
 import {useMediaUpload} from '../../hooks/useMediaUpload';
 import {useAnalysisUpload} from '../../hooks';
 import HeaderWithText from '../../global-components/header/HeaderWithText';
+import ScreenWrapperWithHeader from '../../components/wrappers/screen_wrapper_with_header';
+import ProcessingModal from '../../modals/ProcessingModal';
+import {current} from '@reduxjs/toolkit';
 
 type Props = {
   navigation: any;
@@ -64,6 +67,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   const [videoMetaData, setVideoMetaData] = React.useState(null);
   const [videoURI, setVideoURI] = useState(null);
   const [thumbnailURI, setThumbnailURI] = useState(null);
+  const [uploadingText, setUploadingText] = useState(null);
 
   const {
     uploading,
@@ -194,58 +198,34 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
     setVideoData(videoData1);
     uploadVideo(videoData1);
   };
+  const uplodaingCancel = () => {
+    cancelUploading();
+    navigation.goBack();
+  };
 
+  useEffect(() => {
+    if (uploading) {
+      setUploadingText(currentStatus);
+    } else if (uploadingAnalysis) {
+      setUploadingText(currentAnalysisStatus);
+    } else {
+      setUploadingText('');
+    }
+  });
   return (
-    <SafeAreaView>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'flex-start',
-          backgroundColor: 'white',
-          paddingTop: Platform.OS === 'ios' ? 15 : 15,
-          minHeight: 48,
-          paddingHorizontal: SCREEN_WIDTH * 0.03,
-        }}>
-        <HeaderWithText text="uploading" navigation={navigation} />
+    <ScreenWrapperWithHeader title="uploading" navigation={navigation}>
+      <View>
+        <AutoHeightImage source={languagePic} width={SCREEN_HEIGHT * 0.75} />
+        <ProcessingModal
+          visible={uploading || uploadingAnalysis}
+          title={uploadingText}
+          buttonTitle={'Cancel upload'}
+          onCancelButton={() => {
+            uplodaingCancel;
+          }}
+        />
       </View>
-      <View style={styles.login_main_container}>
-        <KeyboardAwareScrollView
-          bounces={false}
-          contentContainerStyle={{
-            flexGrow: 1,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              marginTop: 47,
-              paddingHorizontal: SCREEN_WIDTH * 0.05,
-            }}>
-            <AutoHeightImage source={languagePic} width={SCREEN_WIDTH * 0.9} />
-            <AnimatedLoader
-              visible={uploading || uploadingAnalysis}
-              overlayColor={'rgba(255, 255, 255, 0.75)'}
-              source={uploadAnimation}
-              animationStyle={styles.lottie}
-              speed={1}>
-              <Text>
-                {uploading
-                  ? currentStatus
-                  : uploadingAnalysis
-                  ? currentAnalysisStatus
-                  : false}
-              </Text>
-              <Button
-                title={'Cancel upload'}
-                onPress={() => {
-                  cancelUploading();
-                  navigation.goBack();
-                }}
-              />
-            </AnimatedLoader>
-          </View>
-        </KeyboardAwareScrollView>
-      </View>
-    </SafeAreaView>
+    </ScreenWrapperWithHeader>
   );
 };
 export default UploadBallMachineContainerHook;
