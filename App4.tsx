@@ -108,6 +108,7 @@ const App4: FunctionComponent<Props> = props => {
   const [titleText, setTitleText] = useState('');
   const [descText, setDescText] = useState('');
   const [buttonText, setButtonText] = useState('');
+  const [timerLimit, setTimerLimit] = useState<any>(60);
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -220,6 +221,17 @@ const App4: FunctionComponent<Props> = props => {
       setSeconds(seconds);
     }
   };
+
+  useEffect(() => {
+    if (authUser) {
+      console.log('authObject', authObject);
+      if (authObject.paymentPlan === 'Basic') {
+        setTimerLimit(29);
+      } else if (authObject.paymentPlan === 'Silver') {
+        setTimerLimit(59);
+      }
+    }
+  }, [authObject, authUser]);
 
   const clearTimer = e => {
     setSeconds(10);
@@ -1353,7 +1365,7 @@ const App4: FunctionComponent<Props> = props => {
         <View style={styles.calibrationContainer}>
           <Countdown
             ref={countdownRef}
-            initialSeconds={60}
+            initialSeconds={timerLimit}
             textStyle={{fontSize: 0}}
             onTimes={e => {
               setRemainingTime(60 - e);
