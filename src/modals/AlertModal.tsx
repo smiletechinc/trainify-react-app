@@ -57,11 +57,13 @@ const AlertModal: FunctionComponent<Props> = props => {
               onPress={() => onCancelButton()}>
               <Text style={styles.textStyle1}>Cancel</Text>
             </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonClose, {marginLeft: 16}]}
-              onPress={() => onAcceptButton()}>
-              <Text style={styles.textStyle1}>{buttonTitle}</Text>
-            </Pressable>
+            {buttonTitle && (
+              <Pressable
+                style={[styles.button, styles.buttonClose, {marginLeft: 16}]}
+                onPress={() => onAcceptButton()}>
+                <Text style={styles.textStyle1}>{buttonTitle}</Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </View>
