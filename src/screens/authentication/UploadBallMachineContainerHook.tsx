@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect, useRef, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -9,6 +9,10 @@ import {
   Button,
   Image,
   SafeAreaView,
+  StyleSheet,
+  Animated,
+  Pressable,
+  ImageBackground,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -49,6 +53,8 @@ import HeaderWithText from '../../global-components/header/HeaderWithText';
 import ScreenWrapperWithHeader from '../../components/wrappers/screen_wrapper_with_header';
 import ProcessingModal from '../../modals/ProcessingModal';
 import {current} from '@reduxjs/toolkit';
+import * as Progress from 'react-native-progress';
+import {Background} from 'victory-native';
 
 type Props = {
   navigation: any;
@@ -68,6 +74,9 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   const [videoURI, setVideoURI] = useState(null);
   const [thumbnailURI, setThumbnailURI] = useState(null);
   const [uploadingText, setUploadingText] = useState(null);
+  // const [percentage, setPercentage] = useState(0);
+  const [prograssValue, setProgressValue] = useState(0);
+  const [indeterminate, setIndeterminate] = useState(true);
 
   const {
     uploading,
@@ -129,6 +138,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   }, [videoAnalysisData]);
 
   const proceedToUploadMetaData = async () => {
+    animate();
     var analysis_data = {
       labels: ['Forehand', 'Backhand'],
       legend: ['A', 'B', 'C', 'D'],
@@ -168,6 +178,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   };
 
   const proceedToUploadThumbnail = async () => {
+    animate();
     if (capturedVideoURI) {
       const {uri} = await VideoThumbnails.getThumbnailAsync(capturedVideoURI, {
         time: 200,
@@ -187,6 +198,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   };
 
   const proceedToUploadVideo = async url => {
+    animate();
     var last = url.substring(url.lastIndexOf('/') + 1, url.length);
     const name = last;
     let videoData1 = {
@@ -209,21 +221,55 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
     } else if (uploadingAnalysis) {
       setUploadingText(currentAnalysisStatus);
     } else {
-      setUploadingText('');
+      setUploadingText('Uploaded Done');
     }
   });
+
+  const animate = () => {
+    let progress = 0;
+    setProgressValue(progress);
+    setTimeout(() => {
+      setIndeterminate(false);
+      setInterval(() => {
+        progress += Math.random() / 5;
+        if (progress > 1) {
+          progress = 1;
+        }
+        setProgressValue(progress);
+      }, 500);
+    }, 1500);
+  };
+
   return (
     <ScreenWrapperWithHeader title="uploading" navigation={navigation}>
-      <View>
-        <AutoHeightImage source={languagePic} width={SCREEN_HEIGHT * 0.75} />
-        <ProcessingModal
-          visible={uploading || uploadingAnalysis}
-          title={uploadingText}
-          buttonTitle={'Cancel upload'}
-          onCancelButton={() => {
-            uplodaingCancel;
-          }}
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#fff',
+          paddingVertical: 20,
+        }}>
+        <ImageBackground
+          source={languagePic}
+          style={{width: '100%', height: '100%'}}
         />
+        {/* <AutoHeightImage source={languagePic} width={SCREEN_HEIGHT * 0.65} /> */}
+        <Text style={{fontSize: 20, textAlign: 'center', margin: 10}}>
+          {uploadingText}
+        </Text>
+        <View>
+          <Progress.Bar
+            style={{margin: 10}}
+            progress={prograssValue}
+            indeterminate={indeterminate}
+          />
+        </View>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => uplodaingCancel()}>
+          <Text style={styles.textStyle1}>Cancel</Text>
+        </Pressable>
       </View>
     </ScreenWrapperWithHeader>
   );

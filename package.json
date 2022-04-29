@@ -79,6 +79,7 @@
     "react-native-keep-awake": "^4.0.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-media-controls": "^2.3.0",
+    "react-native-progress": "^5.0.0",
     "react-native-record-screen": "^0.4.0",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",

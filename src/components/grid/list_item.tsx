@@ -52,7 +52,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
             />
           )}
         </View>
-        {/* <View
+        <View
           style={{
             marginLeft: -12,
             height: 110,
@@ -63,23 +63,23 @@ const ListItem: React.FunctionComponent<Props> = props => {
             alignItems: 'center',
           }}>
           <View>
-            <Text style={[styles.itemName, { width: (itemWidth - 15) / 2 }]}>
+            <Text style={[styles.itemName, {width: (itemWidth - 15) / 2}]}>
               Trainify_{index ? index : 'video'}
             </Text>
           </View>
-          <View style={{ width: (itemWidth - 15) / 2, paddingRight: 8 }}>
-            <View style={{ marginTop: 0 }}>
-              <Text style={[styles.itemCode, { textAlign: 'right' }]}>
+          <View style={{width: (itemWidth - 15) / 2, paddingRight: 8}}>
+            <View style={{marginTop: 0}}>
+              <Text style={[styles.itemCode, {textAlign: 'right'}]}>
                 {time}
               </Text>
             </View>
-            <View style={{ marginTop: 0 }}>
-              <Text style={[styles.itemCode, { textAlign: 'right' }]}>
+            <View style={{marginTop: 0}}>
+              <Text style={[styles.itemCode, {textAlign: 'right'}]}>
                 {date}
               </Text>
             </View>
           </View>
-        </View> */}
+        </View>
       </View>
     </TouchableOpacity>
   );

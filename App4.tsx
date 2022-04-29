@@ -325,7 +325,7 @@ const App4: FunctionComponent<Props> = props => {
 
   const handleStopCamera = () => {
     stoppedVideoRecording = true;
-    countdownRef.current.stop();
+    // countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
     setIsTimerRunning(false);
@@ -333,7 +333,8 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const handleStopTiemer = () => {
-    if (isTimerRunning && isRecordingInProgress && !stoppedVideoRecording) {
+    if (isTimerRunning && !stoppedVideoRecording) {
+      console.log('Hello');
       setIsRecordingInProgress(false);
       setIsStartedVideoRecording(false);
       setIsTimerRunning(false);
@@ -1345,30 +1346,26 @@ const App4: FunctionComponent<Props> = props => {
               }}
               transparent={true}
             />
-            <Text
-              style={{
-                zIndex: 1000,
-                position: 'absolute',
-                fontSize: 16,
-                color: '#000000',
-              }}>
-              {remainingTime}
-            </Text>
-            <Countdown
-              ref={countdownRef}
-              initialSeconds={60}
-              onTimes={e => {
-                setRemainingTime(60 - e);
-                console.log('current time, ', e);
-              }}
-              onPause={e => {}}
-              onEnd={e => {
-                handleStopTiemer();
-              }}
-            />
           </View>
         )}
       </View>
+      {isStartedVideoRecording && (
+        <View style={styles.calibrationContainer}>
+          <Countdown
+            ref={countdownRef}
+            initialSeconds={60}
+            textStyle={{fontSize: 0}}
+            onTimes={e => {
+              setRemainingTime(60 - e);
+              console.log('current time, ', e);
+            }}
+            onPause={e => {}}
+            onEnd={e => {
+              handleStopCamera();
+            }}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -1383,15 +1380,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
   },
   calibrationContainer: {
-    position: 'relative',
-    // top: 10,
-    // left: 100,
+    position: 'absolute',
+    top: 110,
+    left: 150,
     width: 80,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 30,
+    zIndex: 20,
+    marginTop: 50,
+    alignSelf: 'center',
   },
   cameraContainer: {
     display: 'flex',

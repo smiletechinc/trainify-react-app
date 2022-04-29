@@ -50,7 +50,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('TensorCameraContainer', {
-                  title: 'RECORD VOLLEY / BALL MACHINE',
+                  title: 'RECORD Rally / BALL MACHINE',
                 });
               }}>
               <View
@@ -75,7 +75,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record Volley / Ball Machine
+                    Record Rally / Ball Machine
                   </Text>
                 </View>
               </View>
@@ -92,7 +92,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
               delayPressIn={0}
               onPress={() => {
                 navigation.navigate('TensorCameraContainer', {
-                  title: 'RECORD VOLLEY / BALL MACHINE',
+                  title: 'RECORD Rally / BALL MACHINE',
                 });
               }}>
               <View
@@ -117,7 +117,7 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
                     }}
                   />
                   <Text style={styles.record_and_upload_text}>
-                    Record Volley / Ball Machine
+                    Record Rally / Ball Machine
                   </Text>
                 </View>
               </View>

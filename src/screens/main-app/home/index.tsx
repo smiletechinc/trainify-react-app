@@ -190,7 +190,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             <View style={{marginLeft: 10}}>
               <Image source={practiceWithBall} style={{margin: 12}} />
               <Text style={styles.practice_text}>
-                Practice Volley / Ball Machine
+                Practice Rally / Ball Machine
               </Text>
             </View>
           </View>
