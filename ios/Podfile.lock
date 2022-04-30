@@ -339,6 +339,8 @@ PODS:
     - React-Core
   - react-native-record-screen (0.4.0):
     - React-Core
+  - react-native-restart (0.0.24):
+    - React-Core
   - react-native-safe-area-context (3.4.1):
     - React-Core
   - react-native-segmented-control (2.4.0):
@@ -505,6 +507,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-keep-awake (from `../node_modules/@sayem314/react-native-keep-awake`)"
   - react-native-record-screen (from `../node_modules/react-native-record-screen`)
+  - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-segmented-control (from `../node_modules/@react-native-segmented-control/segmented-control`)"
   - react-native-video (from `../node_modules/react-native-video`)
@@ -634,6 +637,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@sayem314/react-native-keep-awake"
   react-native-record-screen:
     :path: "../node_modules/react-native-record-screen"
+  react-native-restart:
+    :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-segmented-control:
@@ -754,6 +759,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
   react-native-keep-awake: acbee258db16483744910f0da3ace39eb9ab47fd
   react-native-record-screen: ed8a11f81433022cb0383831ce7e79c42e000bb1
+  react-native-restart: 45c8dca02491980f2958595333cbccd6877cb57e
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-segmented-control: 06607462630512ff8eef652ec560e6235a30cc3e
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28

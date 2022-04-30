@@ -114,16 +114,17 @@ const SigninScreen: FunctionComponent<Props> = props => {
     if (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
+      console.log('error in loging, ', error);
       if (errorCode === 'auth/user-not-found') {
         Alert.alert(
           'Trainify',
           'Account not found, Please register for account!',
         );
       } else {
-        Alert.alert('Trainify', 'Error in login!');
+        Alert.alert('Trainify', 'Error in login');
       }
     } else {
-      Alert.alert('Trainify', 'Error in login!');
+      Alert.alert('Trainify!', 'Error in login!');
     }
   };
 

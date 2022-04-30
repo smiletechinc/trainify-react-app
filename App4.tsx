@@ -111,6 +111,8 @@ const App4: FunctionComponent<Props> = props => {
   const [timerLimit, setTimerLimit] = useState<any>(60);
 
   let skipFrameCount = 0;
+  // let timerLimit = 0;
+  let deviceFps = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
   var stoppedVideoRecording = false;
@@ -226,9 +228,9 @@ const App4: FunctionComponent<Props> = props => {
     if (authUser) {
       console.log('authObject', authObject);
       if (authObject.paymentPlan === 'Basic') {
-        setTimerLimit(29);
-      } else if (authObject.paymentPlan === 'Silver') {
-        setTimerLimit(59);
+        setTimerLimit(30);
+      } else if (authObject.paymentPlan === 'Premium') {
+        setTimerLimit(60);
       }
     }
   }, [authObject, authUser]);
@@ -336,8 +338,9 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const handleStopCamera = () => {
+    // console.log('Hello');
     stoppedVideoRecording = true;
-    // countdownRef.current.stop();
+    countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
     setIsTimerRunning(false);
@@ -386,6 +389,7 @@ const App4: FunctionComponent<Props> = props => {
     await RecordScreen.startRecording({mic: false})
       .then(res => {
         setIsStartedVideoRecording(true);
+        setIsTimerRunning(true);
         // console.log('Video recording started.');
         countdownRef.current.start();
       })
@@ -1086,7 +1090,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 5) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1174,7 +1178,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 5) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1268,6 +1272,7 @@ const App4: FunctionComponent<Props> = props => {
       }
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
+      deviceFps = Math.floor(1000 / latency);
       setPoses(poses);
       tf.dispose([imageTensor]);
       if (rafId.current === 0) {
@@ -1353,7 +1358,7 @@ const App4: FunctionComponent<Props> = props => {
               styles={styles.recordIcon}
               icon={stopIcon}
               onPress={() => {
-                countdownRef.current.stop();
+                // countdownRef.current.stop();
                 handleStopCamera();
               }}
               transparent={true}
@@ -1365,15 +1370,14 @@ const App4: FunctionComponent<Props> = props => {
         <View style={styles.calibrationContainer}>
           <Countdown
             ref={countdownRef}
-            initialSeconds={timerLimit}
-            textStyle={{fontSize: 0}}
+            initialSeconds={60}
             onTimes={e => {
               setRemainingTime(60 - e);
               console.log('current time, ', e);
             }}
             onPause={e => {}}
             onEnd={e => {
-              handleStopCamera();
+              handleStopTiemer();
             }}
           />
         </View>

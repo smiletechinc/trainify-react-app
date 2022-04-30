@@ -10,7 +10,7 @@ import styles from './styles';
 const blueTick = require('../../../assets/images/blue-tick.png');
 
 const SubscriptionItemContainer: FunctionComponent = props => {
-  const {leftText, rightText, onPress, price, isSelected} = props;
+  const {leftText, rightText, onPress, price, limitText, isSelected} = props;
   return (
     <TouchableOpacity
       delayPressIn={0}
@@ -73,7 +73,7 @@ const SubscriptionItemContainer: FunctionComponent = props => {
                 fontWeight: '400',
               },
             ]}>
-            2 hrs/mo 729p at 30fps
+            {limitText}
           </Text>
         </View>
       </View>

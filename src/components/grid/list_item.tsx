@@ -48,14 +48,14 @@ const ListItem: React.FunctionComponent<Props> = props => {
           {image && (
             <Image
               source={{uri: image}}
-              style={{height: 182, width: itemWidth - 18}}
+              style={{height: 135, width: itemWidth - 18}}
             />
           )}
         </View>
         <View
           style={{
             marginLeft: -12,
-            height: 110,
+            height: 55,
             display: 'flex',
             flexDirection: 'row',
             marginBottom: -8,

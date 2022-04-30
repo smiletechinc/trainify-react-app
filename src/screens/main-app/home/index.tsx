@@ -120,7 +120,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
 
   const showBallMachineNavigationModal = () => {
     setAlertBallMachineNavigationModal(true);
-    setTitleText('Notice');
+    setTitleText('Feature Unavailable');
     setDescText('This feature is available with Premium Subscription only');
   };
 
@@ -157,7 +157,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
       RecordScreen.stopRecording();
       requestPermission();
       if (galleryPermission) {
-        if (userPaymentPlan === 'Silver') {
+        if (userPaymentPlan === 'Premium') {
           navigation.navigate('BallMachinePracticeHomeScreen');
         } else {
           showBallMachineNavigationModal();
