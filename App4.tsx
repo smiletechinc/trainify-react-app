@@ -1011,6 +1011,8 @@ const App4: FunctionComponent<Props> = props => {
 
   const serveTypeDetectionthresholdRightHanded = (poses: any) => {
     if (poses && poses.length > 0) {
+      console.log('Poses', poses[0]);
+
       const object = poses[0];
       const keypoints = object.keypoints;
       var leftShoulder = keypoints.filter(function (item: any) {
@@ -1090,7 +1092,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 5) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 3) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
@@ -1178,7 +1180,7 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 5) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 3) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
