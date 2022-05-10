@@ -31,6 +31,7 @@ import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import CountDown from 'react-native-countdown-component';
 
 const stopIcon = require('./src/assets/images/stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
@@ -108,7 +109,8 @@ const App4: FunctionComponent<Props> = props => {
   const [titleText, setTitleText] = useState('');
   const [descText, setDescText] = useState('');
   const [buttonText, setButtonText] = useState('');
-  const [timerLimit, setTimerLimit] = useState<any>(60);
+  const [timerLimet, setTimerLimit] = useState(false);
+  const [userPaymentPlan, setUserPaymentPlan] = useState('User');
 
   let skipFrameCount = 0;
   // let timerLimit = 0;
@@ -228,9 +230,11 @@ const App4: FunctionComponent<Props> = props => {
     if (authUser) {
       console.log('authObject', authObject);
       if (authObject.paymentPlan === 'Basic') {
-        setTimerLimit(30);
+        setTimerLimit(true);
+        console.log(timerLimet);
       } else if (authObject.paymentPlan === 'Premium') {
-        setTimerLimit(60);
+        // setTimerLimit(60 * 1);
+        setTimerLimit(false);
       }
     }
   }, [authObject, authUser]);
@@ -338,17 +342,19 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const handleStopCamera = () => {
-    // console.log('Hello');
+    console.log('Hello');
     stoppedVideoRecording = true;
-    countdownRef.current.stop();
+    // countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
     setIsTimerRunning(false);
+    // alert('TimerStopped');
     stopRecording();
   };
 
   const handleStopTiemer = () => {
     if (isTimerRunning && !stoppedVideoRecording) {
+      // alert('Finished');
       console.log('Hello');
       setIsRecordingInProgress(false);
       setIsStartedVideoRecording(false);
@@ -388,10 +394,10 @@ const App4: FunctionComponent<Props> = props => {
   const startRecording = async () => {
     await RecordScreen.startRecording({mic: false})
       .then(res => {
-        setIsStartedVideoRecording(true);
-        setIsTimerRunning(true);
+        // setIsStartedVideoRecording(true);
+        // setIsTimerRunning(true);
         // console.log('Video recording started.');
-        countdownRef.current.start();
+        // countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
@@ -506,7 +512,8 @@ const App4: FunctionComponent<Props> = props => {
     return (
       <View style={styles.fpsContainer}>
         {/* <Text>Total {count}</Text> */}
-        <Text>Serve: {serveType}</Text>
+        {/* <Text>Serve: {serveType}</Text> */}
+        <Text>{serveType ? `${serveType}` : 'Last Serve'}</Text>
         {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
@@ -1239,6 +1246,8 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
+        setIsTimerRunning(true);
+        setIsStartedVideoRecording(true);
         startRecording();
       }
     }
@@ -1366,20 +1375,17 @@ const App4: FunctionComponent<Props> = props => {
         />
       )}
       {isStartedVideoRecording && (
-        <View style={styles.calibrationContainer}>
-          <Countdown
-            ref={countdownRef}
-            initialSeconds={60}
-            onTimes={e => {
-              setRemainingTime(60 - e);
-              console.log('current time, ', e);
-            }}
-            onPause={e => {}}
-            onEnd={e => {
-              handleStopTiemer();
-            }}
-          />
-        </View>
+        <CountDown
+          until={(authObject.paymentPlan === 'Basic' ? 30 : 60) * 1}
+          size={16}
+          running={isTimerRunning}
+          style={styles.calibrationContainer}
+          onFinish={() => handleStopTiemer()}
+          digitStyle={{backgroundColor: '#FFF'}}
+          digitTxtStyle={{color: '#000000'}}
+          timeToShow={['M', 'S']}
+          timeLabels={{m: null, s: null}}
+        />
       )}
     </SafeAreaView>
   );
@@ -1397,15 +1403,16 @@ const styles = StyleSheet.create({
   calibrationContainer: {
     position: 'absolute',
     top: 110,
-    left: 150,
-    width: 80,
+    // left: 150,
+    // width: 100,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    // backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 50,
+    marginTop: 32,
     alignSelf: 'center',
+    // opacity: 0.5,
   },
   cameraContainer: {
     display: 'flex',
@@ -1479,7 +1486,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 50,
     position: 'absolute',
-    left: '50%',
+    left: '45%',
     top: '82%',
     justifyContent: 'center',
     alignItems: 'center',

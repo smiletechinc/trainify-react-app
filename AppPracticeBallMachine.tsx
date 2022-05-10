@@ -28,6 +28,7 @@ import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from './src/constants';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import CountDown from 'react-native-countdown-component';
 
 const stopIcon = require('./src/assets/images/stop.png');
 const fronCamera = require('./src/assets/images/frontCamera.png');
@@ -94,6 +95,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const [videoURL, setVideoURL] = React.useState<string>(null);
   const [videoData, setVideoData] = React.useState<string>(null);
   const [orientationScreen, setOrientationScreen] = useState('');
+  const [timerLimit, setTimerLimit] = useState<any>(60);
 
   let skipFrameCount = 0;
   var isCalibrated = false;
@@ -319,11 +321,11 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
   const handleStopCamera = () => {
     stoppedVideoRecording = true;
-    countdownRef.current.stop();
+    // countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
     setIsTimerRunning(false);
-    stopRecording();
+    // stopRecording();
   };
 
   const handleStopTiemer = () => {
@@ -332,7 +334,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       setIsRecordingInProgress(false);
       setIsStartedVideoRecording(false);
       setIsTimerRunning(false);
-      stopRecording();
+      // stopRecording();
     }
   };
 
@@ -385,10 +387,10 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       height: SCREEN_WIDTH,
     })
       .then(res => {
-        setIsStartedVideoRecording(true);
-        setIsTimerRunning(true);
-        // console.log('Video recording started.');
-        countdownRef.current.start();
+        // setIsStartedVideoRecording(true);
+        // setIsTimerRunning(true);
+        // // console.log('Video recording started.');
+        // countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
@@ -1313,6 +1315,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
+        setIsTimerRunning(true);
+        setIsStartedVideoRecording(true);
         startRecording();
       }
     }
@@ -1441,21 +1445,18 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           transparent={true}
         />
       )}
-      {isStartedVideoRecording && isTimerRunning && (
-        <View style={styles.calibrationContainer}>
-          <Countdown
-            ref={countdownRef}
-            initialSeconds={60}
-            onTimes={e => {
-              setRemainingTime(60 - e);
-              console.log('current time, ', e);
-            }}
-            onPause={e => {}}
-            onEnd={e => {
-              handleStopTiemer();
-            }}
-          />
-        </View>
+      {isStartedVideoRecording && (
+        <CountDown
+          until={timerLimit}
+          size={16}
+          running={isTimerRunning}
+          style={styles.calibrationContainer}
+          onFinish={() => handleStopTiemer()}
+          digitStyle={{backgroundColor: '#FFF'}}
+          digitTxtStyle={{color: '#000000'}}
+          timeToShow={['M', 'S']}
+          timeLabels={{m: null, s: null}}
+        />
       )}
     </View>
   );
@@ -1539,9 +1540,9 @@ const styles = StyleSheet.create({
     width: 60,
     height: 50,
     position: 'absolute',
-    bottom: 36,
-    right: 80,
-    top: '50%',
+    bottom: '36%',
+    right: '10%',
+    top: '45%',
     alignItems: 'center',
     backgroundColor: 'transparent',
     padding: 8,
@@ -1589,16 +1590,17 @@ const styles = StyleSheet.create({
   },
   calibrationContainer: {
     position: 'absolute',
-    top: 1,
-    left: 100,
-    width: 80,
+    top: '10%',
+    left: '45%',
+    // width: 100,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    // backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
+    marginTop: 32,
     alignSelf: 'center',
+    // opacity: 0.5,
   },
   recordIcon: {
     width: 80,
