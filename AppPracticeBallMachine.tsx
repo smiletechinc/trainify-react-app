@@ -7,8 +7,6 @@ import {
   Platform,
   Alert,
   Linking,
-  TouchableOpacity,
-  Image,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -22,27 +20,16 @@ import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
 import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
-import styles_external from './src/screens/main-app/styles';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
 import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
-import {
-  uploadPhotoService,
-  uploadVideoService,
-  getThumbnailURL,
-} from './src/services/mediaServices';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from './src/constants';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
-import ScreenWrapperWithHeader from './src/components/wrappers/screen_wrapper_with_header';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
+const stopIcon = require('./src/assets/images/stop.png');
 const fronCamera = require('./src/assets/images/frontCamera.png');
 const backCamera = require('./src/assets/images/backCamera.png');
 const backIcon = require('./src/assets/images/back-icon.png');
@@ -1553,7 +1540,7 @@ const styles = StyleSheet.create({
     height: 50,
     position: 'absolute',
     bottom: 36,
-    right: 64,
+    right: 80,
     top: '50%',
     alignItems: 'center',
     backgroundColor: 'transparent',

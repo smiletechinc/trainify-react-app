@@ -32,7 +32,7 @@ import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
+const stopIcon = require('./src/assets/images/stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
 const fronCamera = require('./src/assets/images/frontCamera.png');
 const backCamera = require('./src/assets/images/backCamera.png');
@@ -1354,20 +1354,17 @@ const App4: FunctionComponent<Props> = props => {
           {renderFps()}
           {renderCameraTypeSwitcher()}
         </View>
-        {isStartedVideoRecording && (
-          <View style={styles.buttonContainer}>
-            <IconButton
-              styles={styles.recordIcon}
-              icon={stopIcon}
-              onPress={() => {
-                // countdownRef.current.stop();
-                handleStopCamera();
-              }}
-              transparent={true}
-            />
-          </View>
-        )}
       </View>
+      {isStartedVideoRecording && (
+        <IconButton
+          styles={styles.stopIcon}
+          icon={stopIcon}
+          onPress={() => {
+            handleStopCamera();
+          }}
+          transparent={true}
+        />
+      )}
       {isStartedVideoRecording && (
         <View style={styles.calibrationContainer}>
           <Countdown
@@ -1477,6 +1474,18 @@ const styles = StyleSheet.create({
     padding: 8,
     zIndex: 20,
     marginTop: 16,
+  },
+  stopIcon: {
+    width: 60,
+    height: 50,
+    position: 'absolute',
+    left: '50%',
+    top: '82%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    padding: 8,
+    zIndex: 20,
   },
   loadingMsg: {
     position: 'absolute',
