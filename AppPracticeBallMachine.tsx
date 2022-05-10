@@ -112,9 +112,6 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   var isCalibrated = false;
   var stoppedVideoRecording = false;
   var isCompletedRecording = false;
-  let response_let = {};
-  let thumbURL = '';
-  let vidURL = '';
 
   var [isMissed, setIsMissed] = useState('');
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
@@ -418,17 +415,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const renderCalibrationPoints = () => {
-    const cx1 = 100;
-    const cy1 = 100;
+    const cx1 = 250;
+    const cy1 = 8;
 
-    const cx2 = cameraLayoutWidth - 100;
-    const cy2 = 100;
+    const cx2 = cameraLayoutWidth - 250;
+    const cy2 = 8;
 
-    const cx3 = 100;
-    const cy3 = cameraLayoutHeight - 50;
+    const cx3 = 250;
+    const cy3 = cameraLayoutHeight - 8;
 
-    const cx4 = cameraLayoutWidth - 100;
-    const cy4 = cameraLayoutHeight - 50;
+    const cx4 = cameraLayoutWidth - 250;
+    const cy4 = cameraLayoutHeight - 8;
 
     if (isCalibratedp) {
       return (
@@ -468,9 +465,9 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           <View
             style={{
               position: 'absolute',
-              left: cx1,
-              top: cy1 + 10,
-              right: cx3,
+              left: cx1, // 100
+              top: cy1 + 10, // cy1 + 10 = 100 +10
+              right: cx3, // cx3 = 100
               // height: cx2,
               borderRadius: 2,
               borderStyle: 'solid',
@@ -1279,17 +1276,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const calibrate = (poses: any) => {
-    const cx1 = 100;
-    const cy1 = 100;
+    const cx1 = 250;
+    const cy1 = 8;
 
-    const cx2 = cameraLayoutWidth - 100;
-    const cy2 = 100;
+    const cx2 = cameraLayoutWidth - 250;
+    const cy2 = 8;
 
-    const cx3 = 100;
-    const cy3 = cameraLayoutHeight - 50;
+    const cx3 = 250;
+    const cy3 = cameraLayoutHeight - 8;
 
-    const cx4 = cameraLayoutWidth - 100;
-    const cy4 = cameraLayoutHeight - 50;
+    const cx4 = cameraLayoutWidth - 250;
+    const cy4 = cameraLayoutHeight - 8;
 
     if (poses && poses.length > 0) {
       const object = poses[0];
@@ -1507,7 +1504,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 3,
     marginHorizontal: 64,
-    marginBottom: 16,
+    marginBottom: 48,
     marginTop: 0,
   },
   camera: {
