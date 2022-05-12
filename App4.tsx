@@ -1376,7 +1376,7 @@ const App4: FunctionComponent<Props> = props => {
       )}
       {isStartedVideoRecording && (
         <CountDown
-          until={(authObject.paymentPlan === 'Basic' ? 30 : 60) * 1}
+          until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
           size={16}
           running={isTimerRunning}
           style={styles.calibrationContainer}

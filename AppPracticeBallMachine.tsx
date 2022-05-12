@@ -325,7 +325,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
     setIsTimerRunning(false);
-    // stopRecording();
+    stopRecording();
   };
 
   const handleStopTiemer = () => {
@@ -334,7 +334,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       setIsRecordingInProgress(false);
       setIsStartedVideoRecording(false);
       setIsTimerRunning(false);
-      // stopRecording();
+      stopRecording();
     }
   };
 
@@ -1447,7 +1447,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
       )}
       {isStartedVideoRecording && (
         <CountDown
-          until={timerLimit}
+          until={57 * 1}
           size={16}
           running={isTimerRunning}
           style={styles.calibrationContainer}
