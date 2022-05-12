@@ -1103,6 +1103,7 @@ const App4: FunctionComponent<Props> = props => {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
+        setServeType('');
       }
     }
   };
@@ -1191,6 +1192,7 @@ const App4: FunctionComponent<Props> = props => {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
+        setServeType('');
       }
     }
   };
