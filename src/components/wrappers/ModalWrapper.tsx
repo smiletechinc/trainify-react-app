@@ -24,7 +24,6 @@ const ModalWrapper: FunctionComponent<Props> = props => {
       transparent={true}
       visible={visible}
       onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
         close();
       }}>
       {children}

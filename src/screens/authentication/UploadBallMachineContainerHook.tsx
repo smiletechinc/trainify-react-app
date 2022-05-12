@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {FunctionComponent, useEffect, useRef, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -9,20 +9,25 @@ import {
   Button,
   Image,
   SafeAreaView,
+  StyleSheet,
+  Animated,
+  Pressable,
+  ImageBackground,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { GooglePay } from 'react-native-google-pay';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {GooglePay} from 'react-native-google-pay';
 
 // Custom UI components.
-import { COLORS, SCREEN_WIDTH } from '../../constants';
+import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH} from '../../constants';
 import AppUserItem from './components/AppUserItem';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
 import styles from './styles';
-import { SimpleButton } from '../../global-components/button';
-import { IconButton } from '../../components/buttons';
+import {SimpleButton} from '../../global-components/button';
+import {IconButton} from '../../components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
 import * as VideoThumbnails from 'expo-video-thumbnails';
@@ -42,9 +47,14 @@ const startIcon = require('./../../assets/images/icon_record_start.png');
 const stopIcon = require('./../../assets/images/icon_record_stop.png');
 const uploadAnimation = require('./../../assets/animations/uploading-animation.json');
 
-import { useMediaUpload } from '../../hooks/useMediaUpload';
-import { useAnalysisUpload } from '../../hooks';
+import {useMediaUpload} from '../../hooks/useMediaUpload';
+import {useAnalysisUpload} from '../../hooks';
 import HeaderWithText from '../../global-components/header/HeaderWithText';
+import ScreenWrapperWithHeader from '../../components/wrappers/screen_wrapper_with_header';
+import ProcessingModal from '../../modals/ProcessingModal';
+import {current} from '@reduxjs/toolkit';
+import * as Progress from 'react-native-progress';
+import {Background} from 'victory-native';
 
 type Props = {
   navigation: any;
@@ -52,8 +62,9 @@ type Props = {
 };
 
 const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
-  const { navigation, route } = props;
-  const { capturedVideoURI, graphData, createrId } = route.params;
+  useKeepAwake();
+  const {navigation, route} = props;
+  const {capturedVideoURI, graphData, createrId} = route.params;
   // console.log(createrId);
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
   const [response, setResponse] = React.useState<any>(null);
@@ -62,6 +73,10 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   const [videoMetaData, setVideoMetaData] = React.useState(null);
   const [videoURI, setVideoURI] = useState(null);
   const [thumbnailURI, setThumbnailURI] = useState(null);
+  const [uploadingText, setUploadingText] = useState(null);
+  // const [percentage, setPercentage] = useState(0);
+  const [prograssValue, setProgressValue] = useState(0);
+  const [indeterminate, setIndeterminate] = useState(true);
 
   const {
     uploading,
@@ -73,14 +88,14 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
     currentStatus,
     uploadThumbnailFailure,
     uploadVideoFailure,
-  } = useMediaUpload({ videoData: videoData });
+  } = useMediaUpload({videoData: videoData});
 
   const {
     videoAnalysisData,
     uploadingAnalysis,
     addVideoAnalysisToFirebase,
     currentAnalysisStatus,
-  } = useAnalysisUpload({ videoMetaData: videoMetaData });
+  } = useAnalysisUpload({videoMetaData: videoMetaData});
 
   useEffect(() => {
     if (capturedVideoURI) {
@@ -123,15 +138,16 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   }, [videoAnalysisData]);
 
   const proceedToUploadMetaData = async () => {
+    animate();
     var analysis_data = {
       labels: ['Forehand', 'Backhand'],
       legend: ['A', 'B', 'C', 'D'],
       data: graphData
         ? graphData
         : [
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-        ],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+          ],
       barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
     };
     var last = capturedVideoURI.substring(
@@ -162,8 +178,9 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   };
 
   const proceedToUploadThumbnail = async () => {
+    animate();
     if (capturedVideoURI) {
-      const { uri } = await VideoThumbnails.getThumbnailAsync(capturedVideoURI, {
+      const {uri} = await VideoThumbnails.getThumbnailAsync(capturedVideoURI, {
         time: 200,
       });
       var last = uri.substring(uri.lastIndexOf('/') + 1, uri.length);
@@ -181,6 +198,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   };
 
   const proceedToUploadVideo = async url => {
+    animate();
     var last = url.substring(url.lastIndexOf('/') + 1, url.length);
     const name = last;
     let videoData1 = {
@@ -192,58 +210,68 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
     setVideoData(videoData1);
     uploadVideo(videoData1);
   };
+  const uplodaingCancel = () => {
+    cancelUploading();
+    navigation.goBack();
+  };
+
+  useEffect(() => {
+    if (uploading) {
+      setUploadingText(currentStatus);
+    } else if (uploadingAnalysis) {
+      setUploadingText(currentAnalysisStatus);
+    } else {
+      setUploadingText('Uploaded Done');
+    }
+  });
+
+  const animate = () => {
+    let progress = 0;
+    setProgressValue(progress);
+    setTimeout(() => {
+      setIndeterminate(false);
+      setInterval(() => {
+        progress += Math.random() / 5;
+        if (progress > 1) {
+          progress = 1;
+        }
+        setProgressValue(progress);
+      }, 500);
+    }, 1500);
+  };
 
   return (
-    <SafeAreaView>
+    <ScreenWrapperWithHeader title="uploading" navigation={navigation}>
       <View
         style={{
           flex: 1,
-          justifyContent: 'flex-start',
-          backgroundColor: 'white',
-          paddingTop: Platform.OS === 'ios' ? 15 : 15,
-          minHeight: 48,
-          paddingHorizontal: SCREEN_WIDTH * 0.03,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#fff',
+          paddingVertical: 20,
         }}>
-        <HeaderWithText text="uploading" navigation={navigation} />
+        <ImageBackground
+          source={languagePic}
+          style={{width: '100%', height: '100%'}}
+        />
+        {/* <AutoHeightImage source={languagePic} width={SCREEN_HEIGHT * 0.65} /> */}
+        <Text style={{fontSize: 20, textAlign: 'center', margin: 10}}>
+          {uploadingText}
+        </Text>
+        <View>
+          <Progress.Bar
+            style={{margin: 10}}
+            progress={prograssValue}
+            indeterminate={indeterminate}
+          />
+        </View>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => uplodaingCancel()}>
+          <Text style={styles.textStyle1}>Cancel</Text>
+        </Pressable>
       </View>
-      <View style={styles.login_main_container}>
-        <KeyboardAwareScrollView
-          bounces={false}
-          contentContainerStyle={{
-            flexGrow: 1,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              marginTop: 47,
-              paddingHorizontal: SCREEN_WIDTH * 0.05,
-            }}>
-            <AutoHeightImage source={languagePic} width={SCREEN_WIDTH * 0.9} />
-            <AnimatedLoader
-              visible={uploading || uploadingAnalysis}
-              overlayColor={'rgba(255, 255, 255, 0.75)'}
-              source={uploadAnimation}
-              animationStyle={styles.lottie}
-              speed={1}>
-              <Text>
-                {uploading
-                  ? currentStatus
-                  : uploadingAnalysis
-                    ? currentAnalysisStatus
-                    : false}
-              </Text>
-              <Button
-                title={'Cancel upload'}
-                onPress={() => {
-                  cancelUploading();
-                  navigation.goBack();
-                }}
-              />
-            </AnimatedLoader>
-          </View>
-        </KeyboardAwareScrollView>
-      </View>
-    </SafeAreaView>
+    </ScreenWrapperWithHeader>
   );
 };
 export default UploadBallMachineContainerHook;

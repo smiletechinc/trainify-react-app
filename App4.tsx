@@ -30,8 +30,10 @@ import CameraRoll from '@react-native-community/cameraroll';
 import {Countdown} from 'react-native-element-timer';
 import {AuthContext} from './src/context/auth-context';
 import {PermissionContext} from './src/context/permissions-context';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import CountDown from 'react-native-countdown-component';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
+const stopIcon = require('./src/assets/images/stop.png');
 const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
 const fronCamera = require('./src/assets/images/frontCamera.png');
 const backCamera = require('./src/assets/images/backCamera.png');
@@ -55,6 +57,7 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
+  useKeepAwake();
   const {
     setCameraPermissions,
     setGalleryPermissions,
@@ -95,7 +98,7 @@ const App4: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -106,10 +109,15 @@ const App4: FunctionComponent<Props> = props => {
   const [titleText, setTitleText] = useState('');
   const [descText, setDescText] = useState('');
   const [buttonText, setButtonText] = useState('');
+  const [timerLimet, setTimerLimit] = useState(false);
+  const [userPaymentPlan, setUserPaymentPlan] = useState('User');
 
   let skipFrameCount = 0;
+  // let timerLimit = 0;
+  let deviceFps = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
+  var stoppedVideoRecording = false;
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -218,6 +226,19 @@ const App4: FunctionComponent<Props> = props => {
     }
   };
 
+  useEffect(() => {
+    if (authUser) {
+      console.log('authObject', authObject);
+      if (authObject.paymentPlan === 'Basic') {
+        setTimerLimit(true);
+        console.log(timerLimet);
+      } else if (authObject.paymentPlan === 'Premium') {
+        // setTimerLimit(60 * 1);
+        setTimerLimit(false);
+      }
+    }
+  }, [authObject, authUser]);
+
   const clearTimer = e => {
     setSeconds(10);
 
@@ -267,10 +288,10 @@ const App4: FunctionComponent<Props> = props => {
     navigation.goBack();
   };
 
-  const gallerypermissionAlert = () => {
+  const failedToSaveAlert = () => {
     Alert.alert(
-      'Gallery Permission Denied',
-      'Please check gallery permission from iPhone settings ',
+      'Failed to save video.',
+      'Please check your phone memory.',
       [
         {text: 'Go Back', onPress: () => proceedtoback()},
         {text: 'Go To Settings', onPress: () => goSettings()},
@@ -285,6 +306,10 @@ const App4: FunctionComponent<Props> = props => {
         .then(async res => {
           setTfReady(false);
           if (res) {
+            setTfReady(false);
+            setIsTimerRunning(false);
+            setIsStartedVideoRecording(false);
+            stoppedVideoRecording = true;
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
             try {
@@ -307,7 +332,7 @@ const App4: FunctionComponent<Props> = props => {
                 })
                 .catch(e => {
                   console.log('Permission Denied');
-                  gallerypermissionAlert();
+                  failedToSaveAlert();
                 });
             } catch (error) {
               Alert.alert('Failed to save video in gallery', error);
@@ -321,9 +346,25 @@ const App4: FunctionComponent<Props> = props => {
   };
 
   const handleStopCamera = () => {
+    console.log('Hello');
+    stoppedVideoRecording = true;
+    // countdownRef.current.stop();
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
+    setIsTimerRunning(false);
+    // alert('TimerStopped');
     stopRecording();
+  };
+
+  const handleStopTiemer = () => {
+    if (isTimerRunning && !stoppedVideoRecording) {
+      // alert('Finished');
+      console.log('Hello');
+      setIsRecordingInProgress(false);
+      setIsStartedVideoRecording(false);
+      setIsTimerRunning(false);
+      stopRecording();
+    }
   };
 
   const handleSwitchCameraType = () => {
@@ -357,9 +398,10 @@ const App4: FunctionComponent<Props> = props => {
   const startRecording = async () => {
     await RecordScreen.startRecording({mic: false})
       .then(res => {
-        setIsStartedVideoRecording(true);
+        // setIsStartedVideoRecording(true);
+        // setIsTimerRunning(true);
         // console.log('Video recording started.');
-        countdownRef.current.start();
+        // countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
@@ -474,7 +516,8 @@ const App4: FunctionComponent<Props> = props => {
     return (
       <View style={styles.fpsContainer}>
         {/* <Text>Total {count}</Text> */}
-        <Text>Serve: {serveType}</Text>
+        {/* <Text>Serve: {serveType}</Text> */}
+        <Text>{serveType ? `${serveType}` : 'Last Serve'}</Text>
         {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
@@ -979,6 +1022,8 @@ const App4: FunctionComponent<Props> = props => {
 
   const serveTypeDetectionthresholdRightHanded = (poses: any) => {
     if (poses && poses.length > 0) {
+      console.log('Poses', poses[0]);
+
       const object = poses[0];
       const keypoints = object.keypoints;
       var leftShoulder = keypoints.filter(function (item: any) {
@@ -1058,10 +1103,11 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 3) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
+        setServeType('');
       }
     }
   };
@@ -1146,10 +1192,11 @@ const App4: FunctionComponent<Props> = props => {
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 80) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 3) {
         skipFrameCount = skipFrameCount + 1;
       } else {
         skipFrameCount = 0;
+        setServeType('');
       }
     }
   };
@@ -1205,6 +1252,8 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
+        setIsTimerRunning(true);
+        setIsStartedVideoRecording(true);
         startRecording();
       }
     }
@@ -1240,6 +1289,7 @@ const App4: FunctionComponent<Props> = props => {
       }
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
+      deviceFps = Math.floor(1000 / latency);
       setPoses(poses);
       tf.dispose([imageTensor]);
       if (rafId.current === 0) {
@@ -1311,48 +1361,64 @@ const App4: FunctionComponent<Props> = props => {
         />
       </View>
       <View style={styles.cameraView}>
+        <View
+          style={{
+            zIndex: 20,
+            width: '100%',
+          }}>
+          <View>{renderFps()}</View>
+
+          <View>{renderCameraTypeSwitcher()}</View>
+        </View>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
           {/* {renderPose()} */}
           {renderSkeleton()}
           {renderCalibrationPoints()}
-          {renderFps()}
-          {renderCameraTypeSwitcher()}
         </View>
-        {isStartedVideoRecording && (
-          <View style={styles.buttonContainer}>
-            <IconButton
-              styles={styles.recordIcon}
-              icon={stopIcon}
-              onPress={() => {
-                countdownRef.current.stop();
-                handleStopCamera();
-              }}
-              transparent={true}
-            />
-            <Text
-              style={{
-                zIndex: 1000,
-                position: 'absolute',
-                fontSize: 16,
-                color: '#000000',
-              }}>
-              {remainingTime}
-            </Text>
-            <Countdown
-              ref={countdownRef}
-              initialSeconds={60}
-              onTimes={e => {
-                setRemainingTime(60 - e);
-              }}
-              onPause={e => {}}
-              onEnd={e => {
-                handleStopCamera();
-              }}
-            />
-          </View>
-        )}
       </View>
+      {isStartedVideoRecording && (
+        <IconButton
+          styles={styles.stopIcon}
+          icon={stopIcon}
+          onPress={() => {
+            handleStopCamera();
+          }}
+          transparent={true}
+        />
+      )}
+      {isStartedVideoRecording && (
+        <CountDown
+          until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
+          size={16}
+          running={isTimerRunning}
+          style={styles.timerConatiner}
+          onFinish={() => handleStopTiemer()}
+          digitStyle={{backgroundColor: '#FFF'}}
+          digitTxtStyle={{color: '#000000'}}
+          timeToShow={['M', 'S']}
+          timeLabels={{m: null, s: null}}
+        />
+      )}
+      {/* <IconButton
+        styles={styles.stopIcon}
+        icon={stopIcon}
+        onPress={() => {
+          handleStopCamera();
+        }}
+        transparent={true}
+      />
+      <CountDown
+        until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
+        size={16}
+        running={isTimerRunning}
+        style={styles.timerConatiner}
+        onFinish={() => handleStopTiemer()}
+        digitStyle={{backgroundColor: '#FFF'}}
+        digitTxtStyle={{color: '#000000'}}
+        timeToShow={['M', 'S']}
+        timeLabels={{m: null, s: null}}
+      /> */}
     </SafeAreaView>
   );
 };
@@ -1366,20 +1432,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'yellow',
   },
-  calibrationContainer: {
-    position: 'relative',
-    // top: 10,
-    // left: 100,
-    width: 80,
+  timerConatiner: {
+    position: 'absolute',
+    top: '15.5%',
+    // left: 150,
+    // width: 100,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 30,
+    zIndex: 20,
+    marginTop: 32,
+    alignSelf: 'center',
+    // opacity: 0.5,
   },
   cameraContainer: {
     display: 'flex',
-    flexDirection: 'column',
+    // flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -1395,6 +1464,7 @@ const styles = StyleSheet.create({
   cameraView: {
     display: 'flex',
     flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 128,
@@ -1435,15 +1505,27 @@ const styles = StyleSheet.create({
     width: 60,
     height: 50,
     position: 'absolute',
-    bottom: 36,
-    top: 2,
+    // bottom: 36,
+    top: 10,
     right: 10,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
+    // zIndex: 20,
+    // marginTop: 16,
+  },
+  stopIcon: {
+    width: 60,
+    height: 50,
+    position: 'absolute',
+    left: '45%',
+    top: '82%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    padding: 8,
     zIndex: 20,
-    marginTop: 16,
   },
   loadingMsg: {
     position: 'absolute',
@@ -1466,8 +1548,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
-    marginTop: 16,
+    // zIndex: 20,
+    // marginTop: 16,
   },
   svg: {
     width: '100%',

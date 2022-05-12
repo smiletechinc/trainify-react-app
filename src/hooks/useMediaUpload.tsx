@@ -35,6 +35,12 @@ export const useMediaUpload = props => {
   const [uploadVideoSuccess, setUploadVideoSuccess] = useState(false);
   const [videoURL, setVideoURL] = useState('');
 
+  useEffect(() => {
+    return () => {
+      console.log('In return of useMediaUpload');
+    };
+  }, [uploadThumbnailSuccess, thumbnailURL]);
+
   const uploadThumbnail = useCallback(async imageData => {
     setUploading(true);
     setCurrentStatus('Uploading thumbnail');

@@ -27,6 +27,7 @@ function AppContainer() {
         initialRouteName="SplashScreen"
         screenOptions={{
           headerShown: false,
+          orientation: 'portrait',
         }}>
         <AppStack.Screen name="SplashScreen" component={SplashScreen} />
         <AppStack.Screen name="Signin" component={SigninScreen} />
@@ -55,10 +56,11 @@ function AppContainer() {
           name="UploadServeContainerHook"
           component={UploadServeContainerHook}
         />
-        <AppStack.Screen
+        {/* <AppStack.Screen
           name="UploadBallMachineContainerHook"
           component={UploadBallMachineContainerHook}
-        />
+          options={{orientation: 'landscape'}}
+        /> */}
       </AppStack.Navigator>
     </NavigationContainer>
   );

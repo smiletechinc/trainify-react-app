@@ -14,6 +14,8 @@ import styles from './styles';
 import {AuthContext} from './../../context/auth-context';
 import {RootState} from '../../../store';
 import {useSelector} from 'react-redux';
+import {logoutService} from '../../services/authenticationServices';
+import RNRestart from 'react-native-restart'; // Import package from node modules
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 const backIcon = require('../../assets/images/back-icon.png');
@@ -45,12 +47,18 @@ const HeaderWithText: FunctionComponent<Props> = props => {
       const {firstName} = authObject;
       setuserFirstName(firstName);
     } else {
-      proceedToLogout();
+      proceedToRemoveUser();
     }
     if (authUser) {
       console.log('authUser ', authUser);
     }
   }, [authUser, authObject]);
+
+  const proceedToRemoveUser = () => {
+    console.log('Removing user from context.');
+    logoutUser();
+    navigation.replace('Signin');
+  };
 
   const logoutAlert = () => {
     Alert.alert(
@@ -63,9 +71,23 @@ const HeaderWithText: FunctionComponent<Props> = props => {
       {cancelable: false},
     );
   };
-  const proceedToLogout = () => {
+
+  const logoutSuccess = (userCredential?: any) => {
+    console.log('Logout sucess from firebase');
     logoutUser();
-    navigation.replace('Signin');
+    // navigation.replace('SplashScreen');
+    RNRestart.Restart();
+  };
+
+  const logoutFailure = error => {
+    console.log('Error in logout from firebase');
+    logoutUser();
+    // navigation.replace('SplashScreen');
+    RNRestart.Restart();
+  };
+
+  const proceedToLogout = () => {
+    logoutService(logoutSuccess, logoutFailure);
   };
 
   return (

@@ -25,7 +25,7 @@ function MainAppContainer() {
   return (
     <AppStack.Navigator
       initialRouteName="HomeScreen"
-      screenOptions={{headerShown: false}}>
+      screenOptions={{headerShown: false, orientation: 'portrait'}}>
       <AppStack.Screen name="App4" component={App4} />
 
       <AppStack.Screen name="HomeScreen" component={HomeScreen} />
@@ -33,18 +33,22 @@ function MainAppContainer() {
       <AppStack.Screen
         name="BallMachinePracticeHomeScreen"
         component={BallPracticeContainer}
+        options={{orientation: 'landscape'}}
       />
       <AppStack.Screen
         name="BallPracitceAnalysisGridScreen"
         component={BallPracitceAnalysisGridScreen}
+        options={{orientation: 'landscape'}}
       />
       <AppStack.Screen
         name="BallPracticeRenderGraphScreen"
         component={BallPracticeRenderGraphScreen}
+        options={{orientation: 'landscape'}}
       />
       <AppStack.Screen
         name="BallPracticeVideoPlayer"
         component={BallPracticeVideoPlayer}
+        options={{orientation: 'landscape'}}
       />
 
       <AppStack.Screen
@@ -66,6 +70,12 @@ function MainAppContainer() {
       <AppStack.Screen
         name="TensorCameraContainer"
         component={TensorCameraContainer}
+        options={{orientation: 'landscape'}}
+      />
+      <AppStack.Screen
+        name="UploadBallMachineContainerHook"
+        component={UploadBallMachineContainerHook}
+        options={{orientation: 'landscape'}}
       />
     </AppStack.Navigator>
   );

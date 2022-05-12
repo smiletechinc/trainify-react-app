@@ -17,6 +17,8 @@ import {useeCameraPermissionsHook} from '../../../hooks';
 import {getDownloadURL} from 'firebase/storage';
 // import * as MediaLibrary from 'expo-media-library';
 import {usePermissions} from 'expo-media-library';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import {AuthContext} from '../../../context/auth-context';
 
 const servePracticeImage = require('../../../assets/images/serve_icon.png');
 const practiceWithBall = require('../../../assets/images/ballMachine_icon.png');
@@ -26,14 +28,36 @@ type Props = {
 };
 
 const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
+  useKeepAwake();
   const {getCameraPermission, requestCameraPermission, permissionStatus} =
     useeCameraPermissionsHook();
   const [alertModalVisible, setAlertVisibleModal] = useState(false);
+  const [alertBallMachineNavigationModal, setAlertBallMachineNavigationModal] =
+    useState(false);
   const [titleText, setTitleText] = useState('');
   const [descText, setDescText] = useState('');
   const [buttonText, setButtonText] = useState('');
   const [status, requestPermission] = usePermissions();
   const [galleryPermission, setGalleryPermission] = useState(false);
+  const [userPaymentPlan, setUserPaymentPlan] = useState('User');
+
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+
+  useEffect(() => {
+    if (authObject) {
+      console.log('authObject ', authObject);
+      const {paymentPlan} = authObject;
+      setUserPaymentPlan(paymentPlan);
+    }
+    if (authUser) {
+      console.log('authUser ', authUser);
+    }
+  }, [authUser, authObject]);
 
   const startScreenRecording = () => {
     RecordScreen.startRecording({mic: false})
@@ -94,6 +118,12 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
     setButtonText('Go to Settings');
   };
 
+  const showBallMachineNavigationModal = () => {
+    setAlertBallMachineNavigationModal(true);
+    setTitleText('Feature Unavailable');
+    setDescText('This feature is available with Premium Subscription only');
+  };
+
   const navigateServePracticeHomeScreen = () => {
     console.log('cameraPermissionsStatus, ', permissionStatus);
     if (permissionStatus === 'unknown') {
@@ -127,7 +157,11 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
       RecordScreen.stopRecording();
       requestPermission();
       if (galleryPermission) {
-        navigation.navigate('BallMachinePracticeHomeScreen');
+        if (userPaymentPlan === 'Premium') {
+          navigation.navigate('BallMachinePracticeHomeScreen');
+        } else {
+          showBallMachineNavigationModal();
+        }
       } else {
         showGalleryPermiisonModal();
       }
@@ -188,7 +222,7 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
             <View style={{marginLeft: 10}}>
               <Image source={practiceWithBall} style={{margin: 12}} />
               <Text style={styles.practice_text}>
-                Practice Volley / Ball Machine
+                Practice Rally / Ball Machine
               </Text>
             </View>
           </View>
@@ -203,6 +237,15 @@ const HomeScreen: FunctionComponent<Props> = ({navigation}) => {
           buttonTitle={buttonText}
           onAcceptButton={goSettings}
           onCancelButton={() => setAlertVisibleModal(false)}
+        />
+      )}
+
+      {alertBallMachineNavigationModal && (
+        <AlertModal
+          visible={alertBallMachineNavigationModal}
+          title={titleText}
+          desc={descText}
+          onCancelButton={() => setAlertBallMachineNavigationModal(false)}
         />
       )}
     </ScreenWrapperWithHeader>

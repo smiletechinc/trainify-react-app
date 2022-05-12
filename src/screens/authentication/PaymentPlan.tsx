@@ -68,10 +68,12 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const {route, navigation} = props;
   const {authObject, signupObject} = route.params;
   const [playerSelected, setPlayerSelected] = useState<number>(0);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(-1);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
   const [productList, setProductList] = useState([]);
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
+
+  var subscriptionValue = '';
 
   const {
     creatingAccount,
@@ -85,14 +87,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     authObject: authObject,
   });
 
-  // const {
-  //   profileUser,
-  //   creatingProfile,
-  //   profileErrorStatus,
-  //   profileUserStatus,
-  //   registerProfileService,
-  // } = useProfile();
-
   useEffect(() => {
     proceedForApplePay();
     return () => {
@@ -100,21 +94,19 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (profileErrorStatus) {
-  //     Alert.alert(profileErrorStatus);
-  //   } else if (profileUser) {
-  //     (() => {
-  //       goToSigninPage();
-  //     })();
-  //   }
-  // }, [profileUser, profileErrorStatus]);
-
   useEffect(() => {
     if (registerErrorStatus) {
       Alert.alert(registerErrorStatus);
     } else if (registeredUserObject) {
       (() => {
+        console.log('subscriptionPlan', subscriptionPlan);
+        if (subscriptionPlan === 1) {
+          subscriptionValue = 'Basic';
+          console.log(subscriptionValue);
+        } else if (subscriptionPlan === 2) {
+          subscriptionValue = 'Premium';
+          console.log('subscriptionValue', subscriptionValue);
+        }
         proceedToCreateProfile(registeredUserObject);
       })();
     }
@@ -243,7 +235,11 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   const proceedToCreateProfile = firebaseObject => {
     console.log('firebase object:', firebaseObject);
-    const userObject: UserObject = {...signupObject, id: firebaseObject.uid};
+    const userObject: UserObject = {
+      ...signupObject,
+      id: firebaseObject.uid,
+      paymentPlan: subscriptionValue,
+    };
     // registerProfileService(userObject);
     registerUserService(userObject, registrationSuccess, registrationFailure);
   };
@@ -346,16 +342,18 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               rightText="Serve Practice Only"
               price="Free"
               isSelected={subscriptionPlan === 1 ? true : false}
+              limitText="Video Recording for 2 Hrs/ Mo  (60 Day Trial)"
               onPress={() => {
                 setSubscriptionPlan(1);
                 requestPurchase(trainProducts[1], onSuccess);
               }}
             />
             <SubscriptionItem
-              leftText="Silver"
+              leftText="Premium"
               rightText="Serve Practice/Practice with Ball Machine"
-              price="$74.99/yr"
+              price="$9.99/Per Month"
               isSelected={subscriptionPlan === 2 ? true : false}
+              limitText="5 Hours Video Recording/Per Month"
               onPress={() => {
                 setSubscriptionPlan(2);
                 requestPurchase(trainProducts[2], onSuccess);
