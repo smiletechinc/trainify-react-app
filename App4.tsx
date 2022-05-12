@@ -306,6 +306,10 @@ const App4: FunctionComponent<Props> = props => {
         .then(async res => {
           setTfReady(false);
           if (res) {
+            setTfReady(false);
+            setIsTimerRunning(false);
+            setIsStartedVideoRecording(false);
+            stoppedVideoRecording = true;
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
             try {
@@ -1357,13 +1361,20 @@ const App4: FunctionComponent<Props> = props => {
         />
       </View>
       <View style={styles.cameraView}>
+        <View
+          style={{
+            zIndex: 20,
+            width: '100%',
+          }}>
+          <View>{renderFps()}</View>
+
+          <View>{renderCameraTypeSwitcher()}</View>
+        </View>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
           {/* {renderPose()} */}
           {renderSkeleton()}
           {renderCalibrationPoints()}
-          {renderFps()}
-          {renderCameraTypeSwitcher()}
         </View>
       </View>
       {isStartedVideoRecording && (
@@ -1381,7 +1392,7 @@ const App4: FunctionComponent<Props> = props => {
           until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
           size={16}
           running={isTimerRunning}
-          style={styles.calibrationContainer}
+          style={styles.timerConatiner}
           onFinish={() => handleStopTiemer()}
           digitStyle={{backgroundColor: '#FFF'}}
           digitTxtStyle={{color: '#000000'}}
@@ -1389,6 +1400,25 @@ const App4: FunctionComponent<Props> = props => {
           timeLabels={{m: null, s: null}}
         />
       )}
+      {/* <IconButton
+        styles={styles.stopIcon}
+        icon={stopIcon}
+        onPress={() => {
+          handleStopCamera();
+        }}
+        transparent={true}
+      />
+      <CountDown
+        until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
+        size={16}
+        running={isTimerRunning}
+        style={styles.timerConatiner}
+        onFinish={() => handleStopTiemer()}
+        digitStyle={{backgroundColor: '#FFF'}}
+        digitTxtStyle={{color: '#000000'}}
+        timeToShow={['M', 'S']}
+        timeLabels={{m: null, s: null}}
+      /> */}
     </SafeAreaView>
   );
 };
@@ -1402,13 +1432,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'yellow',
   },
-  calibrationContainer: {
+  timerConatiner: {
     position: 'absolute',
-    top: 110,
+    top: '15.5%',
     // left: 150,
     // width: 100,
     alignItems: 'center',
-    // backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
@@ -1418,7 +1448,7 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     display: 'flex',
-    flexDirection: 'column',
+    // flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -1434,6 +1464,7 @@ const styles = StyleSheet.create({
   cameraView: {
     display: 'flex',
     flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 128,
@@ -1474,15 +1505,15 @@ const styles = StyleSheet.create({
     width: 60,
     height: 50,
     position: 'absolute',
-    bottom: 36,
-    top: 2,
+    // bottom: 36,
+    top: 10,
     right: 10,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
-    marginTop: 16,
+    // zIndex: 20,
+    // marginTop: 16,
   },
   stopIcon: {
     width: 60,
@@ -1517,8 +1548,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
-    marginTop: 16,
+    // zIndex: 20,
+    // marginTop: 16,
   },
   svg: {
     width: '100%',

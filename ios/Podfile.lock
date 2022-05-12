@@ -121,6 +121,7 @@ PODS:
   - lottie-react-native (5.0.1):
     - lottie-ios (~> 3.2.3)
     - React-Core
+  - mobile-ffmpeg-https (4.4)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -333,12 +334,20 @@ PODS:
     - React-Core
   - react-native-cameraroll (4.1.2):
     - React-Core
+  - react-native-ffmpeg (0.5.2):
+    - React
+    - react-native-ffmpeg/https (= 0.5.2)
+  - react-native-ffmpeg/https (0.5.2):
+    - mobile-ffmpeg-https (= 4.4)
+    - React
   - react-native-image-picker (4.7.3):
     - React-Core
   - react-native-keep-awake (1.1.0):
     - React-Core
   - react-native-record-screen (0.4.0):
     - React-Core
+  - react-native-record-screen-zone (0.1.1):
+    - React
   - react-native-restart (0.0.24):
     - React-Core
   - react-native-safe-area-context (3.4.1):
@@ -504,9 +513,11 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
+  - react-native-ffmpeg (from `../node_modules/react-native-ffmpeg`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-keep-awake (from `../node_modules/@sayem314/react-native-keep-awake`)"
   - react-native-record-screen (from `../node_modules/react-native-record-screen`)
+  - react-native-record-screen-zone (from `../node_modules/react-native-record-screen-zone`)
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-segmented-control (from `../node_modules/@react-native-segmented-control/segmented-control`)"
@@ -561,6 +572,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - libevent
     - lottie-ios
+    - mobile-ffmpeg-https
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -631,12 +643,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-camera"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-community/cameraroll"
+  react-native-ffmpeg:
+    :path: "../node_modules/react-native-ffmpeg"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-keep-awake:
     :path: "../node_modules/@sayem314/react-native-keep-awake"
   react-native-record-screen:
     :path: "../node_modules/react-native-record-screen"
+  react-native-record-screen-zone:
+    :path: "../node_modules/react-native-record-screen-zone"
   react-native-restart:
     :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
@@ -739,6 +755,7 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   lottie-react-native: a029a86e1689c86a07169c520ae770e84348cd20
+  mobile-ffmpeg-https: 311fc4a8f671cf36d1d6b8f421e8246b790978d9
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
@@ -756,9 +773,11 @@ SPEC CHECKSUMS:
   react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-cameraroll: 2957f2bce63ae896a848fbe0d5352c1bd4d20866
+  react-native-ffmpeg: 587fa045f985d775107f4b8cbb6c79df0ad68e63
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
   react-native-keep-awake: acbee258db16483744910f0da3ace39eb9ab47fd
   react-native-record-screen: ed8a11f81433022cb0383831ce7e79c42e000bb1
+  react-native-record-screen-zone: cfbaefaf06bf3b707c0c9c6d9415eb570e73160a
   react-native-restart: 45c8dca02491980f2958595333cbccd6877cb57e
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-segmented-control: 06607462630512ff8eef652ec560e6235a30cc3e
