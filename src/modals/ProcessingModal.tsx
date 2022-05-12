@@ -14,17 +14,17 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './styles';
 import ModalWrapper from '../components/wrappers/ModalWrapper';
-import {SCREEN_WIDTH} from '../constants';
+import {SCREEN_WIDTH, SCREEN_HEIGHT} from '../constants';
 
 type Props = {
   visible: boolean;
   title: string;
-  desc: string;
+  desc?: string;
   buttonTitle?: string;
   onAcceptButton?: any;
   onCancelButton?: any;
 };
-const AlertModal: FunctionComponent<Props> = props => {
+const ProcessingModal: FunctionComponent<Props> = props => {
   const {visible, title, desc, buttonTitle, onAcceptButton, onCancelButton} =
     props;
   const [date, setDate] = useState(new Date());
@@ -38,13 +38,13 @@ const AlertModal: FunctionComponent<Props> = props => {
       visible={visible}
       onRequestClose={() => {
         close();
-      }}>
+      }}
+      onOrientationChange={() => 'landscape'}>
       <View style={styles.centeredView}>
         <View style={[styles.modalView, {width: SCREEN_WIDTH * 0.75}]}>
           <Text style={[styles.modalText, {fontWeight: 'bold', fontSize: 16}]}>
             {title}
           </Text>
-          <Text style={styles.modalText}>{desc}</Text>
           <View
             style={{
               display: 'flex',
@@ -57,13 +57,6 @@ const AlertModal: FunctionComponent<Props> = props => {
               onPress={() => onCancelButton()}>
               <Text style={styles.textStyle1}>Cancel</Text>
             </Pressable>
-            {buttonTitle && (
-              <Pressable
-                style={[styles.button, styles.buttonClose, {marginLeft: 16}]}
-                onPress={() => onAcceptButton()}>
-                <Text style={styles.textStyle1}>{buttonTitle}</Text>
-              </Pressable>
-            )}
           </View>
         </View>
       </View>
@@ -71,4 +64,4 @@ const AlertModal: FunctionComponent<Props> = props => {
   );
 };
 
-export default AlertModal;
+export default ProcessingModal;

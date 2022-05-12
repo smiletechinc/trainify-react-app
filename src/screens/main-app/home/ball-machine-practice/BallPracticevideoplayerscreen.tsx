@@ -13,10 +13,12 @@ import HeaderWithText from '../../../../global-components/header/HeaderWithText'
 import {SCREEN_WIDTH} from '../../../../constants';
 import {IconButton} from '../../../../components/buttons';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const BallPracticeVideoPlayer = ({navigation, route}) => {
+  useKeepAwake();
   const {video} = route.params;
   console.log('video, ', video);
   let fileURI = '';
@@ -119,36 +121,44 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
 
   return (
     <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
-      <View style={{height: 750, marginBottom: 64}}>
-        <Video
-          onEnd={onEnd}
-          onLoad={onLoad}
-          onLoadStart={onLoadStart}
-          onProgress={onProgress}
-          paused={paused}
-          ref={videoPlayer}
-          resizeMode={screenType}
-          onFullScreen={isFullScreen}
-          source={{
-            uri: videoURL,
-          }}
-          style={styles.mediaPlayer}
-          volume={10}
-        />
-        <MediaControls
-          duration={duration}
-          isLoading={isLoading}
-          mainColor="#333"
-          onFullScreen={onFullScreen}
-          onPaused={onPaused}
-          onReplay={onReplay}
-          onSeek={onSeek}
-          onSeeking={onSeeking}
-          playerState={playerState}
-          progress={currentTime}
-          toolbar={renderToolbar()}
-        />
-        {renderGraphButton()}
+      <View
+        style={{
+          minHeight: (SCREEN_WIDTH / 100) * 76.8,
+        }}>
+        <View
+          style={{
+            paddingBottom: (SCREEN_WIDTH / 100) * 74.8,
+          }}>
+          <Video
+            onEnd={onEnd}
+            onLoad={onLoad}
+            onLoadStart={onLoadStart}
+            onProgress={onProgress}
+            paused={paused}
+            ref={videoPlayer}
+            resizeMode={screenType}
+            onFullScreen={isFullScreen}
+            source={{
+              uri: videoURL,
+            }}
+            style={styles.mediaPlayer}
+            volume={10}
+          />
+          <MediaControls
+            duration={duration}
+            isLoading={isLoading}
+            mainColor="#333"
+            onFullScreen={onFullScreen}
+            onPaused={onPaused}
+            onReplay={onReplay}
+            onSeek={onSeek}
+            onSeeking={onSeeking}
+            playerState={playerState}
+            progress={currentTime}
+            toolbar={renderToolbar()}
+          />
+          {renderGraphButton()}
+        </View>
       </View>
     </ScreenWrapperWithHeader>
   );
@@ -165,11 +175,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 10 : 10,
-    minHeight: 48,
+    // minHeight: 48,
     paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   toolbar: {
-    marginTop: 30,
+    marginTop: 0,
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
@@ -182,17 +192,6 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: 'white',
     justifyContent: 'center',
-  },
-  cameraTypeSwitcher: {
-    position: 'absolute',
-    top: 10,
-    right: 20,
-    width: 180,
-    alignItems: 'center',
-    backgroundColor: 'rgba(240, 230, 230, .9)',
-    borderRadius: 6,
-    padding: 8,
-    zIndex: 100,
   },
   recordIcon: {
     width: 60,

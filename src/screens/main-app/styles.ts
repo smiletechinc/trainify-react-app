@@ -1,12 +1,18 @@
 import {StyleSheet, Platform} from 'react-native';
-import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
+import {
+  COLORS,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  STATUS_BAR_HEIGHT,
+} from '../../constants';
 
 const styles = StyleSheet.create({
   home_main_view: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? 10  : 10,
+    paddingTop: Platform.OS === 'ios' ? (SCREEN_WIDTH / 100) * 2 : 10,
+    // paddingBottom: Platform.OS === 'ios' ? 810 : 1080,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
   },
   navigationBar: {
@@ -26,7 +32,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     width: SCREEN_WIDTH * 0.6,
     textAlign: 'center',
-    fontSize: 14
+    fontSize: 14,
   },
   // Service Practice styles.
   main_view: {
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     width: SCREEN_WIDTH * 0.6,
     textAlign: 'center',
-    fontSize: 16
+    fontSize: 16,
   },
   video_duration_text: {
     marginTop: 5 + STATUS_BAR_HEIGHT,
@@ -68,7 +74,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
-  upload_serve_scroll_view : {
+  upload_serve_scroll_view: {
     paddingBottom: 20,
     flexGrow: 1,
     justifyContent: 'center',

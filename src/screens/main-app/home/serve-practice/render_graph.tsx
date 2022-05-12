@@ -15,6 +15,7 @@ import {SafeAreaView} from 'react-navigation';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SCREEN_WIDTH} from '../../../../constants';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -31,6 +32,7 @@ const chartConfig = {
 };
 
 export default function ServePracticeRenderGraphScreen({navigation, route}) {
+  useKeepAwake();
   // Data coming from Firebase
   const {analysis_data} = route.params;
 
@@ -143,9 +145,6 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
       <View style={styles.container}>
         <View style={styles.pieContainer}>
           <VictoryPie
-            animate={{
-              duration: 1000,
-            }}
             padding={screenWidth / 3.9}
             width={screenWidth}
             height={screenHeight / 2}
@@ -168,33 +167,21 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
             <VictoryAxis label={'Type of Serve'}></VictoryAxis>
             <VictoryGroup offset={screenWidth / 25}>
               <VictoryBar
-                animate={{
-                  duration: 2000,
-                }}
                 data={data_victory.AGrade}
                 labels={({datum}) => datum.y}
                 style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
                 labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
               <VictoryBar
-                animate={{
-                  duration: 2000,
-                }}
                 data={data_victory.BGrade}
                 labels={({datum}) => datum.y}
                 style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
                 labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
               <VictoryBar
-                animate={{
-                  duration: 2000,
-                }}
                 data={data_victory.CGrade}
                 labels={({datum}) => datum.y}
                 style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
                 labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
               <VictoryBar
-                animate={{
-                  duration: 2000,
-                }}
                 data={data_victory.DGrade}
                 labels={({datum}) => datum.y}
                 style={{data: {fill: 'green'}, labels: {fill: 'white'}}}

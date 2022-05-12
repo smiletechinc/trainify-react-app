@@ -10,6 +10,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from './../../../../context/auth-context';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {SCREEN_HEIGHT} from '../../../../constants';
 
 const recordIcon = require('../../../../assets/images/record_icon_image.png');
 const analysisIcon = require('../../../../assets/images/analysis_icon.png');
@@ -44,7 +45,8 @@ const ServePracticeContainer: FunctionComponent<Props> = ({
       title="Serve Practice"
       navigation={navigation}
       route={route}>
-      <View style={styles.home_main_view}>
+      <View
+        style={[styles.home_main_view, {paddingBottom: SCREEN_HEIGHT * 0.5}]}>
         {playerstyle === 'LeftHanded' ? (
           <View style={{marginTop: 100}}>
             <TouchableOpacity

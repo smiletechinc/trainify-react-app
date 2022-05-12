@@ -7,7 +7,8 @@
  */
 
 import React from 'react';
-import type { Node } from 'react';
+import type {Node} from 'react';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -18,22 +19,24 @@ import {
   View,
 } from 'react-native';
 import AppContainer from './src/navigations';
-import { AuthContextProvider } from './src/context/auth-context';
-import { CounterContextProvider } from './src/context/counter-context';
-import { PermissionsContextProvider } from './src/context/permissions-context';
-import { store } from './store';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react'
-import { persistStore } from 'redux-persist'
+import {AuthContextProvider} from './src/context/auth-context';
+import {CounterContextProvider} from './src/context/counter-context';
+import {PermissionsContextProvider} from './src/context/permissions-context';
+import {store} from './store';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistStore} from 'redux-persist';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
 let persistor = persistStore(store);
 
 const App: () => Node = () => {
+  useKeepAwake();
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <AuthContextProvider>
             <CounterContextProvider>
               <PermissionsContextProvider>
