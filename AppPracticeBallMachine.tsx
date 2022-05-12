@@ -83,7 +83,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -284,6 +284,10 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         .then(async res => {
           setTfReady(false);
           if (res) {
+            setTfReady(false);
+            setIsTimerRunning(false);
+            setIsStartedVideoRecording(false);
+            stoppedVideoRecording = true;
             console.log('recording stopped:', JSON.stringify(res));
             const url = res.result.outputURL;
             try {
@@ -325,6 +329,9 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     setIsRecordingInProgress(false);
     setIsStartedVideoRecording(false);
     setIsTimerRunning(false);
+    // if (!isTimerRunning && stoppedVideoRecording) {
+    //   stopRecording();
+    // }
     stopRecording();
   };
 
@@ -348,7 +355,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
 
   const renderCameraTypeSwitcher = () => {
     return (
-      <View style={styles.recordIcon} onTouchEnd={handleSwitchCameraType}>
+      <View style={styles.cameraIcon} onTouchEnd={handleSwitchCameraType}>
         {cameraType === Camera.Constants.Type.back ? (
           <IconButton
             icon={fronCamera}
@@ -404,16 +411,16 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const renderCalibrationPoints = () => {
-    const cx1 = 250;
+    const cx1 = 200;
     const cy1 = 8;
 
-    const cx2 = cameraLayoutWidth - 250;
+    const cx2 = cameraLayoutWidth - 200;
     const cy2 = 8;
 
-    const cx3 = 250;
+    const cx3 = 200;
     const cy3 = cameraLayoutHeight - 8;
 
-    const cx4 = cameraLayoutWidth - 250;
+    const cx4 = cameraLayoutWidth - 200;
     const cy4 = cameraLayoutHeight - 8;
 
     if (isCalibratedp) {
@@ -1265,16 +1272,16 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const calibrate = (poses: any) => {
-    const cx1 = 250;
+    const cx1 = 200;
     const cy1 = 8;
 
-    const cx2 = cameraLayoutWidth - 250;
+    const cx2 = cameraLayoutWidth - 200;
     const cy2 = 8;
 
     const cx3 = 250;
     const cy3 = cameraLayoutHeight - 8;
 
-    const cx4 = cameraLayoutWidth - 250;
+    const cx4 = cameraLayoutWidth - 200;
     const cy4 = cameraLayoutHeight - 8;
 
     if (poses && poses.length > 0) {
@@ -1417,6 +1424,16 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
     determineAndSetOrientation();
   };
 
+  const onCameraLayout = event => {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    console.log('Main Camera Dimensions : ', x, y, height, width);
+    // cameraLayoutWidth = width;
+    // setCameraWidth(width);
+    // cameraLayoutHeight = height;
+    // setCameraHeight(height);
+    // determineAndSetOrientation();
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={{marginTop: 16, marginLeft: 16}}>
@@ -1426,13 +1443,20 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           navigation={navigation}
         />
       </View>
-      <View style={styles.cameraView}>
+      <View style={styles.cameraView} onLayout={onCameraLayout}>
+        <View
+          style={{
+            zIndex: 20,
+            width: '15%',
+          }}>
+          <View>{renderFps()}</View>
+
+          <View>{renderCameraTypeSwitcher()}</View>
+        </View>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
           {renderSkeleton()}
           {renderCalibrationPoints()}
-          {renderFps()}
-          {renderCameraTypeSwitcher()}
         </View>
       </View>
       {isStartedVideoRecording && (
@@ -1450,7 +1474,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           until={57 * 1}
           size={16}
           running={isTimerRunning}
-          style={styles.calibrationContainer}
+          style={styles.timerContainer}
           onFinish={() => handleStopTiemer()}
           digitStyle={{backgroundColor: '#FFF'}}
           digitTxtStyle={{color: '#000000'}}
@@ -1485,7 +1509,8 @@ const styles = StyleSheet.create({
   cameraView: {
     backgroundColor: 'black',
     display: 'flex',
-    flex: 1,
+    flexDirection: 'row',
+    flex: 2,
     flexGrow: 1,
     // alignItems: 'center',
     // justifyContent: 'center',
@@ -1578,43 +1603,32 @@ const styles = StyleSheet.create({
   fpsContainer: {
     position: 'absolute',
     top: 10,
-    left: 80,
-    width: 80,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
-    marginTop: 16,
     alignSelf: 'center',
   },
-  calibrationContainer: {
+  timerContainer: {
     position: 'absolute',
-    top: '10%',
-    left: '45%',
-    // width: 100,
+    top: 150,
+    left: '9%',
     alignItems: 'center',
-    // backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
-    marginTop: 32,
-    alignSelf: 'center',
-    // opacity: 0.5,
+    // alignSelf: 'flex-start',
   },
-  recordIcon: {
+  cameraIcon: {
     width: 80,
     height: 50,
     position: 'absolute',
-    bottom: 36,
-    top: 10,
-    right: 10,
+    top: 200,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, .7)',
     borderRadius: 2,
     padding: 8,
-    zIndex: 20,
-    marginTop: 16,
+    alignSelf: 'center',
   },
   svg: {
     width: '100%',
