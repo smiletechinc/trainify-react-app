@@ -105,7 +105,12 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
           <ListItem
             video={item}
             index={index + 1}
-            itemWidth={flatListWidth}
+            itemWidth={flatListWidth - 12}
+            thumbImageWidth={flatListWidth - 18}
+            thumbTexWidth={(flatListWidth - 15) / 2}
+            itemHeight={100}
+            thumbImageHeight={48}
+            thumbTextHeight={45}
             onPress={() => handleOnClickVideo(item)}
           />
         );
@@ -117,7 +122,12 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
           <ListItem
             video={item}
             index={index + 1}
-            itemWidth={flatListWidth}
+            itemWidth={flatListWidth - 12}
+            thumbImageWidth={flatListWidth - 18}
+            thumbTexWidth={(flatListWidth - 15) / 2}
+            itemHeight={100}
+            thumbImageHeight={50.5}
+            thumbTextHeight={40.5}
             onPress={() => handleOnClickVideo(item)}
           />
         );
@@ -129,7 +139,12 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
           <ListItem
             video={item}
             index={index + 1}
-            itemWidth={flatListWidth}
+            itemWidth={flatListWidth * 0.85 - 12}
+            thumbImageWidth={flatListWidth * 0.85 - 18}
+            thumbTexWidth={(flatListWidth * 0.85 - 15) / 2}
+            itemHeight={100}
+            thumbImageHeight={48}
+            thumbTextHeight={45}
             onPress={() => handleOnClickVideo(item)}
           />
         );

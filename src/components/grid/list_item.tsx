@@ -15,12 +15,27 @@ const playerImage = require('../../assets/images/player_Grid.jpeg');
 type Props = {
   video: VideoData;
   itemWidth: number;
+  thumbImageWidth: number;
+  thumbTexWidth: number;
+  itemHeight: number;
+  thumbImageHeight: number;
+  thumbTextHeight: number;
   onPress: any;
   index: number;
 };
 
 const ListItem: React.FunctionComponent<Props> = props => {
-  const {video, onPress, itemWidth, index} = props;
+  const {
+    video,
+    onPress,
+    itemWidth,
+    itemHeight,
+    thumbImageWidth,
+    thumbImageHeight,
+    thumbTexWidth,
+    thumbTextHeight,
+    index,
+  } = props;
   const [image, setImage] = useState(null);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
@@ -41,21 +56,22 @@ const ListItem: React.FunctionComponent<Props> = props => {
         style={[
           styles.itemContainer,
           {
-            width: itemWidth - 12,
+            width: itemWidth,
+            height: itemHeight,
           },
         ]}>
         <View style={{marginLeft: -10}}>
           {image && (
             <Image
               source={{uri: image}}
-              style={{height: 135, width: itemWidth - 18}}
+              style={{height: thumbImageHeight, width: thumbImageWidth}}
             />
           )}
         </View>
         <View
           style={{
             marginLeft: -12,
-            height: 55,
+            height: thumbTextHeight,
             display: 'flex',
             flexDirection: 'row',
             marginBottom: -8,
@@ -63,11 +79,11 @@ const ListItem: React.FunctionComponent<Props> = props => {
             alignItems: 'center',
           }}>
           <View>
-            <Text style={[styles.itemName, {width: (itemWidth - 15) / 2}]}>
+            <Text style={[styles.itemName, {width: thumbTexWidth}]}>
               Trainify_{index ? index : 'video'}
             </Text>
           </View>
-          <View style={{width: (itemWidth - 15) / 2, paddingRight: 8}}>
+          <View style={{width: thumbTexWidth, paddingRight: 8}}>
             <View style={{marginTop: 0}}>
               <Text style={[styles.itemCode, {textAlign: 'right'}]}>
                 {time}

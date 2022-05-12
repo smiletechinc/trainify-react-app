@@ -107,7 +107,7 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
       <View style={styles.container}>
         <View style={styles.pieContainer} onLayout={onPieChartLayout}>
           <VictoryPie
-            padding={pieGraphContainerLength * 0.25}
+            padding={pieGraphContainerLength * 0.3}
             width={pieGraphContainerLength * 0.985}
             height={pieGraphContainerLength * 0.985}
             colorScale={['tomato', 'orange', 'gold']}
