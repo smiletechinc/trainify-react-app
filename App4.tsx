@@ -77,6 +77,8 @@ const App4: FunctionComponent<Props> = props => {
 
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
+  const [cameraX, setCameraX] = useState(120);
+  const [cameraY, setCameraY] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
@@ -1351,6 +1353,19 @@ const App4: FunctionComponent<Props> = props => {
     cameraLayoutHeight = height;
     setCameraHeight(height);
   };
+
+  const onCameraLayout = event => {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    console.log('Main Camera Dimensions : ', x, y, height, width);
+    setCameraX(x);
+    setCameraY(y);
+    // cameraLayoutWidth = width;
+    // setCameraWidth(width);
+    // cameraLayoutHeight = height;
+    // setCameraHeight(height);
+    // determineAndSetOrientation();
+  };
+
   return (
     <SafeAreaView style={styles_external.main_view}>
       <View style={{marginTop: 4}}>
@@ -1360,13 +1375,13 @@ const App4: FunctionComponent<Props> = props => {
           navigation={navigation}
         />
       </View>
-      <View style={styles.cameraView}>
+      <View style={styles.cameraView} onLayout={onCameraLayout}>
         <View
           style={{
             // zIndex: 20,
             width: '100%',
             borderStyle: 'solid',
-            backgroundColor: 'white',
+            backgroundColor: 'black',
             // borderColor: 'yellow',
             // borderBottomWidth: 0,
             // borderTopWidth: 2,

@@ -63,6 +63,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   } = React.useContext(AuthContext);
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
+  const [cameraX, setCameraX] = useState(120);
+  const [cameraY, setCameraY] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
@@ -411,17 +413,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const renderCalibrationPoints = () => {
-    const cx1 = 200;
-    const cy1 = 8;
+    const cx1 = cameraX + 136;
+    const cy1 = cameraY - 48;
 
-    const cx2 = cameraLayoutWidth - 200;
-    const cy2 = 8;
+    const cx2 = cameraLayoutWidth - cx1;
+    const cy2 = cy1;
 
-    const cx3 = 200;
-    const cy3 = cameraLayoutHeight - 8;
+    const cx3 = cx1;
+    const cy3 = cameraLayoutHeight - cy1;
 
-    const cx4 = cameraLayoutWidth - 200;
-    const cy4 = cameraLayoutHeight - 8;
+    const cx4 = cameraLayoutWidth - cx1;
+    const cy4 = cameraLayoutHeight - cy1;
 
     if (isCalibratedp) {
       return (
@@ -1272,17 +1274,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const calibrate = (poses: any) => {
-    const cx1 = 200;
-    const cy1 = 8;
+    const cx1 = cameraX + 136;
+    const cy1 = cameraY - 48;
 
-    const cx2 = cameraLayoutWidth - 200;
-    const cy2 = 8;
+    const cx2 = cameraLayoutWidth - cx1;
+    const cy2 = cy1;
 
-    const cx3 = 250;
-    const cy3 = cameraLayoutHeight - 8;
+    const cx3 = cx1;
+    const cy3 = cameraLayoutHeight - cy1;
 
-    const cx4 = cameraLayoutWidth - 200;
-    const cy4 = cameraLayoutHeight - 8;
+    const cx4 = cameraLayoutWidth - cx1;
+    const cy4 = cameraLayoutHeight - cy1;
 
     if (poses && poses.length > 0) {
       const object = poses[0];
@@ -1427,6 +1429,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const onCameraLayout = event => {
     const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Main Camera Dimensions : ', x, y, height, width);
+    setCameraX(x);
+    setCameraY(y);
     // cameraLayoutWidth = width;
     // setCameraWidth(width);
     // cameraLayoutHeight = height;
