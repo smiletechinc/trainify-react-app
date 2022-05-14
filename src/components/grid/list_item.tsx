@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import {VideoData} from '../../../types';
+import {AuthContext} from '../../context/auth-context';
 import {styles} from './index';
 
 const playerImage = require('../../assets/images/player_Grid.jpeg');
@@ -36,6 +37,14 @@ const ListItem: React.FunctionComponent<Props> = props => {
     thumbTextHeight,
     index,
   } = props;
+
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+
   const [image, setImage] = useState(null);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
@@ -45,7 +54,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
       console.log('VideoThumbnail:', video.thumbnailURL);
       setImage(video.thumbnailURL);
       const dateTimeArray = video.timestamp.split(',');
-      // console.log('date and time', new Date(video.timestamp).toLocaleString);
+      // console.log('user', authObject.firstName);
       setTime(dateTimeArray[1]);
       setDate(dateTimeArray[0]);
     }
@@ -80,7 +89,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
           }}>
           <View>
             <Text style={[styles.itemName, {width: thumbTexWidth}]}>
-              Trainify_{index ? index : 'video'}
+              {authObject.firstName}_{index ? index : 'video'}
             </Text>
           </View>
           <View style={{width: thumbTexWidth, paddingRight: 8}}>
