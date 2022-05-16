@@ -133,7 +133,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
       navigation.navigate('BallPracticeVideoPlayer', {
         video: videoAnalysisData,
       });
-      // Alert.alert('Trainify', `Video added successfully.`);
+      // Alert.alert('Trainify', `Video Uploaded successfully.`);
     }
   }, [videoAnalysisData]);
 

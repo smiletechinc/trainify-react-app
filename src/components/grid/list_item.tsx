@@ -46,17 +46,24 @@ const ListItem: React.FunctionComponent<Props> = props => {
   } = React.useContext(AuthContext);
 
   const [image, setImage] = useState(null);
-  const [time, setTime] = useState('');
-  const [date, setDate] = useState('');
+  const [month, setMonth] = useState(0);
+  const [day, setDay] = useState(0);
+  const [year, setYear] = useState(0);
 
   useEffect(() => {
     if (video.timestamp) {
       console.log('VideoThumbnail:', video.thumbnailURL);
       setImage(video.thumbnailURL);
-      const dateTimeArray = video.timestamp.split(',');
-      // console.log('user', authObject.firstName);
-      setTime(dateTimeArray[1]);
-      setDate(dateTimeArray[0]);
+      const d = new Date(video.timestamp);
+      const m = d.getMonth() + 1;
+      setMonth(m);
+      const da = d.getDate();
+      setDay(da);
+      setYear(22);
+      if (day === 1 && month === 1) {
+        setYear(year + 1);
+      }
+      console.log('Date:', month + '/' + day + '/' + year);
     }
   }, [video.thumbnailURL]);
   return (
@@ -79,7 +86,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
         </View>
         <View
           style={{
-            marginLeft: -12,
+            marginLeft: -10,
             height: thumbTextHeight,
             display: 'flex',
             flexDirection: 'row',
@@ -93,14 +100,14 @@ const ListItem: React.FunctionComponent<Props> = props => {
             </Text>
           </View>
           <View style={{width: thumbTexWidth, paddingRight: 8}}>
-            <View style={{marginTop: 0}}>
+            {/* <View style={{marginTop: 0}}>
               <Text style={[styles.itemCode, {textAlign: 'right'}]}>
                 {time}
               </Text>
-            </View>
-            <View style={{marginTop: 0}}>
+            </View> */}
+            <View style={{marginTop: 0, marginLeft: 1}}>
               <Text style={[styles.itemCode, {textAlign: 'right'}]}>
-                {date}
+                {month}/{day}/{year}
               </Text>
             </View>
           </View>

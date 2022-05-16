@@ -385,12 +385,14 @@ const App4: FunctionComponent<Props> = props => {
             icon={fronCamera}
             onPress={handleSwitchCameraType}
             transparent={true}
+            styles={{height: 38, width: 16}}
           />
         ) : (
           <IconButton
             icon={backCamera}
             onPress={handleSwitchCameraType}
             transparent={true}
+            styles={{height: 40, width: 128}}
           />
         )}
       </View>
@@ -1487,30 +1489,31 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   cameraIcon: {
-    width: 60,
-    height: 60,
+    width: 48,
+    height: 40,
     position: 'absolute',
-    top: 0,
+    top: 4,
     right: 10,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .4)',
-    borderRadius: 2,
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
   },
   fpsContainer: {
     position: 'absolute',
+    top: 4,
     left: 10,
-    width: 80,
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .4)',
-    borderRadius: 2,
+    width: 90,
+    // alignItems: 'center',
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
   },
   timerConatiner: {
     position: 'absolute',
     top: '18%',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .4)',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,

@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>29770888713-4fcfnevrk28dni88fioho34qqavkad1s.apps.googleusercontent.com</string>
+	<string>1026534116413-9uen61r9arjs2o1f03i2ckq56joi2ct8.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.29770888713-4fcfnevrk28dni88fioho34qqavkad1s</string>
+	<string>com.googleusercontent.apps.1026534116413-9uen61r9arjs2o1f03i2ckq56joi2ct8</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDFQf64uzCeepLFOyCbgVDQQzE-XDOJkHk</string>
+	<string>AIzaSyBcOn3YXckc0btfiJ6PCvf7inufKMMm0TY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>29770888713</string>
+	<string>1026534116413</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.trainify.trainifytennis</string>
 	<key>PROJECT_ID</key>
-	<string>trainify-app-firebase</string>
+	<string>trainify-react-app</string>
 	<key>STORAGE_BUCKET</key>
-	<string>trainify-app-firebase.appspot.com</string>
+	<string>trainify-react-app.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:29770888713:ios:57ac8a689a7c474eab6ad8</string>
-	<key>DATABASE_URL</key>
-	<string>https://trainify-app-firebase-default-rtdb.firebaseio.com</string>
+	<string>1:1026534116413:ios:f3b66acd3c57e9fc7aee54</string>
 </dict>
 </plist>

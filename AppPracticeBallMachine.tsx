@@ -31,8 +31,8 @@ import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 import CountDown from 'react-native-countdown-component';
 
 const stopIcon = require('./src/assets/images/stop.png');
-const fronCamera = require('./src/assets/images/frontCamera.png');
-const backCamera = require('./src/assets/images/backCamera.png');
+const fronCamera = require('./src/assets/images/frontCamera2.png');
+const backCamera = require('./src/assets/images/backCamera2.png');
 const backIcon = require('./src/assets/images/back-icon.png');
 
 const TensorCamera = cameraWithTensors(Camera);
@@ -85,7 +85,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -1463,7 +1463,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           {renderCalibrationPoints()}
         </View>
       </View>
-      {isStartedVideoRecording && (
+      {/* {isStartedVideoRecording && (
         <IconButton
           styles={styles.stopIcon}
           icon={stopIcon}
@@ -1485,7 +1485,26 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           timeToShow={['M', 'S']}
           timeLabels={{m: null, s: null}}
         />
-      )}
+      )} */}
+      <IconButton
+        styles={styles.stopIcon}
+        icon={stopIcon}
+        onPress={() => {
+          handleStopCamera();
+        }}
+        transparent={true}
+      />
+      <CountDown
+        until={57 * 1}
+        size={16}
+        running={isTimerRunning}
+        style={styles.timerContainer}
+        onFinish={() => handleStopTiemer()}
+        digitStyle={{backgroundColor: '#FFF'}}
+        digitTxtStyle={{color: '#000000'}}
+        timeToShow={['M', 'S']}
+        timeLabels={{m: null, s: null}}
+      />
     </View>
   );
 };
@@ -1608,17 +1627,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
     alignSelf: 'center',
   },
   timerContainer: {
     position: 'absolute',
     top: 150,
-    left: '9%',
+    left: '8%',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     // alignSelf: 'flex-start',
@@ -1629,8 +1648,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 200,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
     alignSelf: 'center',
   },
