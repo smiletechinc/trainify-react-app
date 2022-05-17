@@ -1463,7 +1463,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           {renderCalibrationPoints()}
         </View>
       </View>
-      {/* {isStartedVideoRecording && (
+      {isStartedVideoRecording && (
         <IconButton
           styles={styles.stopIcon}
           icon={stopIcon}
@@ -1485,8 +1485,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           timeToShow={['M', 'S']}
           timeLabels={{m: null, s: null}}
         />
-      )} */}
-      <IconButton
+      )}
+      {/* <IconButton
         styles={styles.stopIcon}
         icon={stopIcon}
         onPress={() => {
@@ -1504,7 +1504,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         digitTxtStyle={{color: '#000000'}}
         timeToShow={['M', 'S']}
         timeLabels={{m: null, s: null}}
-      />
+      /> */}
     </View>
   );
 };
