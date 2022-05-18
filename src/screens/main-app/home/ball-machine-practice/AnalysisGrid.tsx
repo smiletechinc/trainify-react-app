@@ -12,7 +12,7 @@ import {AuthContext} from '../../../../context/auth-context';
 type Props = {
   navigation: any;
   route: any;
-  reduxColors: any;
+  reduxVideos: any;
   updated: boolean;
   add: any;
 };
@@ -24,13 +24,16 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
     setAuthUser: setUser,
     logoutUser,
   } = React.useContext(AuthContext);
-  const {navigation, route, reduxColors, updated, add} = props;
+  const {navigation, route, reduxVideos, updated, add} = props;
   const [isFetching, setIsFetching] = useState(false);
-  const [videos, setVideos] = useState(reduxColors);
+  const [videos, setVideos] = useState(reduxVideos);
+  const [dailyVideos, setDailyVideos] = useState(reduxVideos);
+  const [weeklyVideos, setWeeklyVideos] = useState(reduxVideos);
+  const [monthlyVideos, setMonthlyVideos] = useState(reduxVideos);
   const [updatingColors, setUpdatingColors] = useState<boolean>(false);
   const [selectedID, setSelectedID] = useState();
   const [filterValue, setFilterValue] = useState<string>('Daily');
-  const [index, setIndex] = useState(0);
+  const [indexSegment, setSegmentIndex] = useState(0);
   const [flatListWidth, setFlatListWith] = useState(0);
   const [NumberOfColumns, setNumberOfColumns] = useState(0);
 
@@ -40,9 +43,45 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
 
   const fetchVideosSuccess = videosData => {
     console.log('videosData:', Object.values(videosData));
-    const videos = Object.values(videosData);
-    console.log('videos ', videos);
-    setVideos(videos);
+    const videos_ = Object.values(videosData);
+    const filterVideos = videos_.filter(
+      video => video.createrId === authObject.id,
+    );
+
+    const filterDayVideos = filterVideos.filter(dayVideo => {
+      const diffDays = Math.round(
+        Math.abs(
+          (new Date(dayVideo.timestamp).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      );
+      if (diffDays <= 1) return dayVideo;
+    });
+
+    const filterWeeklyVideos = filterVideos.filter(weekVideo => {
+      const diffDays = Math.round(
+        Math.abs(
+          (new Date(weekVideo.timestamp).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      );
+
+      if (diffDays <= 7) return weekVideo;
+    });
+
+    const filterMonthlyVideos = filterVideos.filter(monthVideo => {
+      const diffDays = Math.round(
+        Math.abs(
+          (new Date(monthVideo.timestamp).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      );
+      if (diffDays <= 30) return monthVideo;
+    });
+    setVideos(filterVideos);
+    setDailyVideos(filterDayVideos.reverse());
+    setWeeklyVideos(filterWeeklyVideos.reverse());
+    setMonthlyVideos(filterMonthlyVideos.reverse());
   };
 
   useEffect(() => {
@@ -69,65 +108,19 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
   };
 
   const renderItem = ({item, index}) => {
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    const firstDate = new Date(item.timestamp).getTime();
-    const secondDate = new Date().getTime();
-
-    const diffDays = Math.round(
-      Math.abs((firstDate - secondDate) / (1000 * 60 * 60 * 24)),
+    return (
+      <ListItem
+        video={item}
+        index={index + 1}
+        itemWidth={flatListWidth - 11}
+        thumbImageWidth={flatListWidth - 16}
+        thumbTexWidth={(flatListWidth - 13) / 2}
+        itemHeight={100}
+        thumbImageHeight={48}
+        thumbTextHeight={45}
+        onPress={() => handleOnClickVideo(item)}
+      />
     );
-    // console.log(filterValue, item.createrId);
-    if (filterValue === 'Daily') {
-      if (authObject && authObject.id === item.createrId && diffDays <= 1) {
-        return (
-          <ListItem
-            video={item}
-            index={index + 1}
-            itemWidth={flatListWidth * 0.85 - 12}
-            thumbImageWidth={flatListWidth * 0.85 - 18}
-            thumbTexWidth={(flatListWidth * 0.85 - 15) / 2}
-            itemHeight={100}
-            thumbImageHeight={48}
-            thumbTextHeight={45}
-            onPress={() => handleOnClickVideo(item)}
-          />
-        );
-      }
-    }
-    if (filterValue === 'Weekly') {
-      if (authObject && authObject.id === item.createrId && diffDays <= 7) {
-        return (
-          <ListItem
-            video={item}
-            index={index + 1}
-            itemWidth={flatListWidth * 0.85 - 12}
-            thumbImageWidth={flatListWidth * 0.85 - 18}
-            thumbTexWidth={(flatListWidth * 0.85 - 15) / 2}
-            itemHeight={100}
-            thumbImageHeight={48}
-            thumbTextHeight={45}
-            onPress={() => handleOnClickVideo(item)}
-          />
-        );
-      }
-    }
-    if (filterValue === 'Monthly') {
-      if (authObject && authObject.id === item.createrId && diffDays <= 30) {
-        return (
-          <ListItem
-            video={item}
-            index={index + 1}
-            itemWidth={flatListWidth * 0.85 - 12}
-            thumbImageWidth={flatListWidth * 0.85 - 18}
-            thumbTexWidth={(flatListWidth * 0.85 - 15) / 2}
-            itemHeight={100}
-            thumbImageHeight={48}
-            thumbTextHeight={45}
-            onPress={() => handleOnClickVideo(item)}
-          />
-        );
-      }
-    }
   };
 
   const onLayout = event => {
@@ -145,10 +138,9 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
-            selectedIndex={index}
+            selectedIndex={indexSegment}
             onChange={event => {
-              setFilterValue(event.nativeEvent.value);
-              setIndex(event.nativeEvent.selectedSegmentIndex);
+              setSegmentIndex(event.nativeEvent.selectedSegmentIndex);
             }}
             tintColor="#008EC1"
             backgroundColor="#D3D3D3"
@@ -156,25 +148,73 @@ const BallPracitceAnalysisGridScreen: FunctionComponent<Props> = props => {
           />
         </View>
         <View style={styles.flatcontainer}>
-          {videos && videos.length > 0 ? (
+          {indexSegment === 0 && (
             <View>
-              <FlatList
-                onLayout={onLayout}
-                style={styles.listContainer}
-                data={videos}
-                keyExtractor={(item, index) => index.toString()}
-                extraData={selectedID}
-                numColumns={NumberOfColumns}
-                renderItem={renderItem}
-              />
+              {dailyVideos?.length > 0 ? (
+                <FlatList
+                  onLayout={onLayout}
+                  style={styles.listContainer}
+                  data={dailyVideos}
+                  keyExtractor={(item, index) => index.toString()}
+                  extraData={selectedID}
+                  numColumns={NumberOfColumns}
+                  renderItem={renderItem}
+                />
+              ) : (
+                <EmptyState
+                  heading="No videos to show"
+                  description="Please upload videos to be previewd"
+                  buttonTitle="Add COlor"
+                  onPress={handleOnClickVideo}
+                />
+              )}
             </View>
-          ) : (
-            <EmptyState
-              heading="No videos to show"
-              description="Please upload videos to be previewd"
-              buttonTitle="Add COlor"
-              onPress={handleOnClickVideo}
-            />
+          )}
+
+          {indexSegment === 1 && (
+            <View>
+              {weeklyVideos?.length > 0 ? (
+                <FlatList
+                  onLayout={onLayout}
+                  style={styles.listContainer}
+                  data={weeklyVideos}
+                  keyExtractor={(item, index) => index.toString()}
+                  extraData={selectedID}
+                  numColumns={NumberOfColumns}
+                  renderItem={renderItem}
+                />
+              ) : (
+                <EmptyState
+                  heading="No videos to show"
+                  description="Please upload videos to be previewd"
+                  buttonTitle="Add COlor"
+                  onPress={handleOnClickVideo}
+                />
+              )}
+            </View>
+          )}
+
+          {indexSegment === 2 && (
+            <View>
+              {monthlyVideos?.length > 0 ? (
+                <FlatList
+                  onLayout={onLayout}
+                  style={styles.listContainer}
+                  data={monthlyVideos}
+                  keyExtractor={(item, index) => index.toString()}
+                  extraData={selectedID}
+                  numColumns={NumberOfColumns}
+                  renderItem={renderItem}
+                />
+              ) : (
+                <EmptyState
+                  heading="No videos to show"
+                  description="Please upload videos to be previewd"
+                  buttonTitle="Add COlor"
+                  onPress={handleOnClickVideo}
+                />
+              )}
+            </View>
           )}
         </View>
       </View>

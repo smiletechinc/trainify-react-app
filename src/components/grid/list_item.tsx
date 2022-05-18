@@ -52,7 +52,6 @@ const ListItem: React.FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (video.timestamp) {
-      console.log('VideoThumbnail:', video.thumbnailURL);
       setImage(video.thumbnailURL);
       const d = new Date(video.timestamp);
       const m = d.getMonth() + 1;
@@ -63,7 +62,6 @@ const ListItem: React.FunctionComponent<Props> = props => {
       if (day === 1 && month === 1) {
         setYear(year + 1);
       }
-      console.log('Date:', month + '/' + day + '/' + year);
     }
   }, [video.thumbnailURL]);
   return (
@@ -96,7 +94,7 @@ const ListItem: React.FunctionComponent<Props> = props => {
           }}>
           <View>
             <Text style={[styles.itemName, {width: thumbTexWidth}]}>
-              {authObject.firstName}_{index ? index : 'video'}
+              {authObject?.firstName}_{index ? index : 'video'}
             </Text>
           </View>
           <View style={{width: thumbTexWidth, paddingRight: 8}}>
