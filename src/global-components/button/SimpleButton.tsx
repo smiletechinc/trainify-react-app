@@ -5,6 +5,7 @@ import styles from './styles';
 import {COLORS} from '../../constants';
 import {Metadata} from '../../types';
 
+//A Generic Simple button for gernal purpose button
 const BUTTON_STYLES = {
   AUTHENTICATION: {
     textStyles: {color: COLORS.white},
@@ -51,6 +52,9 @@ type Props = {
   rightComponent?: any;
 };
 
+/**
+ * Simple Button to be use as a default button.
+ */
 const SimpleButton: FunctionComponent<Props> = function SimpleButton(props) {
   // eslint-disable-next-line prettier/prettier
   const {

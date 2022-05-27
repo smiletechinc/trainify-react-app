@@ -6,6 +6,10 @@ import {setPersistence} from 'firebase/auth';
 import {useEffect, useState, FunctionComponent, useCallback} from 'react';
 import {Alert, Platform} from 'react-native';
 
+/**
+ * Custom hook for camera permission
+ */
+
 export const useeCameraPermissionsHook = () => {
   const [requestedPermission, setRequestedPermission] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState('unknown');

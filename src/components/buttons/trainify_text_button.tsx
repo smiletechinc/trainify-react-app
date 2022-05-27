@@ -1,3 +1,8 @@
+
+/**
+ * Trainify Text Button
+ */
+
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 

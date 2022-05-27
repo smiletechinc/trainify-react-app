@@ -10,6 +10,10 @@ import { useSelector} from 'react-redux';
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 
+/**
+ * A Header for app screen without back button..
+ */
+
 const SimpleHeader: FunctionComponent = ({ navigation }) => {
   const UserData = useSelector((state: RootState) => state.RegisterReducer.UserData);
   // console.log('authUser.... : ', UserData);

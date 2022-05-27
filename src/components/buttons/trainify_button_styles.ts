@@ -1,3 +1,6 @@
+/**
+ * All Buttons default styles
+ */
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({

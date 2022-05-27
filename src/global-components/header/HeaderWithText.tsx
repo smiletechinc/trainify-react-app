@@ -26,6 +26,10 @@ type Props = {
   navigation: any;
   hideBackButton?: boolean;
 };
+
+/**
+ * A Screen Header with Back Button, Title and User Avatar
+ */
 const HeaderWithText: FunctionComponent<Props> = props => {
   // const navigation = useNavigation();
   const [userFirstName, setuserFirstName] = useState('User');

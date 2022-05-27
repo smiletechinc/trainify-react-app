@@ -1,3 +1,8 @@
+
+/**
+ * Global default styles throughout application.
+ */
+
 import {StyleSheet, Platform} from 'react-native';
 import {COLORS, FONT_STYLES, SCREEN_WIDTH} from '../constants';
 

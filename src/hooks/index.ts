@@ -1,3 +1,7 @@
+/**
+ * All hooks being exported 
+ */
+
 export * from './useMediaUpload';
 export * from './useAnalysisUpload';
 export * from './useCameraPermissions';

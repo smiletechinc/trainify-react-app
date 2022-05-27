@@ -10,6 +10,10 @@ interface Props {
   authObject: any;
 }
 
+/**
+ * Custom hook for authentication.
+ */
+
 export const useAuthentication = props => {
   const {authObject} = props;
   const [registeredUserObject, setRegisteredUserObject] =

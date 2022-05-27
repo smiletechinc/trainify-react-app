@@ -6,6 +6,10 @@ export const SCREEN_HEIGHT = Dimensions.get('window').height;
 export const SMALL_DEVICE = SCREEN_WIDTH <= 420 && SCREEN_HEIGHT <= 695;
 
 export const STATUS_BAR_HEIGHT = getStatusBarHeight();
+
+/**
+ * Colors costants
+ */
 export const COLORS = {
   white: '#ffffff',
   full_black: '#000000',
@@ -16,6 +20,10 @@ export const COLORS = {
   black_25: '#252525',
   light_blue: '#64C1DC',
 };
+
+/**
+ * Fonts constants
+ */
 export const FONT_STYLES = {
   font: Platform.OS === 'ios' ? 'System' : 'Poppins',
   line_height_16: 16,

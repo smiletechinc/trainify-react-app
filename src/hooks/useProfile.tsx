@@ -14,6 +14,10 @@ interface Props {
   userObject?: any;
 }
 
+/**
+ * Custom hook for managing profile.
+ */
+
 export const useProfile = () => {
   const [userObjectId, setuserObjectId] = useState('');
   const [profileUser, setProfileUser] = useState();

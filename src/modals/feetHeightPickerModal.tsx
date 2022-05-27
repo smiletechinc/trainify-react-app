@@ -1,3 +1,7 @@
+/**
+ * A modal to pick the height of the player.
+ */
+
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {
   Text,

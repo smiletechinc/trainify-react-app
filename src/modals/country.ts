@@ -1,3 +1,7 @@
+/**
+ * Countries list for register a user.
+ */
+
 export const CountryCodeList = [
     'AF',
     'AL',

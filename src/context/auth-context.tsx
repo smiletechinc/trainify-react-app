@@ -1,7 +1,10 @@
 // CounterContext.tsx
 import React from 'react';
 
-// Declaring the state object globally.
+/**
+ * Declaring the state object globally.
+ */
+
 const initialAuthState = {
   authObject: null,
   authUser: null,
@@ -33,7 +36,9 @@ export const AuthContext = React.createContext<Context>(authContextWrapper());
 interface State {
   context: Context;
 }
-
+/**
+ * Context for backing up the logged in user
+ */
 export class AuthContextProvider extends React.Component {
   state: State = {
     context: authContextWrapper(this),

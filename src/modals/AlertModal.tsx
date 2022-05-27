@@ -24,6 +24,11 @@ type Props = {
   onAcceptButton?: any;
   onCancelButton?: any;
 };
+
+/**
+ * A generic alert for notification with actions.
+ */
+
 const AlertModal: FunctionComponent<Props> = props => {
   const {visible, title, desc, buttonTitle, onAcceptButton, onCancelButton} =
     props;

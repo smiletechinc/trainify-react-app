@@ -1,6 +1,9 @@
 import {StyleSheet} from 'react-native';
 import { COLORS } from '../../constants';
 
+/**
+ * Styles for header in the app screen
+ */
 const styles = StyleSheet.create({
   header_main_view: {
     justifyContent: 'center',

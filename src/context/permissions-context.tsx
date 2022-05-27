@@ -2,7 +2,9 @@
 import {string} from '@tensorflow/tfjs-core';
 import React from 'react';
 
-// Declaring the state object globally.
+/**
+ * Permission context state
+ */
 const initialPermissionsState = {
   isCameraPermissions: false,
   isRecordingPermissions: false,
@@ -38,6 +40,9 @@ const permissionsContextWrapper = (component?: React.Component) => ({
 
 type Context = ReturnType<typeof permissionsContextWrapper>;
 
+/**
+ * Permission context component
+ */
 export const PermissionContext = React.createContext<Context>(
   permissionsContextWrapper(),
 );

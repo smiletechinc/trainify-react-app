@@ -1,3 +1,7 @@
+/**
+ * A country picker modal.
+ */
+
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {
   Text,
@@ -43,55 +47,6 @@ const CountryPickerModal: FunctionComponent<Props> = props => {
   };
   const switchVisible = () => setVisible(!visible);
   return (
-    // <ModalWrapper visible={visible}>
-    //   <View style={styles.centeredView}>
-    //     <View style={styles.modalView}>
-    //       <Text style={styles.modalText}>Select Country</Text>
-    //       <View
-    //         style={{
-    //           paddingVertical: 10,
-    //           justifyContent: 'center',
-    //           alignItems: 'center',
-    //         }}>
-    //         <CountryPicker
-    //           {...{
-    //             countryCode,
-    //             withFilter,
-    //             withFlag,
-    //             withCountryNameButton,
-    //             withAlphaFilter,
-    //             withCallingCode,
-    //             withEmoji,
-    //             onSelect,
-    //           }}
-    //         />
-    //         {/* <Button
-    //           title={'Clcik flag to choose the co'}
-    //           onPress={switchVisible}
-    //         /> */}
-    //         {country !== null && (
-    //           <Text
-    //             style={{
-    //               maxWidth: 250,
-    //               padding: 10,
-    //               marginTop: 7,
-    //               backgroundColor: '#ddd',
-    //               borderColor: '#888',
-    //               borderWidth: 1 / PixelRatio.get(),
-    //               color: '#777',
-    //             }}>
-    //             {JSON.stringify(country.name, null, 2)}
-    //           </Text>
-    //         )}
-    //       </View>
-    //       <Pressable
-    //         style={[styles.button, styles.buttonClose]}
-    //         onPress={() => close()}>
-    //         <Text style={styles.textStyle1}>Select</Text>
-    //       </Pressable>
-    //     </View>
-    //   </View>
-    // </ModalWrapper>
     <View
       style={{
         paddingVertical: 10,
@@ -110,24 +65,6 @@ const CountryPickerModal: FunctionComponent<Props> = props => {
           onSelect,
         }}
       />
-      {/* <Button
-      title={'Clcik flag to choose the co'}
-      onPress={switchVisible}
-    /> */}
-      {/* {country !== null && (
-        <Text
-          style={{
-            maxWidth: 250,
-            padding: 10,
-            marginTop: 7,
-            backgroundColor: '#ddd',
-            borderColor: '#888',
-            borderWidth: 1 / PixelRatio.get(),
-            color: '#777',
-          }}>
-          {JSON.stringify(country.name, null, 2)}
-        </Text>
-      )} */}
     </View>
   );
 };

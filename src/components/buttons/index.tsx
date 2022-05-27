@@ -9,3 +9,7 @@ export {
     TextButton,
     IconButton
   }
+
+/**
+ * Importing the Buttons to be used as components
+ */

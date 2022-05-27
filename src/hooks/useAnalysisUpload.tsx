@@ -7,6 +7,10 @@ interface Props {
   videoMetaData: any;
 }
 
+/**
+ * Analysis Upload Hook
+ */
+
 export const useAnalysisUpload = props => {
   const {videoMetaData} = props;
   const [currentAnalysisStatus, setCurrentStatus] = useState('Preparing');

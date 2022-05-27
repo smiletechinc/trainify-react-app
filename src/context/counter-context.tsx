@@ -1,7 +1,11 @@
 // CounterContext.tsx
 import React from 'react';
 
-// Declaring the state object globally.
+
+/**
+ * Declaring the state object globally for counter.
+ */
+
 const initialCounterState = {
   count: 0,
   calibrated: false,
@@ -37,6 +41,11 @@ const counterContextWrapper = (component?: React.Component) => ({
 });
 
 type Context = ReturnType<typeof counterContextWrapper>;
+
+
+/**
+ * Counter context for graph data backup
+ */
 
 export const CounterContext = React.createContext<Context>(counterContextWrapper());
 

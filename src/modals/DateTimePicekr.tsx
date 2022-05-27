@@ -1,3 +1,7 @@
+/**
+ * A Modal to pick the user date of birth.
+ */
+
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {
   Text,

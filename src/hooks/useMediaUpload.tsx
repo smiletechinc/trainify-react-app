@@ -22,6 +22,10 @@ interface Props {
   videoData: any;
 }
 
+/**
+ * Custom hook for uploading media
+ */
+
 export const useMediaUpload = props => {
   const {videoData} = props;
   const [currentStatus, setCurrentStatus] = useState('Preparing');
