@@ -34,3 +34,4 @@ When on Practice Rally screen you can click on *Analysis Report* button to navig
 
 ## 7) Example App Run 
 Here is an example of the App Run. To see how our application works you may click on the link to preview the video.
+https://drive.google.com/drive/folders/11fflenPYnROyqhlw75-N4VK8JfYlMeGN?usp=sharing 
