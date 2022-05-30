@@ -1,30 +1,36 @@
-# 1) Install and Run the App
-a) Run these commands to install and run the app;
-
-cd ./crm-client npm install npm start
-
-Then visit the app URL in your browser.
-
-b) You will need a "config.local.ts" to place in the folder "./crm-client/config" Please ask for this file to start local development
-
-c) Next you will need a username and password for our test server to login and use the app locally. Please ask for this login.
-
-## 2) Where to Find our API Docs
-Our API docs are all on Postman. You will need to ask for a login to access them here https://gotoapi.postman.co/workspaces
-
-Troubleshooting Steps
+How to use the Application
 ========================
 
-Build and Start Errors/Issues
-Sometimes some code changes cause some build issues. Always try these commands first before asking for help
 
-rm -rf ./src/.umi npm install --force npm start
+# 1) Install & run
+Install the application on any iPhone and run it either from testflight or from AppStore.
 
-If still doesnt work try this
+## 2) Sign Up
+Signup the application by providing the credentials.
 
-n 16.13.1 rm -rf ./src/.umi rm -rf node_modules rm package-lock.json rm yarn.lock npm install --force npm start
+## 3) Sign In
+Sign in the application by using the same credentials that you provided in the signup method
 
-Update the Web Designer Plugin
-npm update web-designer@https://fedora_dist:dQawFkKQKyMTg9meWEGU@bitbucket.org/procrmco/dist-web-designer.git#dev
+## 4) Subscriptions
 
-npm install web-designer@https://fedora_dist:dQawFkKQKyMTg9meWEGU@bitbucket.org/procrmco/dist-web-designer.git#dev
+### i. Free Trial
+You can enjoy the free trial of the application for a period of 30 days. Morever the free trial is only for Serve Practice only.
+
+### ii. Premium Subscription
+You can enjoy the premium feature by purchasing @ $9.99 per month. By purchasing this feature you will able to unlock the Server Practice and Practice with Ball Machine for a period of 60 days.
+
+## 5) Recording Serve Practice
+On our landing page after you page, you might be able to navigate to Serve Practice and can record videos by clicking on *Record Serve Practice* button.
+
+## 6) Analysis Report for Serve Practice
+When on Serve Practice screen you can click on *Analysis Report* button to navigate to the analysis screen where you can see all the recorded videos list and their graphs.
+
+## 7) Recording Practice Vollay
+You can enjoy the premium feature *Practice Rally* by clicking on *Practice Rally* button on home screen and might be able to record videos.
+
+## 6) Analysis Report for Practice Rally
+When on Practice Rally screen you can click on *Analysis Report* button to navigate to the analysis screen where you can see all the recorded videos list and their graphs.
+
+
+## 7) Example App Run 
+Here is an example of the App Run. To see how our application works you may click on the link to preview the video.
