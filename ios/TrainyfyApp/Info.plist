@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>TrainyfyApp</string>
+	<string>Trainify Tennis</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,15 +38,15 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Trainyfy would like to access your camera.</string>
+	<string>Trainyfy would like to access your camera to record your tennis serves and rally for performance review.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Trainyfy would like to access your location.</string>
+	<string>Trainyfy would like to access your location to suggest you a nearby tennis court.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Trainyfy would like to access your microphone.</string>
+	<string>Trainyfy would like to access your camera to record your tennis serves and rally for performance review.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string></string>
+	<string>Trainyfy would like to access your photo library to save your tennis serves and rally for performance review.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Trainyfy would like to access your galery.</string>
+	<string>Trainyfy would like to access your photo library to save and preview your tennis serves and rally for performance review.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
