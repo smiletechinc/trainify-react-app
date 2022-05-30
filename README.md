@@ -1,4 +1,4 @@
-#1) Install and Run the App
+# 1) Install and Run the App
 a) Run these commands to install and run the app;
 
 cd ./crm-client npm install npm start
@@ -9,7 +9,7 @@ b) You will need a "config.local.ts" to place in the folder "./crm-client/config
 
 c) Next you will need a username and password for our test server to login and use the app locally. Please ask for this login.
 
-##2) Where to Find our API Docs
+## 2) Where to Find our API Docs
 Our API docs are all on Postman. You will need to ask for a login to access them here https://gotoapi.postman.co/workspaces
 
 Troubleshooting Steps
