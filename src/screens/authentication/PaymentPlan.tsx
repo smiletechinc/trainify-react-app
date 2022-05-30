@@ -70,6 +70,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const [playerSelected, setPlayerSelected] = useState<number>(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
   const [productList, setProductList] = useState([]);
+  const [subscriptionStatus, setSubscriptionStatus] = useState('Undetermined');
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
 
@@ -147,6 +148,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
             error,
           )}, IAP purchaseErrorListener`,
         );
+        Alert.alert('Something went wrong while purchasing this subscription');
       },
     );
   }
@@ -211,9 +213,11 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         dangerouslyFinishTransactionAutomatically,
       ).then(res => {
         console.log(`Purchase success, ${res}`);
+        setSubscriptionStatus('Paid');
       });
     } catch (err) {
       console.log(`requestPurchase error => , ${err}`);
+      setSubscriptionStatus('Error');
     }
   }
 
@@ -227,6 +231,8 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   const onSuccess = () => {
     console.log('successfully puchased');
+    setSubscriptionStatus('Paid');
+    console.log('subscriptionPlan', subscriptionPlan);
   };
 
   function proceedToPurchase() {
@@ -345,7 +351,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               limitText="Video Recording for 2 Hrs/ Mo  (60 Day Trial)"
               onPress={() => {
                 setSubscriptionPlan(1);
-                requestPurchase(trainProducts[1], onSuccess);
               }}
             />
             <SubscriptionItem
@@ -363,7 +368,12 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
           <SimpleButton
             buttonText="Submit"
-            buttonType={subscriptionPlan < 0 ? 'DISABLED' : 'AUTHENTICATION'}
+            buttonType={
+              subscriptionPlan === 1 ||
+              (subscriptionPlan === 2 && subscriptionStatus === 'Paid')
+                ? 'AUTHENTICATION'
+                : 'DISABLED'
+            }
             onPress={() => {
               proceedToSignup();
             }}
