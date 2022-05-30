@@ -2,7 +2,7 @@ How to use the Application
 ========================
 
 
-# 1) Install & run
+## 1) Install & run
 Install the application on any iPhone and run it either from testflight or from AppStore.
 
 ## 2) Sign Up
