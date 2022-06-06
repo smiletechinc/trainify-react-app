@@ -77,6 +77,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
   // const [percentage, setPercentage] = useState(0);
   const [prograssValue, setProgressValue] = useState(0);
   const [indeterminate, setIndeterminate] = useState(true);
+  const [buttonText, setButtonText] = useState('Cancel');
 
   const {
     uploading,
@@ -133,7 +134,7 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
       navigation.navigate('BallPracticeVideoPlayer', {
         video: videoAnalysisData,
       });
-      // Alert.alert('Trainify', `Video added successfully.`);
+      // Alert.alert('Trainify', `Video Uploaded successfully.`);
     }
   }, [videoAnalysisData]);
 
@@ -268,7 +269,9 @@ const UploadBallMachineContainerHook: FunctionComponent<Props> = props => {
         <Pressable
           style={[styles.button, styles.buttonClose]}
           onPress={() => uplodaingCancel()}>
-          <Text style={styles.textStyle1}>Cancel</Text>
+          <Text style={styles.textStyle1}>
+            {uploadingText === 'Uploaded Done' ? 'Go Back' : 'Cancel'}
+          </Text>
         </Pressable>
       </View>
     </ScreenWrapperWithHeader>
