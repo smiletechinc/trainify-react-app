@@ -12,10 +12,12 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import globalStyles from '../../global-styles';
 import styles from './styles';
 import {AuthContext} from './../../context/auth-context';
-import {RootState} from '../../../store';
-import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/state';
+import {connect, useSelector} from 'react-redux';
 import {logoutService} from '../../services/authenticationServices';
 import RNRestart from 'react-native-restart'; // Import package from node modules
+import {UserObject} from '../../types';
+import {userstatus} from '../../redux/action/userAction';
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 const backIcon = require('../../assets/images/back-icon.png');
@@ -25,14 +27,13 @@ type Props = {
   hideProfileSection?: boolean;
   navigation: any;
   hideBackButton?: boolean;
+  add?: any;
 };
 const HeaderWithText: FunctionComponent<Props> = props => {
   // const navigation = useNavigation();
   const [userFirstName, setuserFirstName] = useState('User');
-  const UserData = useSelector(
-    (state: RootState) => state.RegisterReducer.UserData,
-  );
-  const {text, hideProfileSection, navigation, hideBackButton} = props;
+  // const UserData = useSelector((state: RootState) => state.routing.authUser);
+  const {text, hideProfileSection, navigation, hideBackButton, add} = props;
 
   const {
     authUser,
@@ -87,6 +88,23 @@ const HeaderWithText: FunctionComponent<Props> = props => {
   };
 
   const proceedToLogout = () => {
+    const userAuth: UserObject = {
+      id: 'null',
+      email: 'null',
+      playerstyle: 'null',
+      gender: 'male',
+      height: 'null',
+      birthday: 'null',
+      location: 'null',
+      rating: 'null',
+      nationality: 'null',
+      firstName: 'null',
+      middleName: 'null',
+      lastName: 'null',
+      userType: 'null',
+      paymentPlan: 'null',
+    };
+    add(userAuth);
     logoutService(logoutSuccess, logoutFailure);
   };
 
@@ -131,4 +149,15 @@ const HeaderWithText: FunctionComponent<Props> = props => {
     </View>
   );
 };
-export default HeaderWithText;
+
+const mapDispatchToProps = dispatch => {
+  console.log('Adding a user in Redux');
+  return {
+    add: user => {
+      dispatch(userstatus(user));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(HeaderWithText);
+// export default HeaderWithText;
