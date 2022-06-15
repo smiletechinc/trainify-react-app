@@ -68,7 +68,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const {route, navigation} = props;
   const {authObject, signupObject} = route.params;
   const [playerSelected, setPlayerSelected] = useState<number>(0);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(2);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(1);
   const [productList, setProductList] = useState([]);
   const [subscriptionStatus, setSubscriptionStatus] = useState('Undetermined');
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
@@ -333,7 +333,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               isSelected={playerSelected === 2 ? true : false}
             />
           </View>
-          {/* <View>
+          <View>
             <Text
               style={[
                 globalStyles.h1,
@@ -365,16 +365,17 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               limitText="5 Hours Video Recording/Per Month"
               onPress={() => {
                 setSubscriptionPlan(2);
-                requestPurchase(trainProducts[2], onSuccess);
+                requestPurchase(trainProducts[0], onSuccess);
               }}
             />
-          </View> */}
-
+          </View>
           <SimpleButton
             buttonText="Submit"
             buttonType={
-              // subscriptionPlan === 1 ||
-              subscriptionPlan === 2 ? 'AUTHENTICATION' : 'DISABLED'
+              subscriptionPlan === 1 ||
+              (subscriptionPlan === 2 && subscriptionStatus === 'Paid')
+                ? 'AUTHENTICATION'
+                : 'DISABLED'
             }
             onPress={() => {
               proceedToSignup();

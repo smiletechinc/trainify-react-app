@@ -17,7 +17,7 @@ import {
   limitToLast,
   orderByChild,
 } from 'firebase/database';
-import {ErrorObject, VideoData} from '../../types';
+import {ErrorObject} from '../../types';
 import {getStorage, uploadBytes} from 'firebase/storage';
 
 export const addVideoService = (

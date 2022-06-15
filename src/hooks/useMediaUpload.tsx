@@ -11,7 +11,6 @@ import {
 } from 'firebase/storage';
 import storage1 from '@react-native-firebase/storage';
 
-import {ErrorObject, VideoData} from '../../types';
 import {Alert, Platform} from 'react-native';
 
 // Create a root reference

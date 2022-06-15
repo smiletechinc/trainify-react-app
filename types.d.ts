@@ -14,7 +14,31 @@ declare type VideoData = {
   thumbnailURL: string;
   videoURL: string;
 };
+type Video = {
+  id: number;
+  fileName: string;
+  type: string;
+  timestamp: string;
+  fileSize: number;
+  duration: number;
+  width: number;
+  analysisData: any;
+  thumbnailURL: string;
+  videoURL: string;
+  createrId: string;
+  name: string;
+  thumbnailURI: string;
+  videoURI: string;
+};
 
+export type VideoState = {
+  videos: Video[];
+};
+
+type VideoAction = {
+  type: string;
+  video: Video;
+};
 export type AuthObject = {
   email: string;
   password: string;
@@ -50,3 +74,6 @@ export type ErrorObject = {
   code?: string;
   message: string;
 };
+
+type DispatchType = (args: VideoAction) => VideoAction;
+type Videos = Array<Video>;

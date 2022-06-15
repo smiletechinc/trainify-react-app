@@ -40,7 +40,7 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
 
   const fetchVideosSuccess = videosData => {
     const videos_ = Object.values(videosData);
-
+    console.log('videos fetched', videos_);
     const filterVideos = videos_.filter(
       video => video.createrId === authObject.id,
     );
