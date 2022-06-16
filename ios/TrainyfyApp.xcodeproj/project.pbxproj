@@ -15,7 +15,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8411CD045826744CF55FDB99 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D0B167E90F5315FEEE618E /* ExpoModulesProvider.swift */; };
 		8CEC3089000880155338E412 /* libPods-TrainyfyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 129107A95C52D3E05EE8EE7E /* libPods-TrainyfyApp.a */; };
-		990F9AE5284E137B009A4789 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 990F9AE4284E137B009A4789 /* GoogleService-Info.plist */; };
+		99BBAF6E285B18F600A9F4C0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99BBAF6D285B18F600A9F4C0 /* GoogleService-Info.plist */; };
 		99CF7FCF2859F0BD0059F761 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99CF7FCE2859F0BD0059F761 /* StoreKit.framework */; };
 		E0AA8C5BD973EBF8609AB0C0 /* libPods-TrainyfyApp-TrainyfyAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C808166CA4EC6398EBA63C0 /* libPods-TrainyfyApp-TrainyfyAppTests.a */; };
 /* End PBXBuildFile section */
@@ -59,7 +59,7 @@
 		7F604301112A4D2B83EE4476 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrainyfyApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9134682C474716E63CCA918D /* Pods-TrainyfyApp-TrainyfyAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrainyfyApp-TrainyfyAppTests.release.xcconfig"; path = "Target Support Files/Pods-TrainyfyApp-TrainyfyAppTests/Pods-TrainyfyApp-TrainyfyAppTests.release.xcconfig"; sourceTree = "<group>"; };
-		990F9AE4284E137B009A4789 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		99BBAF6D285B18F600A9F4C0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		99CF7FCE2859F0BD0059F761 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A6B659EFE1F94673B175FB7B /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		A90A0E6A997B4A5E845700C6 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				990F9AE4284E137B009A4789 /* GoogleService-Info.plist */,
+				99BBAF6D285B18F600A9F4C0 /* GoogleService-Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -327,7 +327,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				990F9AE5284E137B009A4789 /* GoogleService-Info.plist in Resources */,
+				99BBAF6E285B18F600A9F4C0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,7 +585,7 @@
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = F67F944Q22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
@@ -619,7 +619,7 @@
 				CODE_SIGN_ENTITLEMENTS = TrainyfyApp/TrainyfyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = F67F944Q22;
 				INFOPLIST_FILE = TrainyfyApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;

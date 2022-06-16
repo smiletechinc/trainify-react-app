@@ -12,14 +12,24 @@ import {Firebase, FirebaseApp, initializeApp, getApps} from 'firebase/app';
 // };
 
 /*smiletechpakistan@gmail.com */
+// Import the functions you need from the SDKs you need
+// import {initializeApp} from 'firebase/app';
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyBcXZcJdG_QeSBo0MStgHsSzl-IZewC2ls',
   authDomain: 'trainify-react-app.firebaseapp.com',
+  databaseURL: 'https://trainify-react-app-default-rtdb.firebaseio.com',
   projectId: 'trainify-react-app',
   storageBucket: 'trainify-react-app.appspot.com',
   messagingSenderId: '1026534116413',
-  appId: '1:1026534116413:web:e1600a2f66e460cd7aee54',
+  appId: '1:1026534116413:web:cf7deca9677a36157aee54',
 };
+
+// Initialize Firebase
+// const app = initializeApp(firebaseConfig);
 
 let app = FirebaseApp ? FirebaseApp() : initializeApp(firebaseConfig);
 export default app;

@@ -1,17 +1,11 @@
 import React, {FunctionComponent, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-  Image,
-  Platform,
-  Alert,
-} from 'react-native';
+import {Text, View, Alert} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {GooglePay} from 'react-native-google-pay';
 import {useDispatch, useSelector} from 'react-redux';
+import {userstatus} from '../../redux/action/userAction';
+import {connect} from 'react-redux';
+
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
@@ -25,9 +19,6 @@ const signinMainImage = require('../../assets/images/signin-main-image.png');
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {StackActions, NavigationActions} from 'react-navigation';
-
 import {
   signInService,
   getUserWithIdService,
@@ -39,12 +30,12 @@ const backIcon = require('../../assets/images/back-icon.png');
 type Props = {
   navigation?: any;
   route?: any;
+  add?: any;
 };
 
-const SigninScreen: FunctionComponent<Props> = props => {
+const SigninScreenBackup: FunctionComponent<Props> = props => {
   const {authUser, setAuthUser, setAuthObject} = React.useContext(AuthContext);
-  // console.log('UserData: ', UserData);
-  const {navigation, route} = props;
+  const {navigation, route, add} = props;
   const [email, setEmail] = useState<string>(''); // Testing@gmail.com
   const [password, setPassword] = useState<string>(''); // 123456
 
@@ -57,29 +48,51 @@ const SigninScreen: FunctionComponent<Props> = props => {
     console.log('userObject in home : ', user);
 
     setAuthObject(userObject);
+    if (user) {
+      // Alert.alert("Login Succesfull")
+      const userAuth: UserObject = {
+        id: user.id,
+        email: user.email,
+        playerstyle: user.playerstyle,
+        gender: user.gender,
+        height: user.height,
+        birthday: user.birthday,
+        location: user.location,
+        rating: user.rating,
+        nationality: user.nationality,
+        firstName: user.firstName,
+        middleName: user.middleName,
+        lastName: user.lastName,
+        userType: user.userType,
+        paymentPlan: user.paymentPlan,
+      };
+      add(userAuth);
+      // navigation.replace('HomeScreen', user.id);
+    }
+    // dispatch(setUserObject(user));
 
     navigation.reset({
       index: 0,
       routes: [{name: 'MainApp'}],
     });
-    // navigation.navigate('MainApp');
+    navigation.navigate('MainApp');
   };
 
   const getUsrObject = userCredential => {
-    // console.log('userCredential : ', userCredential);
+    console.log('userCredential : ', userCredential);
     let uid = userCredential.uid;
     // console.log('uid : ', uid);
     setAuthUser(userCredential);
-    getUserWithIdService(uid, goToHomePage, fetchUserFailure);
+    // getUserWithIdService(uid, goToHomePage, fetchUserFailure);
 
-    // getUserWithIdService(uid, goToHomePage, authenticationFailure)
+    getUserWithIdService(uid, goToHomePage, authenticationFailure);
   };
 
   const authenticationSuccess = (userCredential?: any) => {
     setLoading(false);
     if (userCredential) {
       setAuthObject(userCredential);
-      console.log('userCredential : ', userCredential);
+      console.log('userCredential for authObject : ', userCredential);
       const user = userCredential.user;
       // Alert.alert("Trainify", `You've logged in successfully ${JSON.stringify(user)}`)
       getUsrObject(userCredential);
@@ -118,7 +131,8 @@ const SigninScreen: FunctionComponent<Props> = props => {
           'Account not found, Please register for account!',
         );
       } else {
-        Alert.alert('Trainify', 'Error in login');
+        Alert.alert('Trainify', 'Error in login but auth user found');
+        console.log('Error in login but auth user found', Object.values(error));
       }
     } else {
       Alert.alert('Trainify!', 'Error in login!');
@@ -157,27 +171,27 @@ const SigninScreen: FunctionComponent<Props> = props => {
     },
     merchantName: 'Example Merchant',
   };
-  const isGooglePayAvailable = () => {
-    GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
-    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
-      .then(ready => {
-        if (ready) {
-          // Request payment token
-          console.log('it is ready.', ready);
-          GooglePay.requestPayment(requestData)
-            .then((token: string) => {
-              console.log('token here: ', token);
-              // Send a token to your payment gateway
-            })
-            .catch(error =>
-              console.log('payment error: ', error.code, error.message),
-            );
-        }
-      })
-      .catch(error => {
-        console.log('error: ', error);
-      });
-  };
+  // const isGooglePayAvailable = () => {
+  //   GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
+  //   GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
+  //     .then(ready => {
+  //       if (ready) {
+  //         // Request payment token
+  //         console.log('it is ready.', ready);
+  //         GooglePay.requestPayment(requestData)
+  //           .then((token: string) => {
+  //             console.log('token here: ', token);
+  //             // Send a token to your payment gateway
+  //           })
+  //           .catch(error =>
+  //             console.log('payment error: ', error.code, error.message),
+  //           );
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log('error: ', error);
+  //     });
+  // };
 
   const validateForInputs = () => {
     if (email === '') {
@@ -256,4 +270,15 @@ const SigninScreen: FunctionComponent<Props> = props => {
     </View>
   );
 };
-export default SigninScreen;
+
+const mapDispatchToProps = dispatch => {
+  console.log('Adding a user in Redux');
+  return {
+    add: user => {
+      dispatch(userstatus(user));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SigninScreenBackup);
+// export default SigninScreen;
