@@ -8,6 +8,7 @@ import {
   SigninScreen,
   SignupScreen,
   SignupContainer,
+  SignoutScreen,
   LandingScreenContainer,
   ResetPasswordContainer,
   PaymentPlanContainer,
@@ -31,6 +32,7 @@ function AppContainer() {
         }}>
         <AppStack.Screen name="SplashScreen" component={SplashScreen} />
         <AppStack.Screen name="Signin" component={SigninScreen} />
+        <AppStack.Screen name="Signout" component={SignoutScreen} />
         <AppStack.Screen name="Signup" component={SignupScreen} />
         <AppStack.Screen name="SignupContainer" component={SignupContainer} />
         <AppStack.Screen

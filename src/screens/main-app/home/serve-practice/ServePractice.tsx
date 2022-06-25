@@ -44,7 +44,8 @@ const ServePracticeContainer: FunctionComponent<Props> = ({
     <ScreenWrapperWithHeader
       title="Serve Practice"
       navigation={navigation}
-      route={route}>
+      route={route}
+      logoutcheck={false}>
       <View
         style={[styles.home_main_view, {paddingBottom: SCREEN_HEIGHT * 0.5}]}>
         {playerstyle === 'LeftHanded' ? (

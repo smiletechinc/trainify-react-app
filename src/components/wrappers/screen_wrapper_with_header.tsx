@@ -13,10 +13,11 @@ type Props = {
   route?: any;
   children?: any;
   hideBackButton?: boolean;
+  logoutcheck?: boolean;
 };
 
 const ScreenWrapperWithHeader: FunctionComponent<Props> = props => {
-  const {title, children, navigation, hideBackButton} = props;
+  const {title, children, navigation, hideBackButton, logoutcheck} = props;
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={{
@@ -28,6 +29,7 @@ const ScreenWrapperWithHeader: FunctionComponent<Props> = props => {
           text={title}
           navigation={navigation}
           hideBackButton={hideBackButton}
+          logOutCheck={logoutcheck}
         />
       </View>
       <View>{children}</View>

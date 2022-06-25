@@ -30,7 +30,8 @@ const BallPracticeContainer: FunctionComponent<Props> = ({
     <ScreenWrapperWithHeader
       title="Ball Machine Practice"
       navigation={navigation}
-      route={route}>
+      route={route}
+      logoutcheck={false}>
       <View
         style={[
           styles.home_main_view,

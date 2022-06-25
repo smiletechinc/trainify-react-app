@@ -195,7 +195,11 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
           minHeight: 48,
           paddingHorizontal: SCREEN_WIDTH * 0.03,
         }}>
-        <HeaderWithText text="uploading" navigation={navigation} />
+        <HeaderWithText
+          text="uploading"
+          navigation={navigation}
+          logOutCheck={false}
+        />
       </View>
       <View style={styles.login_main_container}>
         <KeyboardAwareScrollView
