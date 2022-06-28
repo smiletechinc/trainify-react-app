@@ -13,7 +13,10 @@ const avatarIcon = require('../../assets/images/avatar.png');
 
 import {AuthContext} from './../../context/auth-context';
 import ScreenWrapperWithHeader from '../../components/wrappers/screen_wrapper_with_header';
-import {logoutService} from '../../services/authenticationServices';
+import {
+  logoutService,
+  deleteAccountService,
+} from '../../services/authenticationServices';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import LogoutAlertModal from '../../modals/LogoutAlerModal';
 
@@ -50,8 +53,24 @@ const SignoutScreen: FunctionComponent<Props> = props => {
     RNRestart.Restart();
   };
 
+  const deleteAccountSuccess = (userCredential?: any) => {
+    console.log('Delete account sucess from firebase');
+    logoutUser();
+    RNRestart.Restart();
+  };
+
+  const deleteAccountFailure = error => {
+    console.log('Error in delete account from firebase');
+    logoutUser();
+    RNRestart.Restart();
+  };
+
   const proceedToLogout = () => {
     logoutService(logoutSuccess, logoutFailure);
+  };
+
+  const proceedToDeleteAccount = () => {
+    deleteAccountService(deleteAccountSuccess, deleteAccountFailure);
   };
 
   return (
@@ -155,7 +174,7 @@ const SignoutScreen: FunctionComponent<Props> = props => {
           textDesc={'Delete Your Account'}
           buttonTitle={'Delete'}
           onCancelButton={() => setDeleteAccountCheck(false)}
-          onAcceptButton={() => proceedToLogout()}
+          onAcceptButton={() => proceedToDeleteAccount()}
         />
       )}
       {logOutCheck && (

@@ -16,6 +16,8 @@ import {
   TestRecordScreenContainerHook,
   UploadBallMachineContainerHook,
   UploadServeContainerHook,
+  TermsConditionScreen,
+  PrivacyPolicyScreen,
 } from '../screens';
 import MainAppContainer from './main-app';
 
@@ -34,6 +36,16 @@ function AppContainer() {
         <AppStack.Screen name="Signin" component={SigninScreen} />
         <AppStack.Screen name="Signout" component={SignoutScreen} />
         <AppStack.Screen name="Signup" component={SignupScreen} />
+        <AppStack.Group screenOptions={{presentation: 'modal'}}>
+          <AppStack.Screen
+            name="TermsConditionScreen"
+            component={TermsConditionScreen}
+          />
+          <AppStack.Screen
+            name="PrivacyPolicyScreen"
+            component={PrivacyPolicyScreen}
+          />
+        </AppStack.Group>
         <AppStack.Screen name="SignupContainer" component={SignupContainer} />
         <AppStack.Screen
           name="LandingScreen"
