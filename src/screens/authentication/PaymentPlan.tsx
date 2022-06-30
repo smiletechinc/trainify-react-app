@@ -16,11 +16,7 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import AppUserItem from './components/AppUserItem';
 import AnimatedLoader from 'react-native-animated-loader';
 import SubscriptionItem from './components/SubscriptionItem';
-import {
-  signUpService,
-  signInService,
-  registerUserService,
-} from './../../services/authenticationServices';
+import {registerUserService} from './../../services/authenticationServices';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
