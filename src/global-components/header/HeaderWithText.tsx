@@ -125,26 +125,30 @@ const HeaderWithText: FunctionComponent<Props> = props => {
           <Image source={profileIcon} style={styles.header_profile_icon} />
         </TouchableOpacity>
       )}
-      {logOutCheck && (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            display: hideProfileSection ? 'none' : 'flex',
-          }}>
-          {/* onPress={() => {
+      {logOutCheck ||
+        (false && ( // editing ke case mein or symbol aur false condition remove krni hai
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              display: hideProfileSection ? 'none' : 'flex',
+            }}>
+            {/* onPress={() => {
           logoutAlert();
         }}> */}
-          {/* <Text
+            {/* <Text
           style={[
             globalStyles.medium,
             {color: COLORS.light_blue, fontWeight: '600'},
           ]}>
           {userFirstName}
         </Text> */}
-          <Image source={userIcon} style={styles.header_profile_icon} />
-        </View>
-      )}
+            <Image
+              source={userIcon}
+              style={styles.header_profile_logout_icon}
+            />
+          </View>
+        ))}
     </View>
   );
 };

@@ -6,6 +6,7 @@ import {
   Image,
   Platform,
   StyleSheet,
+  Pressable,
 } from 'react-native';
 // Custom UI components.
 import {COLORS, SCREEN_HEIGHT, SCREEN_WIDTH} from '../../constants';
@@ -19,6 +20,7 @@ import {
 } from '../../services/authenticationServices';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import LogoutAlertModal from '../../modals/LogoutAlerModal';
+import AlertModal from '../../modals/AlertModal';
 
 type Props = {
   navigation?: any;
@@ -80,7 +82,7 @@ const SignoutScreen: FunctionComponent<Props> = props => {
       route={route}
       logoutcheck={true}>
       <View style={[styles.home_main_view]}>
-        <View style={{marginTop: 64}}>
+        <View style={{marginTop: 24}}>
           <View>
             <View
               style={{
@@ -113,78 +115,44 @@ const SignoutScreen: FunctionComponent<Props> = props => {
             flex: 1,
             justifyContent: 'flex-end',
             flexDirection: 'column',
-            marginTop: '44%',
+            marginTop: '80%',
           }}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            delayPressIn={0}
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
             onPress={() => {
               setLogOutCheck(true);
               setDeleteAccountCheck(false);
             }}>
-            <View
-              style={{
-                borderWidth: 2,
-                borderRadius: 20,
-                backgroundColor: '#008EC1',
-                borderColor: '#008EC1',
-                display: 'flex',
-                flex: 1,
-                paddingVertical: 32,
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignContent: 'center',
-              }}>
-              <Text style={[styles.record_and_upload_text, {color: '#FFFFFF'}]}>
-                Logout
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            delayPressIn={0}
-            style={{marginTop: 32}}
+            <Text style={[styles.textStyle1, {color: '#FFFFFF'}]}> Logout</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonOpen, {marginLeft: 16}]}
             onPress={() => {
               setDeleteAccountCheck(true);
               setLogOutCheck(false);
             }}>
-            <View
-              style={{
-                borderWidth: 2,
-                borderRadius: 20,
-                borderColor: '#FF4E4E',
-                display: 'flex',
-                flex: 1,
-                paddingVertical: 32,
-                justifyContent: 'center',
-                alignContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={[styles.record_and_upload_text]}>
-                Delete Account
-              </Text>
-            </View>
-          </TouchableOpacity>
+            <Text style={styles.textStyle1}>Delete Account</Text>
+          </Pressable>
         </View>
       </View>
       {deleteAccountCheck && (
         <LogoutAlertModal
           visible={deleteAccountCheck}
-          textTitle={'DELETE ACCOUNT'}
-          textDesc={'Delete Your Account'}
+          title={'DELETE ACCOUNT'}
+          desc={'Delete Your Account'}
           buttonTitle={'Delete'}
-          onCancelButton={() => setDeleteAccountCheck(false)}
           onAcceptButton={() => proceedToDeleteAccount()}
+          onCancelButton={() => setDeleteAccountCheck(false)}
         />
       )}
       {logOutCheck && (
         <LogoutAlertModal
           visible={logOutCheck}
-          textTitle={'Logout'}
-          textDesc={'Logout from your account'}
+          title={'Logout'}
+          desc={'Logout from your account'}
           buttonTitle={'Logout'}
-          onCancelButton={() => setLogOutCheck(false)}
           onAcceptButton={() => proceedToLogout()}
+          onCancelButton={() => setLogOutCheck(false)}
         />
       )}
     </ScreenWrapperWithHeader>
@@ -207,5 +175,31 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     textAlignVertical: 'bottom',
     fontSize: 18,
+  },
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    elevation: 2,
+    borderWidth: 2,
+    borderRadius: 20,
+    borderColor: 'rgba(0,142,193,0.1)',
+    display: 'flex',
+    marginLeft: 16,
+    justifyContent: 'center',
+  },
+  buttonOpen: {
+    backgroundColor: '#FF4E4E',
+    marginTop: 24,
+    marginBottom: 54,
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle1: {
+    lineHeight: 22,
+    fontWeight: 'normal',
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center',
   },
 });

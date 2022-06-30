@@ -1,26 +1,28 @@
 import React, {FunctionComponent} from 'react';
-import {Text, TouchableOpacity, View, Image, Modal} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Modal,
+  Pressable,
+} from 'react-native';
 import {SCREEN_WIDTH} from '../constants';
+import styles from './styles';
 
 const closeModalButton = require('../assets/images/closeModalButton.png');
 
 type Props = {
   visible: boolean;
+  title: string;
+  desc: string;
   buttonTitle?: string;
   onAcceptButton?: any;
   onCancelButton?: any;
-  textTitle?: string;
-  textDesc?: string;
 };
 const LogoutAlertModal: FunctionComponent<Props> = props => {
-  const {
-    visible,
-    textTitle,
-    textDesc,
-    buttonTitle,
-    onCancelButton,
-    onAcceptButton,
-  } = props;
+  const {visible, title, desc, buttonTitle, onAcceptButton, onCancelButton} =
+    props;
 
   return (
     <Modal
@@ -30,112 +32,56 @@ const LogoutAlertModal: FunctionComponent<Props> = props => {
       onRequestClose={() => {
         close();
       }}>
-      <View
-        style={{
-          justifyContent: 'center',
-          marginTop: '48%',
-          borderWidth: 1,
-          borderRadius: 5,
-          borderColor: '#888888',
-          width: SCREEN_WIDTH * 0.89,
-          marginHorizontal: SCREEN_WIDTH * 0.05,
-        }}>
-        <View
-          style={[
-            {
-              backgroundColor: 'white',
-              borderRadius: 5,
-              paddingVertical: 10,
-            },
-          ]}>
-          <View
-            style={{
-              alignItems: 'flex-end',
-              right: 16,
-            }}>
-            <TouchableOpacity onPress={onCancelButton}>
-              <Image
-                source={closeModalButton}
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              />
-            </TouchableOpacity>
-          </View>
+      <View style={styles.centeredView}>
+        <View style={[styles.modalView, {width: SCREEN_WIDTH * 0.75}]}>
+          <Text style={[styles.modalText, {fontWeight: 'bold', fontSize: 16}]}>
+            {title}
+          </Text>
+          <Text style={styles.modalText}>{desc}</Text>
           <View
             style={{
               display: 'flex',
-              justifyContent: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text
+            <Pressable
               style={{
-                fontSize: 30,
-                fontWeight: '500',
-                lineHeight: 48,
-                textAlign: 'center',
-                color: '#CF1B27',
-              }}>
-              {textTitle}
-            </Text>
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: '500',
-                lineHeight: 20,
-                textAlign: 'center',
-                color: '#ADADAD',
-              }}>
-              Are you sure you want to
-            </Text>
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: '500',
-                lineHeight: 20,
-                textAlign: 'center',
-                color: '#ADADAD',
-              }}>
-              {textDesc}
-            </Text>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              height: 68,
-              marginHorizontal: '15%',
-              marginTop: 32,
-            }}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              delayPressIn={0}
-              onPress={onAcceptButton}
-              style={{
+                borderRadius: 10,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                elevation: 2,
+                backgroundColor: '#ffffff',
+                borderColor: '#2196F3',
                 borderWidth: 1,
-                borderRadius: 20,
-                borderColor: '#CF1B27',
-                backgroundColor: '#CF1B27',
                 display: 'flex',
-                flex: 1,
-              }}>
-              <View
+                // flex: 1,
+                marginLeft: 16,
+                // paddingVertical: 32,
+                // alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() => onCancelButton()}>
+              <Text
                 style={{
-                  top: 22,
-                  alignItems: 'center',
+                  color: '#2196F3',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
                 }}>
-                <Text
-                  style={{
-                    color: '#ffffff',
-                    textAlign: 'left',
-                    textAlignVertical: 'bottom',
-                    fontSize: 18,
-                    lineHeight: 22,
-                  }}>
-                  {buttonTitle}
-                </Text>
-              </View>
-            </TouchableOpacity>
+                Cancel
+              </Text>
+            </Pressable>
+            {buttonTitle && (
+              <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  {marginLeft: 16, borderWidth: 1, borderColor: '#2196F3'},
+                ]}
+                onPress={() => onAcceptButton()}>
+                <Text style={styles.textStyle1}>{buttonTitle}</Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </View>
