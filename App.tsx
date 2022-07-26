@@ -28,6 +28,10 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 import {SettingContextProvider} from './src/context/useSetting-context';
+import {
+  SubscriptionContext,
+  SubscriptionContextProvider,
+} from './src/context/useSubscriptionContext';
 
 let persistor = persistStore(store);
 
@@ -42,7 +46,9 @@ const App: () => Node = () => {
             <CounterContextProvider>
               <PermissionsContextProvider>
                 <SettingContextProvider>
-                  <AppContainer />
+                  <SubscriptionContextProvider>
+                    <AppContainer />
+                  </SubscriptionContextProvider>
                 </SettingContextProvider>
               </PermissionsContextProvider>
             </CounterContextProvider>
