@@ -1,6 +1,6 @@
 # Trainify
 
-# Walk Throught the application
+Walk Throught the application
 
 ## 1) Install & run
 
@@ -44,6 +44,13 @@ You can enjoy the free trial of the application for a period of 30 days. Morever
 ### ii. Premium Subscription
 
 You can enjoy the premium feature by purchasing @ $9.99 per month. By purchasing this feature you will able to unlock the Server Practice and Practice with Ball Machine for a period of 60 days.
+
+For testing you can use these credentials:
+
+```
+email: hfshan247@gmail.com
+password: 123456
+```
 
 ## 5) Recording Serve Practice
 
