@@ -1,10 +1,31 @@
-# Project Title
+# Trainify
 
-# How to use the Application
+# Walk Throught the application
 
 ## 1) Install & run
 
 Install the application on any iPhone and run it either from testflight or from AppStore.
+
+- Step 1: Clone the App
+
+```
+git clone https://github.com/smiletechinc/trainify-react-app.git
+```
+
+- Step 2: Install the npm react packages
+
+  ```
+  npm install
+  ```
+
+- Step 3: Install pods
+  ```
+  pod install
+  ```
+- Step 4: Buil app on device
+  ```
+  react-native run-ios --device "iPhone"
+  ```
 
 ## 2) Sign Up
 
@@ -69,11 +90,13 @@ Node, Watchman, JDK
 We recommend installing Node, Watchman, and JDK using Homebrew. Run the following commands in a Terminal after installing Homebrew:
 
 ```
+
 $ brew install yarn
 $ brew install node
 $ brew install watchman
 $ brew tap AdoptOpenJDK/openjdk
 $ brew cask install adoptopenjdk8
+
 ```
 
 If you have already installed Node on your system, make sure it is Node 8.3 or newer.
@@ -141,3 +164,7 @@ Turn on Live Reload in the Developer Menu. Your app will now reload automaticall
 If you want to add this new React Native code to an existing application, check out the Integration guide.
 
 If you're curious to learn more about React Native, continue on to the Tutorial.
+
+```
+
+```
