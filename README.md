@@ -48,8 +48,8 @@ You can enjoy the premium feature by purchasing @ $9.99 per month. By purchasing
 For testing you can use these credentials:
 
 ```
-email: hfshan247@gmail.com
-password: 123456
+email: shaharyarsajid@gmail.com
+password: qazwsx
 ```
 
 ## 5) Recording Serve Practice
