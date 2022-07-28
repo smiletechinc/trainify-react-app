@@ -31,8 +31,8 @@ import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 import CountDown from 'react-native-countdown-component';
 
 const stopIcon = require('./src/assets/images/stop.png');
-const fronCamera = require('./src/assets/images/frontCamera.png');
-const backCamera = require('./src/assets/images/backCamera.png');
+const fronCamera = require('./src/assets/images/frontCamera2.png');
+const backCamera = require('./src/assets/images/backCamera2.png');
 const backIcon = require('./src/assets/images/back-icon.png');
 
 const TensorCamera = cameraWithTensors(Camera);
@@ -63,6 +63,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   } = React.useContext(AuthContext);
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
+  const [cameraX, setCameraX] = useState(120);
+  const [cameraY, setCameraY] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
@@ -83,7 +85,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
@@ -411,17 +413,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const renderCalibrationPoints = () => {
-    const cx1 = 200;
-    const cy1 = 8;
+    const cx1 = cameraX + 136;
+    const cy1 = cameraY - 48;
 
-    const cx2 = cameraLayoutWidth - 200;
-    const cy2 = 8;
+    const cx2 = cameraLayoutWidth - cx1;
+    const cy2 = cy1;
 
-    const cx3 = 200;
-    const cy3 = cameraLayoutHeight - 8;
+    const cx3 = cx1;
+    const cy3 = cameraLayoutHeight - cy1;
 
-    const cx4 = cameraLayoutWidth - 200;
-    const cy4 = cameraLayoutHeight - 8;
+    const cx4 = cameraLayoutWidth - cx1;
+    const cy4 = cameraLayoutHeight - cy1;
 
     if (isCalibratedp) {
       return (
@@ -1272,17 +1274,17 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   };
 
   const calibrate = (poses: any) => {
-    const cx1 = 200;
-    const cy1 = 8;
+    const cx1 = cameraX + 136;
+    const cy1 = cameraY - 48;
 
-    const cx2 = cameraLayoutWidth - 200;
-    const cy2 = 8;
+    const cx2 = cameraLayoutWidth - cx1;
+    const cy2 = cy1;
 
-    const cx3 = 250;
-    const cy3 = cameraLayoutHeight - 8;
+    const cx3 = cx1;
+    const cy3 = cameraLayoutHeight - cy1;
 
-    const cx4 = cameraLayoutWidth - 200;
-    const cy4 = cameraLayoutHeight - 8;
+    const cx4 = cameraLayoutWidth - cx1;
+    const cy4 = cameraLayoutHeight - cy1;
 
     if (poses && poses.length > 0) {
       const object = poses[0];
@@ -1427,6 +1429,8 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
   const onCameraLayout = event => {
     const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Main Camera Dimensions : ', x, y, height, width);
+    setCameraX(x);
+    setCameraY(y);
     // cameraLayoutWidth = width;
     // setCameraWidth(width);
     // cameraLayoutHeight = height;
@@ -1455,7 +1459,7 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
         </View>
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
-          {renderSkeleton()}
+          {/* {renderSkeleton()} */}
           {renderCalibrationPoints()}
         </View>
       </View>
@@ -1482,6 +1486,25 @@ const TensorCameraContainer: FunctionComponent<Props> = props => {
           timeLabels={{m: null, s: null}}
         />
       )}
+      {/* <IconButton
+        styles={styles.stopIcon}
+        icon={stopIcon}
+        onPress={() => {
+          handleStopCamera();
+        }}
+        transparent={true}
+      />
+      <CountDown
+        until={57 * 1}
+        size={16}
+        running={isTimerRunning}
+        style={styles.timerContainer}
+        onFinish={() => handleStopTiemer()}
+        digitStyle={{backgroundColor: '#FFF'}}
+        digitTxtStyle={{color: '#000000'}}
+        timeToShow={['M', 'S']}
+        timeLabels={{m: null, s: null}}
+      /> */}
     </View>
   );
 };
@@ -1604,17 +1627,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
     alignSelf: 'center',
   },
   timerContainer: {
     position: 'absolute',
     top: 150,
-    left: '9%',
+    left: '8%',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     // alignSelf: 'flex-start',
@@ -1625,8 +1648,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 200,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
     alignSelf: 'center',
   },

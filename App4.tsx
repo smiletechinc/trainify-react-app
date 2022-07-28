@@ -77,6 +77,8 @@ const App4: FunctionComponent<Props> = props => {
 
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
+  const [cameraX, setCameraX] = useState(120);
+  const [cameraY, setCameraY] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
@@ -377,18 +379,20 @@ const App4: FunctionComponent<Props> = props => {
 
   const renderCameraTypeSwitcher = () => {
     return (
-      <View style={styles.recordIcon} onTouchEnd={handleSwitchCameraType}>
+      <View style={styles.cameraIcon} onTouchEnd={handleSwitchCameraType}>
         {cameraType === Camera.Constants.Type.back ? (
           <IconButton
             icon={fronCamera}
             onPress={handleSwitchCameraType}
             transparent={true}
+            styles={{height: 38, width: 16}}
           />
         ) : (
           <IconButton
             icon={backCamera}
             onPress={handleSwitchCameraType}
             transparent={true}
+            styles={{height: 40, width: 128}}
           />
         )}
       </View>
@@ -1351,6 +1355,19 @@ const App4: FunctionComponent<Props> = props => {
     cameraLayoutHeight = height;
     setCameraHeight(height);
   };
+
+  const onCameraLayout = event => {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    console.log('Main Camera Dimensions : ', x, y, height, width);
+    setCameraX(x);
+    setCameraY(y);
+    // cameraLayoutWidth = width;
+    // setCameraWidth(width);
+    // cameraLayoutHeight = height;
+    // setCameraHeight(height);
+    // determineAndSetOrientation();
+  };
+
   return (
     <SafeAreaView style={styles_external.main_view}>
       <View style={{marginTop: 4}}>
@@ -1360,11 +1377,20 @@ const App4: FunctionComponent<Props> = props => {
           navigation={navigation}
         />
       </View>
-      <View style={styles.cameraView}>
+      <View style={styles.cameraView} onLayout={onCameraLayout}>
         <View
           style={{
-            zIndex: 20,
+            // zIndex: 20,
             width: '100%',
+            borderStyle: 'solid',
+            backgroundColor: 'black',
+            // borderColor: 'yellow',
+            // borderBottomWidth: 0,
+            // borderTopWidth: 2,
+            // borderLeftWidth: 2,
+            // borderRightWidth: 2,
+            // borderRadius: 12,
+            height: 50,
           }}>
           <View>{renderFps()}</View>
 
@@ -1373,7 +1399,7 @@ const App4: FunctionComponent<Props> = props => {
         <View onLayout={onLayout} style={styles.cameraContainer}>
           {tfReady && camView()}
           {/* {renderPose()} */}
-          {renderSkeleton()}
+          {/* {renderSkeleton()} */}
           {renderCalibrationPoints()}
         </View>
       </View>
@@ -1426,49 +1452,27 @@ const App4: FunctionComponent<Props> = props => {
 export default App4;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignContent: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'yellow',
-  },
-  timerConatiner: {
-    position: 'absolute',
-    top: '15.5%',
-    // left: 150,
-    // width: 100,
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
-    padding: 8,
-    zIndex: 20,
-    marginTop: 32,
-    alignSelf: 'center',
-    // opacity: 0.5,
-  },
-  cameraContainer: {
-    display: 'flex',
-    // flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'black',
-    marginTop: 0,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    padding: 0,
-  },
   cameraView: {
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 128,
+    backgroundColor: 'black',
+    marginBottom: '22.5%',
     marginTop: 32,
+  },
+  cameraContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '92%',
+    backgroundColor: 'black',
+    marginTop: 0,
+    borderRadius: 12,
+    overflow: 'hidden',
+    padding: 0,
   },
   camera: {
     display: 'flex',
@@ -1479,96 +1483,58 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     zIndex: 500,
   },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: 'blue',
-    flexDirection: 'row',
-    margin: 0,
+  loadingMsgText: {
+    textAlign: 'center',
+    color: 'red',
+    fontSize: 28,
   },
-  button: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
-  },
-  recordIconStyle: {
-    width: 60,
-    height: 60,
+  cameraIcon: {
+    width: 48,
+    height: 40,
     position: 'absolute',
-    bottom: 36,
-    zIndex: 1000,
-  },
-  recordIcon: {
-    width: 60,
-    height: 50,
-    position: 'absolute',
-    // bottom: 36,
-    top: 10,
+    top: 4,
     right: 10,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
+    padding: 8,
+  },
+  fpsContainer: {
+    position: 'absolute',
+    top: 4,
+    left: 10,
+    width: 90,
+    // alignItems: 'center',
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
+    padding: 8,
+  },
+  timerConatiner: {
+    position: 'absolute',
+    top: '18%',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
-    // zIndex: 20,
-    // marginTop: 16,
+    zIndex: 20,
+    alignSelf: 'center',
   },
   stopIcon: {
     width: 60,
     height: 50,
     position: 'absolute',
     left: '45%',
-    top: '82%',
+    top: '88%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
     padding: 8,
     zIndex: 20,
   },
-  loadingMsg: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingMsgText: {
-    textAlign: 'center',
-    color: 'red',
-    fontSize: 28,
-  },
-  fpsContainer: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    width: 80,
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
-    padding: 8,
-    // zIndex: 20,
-    // marginTop: 16,
-  },
   svg: {
     width: '100%',
     height: '100%',
     position: 'absolute',
     zIndex: 30,
-  },
-  containerPortrait: {
-    position: 'relative',
-    width: cameraLayoutWidth,
-    height: cameraLayoutHeight,
-  },
-  containerLandscape: {
-    position: 'relative',
-    width: cameraLayoutWidth,
-    height: cameraLayoutHeight,
-  },
-  lottie: {
-    width: 100,
-    height: 100,
   },
 });

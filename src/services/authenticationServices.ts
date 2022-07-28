@@ -119,6 +119,31 @@ export const logoutService = (onSuccess?: any, onFailure?: any) => {
   }
 };
 
+export const deleteAccountService = (onSuccess?: any, onFailure?: any) => {
+  // const {email, password} = authObject;
+  console.log(app);
+  if (app) {
+    const auth = firebase.getAuth();
+    firebase
+      .deleteUser(auth.currentUser)
+      .then(userCredential => {
+        // Signed in
+        console.log('deleteAccountService, ', userCredential);
+        onSuccess(userCredential);
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        onFailure(error);
+      });
+  } else {
+    const error: ErrorObject = {
+      message: 'Something went wrong while executing your request',
+    };
+    onFailure(error);
+  }
+};
+
 export const registerUserService = (
   userObject: UserObject,
   onSuccess?: any,

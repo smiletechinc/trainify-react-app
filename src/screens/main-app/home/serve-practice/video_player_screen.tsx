@@ -24,12 +24,14 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {IconButton} from '../../../../components/buttons';
 import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
 import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import {StackActions} from '@react-navigation/native';
 
 const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   useKeepAwake();
   const {video} = route.params;
+  console.log('navigation:', route);
   console.log('video, ', video);
   let fileURI = '';
   if (video && video.uri) {
@@ -131,7 +133,11 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   };
 
   return (
-    <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
+    <ScreenWrapperWithHeader
+      title={date}
+      navigation={navigation}
+      route={route}
+      logoutcheck={false}>
       <View style={{height: 750, marginBottom: 64}}>
         <Video
           onEnd={onEnd}

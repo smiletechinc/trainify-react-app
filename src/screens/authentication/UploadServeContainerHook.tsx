@@ -36,6 +36,7 @@ const uploadAnimation = require('./../../assets/animations/uploading-animation.j
 import {useMediaUpload} from '../../hooks/useMediaUpload';
 import {useAnalysisUpload} from '../../hooks';
 import HeaderWithText from '../../global-components/header/HeaderWithText';
+import {CommonActions} from '@react-navigation/native';
 
 type Props = {
   navigation: any;
@@ -46,6 +47,7 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
   useKeepAwake();
   const {navigation, route} = props;
   const {capturedVideoURI, graphData, createrId} = route.params;
+  console.log('navigation', route);
   // console.log(createrId);
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
   const [response, setResponse] = React.useState<any>(null);
@@ -110,7 +112,8 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
       navigation.navigate('VideoPlayerContainer', {
         video: videoAnalysisData,
       });
-      // Alert.alert('Trainify', `Video added successfully.`);
+
+      // Alert.alert('Trainify', `Video Uploaded Successfully.`);
     }
   }, [videoAnalysisData]);
 
@@ -192,7 +195,11 @@ const UploadServeContainerHook: FunctionComponent<Props> = props => {
           minHeight: 48,
           paddingHorizontal: SCREEN_WIDTH * 0.03,
         }}>
-        <HeaderWithText text="uploading" navigation={navigation} />
+        <HeaderWithText
+          text="uploading"
+          navigation={navigation}
+          logOutCheck={false}
+        />
       </View>
       <View style={styles.login_main_container}>
         <KeyboardAwareScrollView

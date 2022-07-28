@@ -73,7 +73,7 @@ export const fetchVideosService = (
     get(ref(db, branch))
       .then(snapshot => {
         if (snapshot.exists()) {
-          console.log(snapshot.val());
+          console.log('Server Data for Videos Fetching', snapshot.val());
           onSuccess(snapshot.val());
         } else {
           console.log('No data available');

@@ -8,7 +8,7 @@ import globalStyles from '../../../global-styles';
 import styles from '../styles';
 
 type Props = {
-  proceedToSignup: any;
+  proceedToSignup?: any;
   navigation: any;
   onPress: any;
   isButtonDisabled: boolean;

@@ -160,27 +160,27 @@ const SigninScreen: FunctionComponent<Props> = props => {
     },
     merchantName: 'Example Merchant',
   };
-  const isGooglePayAvailable = () => {
-    GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
-    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
-      .then(ready => {
-        if (ready) {
-          // Request payment token
-          console.log('it is ready.', ready);
-          GooglePay.requestPayment(requestData)
-            .then((token: string) => {
-              console.log('token here: ', token);
-              // Send a token to your payment gateway
-            })
-            .catch(error =>
-              console.log('payment error: ', error.code, error.message),
-            );
-        }
-      })
-      .catch(error => {
-        console.log('error: ', error);
-      });
-  };
+  // const isGooglePayAvailable = () => {
+  //   GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
+  //   GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
+  //     .then(ready => {
+  //       if (ready) {
+  //         // Request payment token
+  //         console.log('it is ready.', ready);
+  //         GooglePay.requestPayment(requestData)
+  //           .then((token: string) => {
+  //             console.log('token here: ', token);
+  //             // Send a token to your payment gateway
+  //           })
+  //           .catch(error =>
+  //             console.log('payment error: ', error.code, error.message),
+  //           );
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log('error: ', error);
+  //     });
+  // };
 
   const validateForInputs = () => {
     if (email === '') {
