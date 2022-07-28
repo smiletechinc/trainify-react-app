@@ -8,9 +8,9 @@ Install the application on any iPhone and run it either from testflight or from 
 
 - Step 1: Clone the App
 
-```
-git clone https://github.com/smiletechinc/trainify-react-app.git
-```
+  ```
+  git clone https://github.com/smiletechinc/trainify-react-app.git
+  ```
 
 - Step 2: Install the npm react packages
 
