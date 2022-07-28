@@ -120,7 +120,11 @@ const BallPracticeVideoPlayer = ({navigation, route}) => {
   };
 
   return (
-    <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
+    <ScreenWrapperWithHeader
+      title={date}
+      navigation={navigation}
+      route={route}
+      logoutcheck={false}>
       <View
         style={{
           minHeight: (SCREEN_WIDTH / 100) * 76.8,

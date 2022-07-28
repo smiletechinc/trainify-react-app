@@ -3,21 +3,19 @@ import React, {useState, useRef, useEffect, FunctionComponent} from 'react';
 
 // import all the components we are going to use
 import {SafeAreaView, StyleSheet, Text, View, Platform} from 'react-native';
-import HeaderWithText from '../../global-components/header/HeaderWithText';
 import {SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import TermsPrivacyPolicyConditionHeader from '../../global-components/header/TermsPricayPolicyHeader';
 
 type Props = {
   title?: string;
-  navigation: any;
-  route?: any;
   children?: any;
-  hideBackButton?: boolean;
-  logoutcheck?: boolean;
 };
 
-const ScreenWrapperWithHeader: FunctionComponent<Props> = props => {
-  const {title, children, navigation, hideBackButton, logoutcheck} = props;
+const ScreenWrapperWithHeaderTermsPrivacyPolicy: FunctionComponent<
+  Props
+> = props => {
+  const {title, children} = props;
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={{
@@ -25,19 +23,14 @@ const ScreenWrapperWithHeader: FunctionComponent<Props> = props => {
       }}
       showsVerticalScrollIndicator={false}>
       <View style={styles.header_view}>
-        <HeaderWithText
-          text={title}
-          navigation={navigation}
-          hideBackButton={hideBackButton}
-          logOutCheck={logoutcheck}
-        />
+        <TermsPrivacyPolicyConditionHeader text={title} />
       </View>
       <View>{children}</View>
     </KeyboardAwareScrollView>
   );
 };
 
-export default ScreenWrapperWithHeader;
+export default ScreenWrapperWithHeaderTermsPrivacyPolicy;
 
 const styles = StyleSheet.create({
   container: {

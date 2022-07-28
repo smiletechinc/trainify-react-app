@@ -103,7 +103,8 @@ const BallPracticeRenderGraphScreen: FunctionComponent<Props> = props => {
     <ScreenWrapperWithHeader
       title="Rally / Ball Machine Analysis"
       navigation={navigation}
-      route={route}>
+      route={route}
+      logoutcheck={false}>
       <View style={styles.container}>
         <View style={styles.pieContainer} onLayout={onPieChartLayout}>
           <VictoryPie

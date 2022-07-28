@@ -133,7 +133,11 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   };
 
   return (
-    <ScreenWrapperWithHeader title={date} navigation={navigation} route={route}>
+    <ScreenWrapperWithHeader
+      title={date}
+      navigation={navigation}
+      route={route}
+      logoutcheck={false}>
       <View style={{height: 750, marginBottom: 64}}>
         <Video
           onEnd={onEnd}

@@ -129,7 +129,8 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     <ScreenWrapperWithHeader
       title="Anaylsis Report"
       navigation={navigation}
-      route={route}>
+      route={route}
+      logoutcheck={false}>
       <View style={styles.main_view}>
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl

@@ -16,11 +16,7 @@ import {COLORS, SCREEN_WIDTH} from '../../constants';
 import AppUserItem from './components/AppUserItem';
 import AnimatedLoader from 'react-native-animated-loader';
 import SubscriptionItem from './components/SubscriptionItem';
-import {
-  signUpService,
-  signInService,
-  registerUserService,
-} from './../../services/authenticationServices';
+import {registerUserService} from './../../services/authenticationServices';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
@@ -43,6 +39,8 @@ import RNIap, {
 } from 'react-native-iap';
 import {UserObject} from '../../types';
 import {useAuthentication, useProfile} from '../../hooks';
+import {SettingContext} from '../../context/useSetting-context';
+import {SubscriptionContext} from '../../context/useSubscriptionContext';
 
 const itemSkus =
   Platform.select({
@@ -56,6 +54,7 @@ const itemSubs =
     android: [membershipProduct],
   }) || [];
 
+const uploadAnimation = require('./../../assets/animations/uploading-animation.json');
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
@@ -68,12 +67,21 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const {route, navigation} = props;
   const {authObject, signupObject} = route.params;
   const [playerSelected, setPlayerSelected] = useState<number>(0);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(0);
   const [productList, setProductList] = useState([]);
-  const [subscriptionStatus, setSubscriptionStatus] = useState('Undetermined');
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
-
+  const [sucessCalled, setSucessCalled] = useState(false);
+  const {isTermCheck, isPrivacyCheck} = React.useContext(SettingContext);
+  const {
+    subscriptionPlan,
+    subscriptionStatus,
+    animationVisible,
+    validProduct,
+    setSubscriptionPlan,
+    setSubscriptionStatus,
+    setAnimationVisible,
+    setValidProduct,
+  } = React.useContext(SubscriptionContext);
   var subscriptionValue = '';
 
   const {
@@ -95,6 +103,28 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!validProduct) {
+      setSubscriptionPlan(1);
+      setAnimationVisible(false);
+    } else if (isTermCheck && isPrivacyCheck) {
+      requestSubscriptionFunction();
+    }
+  }, [isTermCheck, isPrivacyCheck]);
+
+  useEffect(() => {
+    if (sucessCalled) {
+      console.log('successfully puchased');
+      setAnimationVisible(false);
+      setSubscriptionPlan(2);
+      setSubscriptionStatus('Paid');
+      console.log('subscriptionPlan after update', subscriptionPlan);
+      console.log(
+        'subscription value after sucess purchase',
+        subscriptionStatus,
+      );
+    }
+  }, [sucessCalled]);
   useEffect(() => {
     if (registerErrorStatus) {
       Alert.alert(registerErrorStatus);
@@ -120,15 +150,21 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       console.log('connection is => ', result);
     } catch (err) {
       console.log('error in cdm => ', err);
+      setAnimationVisible(false);
     }
 
     purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
-        console.log('purchase');
+        console.log('purchaseData', JSON.stringify(purchase));
         if (purchase.productId === membershipProduct) {
+          setValidProduct(true);
           console.log('purchase.productId', purchase.productId);
+          // setSubscriptionPlan(2);
+          // onSuccess();
+          setSucessCalled(true);
         } else {
-          console.log('finish purchase.productId', purchase.productId);
+          setValidProduct(false);
+          console.log('error finish purchase.productId', purchase.productId);
         }
       },
     );
@@ -137,18 +173,55 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       async (error: PurchaseError) => {
         setCoursePurchaseInProgress(false);
 
-        if (error.code === 'E_USER_CANCELLED') return;
-
-        if (error.code === 'E_ALREADY_OWNED') {
-          return;
+        switch (error.code) {
+          case 'E_USER_CANCELLED':
+            setAnimationVisible(false);
+            Alert.alert('Subscription was not sucessful');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_ALREADY_OWNED':
+            setAnimationVisible(false);
+            setSubscriptionStatus('Paid');
+            setSubscriptionPlan(2);
+            break;
+          case 'E_IAP_NOT_AVAILABLE':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is not available');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_ITEM_UNAVAILABLE':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is unavailable');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_NETWORK_ERROR':
+            setAnimationVisible(false);
+            Alert.alert(
+              'Subscription was not completed because of network error',
+            );
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_DEVELOPER_ERROR':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is not available yet.');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            setValidProduct(false);
+            break;
+          default:
+            Alert.alert(
+              `Subscription Purchase Error, ${JSON.stringify(
+                error,
+              )}, IAP purchaseErrorListener`,
+            );
+            setAnimationVisible(false);
+            setSubscriptionPlan(1);
+            setSubscriptionStatus('Error');
         }
-
-        console.log(
-          `Subscription Purchase Error, ${JSON.stringify(
-            error,
-          )}, IAP purchaseErrorListener`,
-        );
-        Alert.alert('Something went wrong while purchasing this subscription');
       },
     );
   }
@@ -160,6 +233,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
     if (purchaseErrorSubscription) {
       purchaseErrorSubscription.remove();
+      setAnimationVisible(false);
       purchaseErrorSubscription = null;
     }
   }
@@ -174,70 +248,9 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
   }
 
-  async function getSubscriptions() {
-    try {
-      const products = await RNIap.getSubscriptions(itemSubs);
-      console.log('Products => ', products);
-      setProductList(products);
-    } catch (err) {
-      console.log('getSubscriptions error => ', err);
-    }
-  }
-  4;
-  async function getAvailablePurchases() {
-    try {
-      console.log('before.');
-      const purchases = await RNIap.getAvailablePurchases();
-      console.log('after.');
-      if (purchases && purchases.length > 0) {
-        console.info('Available purchases => ', purchases);
-        this.setState({
-          availableItemsMessage: `Got ${purchases.length} items.`,
-          receipt: purchases[0].transactionReceipt,
-        });
-      } else {
-        console.log('No available purchases');
-      }
-    } catch (err) {
-      console.warn(err.code, err.message);
-      console.log('getAvailablePurchases error => ', err);
-    }
-  }
-
-  async function requestPurchase(sku, onSuccess: () => void) {
-    console.log('sku', sku);
-    try {
-      const dangerouslyFinishTransactionAutomatically = false;
-      RNIap.requestPurchase(
-        sku,
-        dangerouslyFinishTransactionAutomatically,
-      ).then(res => {
-        console.log(`Purchase success, ${res}`);
-        setSubscriptionStatus('Paid');
-      });
-    } catch (err) {
-      console.log(`requestPurchase error => , ${err}`);
-      setSubscriptionStatus('Error');
-    }
-  }
-
-  async function requestSubscription(sku) {
-    try {
-      RNIap.requestSubscription(sku);
-    } catch (err) {
-      console.log(`request Subscription failed =>, ${err.toLocaleString()}`);
-    }
-  }
-
-  const onSuccess = () => {
-    console.log('successfully puchased');
-    setSubscriptionStatus('Paid');
-    console.log('subscriptionPlan', subscriptionPlan);
-  };
-
-  function proceedToPurchase() {
-    requestSubscription(trainProducts[subscriptionPlan]);
-  }
+  // function proceedToPurchase() {
+  //   requestSubscription(trainProducts[subscriptionPlan]);
+  // }
 
   const proceedToCreateProfile = firebaseObject => {
     console.log('firebase object:', firebaseObject);
@@ -246,7 +259,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       id: firebaseObject.uid,
       paymentPlan: subscriptionValue,
     };
-    // registerProfileService(userObject);
     registerUserService(userObject, registrationSuccess, registrationFailure);
   };
 
@@ -272,6 +284,61 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   const proceedToSignup = () => {
     signUpService(authObject);
+  };
+
+  // const onSuccess = () => {
+  //   console.log('successfully puchased');
+  //   setSubscriptionPlan(2);
+  //   subscriptionPlan === 2
+  //     ? setSubscriptionStatus('Paid')
+  //     : setSubscriptionStatus('Error');
+  //   setAnimationVisible(false);
+  //   console.log('subscriptionPlan after update', subscriptionPlan);
+  //   console.log('subscription value after sucess purchase', subscriptionStatus);
+  // };
+
+  async function requestPurchase(sku) {
+    try {
+      const dangerouslyFinishTransactionAutomatically = false;
+      console.log(
+        'subscription value when requesting purchase',
+        subscriptionPlan,
+      );
+      console.log(
+        'subscription status when requesting purchase',
+        subscriptionStatus,
+      );
+      RNIap.requestPurchase(
+        sku,
+        dangerouslyFinishTransactionAutomatically,
+      ).then(res => {
+        console.log(`Purchase success`, JSON.stringify(res));
+        // setSubscriptioNStatus('Paid');
+        // setAnimationVisible(false);
+        // setSubscriptionPlan(2);
+        // onSuccess();
+      });
+    } catch (err) {
+      console.log(`requestPurchase error => , ${err}`);
+      setAnimationVisible(false);
+      setSubscriptionStatus('Error');
+    }
+  }
+
+  const requestSubscriptionFunction = () => {
+    if (isTermCheck && isPrivacyCheck) {
+      if (subscriptionStatus !== 'Paid') {
+        setAnimationVisible(true);
+        console.log('requesteForSubscription');
+        requestPurchase(trainProducts[0]);
+      } else {
+        setSubscriptionPlan(2);
+      }
+    } else if (isTermCheck) {
+      navigation.navigate('PrivacyPolicyScreen');
+    } else {
+      navigation.navigate('TermsConditionScreen');
+    }
   };
 
   return (
@@ -360,8 +427,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               isSelected={subscriptionPlan === 2 ? true : false}
               limitText="5 Hours Video Recording/Per Month"
               onPress={() => {
-                setSubscriptionPlan(2);
-                requestPurchase(trainProducts[2], onSuccess);
+                requestSubscriptionFunction();
               }}
             />
           </View>
@@ -404,6 +470,23 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
                 navigation.navigate('Signup');
               }}
             />
+          </AnimatedLoader>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 47,
+            paddingHorizontal: SCREEN_WIDTH * 0.05,
+          }}>
+          <AnimatedLoader
+            visible={animationVisible}
+            overlayColor={'rgba(255, 255, 255, 0.75)'}
+            source={uploadAnimation}
+            animationStyle={styles.lottie}
+            speed={1}>
+            <Text>
+              {animationVisible ? 'Waiting for subscription ' : false}
+            </Text>
           </AnimatedLoader>
         </View>
       </KeyboardAwareScrollView>

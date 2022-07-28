@@ -8,6 +8,9 @@ import SigninScreen from '../screens/authentication/SigninScreen';
 import SignupScreen from '../screens/authentication/SignupScreen';
 import SignupContainer from './authentication/SignupScreen1';
 import SplashScreen from '../screens/authentication/SplashScreen';
+import SignoutScreen from './authentication/SignoutScreen';
+import TermsConditionScreen from './authentication/TermsCondition';
+import PrivacyPolicyScreen from './authentication/PrivacyPolicy';
 
 import HomeScreen from './main-app/home';
 
@@ -36,6 +39,9 @@ export {
   SigninScreen,
   SignupScreen,
   SignupContainer,
+  TermsConditionScreen,
+  PrivacyPolicyScreen,
+  SignoutScreen,
   SplashScreen,
   HomeScreen,
   BallPracitceAnalysisGridScreen,

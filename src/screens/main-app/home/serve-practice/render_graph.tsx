@@ -141,7 +141,8 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
     <ScreenWrapperWithHeader
       title="Serve Practice Analysis"
       navigation={navigation}
-      route={route}>
+      route={route}
+      logoutcheck={false}>
       <View style={styles.container}>
         <View style={styles.pieContainer}>
           <VictoryPie

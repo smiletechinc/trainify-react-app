@@ -146,7 +146,7 @@ export const useMediaUpload = props => {
   }, []);
 
   const getVideoURL = (fileName: string) => {
-    console.log('fetching url for thumbnail: ', fileName);
+    console.log('fetching url for video: ', fileName);
     const storageRef = ref(storage, fileName);
     getDownloadURL(storageRef)
       .then(response => {
