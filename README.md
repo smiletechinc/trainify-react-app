@@ -1,3 +1,5 @@
+# Project Title
+
 # How to use the Application
 
 ## 1) Install & run
@@ -66,11 +68,14 @@ While you can use any editor of your choice to develop your app, you will need t
 Node, Watchman, JDK
 We recommend installing Node, Watchman, and JDK using Homebrew. Run the following commands in a Terminal after installing Homebrew:
 
+```
 $ brew install yarn
 $ brew install node
 $ brew install watchman
 $ brew tap AdoptOpenJDK/openjdk
 $ brew cask install adoptopenjdk8
+```
+
 If you have already installed Node on your system, make sure it is Node 8.3 or newer.
 
 Watchman is a tool by Facebook for watching changes in the filesystem. It is highly recommended you install it for better performance.
