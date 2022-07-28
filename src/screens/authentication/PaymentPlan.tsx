@@ -58,6 +58,9 @@ const uploadAnimation = require('./../../assets/animations/uploading-animation.j
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
+let purchaseUpdateSubscription2;
+let purchaseErrorSubscription2;
+
 type Props = {
   route: any;
   navigation: any;
@@ -71,7 +74,12 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
   const [sucessCalled, setSucessCalled] = useState(false);
+  const [restoredPurchase, setRestoredPurchase] = useState(false);
+  const [finishedSetup, setFinishedSetup] = useState(false);
+  const [errorInSetup, setErrorInSetup] = useState(false);
+  const [requestedNewPurchase, setRequestedNewPurchase] = useState(false);
   const {isTermCheck, isPrivacyCheck} = React.useContext(SettingContext);
+  const [subscriptionDetected, setSubscriptionDetected] = useState(false);
   const {
     subscriptionPlan,
     subscriptionStatus,
@@ -97,7 +105,9 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   });
 
   useEffect(() => {
-    proceedForApplePay();
+    setAnimationVisible(true);
+    console.log('UseEffect!');
+    setupApplePay();
     return () => {
       removeApplePay();
     };
@@ -114,6 +124,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     if (sucessCalled) {
+      Alert.alert('Subscription purchased');
       console.log('successfully puchased');
       setAnimationVisible(false);
       setSubscriptionPlan(2);
@@ -143,25 +154,61 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
   }, [registeredUserObject, registerErrorStatus]);
 
-  async function proceedForApplePay() {
+  const proceedToLogin = () => {
+    navigation.replace('Signin');
+  };
+
+  async function setupApplePay() {
     getItems();
     try {
       const result = await RNIap.initConnection();
       console.log('connection is => ', result);
+      setErrorInSetup(false);
+      setFinishedSetup(true);
+      setAnimationVisible(false);
     } catch (err) {
       console.log('error in cdm => ', err);
+      setAnimationVisible(false);
+      setFinishedSetup(true);
+      setErrorInSetup(true);
       setAnimationVisible(false);
     }
 
     purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        purchaseUpdateSubscription.remove();
+        purchaseUpdateSubscription = null;
         console.log('purchaseData', JSON.stringify(purchase));
         if (purchase.productId === membershipProduct) {
           setValidProduct(true);
           console.log('purchase.productId', purchase.productId);
           // setSubscriptionPlan(2);
           // onSuccess();
-          setSucessCalled(true);
+          // if (requestedNewPurchase) {
+          //   setSucessCalled(true);
+          //   setRestoredPurchase(false);
+          //   Alert.alert('New purchase success!');
+          // } else {
+          //   setRestoredPurchase(true);
+          setSubscriptionDetected(true);
+          Alert.alert(
+            'Subscription Detected',
+            'This apple id is registered with another account, please login',
+            [
+              {
+                text: 'Free Signup',
+                onPress: () => {
+                  // navigation.goBack();
+                  setAnimationVisible(false);
+                  setSubscriptionStatus('Error');
+                  setSubscriptionPlan(1);
+                },
+              },
+              {text: 'Login', onPress: proceedToLogin},
+            ],
+            {cancelable: false},
+          );
+          // }
         } else {
           setValidProduct(false);
           console.log('error finish purchase.productId', purchase.productId);
@@ -172,7 +219,8 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     purchaseErrorSubscription = purchaseErrorListener(
       async (error: PurchaseError) => {
         setCoursePurchaseInProgress(false);
-
+        purchaseErrorSubscription.remove();
+        purchaseErrorSubscription = null;
         switch (error.code) {
           case 'E_USER_CANCELLED':
             setAnimationVisible(false);
@@ -181,6 +229,20 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
             setSubscriptionPlan(1);
             break;
           case 'E_ALREADY_OWNED':
+            Alert.alert(
+              'Subscription Detected',
+              'This apple id is registered with another account, please login',
+              [
+                {
+                  text: 'Go Back',
+                  onPress: () => {
+                    navigation.goBack();
+                  },
+                },
+                {text: 'Login', onPress: proceedToLogin},
+              ],
+              {cancelable: false},
+            );
             setAnimationVisible(false);
             setSubscriptionStatus('Paid');
             setSubscriptionPlan(2);
@@ -211,6 +273,14 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
             setSubscriptionStatus('Error');
             setSubscriptionPlan(1);
             setValidProduct(false);
+            break;
+          case 'E_UNKNOWN_ERROR':
+            setAnimationVisible(false);
+            Alert.alert('Unknown Error from apple server.');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            setValidProduct(false);
+            setRequestedNewPurchase(false);
             break;
           default:
             Alert.alert(
@@ -298,6 +368,131 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   // };
 
   async function requestPurchase(sku) {
+    purchaseUpdateSubscription.remove();
+    purchaseUpdateSubscription = null;
+    purchaseErrorSubscription.remove();
+    purchaseErrorSubscription = null;
+
+    purchaseUpdateSubscription2 = purchaseUpdatedListener(
+      async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        purchaseUpdateSubscription2.remove();
+        purchaseUpdateSubscription2 = null;
+        console.log('purchaseData', JSON.stringify(purchase));
+        if (purchase.productId === membershipProduct) {
+          setValidProduct(true);
+          console.log('purchase.productId', purchase.productId);
+          // setSubscriptionPlan(2);
+          // onSuccess();
+          // if (requestedNewPurchase) {
+          setSucessCalled(true);
+          // setRestoredPurchase(false);
+          Alert.alert('New purchase success!');
+          // } else {
+          //   setRestoredPurchase(true);
+          //   Alert.alert(
+          //     'Subscription Detected',
+          //     'This apple id is registered with another account, please login',
+          //     [
+          //       {
+          //         text: 'Free Signup',
+          //         onPress: () => {
+          //           // navigation.goBack();
+          //           setAnimationVisible(false);
+          //           setSubscriptionStatus('Error');
+          //           setSubscriptionPlan(1);
+          //         },
+          //       },
+          //       {text: 'Login', onPress: proceedToLogin},
+          //     ],
+          //     {cancelable: false},
+          //   );
+          // }
+        } else {
+          setValidProduct(false);
+          console.log('error finish purchase.productId', purchase.productId);
+        }
+      },
+    );
+
+    purchaseErrorSubscription2 = purchaseErrorListener(
+      async (error: PurchaseError) => {
+        setCoursePurchaseInProgress(false);
+        purchaseErrorSubscription2.remove();
+        purchaseErrorSubscription2 = null;
+        switch (error.code) {
+          case 'E_USER_CANCELLED':
+            setAnimationVisible(false);
+            Alert.alert('Subscription was not sucessful');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_ALREADY_OWNED':
+            Alert.alert(
+              'Subscription Detected',
+              'This apple id is registered with another account, please login',
+              [
+                {
+                  text: 'Go Back',
+                  onPress: () => {
+                    navigation.goBack();
+                  },
+                },
+                {text: 'Login', onPress: proceedToLogin},
+              ],
+              {cancelable: false},
+            );
+            setAnimationVisible(false);
+            setSubscriptionStatus('Paid');
+            setSubscriptionPlan(2);
+            break;
+          case 'E_IAP_NOT_AVAILABLE':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is not available');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_ITEM_UNAVAILABLE':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is unavailable');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_NETWORK_ERROR':
+            setAnimationVisible(false);
+            Alert.alert(
+              'Subscription was not completed because of network error',
+            );
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_DEVELOPER_ERROR':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is not available yet.');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            setValidProduct(false);
+            break;
+          case 'E_UNKNOWN_ERROR':
+            setAnimationVisible(false);
+            Alert.alert('Unknown Error from apple server.');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            setValidProduct(false);
+            setRequestedNewPurchase(false);
+            break;
+          default:
+            Alert.alert(
+              `Subscription Purchase Error, ${JSON.stringify(
+                error,
+              )}, IAP purchaseErrorListener`,
+            );
+            setAnimationVisible(false);
+            setSubscriptionPlan(1);
+            setSubscriptionStatus('Error');
+        }
+      },
+    );
+
     try {
       const dangerouslyFinishTransactionAutomatically = false;
       console.log(
@@ -326,7 +521,26 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   }
 
   const requestSubscriptionFunction = () => {
-    if (isTermCheck && isPrivacyCheck) {
+    setRequestedNewPurchase(true);
+    if (subscriptionDetected) {
+      Alert.alert(
+        'Subscription Detected',
+        'This apple id is registered with another account, please login',
+        [
+          {
+            text: 'Free Signup',
+            onPress: () => {
+              // navigation.goBack();
+              setAnimationVisible(false);
+              setSubscriptionStatus('Error');
+              setSubscriptionPlan(1);
+            },
+          },
+          {text: 'Login', onPress: proceedToLogin},
+        ],
+        {cancelable: false},
+      );
+    } else if (isTermCheck && isPrivacyCheck) {
       if (subscriptionStatus !== 'Paid') {
         setAnimationVisible(true);
         console.log('requesteForSubscription');
