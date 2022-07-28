@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
 import {TextInput} from '../../global-components/input';
@@ -32,7 +31,10 @@ import {UserObject} from '../../types';
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
 
-const SigninContainer: FunctionComponent = ({navigation}) => {
+type Props = {
+  navigation: any;
+};
+const SignupScreen: FunctionComponent<Props> = ({navigation}) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -40,26 +42,19 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
   const [firstName, setFirstName] = useState<string>('');
   const [middleName, setMiddleName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [height, setHeight] = useState<string>('');
-  const [birthday, setBirthday] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
-  const [rating, setRating] = useState<string>('');
-  const [nationality, setNationality] = useState<string>('');
 
-  const proceedForPayments = () => {
-    if (password === confirmPassword) {
+  const navigtaionNext = () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Trainify', 'Password and Confirm password does not match');
+    } else if (password.length < 6) {
+      Alert.alert('Trainify', 'Password should contain at-lease 6 characters.');
+    } else {
       const signupObject = {
         email,
         password,
         firstName,
         middleName,
         lastName,
-        height,
-        birthday,
-        location,
-        rating,
-        nationality,
-        gender: 'male',
         playerstyle: handStyle === 0 ? 'LeftHanded' : 'RightHanded',
       };
 
@@ -67,10 +62,7 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
         email,
         password,
       };
-
-      navigation.navigate('PaymentPlan', {signupObject, authObject});
-    } else {
-      Alert.alert('Trainify', 'Password and Confirm password does not match');
+      navigation.navigate('SignupContainer', {signupObject, authObject});
     }
   };
 
@@ -90,39 +82,8 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
     if (lastName === '') {
       return false;
     }
-    if (height === '') {
-      return false;
-    }
-    if (birthday === '') {
-      return false;
-    }
-    if (location === '') {
-      return false;
-    }
-    if (rating === '') {
-      return false;
-    }
-    if (nationality === '') {
-      return false;
-    }
     return true;
   };
-
-  //   const proceedToSignup = () => {
-  //     const auth = getAuth();
-  // createUserWithEmailAndPassword(auth, email, password)
-  //   .then((userCredential) => {
-  //     // Signed up
-  //     const user = userCredential.user;
-  //     Alert.alert("Trainify", "You've signed up successfully")
-  //     goToHomePage()
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     Alert.alert("Trainify", errorMessage)
-  //   });
-  //   }
 
   return (
     <View style={styles.login_main_container}>
@@ -131,7 +92,12 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
         contentContainerStyle={{
           paddingBottom: 55,
         }}>
-        <View style={{paddingHorizontal: SCREEN_WIDTH * 0.05}}>
+        <View
+          style={{
+            paddingHorizontal: SCREEN_WIDTH * 0.05,
+            display: 'flex',
+            flexDirection: 'row',
+          }}>
           <TouchableOpacity
             style={styles.login_back_icon}
             onPress={() => {
@@ -139,16 +105,21 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
             }}>
             <Image source={backIcon} style={{width: 24, height: 24}} />
           </TouchableOpacity>
-        </View>
-        <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
-          <View style={{alignItems: 'center'}}>
+          <View
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flex: 1,
+            }}>
             <AutoHeightImage source={signupMainImage} width={163} />
           </View>
+        </View>
+        <View style={{marginTop: 4, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <Text
             style={[
               globalStyles.title,
               globalStyles.bold,
-              {color: COLORS.medium_dark_blue, marginTop: 16},
+              {color: COLORS.medium_dark_blue, marginTop: 8},
             ]}>
             SIGN UP
           </Text>
@@ -164,7 +135,7 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 42,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -179,7 +150,7 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -194,7 +165,8 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
+              marginBottom: 12,
             }}
           />
           <PlayingStyle handStyle={handStyle} setHandStyle={setHandStyle} />
@@ -210,7 +182,7 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -225,7 +197,7 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
           <TextInput
@@ -240,94 +212,18 @@ const SigninContainer: FunctionComponent = ({navigation}) => {
               fontWeight: 'bold',
             }}
             inputParentStyles={{
-              marginTop: 29,
+              marginTop: 16,
             }}
           />
-          <TextInput
-            value={height}
-            placeholder="Height"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setHeight(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <TextInput
-            value={birthday}
-            placeholder="Birthday"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setBirthday(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <TextInput
-            value={location}
-            placeholder="Location"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setLocation(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <TextInput
-            value={rating}
-            placeholder="Rating"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setRating(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-          <TextInput
-            value={nationality}
-            placeholder="Nationality"
-            placeholderTextColor={COLORS.dark_black}
-            // secureTextEntry={true}
-            onChangeText={(value: string) => {
-              setNationality(value);
-            }}
-            inputStyles={{
-              fontWeight: 'bold',
-            }}
-            inputParentStyles={{
-              marginTop: 29,
-            }}
-          />
-
           <SignupFooterComponent
             navigation={navigation}
             isButtonDisabled={!validateForInputs()}
             // onPress={proceedToSignup}
-            onPress={proceedForPayments}
+            onPress={navigtaionNext}
           />
         </View>
       </KeyboardAwareScrollView>
     </View>
   );
 };
-export default SigninContainer;
+export default SignupScreen;

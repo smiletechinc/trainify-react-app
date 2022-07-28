@@ -1,49 +1,36 @@
-// db.js
+import {Firebase, FirebaseApp, initializeApp, getApps} from 'firebase/app';
 
-///Old
-
-// import * as firebase from 'firebase';
-// import 'firebase/auth';
-// import {  Firebase, FirebaseApp, initializeApp } from "firebase/app";
-
-// let config = {
-//     apiKey: "AIzaSyA7vIj_ndbnESPuCU29Bca_or93rO1VNws",
-//     authDomain: "colorsapp-751bc.firebaseapp.com",
-//     databaseURL: "https://colorsapp-751bc.firebaseio.com",
-//     projectId: "colorsapp-751bc",
-//     storageBucket: "colorsapp-751bc.appspot.com",
-//     messagingSenderId: "37781309196",
-//     appId: "1:37781309196:web:c2b22e0c293d881a77eb29"
+// /* hfshan247@gmail.com */
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDUh2w3W75cUQG2a27NxEWdNxqAZ9JzA_E",
+//   authDomain: "trainify-app-firebase.firebaseapp.com",
+//   databaseURL: "https://trainify-app-firebase-default-rtdb.firebaseio.com",
+//   projectId: "trainify-app-firebase",
+//   storageBucket: "trainify-app-firebase.appspot.com",
+//   messagingSenderId: "29770888713",
+//   appId: "1:29770888713:web:fe462fc9b13fe837ab6ad8"
 // };
-// export let app = !Firebase.apps.length ? initializeApp(config) : Firebase.app()
 
-
-//New
-
+/*smiletechpakistan@gmail.com */
 // Import the functions you need from the SDKs you need
-import {  Firebase, FirebaseApp, initializeApp, getApps } from "firebase/app";
-// import { getDatabase } from "firebase/database";
-
-// import { getAnalytics } from "firebase/analytics";
+// import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
 const firebaseConfig = {
-  apiKey: "AIzaSyDUh2w3W75cUQG2a27NxEWdNxqAZ9JzA_E",
-  authDomain: "trainify-app-firebase.firebaseapp.com",
-  databaseURL: "https://trainify-app-firebase-default-rtdb.firebaseio.com",
-  projectId: "trainify-app-firebase",
-  storageBucket: "trainify-app-firebase.appspot.com",
-  messagingSenderId: "29770888713",
-  appId: "1:29770888713:web:fe462fc9b13fe837ab6ad8"
+  apiKey: 'AIzaSyBcXZcJdG_QeSBo0MStgHsSzl-IZewC2ls',
+  authDomain: 'trainify-react-app.firebaseapp.com',
+  databaseURL: 'https://trainify-react-app-default-rtdb.firebaseio.com',
+  projectId: 'trainify-react-app',
+  storageBucket: 'trainify-react-app.appspot.com',
+  messagingSenderId: '1026534116413',
+  appId: '1:1026534116413:web:cf7deca9677a36157aee54',
 };
 
 // Initialize Firebase
-// export const app = initializeApp(firebaseConfig);
-// console.log(getApps());
-let app = FirebaseApp? FirebaseApp() : initializeApp(firebaseConfig);
+// const app = initializeApp(firebaseConfig);
+
+let app = FirebaseApp ? FirebaseApp() : initializeApp(firebaseConfig);
 export default app;
 // export const app = !firabase.apps.length ? Firebase.initializeApp(firebaseConfig) : firebase.app()

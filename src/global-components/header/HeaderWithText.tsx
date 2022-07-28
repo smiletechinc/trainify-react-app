@@ -14,23 +14,28 @@ import styles from './styles';
 import {AuthContext} from './../../context/auth-context';
 import {RootState} from '../../../store';
 import {useSelector} from 'react-redux';
+import {logoutService} from '../../services/authenticationServices';
+import RNRestart from 'react-native-restart'; // Import package from node modules
 
 const profileIcon = require('../../assets/images/profile-icon.png');
 const backIcon = require('../../assets/images/back-icon.png');
+const userIcon = require('../../assets/images/use_logout_icon.png');
 
 type Props = {
   text: string;
   hideProfileSection?: boolean;
   navigation: any;
   hideBackButton?: boolean;
+  logOutCheck?: boolean;
 };
 const HeaderWithText: FunctionComponent<Props> = props => {
   // const navigation = useNavigation();
-  const [userLastName, setUserLastName] = useState('User');
+  const [userFirstName, setuserFirstName] = useState('User');
   const UserData = useSelector(
     (state: RootState) => state.RegisterReducer.UserData,
   );
-  const {text, hideProfileSection, navigation, hideBackButton} = props;
+  const {text, hideProfileSection, navigation, hideBackButton, logOutCheck} =
+    props;
 
   const {
     authUser,
@@ -42,35 +47,55 @@ const HeaderWithText: FunctionComponent<Props> = props => {
   useEffect(() => {
     if (authObject) {
       console.log('authObject ', authObject);
-      const {lastName} = authObject;
-      setUserLastName(lastName);
+      const {firstName} = authObject;
+      setuserFirstName(firstName);
+    } else {
+      proceedToRemoveUser();
     }
     if (authUser) {
       console.log('authUser ', authUser);
     }
   }, [authUser, authObject]);
 
-  const logoutAlert = () => {
-    Alert.alert(
-      'Alert  ',
-      'Are you sure to logout ',
-      [
-        {text: 'Close', onPress: () => console.log('Cancel Pressed!')},
-        {text: 'Logout', onPress: proceedToLogout},
-      ],
-      {cancelable: false},
-    );
-  };
-  const proceedToLogout = () => {
+  const proceedToRemoveUser = () => {
+    console.log('Removing user from context.');
     logoutUser();
-    Alert.alert('You are logged out');
-    navigation.replace('LanguageScreen');
+    navigation.replace('Signin');
+  };
+
+  const logoutAlert = () => {
+    navigation.navigate('Signout');
+  };
+
+  const logoutSuccess = (userCredential?: any) => {
+    console.log('Logout sucess from firebase');
+    logoutUser();
+    // navigation.replace('SplashScreen');
+    RNRestart.Restart();
+  };
+
+  const logoutFailure = error => {
+    console.log('Error in logout from firebase');
+    logoutUser();
+    // navigation.replace('SplashScreen');
+    RNRestart.Restart();
+  };
+
+  const proceedToLogout = () => {
+    logoutService(logoutSuccess, logoutFailure);
   };
 
   return (
     <View style={styles.header_with_text_main_view}>
       {!hideBackButton && (
         <TouchableOpacity
+          style={{
+            width: 40,
+            display: 'flex',
+            justifyContent: 'center',
+            height: 40,
+            alignItems: 'flex-start',
+          }}
           onPress={() => {
             navigation.goBack();
           }}>
@@ -80,24 +105,50 @@ const HeaderWithText: FunctionComponent<Props> = props => {
       <View style={{flex: 1}}>
         <Text style={[globalStyles.regular, styles.text]}>{text}</Text>
       </View>
-      <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          display: hideProfileSection ? 'none' : 'flex',
-        }}
-        onPress={() => {
+      {!logOutCheck && (
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            display: hideProfileSection ? 'none' : 'flex',
+          }}
+          onPress={() => {
+            logoutAlert();
+          }}>
+          <Text
+            style={[
+              globalStyles.medium,
+              {color: COLORS.light_blue, fontWeight: '600'},
+            ]}>
+            {userFirstName}
+          </Text>
+          <Image source={profileIcon} style={styles.header_profile_icon} />
+        </TouchableOpacity>
+      )}
+      {logOutCheck ||
+        (false && ( // editing ke case mein or symbol aur false condition remove krni hai
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              display: hideProfileSection ? 'none' : 'flex',
+            }}>
+            {/* onPress={() => {
           logoutAlert();
-        }}>
-        <Text
+        }}> */}
+            {/* <Text
           style={[
             globalStyles.medium,
             {color: COLORS.light_blue, fontWeight: '600'},
           ]}>
-          {userLastName}
-        </Text>
-        <Image source={profileIcon} style={styles.header_profile_icon} />
-      </TouchableOpacity>
+          {userFirstName}
+        </Text> */}
+            <Image
+              source={userIcon}
+              style={styles.header_profile_logout_icon}
+            />
+          </View>
+        ))}
     </View>
   );
 };

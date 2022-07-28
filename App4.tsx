@@ -6,6 +6,8 @@ import {
   Dimensions,
   Platform,
   Alert,
+  Button,
+  Linking,
 } from 'react-native';
 import {Camera} from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -19,21 +21,23 @@ import Svg, {Circle, Line} from 'react-native-svg';
 import {ExpoWebGLRenderingContext} from 'expo-gl';
 import {CameraType} from 'expo-camera/build/Camera.types';
 import {CounterContext} from './src/context/counter-context';
-import {addVideoService} from './src/services/servePracticeServices';
 import styles_external from './src/screens/main-app/styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderWithText from './src/global-components/header/HeaderWithText';
 import {IconButton} from './src/components/buttons';
 import RecordScreen from 'react-native-record-screen';
 import CameraRoll from '@react-native-community/cameraroll';
-import {useAnalysisUpload, useMediaUpload} from './src/hooks';
-import {
-  uploadPhotoService,
-  uploadVideoService,
-  getThumbnailURL,
-} from './src/services/mediaServices';
+import {Countdown} from 'react-native-element-timer';
+import {AuthContext} from './src/context/auth-context';
+import {PermissionContext} from './src/context/permissions-context';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import CountDown from 'react-native-countdown-component';
 
-const stopIcon = require('./src/assets/images/icon_record_stop.png');
+const stopIcon = require('./src/assets/images/stop.png');
+const uploadAnimation = require('./src/assets/animations/uploading-animation.json');
+const fronCamera = require('./src/assets/images/frontCamera.png');
+const backCamera = require('./src/assets/images/backCamera.png');
+
 const TensorCamera = cameraWithTensors(Camera);
 const IS_ANDROID = Platform.OS === 'android';
 const IS_IOS = Platform.OS === 'ios';
@@ -53,11 +57,32 @@ type Props = {
 };
 
 const App4: FunctionComponent<Props> = props => {
+  useKeepAwake();
+  const {
+    setCameraPermissions,
+    setGalleryPermissions,
+    setRecordigPermissions,
+    isCameraPermissions,
+    isGalleryPermissions,
+    isRecordingPermissions,
+    resetPermissions,
+  } = React.useContext(PermissionContext);
+
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+
   const [cameraWidth, setCameraWidth] = useState(120);
   const [cameraHeight, setCameraHeight] = useState(160);
+  const [cameraX, setCameraX] = useState(120);
+  const [cameraY, setCameraY] = useState(160);
   const cameraRef = React.useRef();
   const {navigation, route} = props;
   const {title} = route.params;
+  // const title = '';
   const [isLoading, setLoading] = React.useState(true);
   const {increment, reset, count, calibrated, setCalibrated, setData, data} =
     React.useContext(CounterContext);
@@ -75,39 +100,26 @@ const App4: FunctionComponent<Props> = props => {
   );
   const [isCalibratedr, setIsCalibratedr] = useState(false);
   const [isStartedVideoRecording, setIsStartedVideoRecording] = useState(false);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isCalibratedp, setIsCalibratedp] = useState(true);
   const [canAdd, setCanAdd] = useState(true);
   const [serveGrade, setServeGrade] = useState('');
   const rafId = useRef<number | null>(null);
-
-  const [thumbnail, setThumbnail] = React.useState<any>(null);
-  const [videoURL, setVideoURL] = React.useState<string>(null);
-  const [videoData, setVideoData] = React.useState<string>(null);
-
-  const {
-    uploading,
-    uploadThumbnail,
-    uploadVideo,
-    cancelUploading,
-    thumbnailURL,
-    currentStatus,
-    uploadThumbnailFailure,
-    uploadVideoFailure,
-  } = useMediaUpload({image: thumbnail});
-
-  const {
-    videoAnalysisData,
-    uploadingAnalysis,
-    addVideoAnalysisToFirebase,
-    currentAnalysisStatus,
-  } = useAnalysisUpload({videoData: videoData});
+  const countdownRef = useRef(null);
+  const [remainingTime, setRemainingTime] = useState<Number>(0);
+  const [alertModalVisible, setAlertVisibleModal] = useState(false);
+  const [titleText, setTitleText] = useState('');
+  const [descText, setDescText] = useState('');
+  const [buttonText, setButtonText] = useState('');
+  const [timerLimet, setTimerLimit] = useState(false);
+  const [userPaymentPlan, setUserPaymentPlan] = useState('User');
 
   let skipFrameCount = 0;
+  // let timerLimit = 0;
+  let deviceFps = 0;
   var isCalibrated = false;
   var isCompletedRecording = false;
-  var response_let = {};
-  let thumbURL = '';
-  let vidURL = '';
+  var stoppedVideoRecording = false;
 
   var analysis_data = {
     labels: ['Flat', 'Kick', 'Slice'],
@@ -119,44 +131,6 @@ const App4: FunctionComponent<Props> = props => {
     ],
     barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
   };
-
-  useEffect(() => {
-    if (uploadThumbnailFailure) {
-      Alert.alert('Could not upload thumbnail');
-    }
-    if (thumbnailURL) {
-      (() => {
-        uploadVideo(thumbnail);
-      })();
-    }
-  }, [thumbnailURL, uploadThumbnailFailure]);
-
-  useEffect(() => {
-    if (uploadThumbnailFailure) {
-      Alert.alert('Could not upload video');
-    }
-    if (videoURL) {
-      (() => {
-        let res = thumbnail;
-        const videoMetadata = {
-          ...res,
-          thumbnailURL: thumbnailURL,
-          videoURL: videoURL,
-        };
-        setVideoData(videoMetadata);
-      })();
-    }
-  }, [videoURL, uploadVideoFailure]);
-
-  useEffect(() => {
-    if (videoAnalysisData) {
-      (() => {
-        RecordScreen.clean();
-        navigation.replace('VideoPlayerContainer', {video: videoAnalysisData});
-        Alert.alert('Trainify', `Video added successfully.`);
-      })();
-    }
-  }, [videoAnalysisData]);
 
   useEffect(() => {
     async function prepare() {
@@ -181,7 +155,6 @@ const App4: FunctionComponent<Props> = props => {
       setTypeOfServeDetector(model_tos);
       setTfReady(true);
       setLoading(false);
-      // startRecording();
       ScreenOrientation.addOrientationChangeListener(event => {
         setOrientation(event.orientationInfo.orientation);
       });
@@ -189,12 +162,6 @@ const App4: FunctionComponent<Props> = props => {
       await Camera.requestCameraPermissionsAsync();
 
       await tf.ready();
-      // Following is just to check if the screen recording uploading is working by customly recording the video for 3 seconds.
-      // startRecording();
-      // setTimeout(() => {
-      //   console.log('stopped: ');
-      //   stopRecording();
-      // }, 3000)
 
       let test_pose = [
         0.594638705, 0.369584292, 0.999754488, 0.589969754, 0.358422577,
@@ -224,6 +191,8 @@ const App4: FunctionComponent<Props> = props => {
 
   useEffect(() => {
     return () => {
+      setTfReady(false);
+      setIsStartedVideoRecording(false);
       RecordScreen.clean();
       reset();
       setCalibrated(false);
@@ -234,35 +203,6 @@ const App4: FunctionComponent<Props> = props => {
       }
     };
   }, []);
-
-  // const addVideoToFirebase = () => {
-
-  //   let videoData = {
-  //     duration: 9.01,
-  //      fileName: "66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
-  //     fileSize: 9363694,
-  //     height: 720,
-  //     id: "EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001",
-  //      timestamp: "2022-02-25T17:02:18.000+0500",
-  //      type: "video/quicktime",
-  //      uri: "file:///var/mobile/Containers/Data/Application/4EC5C8B3-E530-4B35-83A8-49C844AA23DA/tmp/66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov",
-  //      width: 1280
-  //     }
-
-  //     const tempAnalysisData = {
-  //       labels: ["Flat", "Kick", "Slice"],
-  //       legend: ["A", "B", "C", "D"],
-  //       data:data,
-  //       barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
-  //     };
-
-  //   const tempVideoData = {...videoData, analysisData: tempAnalysisData}
-
-  //   console.log('analysis_data for firebase, ', JSON.stringify(data));
-  //   console.log('sending to firebase, ', JSON.stringify(tempVideoData));
-
-  //     addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
-  // }
 
   const Ref = useRef(null);
   const [timer, setTimer] = useState('10000');
@@ -287,6 +227,19 @@ const App4: FunctionComponent<Props> = props => {
       setSeconds(seconds);
     }
   };
+
+  useEffect(() => {
+    if (authUser) {
+      console.log('authObject', authObject);
+      if (authObject.paymentPlan === 'Basic') {
+        setTimerLimit(true);
+        console.log(timerLimet);
+      } else if (authObject.paymentPlan === 'Premium') {
+        // setTimerLimit(60 * 1);
+        setTimerLimit(false);
+      }
+    }
+  }, [authObject, authUser]);
 
   const clearTimer = e => {
     setSeconds(10);
@@ -327,102 +280,93 @@ const App4: FunctionComponent<Props> = props => {
     }
   }, [tfReady]);
 
-  const addVideoSuccess = (video?: any) => {
-    console.log('Added: ', JSON.stringify(video));
-    if (video) {
-      RecordScreen.clean();
-      navigation.replace('VideoPlayerContainer', {video: video});
-    }
-    // 0
+  const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
+  const [videoURI, setVideoURI] = useState(null);
+
+  const goSettings = () => {
+    Linking.openSettings();
   };
-  const addVideoFailure = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
-    if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
-    }
-  };
-  const uploadVideoSuccess = (updatedResponse?: any) => {
-    setLoading(false);
-    Alert.alert('Video uploaded successfully');
-    setVideoURL(updatedResponse);
-    vidURL = updatedResponse;
-    console.log('upload video success: ', JSON.stringify(updatedResponse));
-    addVideoToFirebase();
+  const proceedtoback = () => {
+    navigation.goBack();
   };
 
-  const addVideoToFirebase = () => {
-    // uploadVideoService(response, addVideoSuccess, addVideoFailure);
-    let res = response_let;
-    const videoMetadata = {
-      ...res,
-      thumbnailURL: thumbURL,
-      videoURL: vidURL,
-    };
-    console.log('videoMetadata, ', videoMetadata);
-    addVideoService(videoMetadata, addVideoSuccess, addVideoFailure);
-  };
-
-  const uploadVideoFailureFirebase = (error?: any) => {
-    console.log('Error: ', JSON.stringify(error));
-    if (error) {
-      Alert.alert('Trainify', `Error in adding video.`);
-    }
+  const failedToSaveAlert = () => {
+    Alert.alert(
+      'Failed to save video.',
+      'Please check your phone memory.',
+      [
+        {text: 'Go Back', onPress: () => proceedtoback()},
+        {text: 'Go To Settings', onPress: () => goSettings()},
+      ],
+      {cancelable: false},
+    );
   };
 
   const stopRecording = async () => {
-    const res = await RecordScreen.stopRecording().catch(error =>
-      console.warn(error),
-    );
-    if (res) {
-      console.log('Response:', res);
-      const url = res.result.outputURL;
-      CameraRoll.save(url, {type: 'video', album: 'TrainfyApp'});
-
-      // KAZMI Code Starts here.
-
-      let videoData1 = {name: 'screen_recording', uri: url, type: 'video'};
-      uploadVideoService(
-        videoData1,
-        uploadVideoSuccess,
-        uploadVideoFailureFirebase,
-      );
-
-      // Kazmi code Ends here
-      console.log('Recording detials:', JSON.stringify(res));
-      console.log('REOCORDING STOPPED: ', url);
-      var date = new Date().toLocaleString();
-
-      let videoData = {
-        duration: 0.01,
-        fileName: '66748333739__C225D81F-7822-4680-BD8E-C66E6A08A53F.mov',
-        fileSize: 9363694,
-        height: 720,
-        id: 'EABE012E-DDBB-4DC9-8F78-E159F198ECFE/L0/001',
-        timestamp: date,
-        type: 'video/quicktime',
-        uri: url,
-        width: 1280,
-      };
-      const tempAnalysisData = {
-        labels: ['Flat', 'Kick', 'Slice'],
-        legend: ['A', 'B', 'C', 'D'],
-        data: data,
-        barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-      };
-      const tempVideoData = {...videoData, analysis_data: tempAnalysisData};
-      console.log('analysis_data for firebase, ', JSON.stringify(data));
-      console.log('sending to firebase, ', JSON.stringify(tempVideoData));
-      response_let = tempVideoData;
-
-      setVideoData(tempVideoData);
-
-      // addVideoService(tempVideoData, addVideoSuccess, addVideoFailure);
+    try {
+      const responseReocrding = await RecordScreen.stopRecording()
+        .then(async res => {
+          setTfReady(false);
+          if (res) {
+            setTfReady(false);
+            setIsTimerRunning(false);
+            setIsStartedVideoRecording(false);
+            stoppedVideoRecording = true;
+            console.log('recording stopped:', JSON.stringify(res));
+            const url = res.result.outputURL;
+            try {
+              const response = await CameraRoll.save(url)
+                .then(promise => {
+                  console.log('promise: ', promise);
+                  setGalleryPermissions(true);
+                  if (promise) {
+                    setIsRecordingInProgress(false);
+                    console.log('Recording saved successfuly.');
+                    setVideoURI(url);
+                    navigation.navigate('UploadServeContainerHook', {
+                      capturedVideoURI: url,
+                      graphData: data,
+                      createrId: authObject.id,
+                    });
+                  } else {
+                    Alert.alert('Video could not saved');
+                  }
+                })
+                .catch(e => {
+                  console.log('Permission Denied');
+                  failedToSaveAlert();
+                });
+            } catch (error) {
+              Alert.alert('Failed to save video in gallery', error);
+            }
+          }
+        })
+        .catch(error => Alert.alert('Error in recording...: ', error));
+    } catch (error) {
+      Alert.alert('Error in recording #catch: ', error);
     }
   };
 
   const handleStopCamera = () => {
-    isCompletedRecording = true;
+    console.log('Hello');
+    stoppedVideoRecording = true;
+    // countdownRef.current.stop();
+    setIsRecordingInProgress(false);
+    setIsStartedVideoRecording(false);
+    setIsTimerRunning(false);
+    // alert('TimerStopped');
     stopRecording();
+  };
+
+  const handleStopTiemer = () => {
+    if (isTimerRunning && !stoppedVideoRecording) {
+      // alert('Finished');
+      console.log('Hello');
+      setIsRecordingInProgress(false);
+      setIsStartedVideoRecording(false);
+      setIsTimerRunning(false);
+      stopRecording();
+    }
   };
 
   const handleSwitchCameraType = () => {
@@ -435,58 +379,46 @@ const App4: FunctionComponent<Props> = props => {
 
   const renderCameraTypeSwitcher = () => {
     return (
-      <View
-        style={styles.cameraTypeSwitcher}
-        onTouchEnd={handleSwitchCameraType}>
-        <Text>
-          Switch to{' '}
-          {cameraType === Camera.Constants.Type.back ? 'front' : 'back'} camera
-        </Text>
+      <View style={styles.cameraIcon} onTouchEnd={handleSwitchCameraType}>
+        {cameraType === Camera.Constants.Type.back ? (
+          <IconButton
+            icon={fronCamera}
+            onPress={handleSwitchCameraType}
+            transparent={true}
+            styles={{height: 38, width: 16}}
+          />
+        ) : (
+          <IconButton
+            icon={backCamera}
+            onPress={handleSwitchCameraType}
+            transparent={true}
+            styles={{height: 40, width: 128}}
+          />
+        )}
       </View>
     );
   };
 
-  const startRecording = () => {
-    RecordScreen.startRecording({mic: false})
+  const startRecording = async () => {
+    await RecordScreen.startRecording({mic: false})
       .then(res => {
-        setIsStartedVideoRecording(true);
-        console.log('Video recording started.');
+        // setIsStartedVideoRecording(true);
+        // setIsTimerRunning(true);
+        // console.log('Video recording started.');
+        // countdownRef.current.start();
       })
       .catch(error => {
         console.error(error);
+        Alert.alert(
+          'Sorry! Recording cannot be start at the moment',
+          'Plese check your permissions in the settings',
+        );
         console.log('Video recording could not started.');
+        navigation.goBack();
       });
   };
 
-  const renderCalibration = () => {
-    let text;
-    if (isCalibratedr) {
-      text = (
-        <Text>You are calibrated. Please dont move recording is starting.</Text>
-      );
-    } else {
-      text = (
-        <Text>
-          Please callibrate your self so that your whole body is visible.
-        </Text>
-      );
-    }
-    return <View style={styles.calibrationContainer}>{text}</View>;
-  };
-
   const renderCalibrationPoints = () => {
-    // const cx1 = cameraLayoutWidth / 2 - 150;
-    // const cy1 = cameraLayoutHeight - 600;
-
-    // const cx2 = cameraLayoutWidth / 2 + 150;
-    // const cy2 = cameraLayoutHeight - 600;
-
-    // const cx3 = cameraLayoutWidth / 2 - 150;
-    // const cy3 = cameraLayoutHeight - 100;
-
-    // const cx4 = cameraLayoutWidth / 2 + 150;
-    // const cy4 = cameraLayoutHeight - 100;
-
     const cx1 = 100;
     const cy1 = 100;
 
@@ -498,19 +430,6 @@ const App4: FunctionComponent<Props> = props => {
 
     const cx4 = cameraLayoutWidth - 100;
     const cy4 = cameraLayoutHeight - 50;
-
-    // console.log('I amhere');
-    // const cx1 = 400;
-    // const cy1 = 486;
-
-    // const cx2 = 448;
-    // const cy2 = 780;
-
-    // const cx3 = 276;
-    // const cy3 = 780;
-
-    // const cx4 = 295;
-    // const cy4 = 486;
 
     if (isCalibratedp) {
       return (
@@ -547,43 +466,30 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
             strokeWidth="5"
           />
-          {/* <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx1}
-            cy={cy1}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx2}
-            cy={cy2}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx3}
-            cy={cy3}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          />
-          <Circle
-            // key={`skeletonkp_${k.name}`}
-            cx={cx4}
-            cy={cy4}
-            r="30"
-            strokeWidth="0"
-            fill="white"
-            stroke="white"
-          /> */}
+
+          <View
+            style={{
+              position: 'absolute',
+              left: cx1,
+              top: cy1 + 10,
+              right: cx3,
+              height: cx2,
+              borderRadius: 2,
+              borderStyle: 'solid',
+              justifyContent: 'center',
+              padding: 8,
+              zIndex: 30,
+            }}>
+            {isLoading ? (
+              <Text style={styles.loadingMsgText}>
+                Preparing live camera photages...
+              </Text>
+            ) : (
+              <Text style={styles.loadingMsgText}>
+                Please callibrate your self so that your whole body is visible.
+              </Text>
+            )}
+          </View>
         </Svg>
       );
     } else {
@@ -613,9 +519,10 @@ const App4: FunctionComponent<Props> = props => {
   const renderFps = () => {
     return (
       <View style={styles.fpsContainer}>
-        <Text>Total {count}</Text>
-        <Text>Last Serve Type {serveType}</Text>
-        <Text>Grade {serveGrade}</Text>
+        {/* <Text>Total {count}</Text> */}
+        {/* <Text>Serve: {serveType}</Text> */}
+        <Text>{serveType ? `${serveType}` : 'Last Serve'}</Text>
+        {/* <Text>Grade {serveGrade}</Text> */}
       </View>
     );
   };
@@ -824,8 +731,6 @@ const App4: FunctionComponent<Props> = props => {
         (rfy / cameraLayoutHeight) *
         (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
 
-      // console.log(lscx, lscy, rscx, rscy);
-
       const color = 'green';
       const stroke = '2';
 
@@ -835,7 +740,6 @@ const App4: FunctionComponent<Props> = props => {
           height={cameraLayoutHeight}
           width={cameraLayoutWidth}>
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={lscx}
             cy={lscy}
             r="4"
@@ -844,7 +748,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={rscx}
             cy={rscy}
             r="4"
@@ -853,7 +756,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={lhcx}
             cy={lhcy}
             r="4"
@@ -862,7 +764,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={rhcx}
             cy={rhcy}
             r="4"
@@ -871,7 +772,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={lecx}
             cy={lecy}
             r="4"
@@ -880,7 +780,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={recx}
             cy={recy}
             r="4"
@@ -889,7 +788,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={lkcx}
             cy={lkcy}
             r="4"
@@ -898,7 +796,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={rkcx}
             cy={rkcy}
             r="4"
@@ -907,7 +804,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={ltcx}
             cy={ltcy}
             r="4"
@@ -916,7 +812,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={rtcx}
             cy={rtcy}
             r="4"
@@ -925,7 +820,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={lacx}
             cy={lacy}
             r="4"
@@ -934,7 +828,6 @@ const App4: FunctionComponent<Props> = props => {
             stroke="white"
           />
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={racx}
             cy={racy}
             r="4"
@@ -944,7 +837,6 @@ const App4: FunctionComponent<Props> = props => {
           />
 
           <Circle
-            // key={`skeletonkp_${k.name}`}
             cx={ncx}
             cy={ncy}
             r="4"
@@ -1132,11 +1024,10 @@ const App4: FunctionComponent<Props> = props => {
     return angle;
   };
 
-  const serveTypeDetectionthreshold = (poses: any) => {
-    // console.log('Analysis: ', analysis_data.data[0]);
-    // console.log('Analysis: ', analysis_data.data[1]);
-    // console.log('Analysis: ', analysis_data.data[2]);
+  const serveTypeDetectionthresholdRightHanded = (poses: any) => {
     if (poses && poses.length > 0) {
+      console.log('Poses', poses[0]);
+
       const object = poses[0];
       const keypoints = object.keypoints;
       var leftShoulder = keypoints.filter(function (item: any) {
@@ -1165,183 +1056,156 @@ const App4: FunctionComponent<Props> = props => {
       });
       var l_shoulder_angle2 = find_angle(rightHip, rightShoulder, rightElbow);
       var r_hip_angle = find_angle(rightShoulder, rightHip, rightKnee);
-      console.log(
-        'LeftShoulder and RightSholder',
-        l_shoulder_angle2,
-        r_hip_angle,
-      );
 
       if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
         increment();
         skipFrameCount = skipFrameCount + 1;
         if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
           if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
-            console.log(serveGrade);
             setServeGrade('A');
             analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
           } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
             setServeGrade('B');
-            console.log(serveGrade);
             analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
           } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
             setServeGrade('C');
-            console.log(serveGrade);
             analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
           } else {
             setServeGrade('D');
-            console.log(serveGrade);
             analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
           }
           setServeType('Flat');
         } else if (r_hip_angle < 190 && r_hip_angle > 175) {
-          console.log('Right Hip Angle: ', rightHip);
           if (r_hip_angle < 185 && r_hip_angle > 181) {
             setServeGrade('A');
-            console.log(serveGrade);
             analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
           } else if (r_hip_angle < 187 && r_hip_angle > 179) {
             setServeGrade('B');
-            console.log(serveGrade);
             analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
           } else if (r_hip_angle < 188 && r_hip_angle > 177) {
             setServeGrade('C');
-            console.log(serveGrade);
             analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
           } else {
             setServeGrade('D');
-            console.log(serveGrade);
             analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
           }
           setServeType('Slice');
         } else {
-          console.log('Inside kick');
-          console.log(r_hip_angle);
           if (r_hip_angle > 170) {
             setServeGrade('A');
-            console.log(serveGrade);
             analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
           } else if (r_hip_angle > 167) {
             setServeGrade('B');
-            console.log(serveGrade);
             analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
           } else if (r_hip_angle > 164) {
             setServeGrade('C');
-            console.log(serveGrade);
             analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
           } else {
             setServeGrade('D');
-            console.log(serveGrade);
             analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
           }
           setServeType('Kick');
         }
         setData(analysis_data.data);
-      } else if (skipFrameCount > 0 && skipFrameCount < 30) {
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 3) {
         skipFrameCount = skipFrameCount + 1;
-        console.log(skipFrameCount);
       } else {
         skipFrameCount = 0;
+        setServeType('');
       }
+    }
+  };
+  const serveTypeDetectionthresholdLeftHanded = (poses: any) => {
+    if (poses && poses.length > 0) {
+      const object = poses[0];
+      const keypoints = object.keypoints;
+      var leftShoulder = keypoints.filter(function (item: any) {
+        return item.name === 'left_shoulder';
+      });
+      var rightShoulder = keypoints.filter(function (item: any) {
+        return item.name === 'right_shoulder';
+      });
+      var leftElbow = keypoints.filter(function (item: any) {
+        return item.name === 'left_elbow';
+      });
+      var rightElbow = keypoints.filter(function (item: any) {
+        return item.name === 'right_elbow';
+      });
+      var rightHip = keypoints.filter(function (item: any) {
+        return item.name === 'right_hip';
+      });
+      var leftHip = keypoints.filter(function (item: any) {
+        return item.name === 'left_hip';
+      });
+      var leftKnee = keypoints.filter(function (item: any) {
+        return item.name === 'left_knee';
+      });
+      var rightKnee = keypoints.filter(function (item: any) {
+        return item.name === 'right_knee';
+      });
+      var l_shoulder_angle2 = find_angle(leftHip, leftShoulder, leftElbow);
+      var r_hip_angle = find_angle(leftShoulder, leftHip, leftKnee);
 
-      // if (leftShoulder[0].y > leftElbow[0].y && skipFrameCount === 0) {
-      //   increment();
-      //   skipFrameCount = skipFrameCount + 1;
-      //   if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
-      //     if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
-      //       console.log(serveGrade);
-      //       setServeGrade('A');
-      //       analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
-      //     } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
-      //       setServeGrade('B');
-      //       console.log(serveGrade);
-      //       analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
-      //     } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
-      //       setServeGrade('C');
-      //       console.log(serveGrade);
-      //       analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
-      //     } else {
-      //       setServeGrade('D');
-      //       console.log(serveGrade);
-      //       analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
-      //     }
-      //     setServeType('Flat');
-      //   } else if (r_hip_angle < 179 && r_hip_angle > 165) {
-      //     if (r_hip_angle < 174 && r_hip_angle > 172) {
-      //       setServeGrade('A');
-      //       console.log(serveGrade);
-      //       analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
-      //     } else if (r_hip_angle < 176 && r_hip_angle > 170) {
-      //       setServeGrade('B');
-      //       console.log(serveGrade);
-      //       analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
-      //     } else if (r_hip_angle < 178 && r_hip_angle > 168) {
-      //       setServeGrade('C');
-      //       console.log(serveGrade);
-      //       analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
-      //     } else {
-      //       setServeGrade('D');
-      //       console.log(serveGrade);
-      //       analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
-      //     }
-      //     setServeType('Slice');
-      //   } else {
-      //     console.log('Inside kick');
-      //     console.log(r_hip_angle);
-      //     if (r_hip_angle < 182) {
-      //       setServeGrade('A');
-      //       console.log(serveGrade);
-      //       analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
-      //     } else if (r_hip_angle < 185) {
-      //       setServeGrade('B');
-      //       console.log(serveGrade);
-      //       analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
-      //     } else if (r_hip_angle < 188) {
-      //       setServeGrade('C');
-      //       console.log(serveGrade);
-      //       analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
-      //     } else {
-      //       setServeGrade('D');
-      //       console.log(serveGrade);
-      //       analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
-      //     }
-      //     setServeType('Kick');
-      //   }
-      //   setData(analysis_data.data);
-      // } else if (skipFrameCount > 0 && skipFrameCount < 5) {
-      //   skipFrameCount = skipFrameCount + 1;
-      //   console.log(skipFrameCount);
-      // } else {
-      //   skipFrameCount = 0;
-      // }
+      if (rightShoulder[0].y > rightElbow[0].y && skipFrameCount === 0) {
+        increment();
+        skipFrameCount = skipFrameCount + 1;
+        if (l_shoulder_angle2 < 30 && l_shoulder_angle2 > 0) {
+          if (l_shoulder_angle2 < 12 && l_shoulder_angle2 > 8) {
+            setServeGrade('A');
+            analysis_data.data[0][0] = analysis_data.data[0][0] + 1;
+          } else if (l_shoulder_angle2 < 14 && l_shoulder_angle2 > 6) {
+            setServeGrade('B');
+            analysis_data.data[0][1] = analysis_data.data[0][1] + 1;
+          } else if (l_shoulder_angle2 < 16 && l_shoulder_angle2 > 4) {
+            setServeGrade('C');
+            analysis_data.data[0][2] = analysis_data.data[0][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[0][3] = analysis_data.data[0][3] + 1;
+          }
+          setServeType('Flat');
+        } else if (r_hip_angle < 190 && r_hip_angle > 175) {
+          if (r_hip_angle < 185 && r_hip_angle > 181) {
+            setServeGrade('A');
+            analysis_data.data[2][0] = analysis_data.data[2][0] + 1;
+          } else if (r_hip_angle < 187 && r_hip_angle > 179) {
+            setServeGrade('B');
+            analysis_data.data[2][1] = analysis_data.data[2][1] + 1;
+          } else if (r_hip_angle < 188 && r_hip_angle > 177) {
+            setServeGrade('C');
+            analysis_data.data[2][2] = analysis_data.data[2][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[2][3] = analysis_data.data[2][3] + 1;
+          }
+          setServeType('Slice');
+        } else {
+          if (r_hip_angle > 170) {
+            setServeGrade('A');
+            analysis_data.data[1][0] = analysis_data.data[1][0] + 1;
+          } else if (r_hip_angle > 167) {
+            setServeGrade('B');
+            analysis_data.data[1][1] = analysis_data.data[1][1] + 1;
+          } else if (r_hip_angle > 164) {
+            setServeGrade('C');
+            analysis_data.data[1][2] = analysis_data.data[1][2] + 1;
+          } else {
+            setServeGrade('D');
+            analysis_data.data[1][3] = analysis_data.data[1][3] + 1;
+          }
+          setServeType('Kick');
+        }
+        setData(analysis_data.data);
+      } else if (skipFrameCount > 0 && skipFrameCount < deviceFps * 3) {
+        skipFrameCount = skipFrameCount + 1;
+      } else {
+        skipFrameCount = 0;
+        setServeType('');
+      }
     }
   };
 
   const calibrate = (poses: any) => {
-    // console.log("I am here");
-    // const cx1 = 400;
-    // const cy1 = 486;
-
-    // const cx2 = 448;
-    // const cy2 = 780;
-
-    // const cx3 = 276;
-    // const cy3 = 780;
-
-    // const cx4 = 295;
-    // const cy4 = 486;
-
-    // const cx1 = cameraLayoutWidth / 2 - 150;
-    // const cy1 = cameraLayoutHeight - 600;
-
-    // const cx2 = cameraLayoutWidth / 2 + 150;
-    // const cy2 = cameraLayoutHeight - 600;
-
-    // const cx3 = cameraLayoutWidth / 2 - 150;
-    // const cy3 = cameraLayoutHeight - 100;
-
-    // const cx4 = cameraLayoutWidth / 2 + 150;
-    // const cy4 = cameraLayoutHeight - 100;
-
     const cx1 = 100;
     const cy1 = 100;
 
@@ -1361,9 +1225,6 @@ const App4: FunctionComponent<Props> = props => {
       let tempCount = 0;
 
       for (var i = 0; i < keypoints.length; i++) {
-        // console.log(keypoints[i].score);
-        // console.log("Next");
-
         const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
         const x = flipX ? cameraLayoutWidth - keypoints[i].x : keypoints[i].x;
         const y = keypoints[i].y;
@@ -1374,28 +1235,19 @@ const App4: FunctionComponent<Props> = props => {
           (y / cameraLayoutHeight) *
           (isPortrait() ? cameraLayoutHeight : cameraLayoutWidth);
 
-        // console.log('CX', cx, 'CX2', cx2);
-        // console.log('CX: ', cx, ' CY: ', cy);
-        // console.log('X: ', cx1, ' Y: ', cx2);
-
         if (keypoints[i].score && keypoints[i].score * 100 < 60) {
           tempCount = tempCount + 1;
-          console.log('Score');
         }
         if (cx < cx1) {
-          console.log('First');
           tempCount = tempCount + 1;
         }
         if (cx > cx2) {
-          console.log('Second');
           tempCount = tempCount + 1;
         }
         if (cy < cy1) {
-          console.log('Third');
           tempCount = tempCount + 1;
         }
         if (cy > cy3) {
-          console.log('Fourth');
           tempCount = tempCount + 1;
         }
       }
@@ -1404,73 +1256,10 @@ const App4: FunctionComponent<Props> = props => {
         setIsCalibratedr(true);
         setIsCalibratedp(false);
         isCalibrated = true;
+        setIsTimerRunning(true);
+        setIsStartedVideoRecording(true);
         startRecording();
-        // console.log('Calibrated Successfully');
-      } else {
-        // console.log('Please Calibrate Yourself');
       }
-
-      // var leftWrist = keypoints.filter(function (item: any) {
-      //   return item.name === "left_index";
-      // });
-
-      // var rightWrist = keypoints.filter(function (item: any) {
-      //   return item.name === "right_index";
-      // });
-
-      // var leftAnkle = keypoints.filter(function (item: any) {
-      //   return item.name === "left_foot_index";
-      // });
-
-      // var rightAnkle = keypoints.filter(function (item: any) {
-      //   return item.name === "right_foot_index";
-      // });
-
-      // if (true) {
-      //   // console.log("temp  Count");
-      //   console.log(
-      //     leftWrist[0].x,
-      //     leftWrist[0].y,
-      //     rightWrist[0].x,
-      //     rightWrist[0].y
-      //   );
-      //   if (
-      //     leftWrist[0].x < cx1 + 50 &&
-      //     leftWrist[0].x > cx1 - 50 &&
-      //     leftWrist[0].y < cy1 + 50 &&
-      //     leftWrist[0].y > cy1 - 50
-      //   ) {
-      //     console.log("Temp Count");
-      //     if (
-      //       rightWrist[0].x < cx4 + 50 &&
-      //       rightWrist[0].x > cx4 - 50 &&
-      //       rightWrist[0].y < cy4 + 50 &&
-      //       rightWrist[0].y > cy4 - 50
-      //     ) {
-      //       console.log("Temp Count");
-      //       if (
-      //         leftAnkle[0].x < cx2 + 50 &&
-      //         leftAnkle[0].x > cx2 - 50 &&
-      //         leftAnkle[0].y < cy2 + 50 &&
-      //         leftAnkle[0].y > cy2 - 50
-      //       ) {
-      //         console.log("Temp Count");
-      //         if (
-      //           rightAnkle[0].x < cx3 + 50 &&
-      //           rightAnkle[0].x > cx3 - 50 &&
-      //           rightAnkle[0].y < cy3 + 50 &&
-      //           rightAnkle[0].y > cy3 - 50
-      //         ) {
-      //           console.log("Temp Count");
-      //           setIsCalibratedr(true);
-      //           setIsCalibratedp(false);
-      //           isCalibrated = true;
-      //           // console.log("inside", isCalibrated);
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
     }
   };
 
@@ -1482,7 +1271,6 @@ const App4: FunctionComponent<Props> = props => {
     console.log('images, ', JSON.stringify(images));
     const loop = async () => {
       const imageTensor = images.next().value as tf.Tensor3D;
-      // console.log('imageTensor, ', JSON.stringify(imageTensor));
       const startTs = Date.now();
       const poses = await model!.estimatePoses(
         imageTensor,
@@ -1491,13 +1279,21 @@ const App4: FunctionComponent<Props> = props => {
       );
       calibrate(poses);
       if (isCalibrated && !isCompletedRecording) {
-        serveTypeDetectionthreshold(poses);
-        // console.log();
+        if (
+          authObject &&
+          authObject.handStyle &&
+          authObject.handStyle === 'RightHanded'
+        ) {
+          serveTypeDetectionthresholdRightHanded(poses);
+        } else {
+          serveTypeDetectionthresholdLeftHanded(poses);
+        }
       } else if (isCompletedRecording) {
         isCompletedRecording = false;
       }
       const latency = Date.now() - startTs;
       setFps(Math.floor(1000 / latency));
+      deviceFps = Math.floor(1000 / latency);
       setPoses(poses);
       tf.dispose([imageTensor]);
       if (rafId.current === 0) {
@@ -1550,6 +1346,7 @@ const App4: FunctionComponent<Props> = props => {
       </View>
     );
   };
+
   const onLayout = event => {
     const {x, y, height, width} = event.nativeEvent.layout;
     console.log('Dimensions : ', x, y, height, width);
@@ -1558,44 +1355,96 @@ const App4: FunctionComponent<Props> = props => {
     cameraLayoutHeight = height;
     setCameraHeight(height);
   };
+
+  const onCameraLayout = event => {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    console.log('Main Camera Dimensions : ', x, y, height, width);
+    setCameraX(x);
+    setCameraY(y);
+    // cameraLayoutWidth = width;
+    // setCameraWidth(width);
+    // cameraLayoutHeight = height;
+    // setCameraHeight(height);
+    // determineAndSetOrientation();
+  };
+
   return (
     <SafeAreaView style={styles_external.main_view}>
-      <HeaderWithText
-        text={title}
-        hideProfileSection={true}
-        navigation={navigation}
-      />
-      <View style={styles.cameraView}>
-        <View onLayout={onLayout} style={styles.cameraContainer}>
-          {tfReady ? (
-            camView()
-          ) : (
-            <View style={styles.loadingMsg}>
-              {isLoading && (
-                <Text style={styles.loadingMsgText}>
-                  Preparing live camera photages...
-                </Text>
-              )}
-            </View>
-          )}
-          {/* {renderPose()} */}
-          {renderSkeleton()}
-          {renderCalibrationPoints()}
-          {renderFps()}
-          {renderCalibration()}
-          {renderCameraTypeSwitcher()}
-        </View>
-        {isStartedVideoRecording && (
-          <View style={styles.buttonContainer}>
-            <IconButton
-              styles={styles.recordIcon}
-              icon={stopIcon}
-              onPress={handleStopCamera}
-              transparent={true}
-            />
-          </View>
-        )}
+      <View style={{marginTop: 4}}>
+        <HeaderWithText
+          text={title}
+          hideProfileSection={true}
+          navigation={navigation}
+        />
       </View>
+      <View style={styles.cameraView} onLayout={onCameraLayout}>
+        <View
+          style={{
+            // zIndex: 20,
+            width: '100%',
+            borderStyle: 'solid',
+            backgroundColor: 'black',
+            // borderColor: 'yellow',
+            // borderBottomWidth: 0,
+            // borderTopWidth: 2,
+            // borderLeftWidth: 2,
+            // borderRightWidth: 2,
+            // borderRadius: 12,
+            height: 50,
+          }}>
+          <View>{renderFps()}</View>
+
+          <View>{renderCameraTypeSwitcher()}</View>
+        </View>
+        <View onLayout={onLayout} style={styles.cameraContainer}>
+          {tfReady && camView()}
+          {/* {renderPose()} */}
+          {/* {renderSkeleton()} */}
+          {renderCalibrationPoints()}
+        </View>
+      </View>
+      {isStartedVideoRecording && (
+        <IconButton
+          styles={styles.stopIcon}
+          icon={stopIcon}
+          onPress={() => {
+            handleStopCamera();
+          }}
+          transparent={true}
+        />
+      )}
+      {isStartedVideoRecording && (
+        <CountDown
+          until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
+          size={16}
+          running={isTimerRunning}
+          style={styles.timerConatiner}
+          onFinish={() => handleStopTiemer()}
+          digitStyle={{backgroundColor: '#FFF'}}
+          digitTxtStyle={{color: '#000000'}}
+          timeToShow={['M', 'S']}
+          timeLabels={{m: null, s: null}}
+        />
+      )}
+      {/* <IconButton
+        styles={styles.stopIcon}
+        icon={stopIcon}
+        onPress={() => {
+          handleStopCamera();
+        }}
+        transparent={true}
+      />
+      <CountDown
+        until={(authObject.paymentPlan === 'Basic' ? 28 : 57) * 1}
+        size={16}
+        running={isTimerRunning}
+        style={styles.timerConatiner}
+        onFinish={() => handleStopTiemer()}
+        digitStyle={{backgroundColor: '#FFF'}}
+        digitTxtStyle={{color: '#000000'}}
+        timeToShow={['M', 'S']}
+        timeLabels={{m: null, s: null}}
+      /> */}
     </SafeAreaView>
   );
 };
@@ -1603,46 +1452,27 @@ const App4: FunctionComponent<Props> = props => {
 export default App4;
 
 const styles = StyleSheet.create({
-  container: {
+  cameraView: {
+    display: 'flex',
     flex: 1,
-    alignContent: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'yellow',
-  },
-  calibrationContainer: {
-    position: 'absolute',
-    top: 10,
-    left: 100,
-    width: 80,
+    flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
-    padding: 8,
-    zIndex: 20,
+    justifyContent: 'center',
+    backgroundColor: 'black',
+    marginBottom: '22.5%',
+    marginTop: 32,
   },
   cameraContainer: {
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%',
+    height: '92%',
     backgroundColor: 'black',
     marginTop: 0,
     borderRadius: 12,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'black',
-    borderStyle: 'solid',
     padding: 0,
-  },
-  cameraView: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 128,
-    marginTop: 32,
   },
   camera: {
     display: 'flex',
@@ -1653,83 +1483,58 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     zIndex: 500,
   },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: 'blue',
-    flexDirection: 'row',
-    margin: 0,
-  },
-  button: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
-  },
-  recordIconStyle: {
-    width: 60,
-    height: 60,
-    position: 'absolute',
-    bottom: 36,
-    zIndex: 1000,
-  },
-  recordIcon: {
-    width: 60,
-    height: 60,
-    position: 'absolute',
-    bottom: 36,
-    zIndex: 1000,
-  },
-  loadingMsg: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   loadingMsgText: {
+    textAlign: 'center',
     color: 'red',
+    fontSize: 28,
   },
-  cameraTypeSwitcher: {
+  cameraIcon: {
+    width: 48,
+    height: 40,
     position: 'absolute',
-    top: 10,
+    top: 4,
     right: 10,
-    width: 180,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
     padding: 8,
-    zIndex: 20,
-    marginTop: 16,
   },
   fpsContainer: {
     position: 'absolute',
-    top: 10,
+    top: 4,
     left: 10,
-    width: 80,
+    width: 90,
+    // alignItems: 'center',
+    backgroundColor: 'rgb(255, 255, 255)',
+    borderRadius: 4,
+    padding: 8,
+  },
+  timerConatiner: {
+    position: 'absolute',
+    top: '18%',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: 'transparent',
     borderRadius: 2,
     padding: 8,
     zIndex: 20,
-    marginTop: 16,
+    alignSelf: 'center',
+  },
+  stopIcon: {
+    width: 60,
+    height: 50,
+    position: 'absolute',
+    left: '45%',
+    top: '88%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    padding: 8,
+    zIndex: 20,
   },
   svg: {
     width: '100%',
     height: '100%',
     position: 'absolute',
     zIndex: 30,
-  },
-  containerPortrait: {
-    position: 'relative',
-    width: cameraLayoutWidth,
-    height: cameraLayoutHeight,
-  },
-  containerLandscape: {
-    position: 'relative',
-    width: cameraLayoutWidth,
-    height: cameraLayoutHeight,
   },
 });

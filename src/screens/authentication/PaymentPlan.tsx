@@ -2,27 +2,21 @@ import React, {FunctionComponent, useState, useEffect} from 'react';
 import {
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   View,
   Image,
   Platform,
   Alert,
+  Button,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// const PaymentRequest = require('react-native-payments').PaymentRequest;
 
 // Custom UI components.
 import {COLORS, SCREEN_WIDTH} from '../../constants';
-import {TextInput} from '../../global-components/input';
-import SignupFooterComponent from './components/SignupFooterComponent';
 import AppUserItem from './components/AppUserItem';
+import AnimatedLoader from 'react-native-animated-loader';
 import SubscriptionItem from './components/SubscriptionItem';
-import {
-  signUpService,
-  signInService,
-  registerUserService,
-} from './../../services/authenticationServices';
+import {registerUserService} from './../../services/authenticationServices';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
@@ -32,26 +26,26 @@ import {trainProducts, membershipProduct} from './products';
 
 const signupMainImage = require('../../assets/images/small-logo.png');
 const backIcon = require('../../assets/images/back-icon.png');
+const registerUserAnimation = require('./../../assets/animations/register-user-animation.json');
+const profileUserAnimation = require('./../../assets/animations/create-profile-animation.json');
 
 import RNIap, {
   InAppPurchase,
   Product,
-  ProductPurchase,
   PurchaseError,
-  acknowledgePurchaseAndroid,
   purchaseErrorListener,
   purchaseUpdatedListener,
   SubscriptionPurchase,
 } from 'react-native-iap';
 import {UserObject} from '../../types';
+import {useAuthentication, useProfile} from '../../hooks';
+import {SettingContext} from '../../context/useSetting-context';
+import {SubscriptionContext} from '../../context/useSubscriptionContext';
 
 const itemSkus =
   Platform.select({
     ios: trainProducts,
-    android: [
-      ...trainProducts,
-      // ...androidStaticTestProducts,
-    ],
+    android: [...trainProducts],
   }) || [];
 
 const itemSubs =
@@ -60,6 +54,7 @@ const itemSubs =
     android: [membershipProduct],
   }) || [];
 
+const uploadAnimation = require('./../../assets/animations/uploading-animation.json');
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
@@ -72,11 +67,34 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
   const {route, navigation} = props;
   const {authObject, signupObject} = route.params;
   const [playerSelected, setPlayerSelected] = useState<number>(0);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<number>(-1);
-  const [products, setProducts] = useState([]);
   const [productList, setProductList] = useState([]);
   const [coursePurchaseInProgress, setCoursePurchaseInProgress] =
     useState(false);
+  const [sucessCalled, setSucessCalled] = useState(false);
+  const {isTermCheck, isPrivacyCheck} = React.useContext(SettingContext);
+  const {
+    subscriptionPlan,
+    subscriptionStatus,
+    animationVisible,
+    validProduct,
+    setSubscriptionPlan,
+    setSubscriptionStatus,
+    setAnimationVisible,
+    setValidProduct,
+  } = React.useContext(SubscriptionContext);
+  var subscriptionValue = '';
+
+  const {
+    creatingAccount,
+    registerUserStatus,
+    registerErrorStatus,
+    signUpService,
+    signInService,
+    cancelUploading,
+    registeredUserObject,
+  } = useAuthentication({
+    authObject: authObject,
+  });
 
   useEffect(() => {
     proceedForApplePay();
@@ -85,27 +103,68 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!validProduct) {
+      setSubscriptionPlan(1);
+      setAnimationVisible(false);
+    } else if (isTermCheck && isPrivacyCheck) {
+      requestSubscriptionFunction();
+    }
+  }, [isTermCheck, isPrivacyCheck]);
+
+  useEffect(() => {
+    if (sucessCalled) {
+      console.log('successfully puchased');
+      setAnimationVisible(false);
+      setSubscriptionPlan(2);
+      setSubscriptionStatus('Paid');
+      console.log('subscriptionPlan after update', subscriptionPlan);
+      console.log(
+        'subscription value after sucess purchase',
+        subscriptionStatus,
+      );
+    }
+  }, [sucessCalled]);
+  useEffect(() => {
+    if (registerErrorStatus) {
+      Alert.alert(registerErrorStatus);
+    } else if (registeredUserObject) {
+      (() => {
+        console.log('subscriptionPlan', subscriptionPlan);
+        if (subscriptionPlan === 1) {
+          subscriptionValue = 'Basic';
+          console.log(subscriptionValue);
+        } else if (subscriptionPlan === 2) {
+          subscriptionValue = 'Premium';
+          console.log('subscriptionValue', subscriptionValue);
+        }
+        proceedToCreateProfile(registeredUserObject);
+      })();
+    }
+  }, [registeredUserObject, registerErrorStatus]);
+
   async function proceedForApplePay() {
     getItems();
     try {
       const result = await RNIap.initConnection();
       console.log('connection is => ', result);
-      // await RNIap.consumeAllItemsAndroid();
     } catch (err) {
       console.log('error in cdm => ', err);
+      setAnimationVisible(false);
     }
 
     purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
-        console.log('purchase');
+        console.log('purchaseData', JSON.stringify(purchase));
         if (purchase.productId === membershipProduct) {
+          setValidProduct(true);
           console.log('purchase.productId', purchase.productId);
-          // await this.finishMembershipPurchase(purchase);
-          // await requestPurchase(purchase)
+          // setSubscriptionPlan(2);
+          // onSuccess();
+          setSucessCalled(true);
         } else {
-          console.log('finish purchase.productId', purchase.productId);
-          // await this.finishCoursePurchase(purchase);
-          // await requestPurchase(purchase)
+          setValidProduct(false);
+          console.log('error finish purchase.productId', purchase.productId);
         }
       },
     );
@@ -114,17 +173,55 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       async (error: PurchaseError) => {
         setCoursePurchaseInProgress(false);
 
-        if (error.code === 'E_USER_CANCELLED') return;
-
-        if (error.code === 'E_ALREADY_OWNED') {
-          // @TODO When Android subscriptions fixed:
-          // Check if user already has a subscription in owned products
-          // If so, retry creating  membership on YI servers
-          // const subscriptions = await RNIap.getSubscriptions(itemSubs);
-          return;
+        switch (error.code) {
+          case 'E_USER_CANCELLED':
+            setAnimationVisible(false);
+            Alert.alert('Subscription was not sucessful');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_ALREADY_OWNED':
+            setAnimationVisible(false);
+            setSubscriptionStatus('Paid');
+            setSubscriptionPlan(2);
+            break;
+          case 'E_IAP_NOT_AVAILABLE':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is not available');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_ITEM_UNAVAILABLE':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is unavailable');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_NETWORK_ERROR':
+            setAnimationVisible(false);
+            Alert.alert(
+              'Subscription was not completed because of network error',
+            );
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            break;
+          case 'E_DEVELOPER_ERROR':
+            setAnimationVisible(false);
+            Alert.alert('This subscription is not available yet.');
+            setSubscriptionStatus('Error');
+            setSubscriptionPlan(1);
+            setValidProduct(false);
+            break;
+          default:
+            Alert.alert(
+              `Subscription Purchase Error, ${JSON.stringify(
+                error,
+              )}, IAP purchaseErrorListener`,
+            );
+            setAnimationVisible(false);
+            setSubscriptionPlan(1);
+            setSubscriptionStatus('Error');
         }
-
-        alert(`${JSON.stringify(error)}, IAP purchaseErrorListener`);
       },
     );
   }
@@ -136,6 +233,7 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
     if (purchaseErrorSubscription) {
       purchaseErrorSubscription.remove();
+      setAnimationVisible(false);
       purchaseErrorSubscription = null;
     }
   }
@@ -145,123 +243,33 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
       const products: Product[] = await RNIap.getProducts(itemSkus);
       console.log('Products', products);
       setProductList(products);
-      // requestPurchase(itemSkus[0]);
     } catch (err) {
       console.log('getItems || purchase error => ', err);
     }
   }
 
-  async function getSubscriptions() {
-    try {
-      const products = await RNIap.getSubscriptions(itemSubs);
-      console.log('Products => ', products);
-      setProductList(products);
-    } catch (err) {
-      console.log('getSubscriptions error => ', err);
-    }
-  }
-  4;
-  async function getAvailablePurchases() {
-    try {
-      console.log('before.');
-      const purchases = await RNIap.getAvailablePurchases();
-      console.log('after.');
-      if (purchases && purchases.length > 0) {
-        console.info('Available purchases => ', purchases);
-        this.setState({
-          availableItemsMessage: `Got ${purchases.length} items.`,
-          receipt: purchases[0].transactionReceipt,
-        });
-      } else {
-        console.log('No available purchases');
-      }
-    } catch (err) {
-      console.warn(err.code, err.message);
-      console.log('getAvailablePurchases error => ', err);
-    }
-  }
+  // function proceedToPurchase() {
+  //   requestSubscription(trainProducts[subscriptionPlan]);
+  // }
 
-  async function requestPurchase(sku, onSuccess: () => void) {
-    console.log('sku', sku);
-    try {
-      const dangerouslyFinishTransactionAutomatically = false;
-      RNIap.requestPurchase(
-        sku,
-        dangerouslyFinishTransactionAutomatically,
-      ).then(res => {
-        alert(`Purchase success, ${res}`);
-      });
-    } catch (err) {
-      alert(`requestPurchase error => , ${err}`);
-    }
-  }
-
-  // async function requestPurchase (sku)  {
-  //   try {
-  //     RNIap.requestPurchase(sku);
-  //   } catch (err) {
-  //     console.log('requestPurchase error => ', err);
-  //   }
-  // };
-
-  async function requestSubscription(sku) {
-    try {
-      RNIap.requestSubscription(sku);
-    } catch (err) {
-      alert(err.toLocaleString());
-    }
-  }
-
-  function purchaseConfirmed() {
-    //you can code here for what changes you want to do in db on purchase successfull
-  }
-
-  const onSuccess = () => {
-    alert('successfully puchased');
-  };
-
-  function proceedToPurchase() {
-    // getSubscriptions();
-    // getAvailablePurchases();
-    requestSubscription(trainProducts[subscriptionPlan]);
-    // getAvailablePurchases();
-
-    // RNIap.getProducts(trainProducts)
-    // .then(success => {
-    //   let product = success[0];
-    //   console.log("product:", JSON.stringify(success));
-    //   RNIap.requestPurchase(product.productId)
-    //   .then(ok => {
-    //     alert('requested to purchase');
-    //   })
-    //   .catch(error => {
-    //     alert(error);
-    //   })
-    // })
-    // .catch(error => {
-    //    alert( JSON.stringify(error));
-    // })
-  }
-
-  const proceedToRegister = user => {
-    const id = user.uid;
-    const userObject: UserObject = {...signupObject, id: user.uid};
+  const proceedToCreateProfile = firebaseObject => {
+    console.log('firebase object:', firebaseObject);
+    const userObject: UserObject = {
+      ...signupObject,
+      id: firebaseObject.uid,
+      paymentPlan: subscriptionValue,
+    };
     registerUserService(userObject, registrationSuccess, registrationFailure);
   };
 
-  const goToHomePage = () => {
+  const goToSigninPage = () => {
     navigation.replace('Signin');
-    //     const resetAction = StackActions.reset({
-    //   index: 0, // <-- currect active route from actions array
-    //   actions: [NavigationActions.navigate({ routeName: 'HomeScreen' })],
-    // });
-
-    //   navigation.dispatch(resetAction);
   };
 
   const registrationSuccess = (userCredential?: any) => {
+    console.log('userCredential', userCredential);
     Alert.alert('Trainify', `You've signed up successfully.`);
-    goToHomePage();
+    goToSigninPage();
   };
 
   const registrationFailure = error => {
@@ -274,29 +282,63 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
     }
   };
 
-  const signupSuccess = (user?: any) => {
-    if (user) {
-      proceedToRegister(user);
-    }
-  };
-
-  const signupFailure = error => {
-    if (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      if (errorCode === 'auth/email-already-in-use') {
-        Alert.alert('Trainify', 'User already exists!');
-      } else {
-        Alert.alert('Trainify', 'Error in signup!');
-      }
-    } else {
-      Alert.alert('Trainify', 'Error in signup!');
-    }
-  };
-
   const proceedToSignup = () => {
-    signUpService(authObject, signupSuccess, signupFailure);
+    signUpService(authObject);
+  };
+
+  // const onSuccess = () => {
+  //   console.log('successfully puchased');
+  //   setSubscriptionPlan(2);
+  //   subscriptionPlan === 2
+  //     ? setSubscriptionStatus('Paid')
+  //     : setSubscriptionStatus('Error');
+  //   setAnimationVisible(false);
+  //   console.log('subscriptionPlan after update', subscriptionPlan);
+  //   console.log('subscription value after sucess purchase', subscriptionStatus);
+  // };
+
+  async function requestPurchase(sku) {
+    try {
+      const dangerouslyFinishTransactionAutomatically = false;
+      console.log(
+        'subscription value when requesting purchase',
+        subscriptionPlan,
+      );
+      console.log(
+        'subscription status when requesting purchase',
+        subscriptionStatus,
+      );
+      RNIap.requestPurchase(
+        sku,
+        dangerouslyFinishTransactionAutomatically,
+      ).then(res => {
+        console.log(`Purchase success`, JSON.stringify(res));
+        // setSubscriptioNStatus('Paid');
+        // setAnimationVisible(false);
+        // setSubscriptionPlan(2);
+        // onSuccess();
+      });
+    } catch (err) {
+      console.log(`requestPurchase error => , ${err}`);
+      setAnimationVisible(false);
+      setSubscriptionStatus('Error');
+    }
+  }
+
+  const requestSubscriptionFunction = () => {
+    if (isTermCheck && isPrivacyCheck) {
+      if (subscriptionStatus !== 'Paid') {
+        setAnimationVisible(true);
+        console.log('requesteForSubscription');
+        requestPurchase(trainProducts[0]);
+      } else {
+        setSubscriptionPlan(2);
+      }
+    } else if (isTermCheck) {
+      navigation.navigate('PrivacyPolicyScreen');
+    } else {
+      navigation.navigate('TermsConditionScreen');
+    }
   };
 
   return (
@@ -368,52 +410,36 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               SUBSCRIPTION TIERS
             </Text>
 
-            {/* <SubscriptionItem
-              leftText="Free"
-              price="0 PKR"
-              isSelected = {subscriptionPlan === 0 ? true : false}
-              onPress={() => {
-                setSubscriptionPlan(0);
-                requestPurchase(trainProducts[0], onSuccess);
-                proceedToPurchase();
-              }}
-            /> */}
-
             <SubscriptionItem
               leftText="Basic"
-              price="$1.0/yr"
+              rightText="Serve Practice Only"
+              price="Free"
               isSelected={subscriptionPlan === 1 ? true : false}
+              limitText="Video Recording for 2 Hrs/ Mo  (60 Day Trial)"
               onPress={() => {
                 setSubscriptionPlan(1);
-                requestPurchase(trainProducts[1], onSuccess);
-                // proceedToPurchase();
               }}
             />
             <SubscriptionItem
-              leftText="Silver"
-              price="$2.0/yr"
+              leftText="Premium"
+              rightText="Serve Practice/Practice with Ball Machine"
+              price="$9.99/Per Month"
               isSelected={subscriptionPlan === 2 ? true : false}
+              limitText="5 Hours Video Recording/Per Month"
               onPress={() => {
-                setSubscriptionPlan(2);
-                requestPurchase(trainProducts[2], onSuccess);
-                // proceedToPurchase();
-              }}
-            />
-            <SubscriptionItem
-              leftText="Platinum"
-              price="$3.0/yr"
-              isSelected={subscriptionPlan === 3 ? true : false}
-              onPress={() => {
-                setSubscriptionPlan(3);
-                requestPurchase(trainProducts[3], onSuccess);
-                // proceedToPurchase();
+                requestSubscriptionFunction();
               }}
             />
           </View>
 
           <SimpleButton
             buttonText="Submit"
-            buttonType={subscriptionPlan < 0 ? 'DISABLED' : 'AUTHENTICATION'}
+            buttonType={
+              subscriptionPlan === 1 ||
+              (subscriptionPlan === 2 && subscriptionStatus === 'Paid')
+                ? 'AUTHENTICATION'
+                : 'DISABLED'
+            }
             onPress={() => {
               proceedToSignup();
             }}
@@ -421,6 +447,47 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               marginTop: 33,
             }}
           />
+        </View>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 47,
+            paddingHorizontal: SCREEN_WIDTH * 0.05,
+          }}>
+          <AnimatedLoader
+            visible={creatingAccount}
+            overlayColor={'rgba(255, 255, 255, 0.75)'}
+            source={
+              creatingAccount ? registerUserAnimation : profileUserAnimation
+            }
+            animationStyle={styles.lottie}
+            speed={1}>
+            <Text>{creatingAccount ? registerUserStatus : false}</Text>
+            <Button
+              title={'Cancel'}
+              onPress={() => {
+                cancelUploading();
+                navigation.navigate('Signup');
+              }}
+            />
+          </AnimatedLoader>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 47,
+            paddingHorizontal: SCREEN_WIDTH * 0.05,
+          }}>
+          <AnimatedLoader
+            visible={animationVisible}
+            overlayColor={'rgba(255, 255, 255, 0.75)'}
+            source={uploadAnimation}
+            animationStyle={styles.lottie}
+            speed={1}>
+            <Text>
+              {animationVisible ? 'Waiting for subscription ' : false}
+            </Text>
+          </AnimatedLoader>
         </View>
       </KeyboardAwareScrollView>
     </View>

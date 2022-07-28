@@ -1,23 +1,38 @@
 import {StyleSheet, Platform} from 'react-native';
-import {COLORS, SCREEN_WIDTH, STATUS_BAR_HEIGHT} from '../../constants';
+import {
+  COLORS,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  STATUS_BAR_HEIGHT,
+} from '../../constants';
 
 const styles = StyleSheet.create({
   home_main_view: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    paddingTop: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT + 15 : 15,
+    paddingTop: Platform.OS === 'ios' ? (SCREEN_WIDTH / 100) * 2 : 10,
+    // paddingBottom: Platform.OS === 'ios' ? 810 : 1080,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
+  },
+  navigationBar: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: SCREEN_HEIGHT - 764,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   practice_text: {
     position: 'absolute',
-    top: 50,
-    right: 43,
-    lineHeight: 27,
+    top: 80,
+    right: 10,
+    lineHeight: 20,
     fontWeight: 'bold',
     color: COLORS.white,
-    width: SCREEN_WIDTH * 0.5,
-    textAlign: 'right',
+    width: SCREEN_WIDTH * 0.6,
+    textAlign: 'center',
+    fontSize: 14,
   },
   // Service Practice styles.
   main_view: {
@@ -25,17 +40,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 15 : 15,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   record_and_upload_text: {
     position: 'absolute',
-    bottom: 7,
-    left: 6,
+    bottom: 20,
+    right: 8,
     lineHeight: 27,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: COLORS.white,
-    width: (SCREEN_WIDTH * 0.9 / 2) - 43,
+    width: SCREEN_WIDTH * 0.6,
     textAlign: 'center',
+    fontSize: 16,
   },
   video_duration_text: {
     marginTop: 5 + STATUS_BAR_HEIGHT,
@@ -58,7 +74,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
-  upload_serve_scroll_view : {
+  upload_serve_scroll_view: {
     paddingBottom: 20,
     flexGrow: 1,
     justifyContent: 'center',

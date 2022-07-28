@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -9,13 +9,13 @@ import {
   Alert,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { GooglePay } from 'react-native-google-pay';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUserObject } from '../../redux/slices/AuthSlice';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {GooglePay} from 'react-native-google-pay';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUserObject} from '../../redux/slices/AuthSlice';
 // Custom UI components.
-import { COLORS, SCREEN_WIDTH } from '../../constants';
-import { TextInput } from '../../global-components/input';
+import {COLORS, SCREEN_WIDTH} from '../../constants';
+import {TextInput} from '../../global-components/input';
 import SigninFooterComponent from './components/SigninFooterComponent';
 
 // Custom Styles
@@ -26,16 +26,16 @@ const signinMainImage = require('../../assets/images/signin-main-image.png');
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {StackActions, NavigationActions} from 'react-navigation';
 
 import {
   signInService,
   getUserWithIdService,
 } from './../../services/authenticationServices';
-import { UserObject } from '../../types';
-import { AuthContext } from './../../context/auth-context';
-import { RootState } from '../../../store';
+import {UserObject} from '../../types';
+import {AuthContext} from './../../context/auth-context';
+import {RootState} from '../../../store';
 const backIcon = require('../../assets/images/back-icon.png');
 
 type Props = {
@@ -43,10 +43,10 @@ type Props = {
   route?: any;
 };
 
-const SigninContainer: FunctionComponent<Props> = props => {
-  const { authUser, setAuthUser, setAuthObject } = React.useContext(AuthContext);
+const SigninScreen: FunctionComponent<Props> = props => {
+  const {authUser, setAuthUser, setAuthObject} = React.useContext(AuthContext);
   // console.log('UserData: ', UserData);
-  const { navigation, route } = props;
+  const {navigation, route} = props;
   const [email, setEmail] = useState<string>(''); // Testing@gmail.com
   const [password, setPassword] = useState<string>(''); // 123456
 
@@ -60,9 +60,10 @@ const SigninContainer: FunctionComponent<Props> = props => {
 
     setAuthObject(userObject);
     dispatch(setUserObject(user));
+
     navigation.reset({
       index: 0,
-      routes: [{ name: 'MainApp' }],
+      routes: [{name: 'MainApp'}],
     });
     // navigation.navigate('MainApp');
   };
@@ -72,7 +73,7 @@ const SigninContainer: FunctionComponent<Props> = props => {
     let uid = userCredential.uid;
     // console.log('uid : ', uid);
     setAuthUser(userCredential);
-    getUserWithIdService(uid, goToHomePage, authenticationFailure);
+    getUserWithIdService(uid, goToHomePage, fetchUserFailure);
 
     // getUserWithIdService(uid, goToHomePage, authenticationFailure)
   };
@@ -90,7 +91,7 @@ const SigninContainer: FunctionComponent<Props> = props => {
     }
   };
 
-  const authenticationFailure = error => {
+  const fetchUserFailure = error => {
     setLoading(false);
     if (error) {
       const errorCode = error.code;
@@ -101,10 +102,29 @@ const SigninContainer: FunctionComponent<Props> = props => {
           'Account not found, Please register for account!',
         );
       } else {
-        Alert.alert('Trainify', 'Error in login!');
+        Alert.alert('Trainify', 'Error in fetching user data!');
       }
     } else {
-      Alert.alert('Trainify', 'Error in login!');
+      Alert.alert('Trainify', 'Error in fetching user data!');
+    }
+  };
+
+  const authenticationFailure = error => {
+    setLoading(false);
+    if (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log('error in loging, ', error);
+      if (errorCode === 'auth/user-not-found') {
+        Alert.alert(
+          'Trainify',
+          'Account not found, Please register for account!',
+        );
+      } else {
+        Alert.alert('Trainify', 'Error in login');
+      }
+    } else {
+      Alert.alert('Trainify!', 'Error in login!');
     }
   };
 
@@ -116,26 +136,6 @@ const SigninContainer: FunctionComponent<Props> = props => {
     };
     signInService(authObject, authenticationSuccess, authenticationFailure);
   };
-
-  // const proceedToLogin = () => {
-  //   if(app){
-  //     const auth = getAuth();
-  //     signInWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     Alert.alert("Trainify", "You've logged in successfully")
-  //     goToHomePage()
-
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     Alert.alert("Trainify", errorMessage)
-  //   });
-  //   }
-
-  // }
 
   const requestData = {
     cardPaymentMethod: {
@@ -160,27 +160,27 @@ const SigninContainer: FunctionComponent<Props> = props => {
     },
     merchantName: 'Example Merchant',
   };
-  const isGooglePayAvailable = () => {
-    GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
-    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
-      .then(ready => {
-        if (ready) {
-          // Request payment token
-          console.log('it is ready.', ready);
-          GooglePay.requestPayment(requestData)
-            .then((token: string) => {
-              console.log('token here: ', token);
-              // Send a token to your payment gateway
-            })
-            .catch(error =>
-              console.log('payment error: ', error.code, error.message),
-            );
-        }
-      })
-      .catch(error => {
-        console.log('error: ', error);
-      });
-  };
+  // const isGooglePayAvailable = () => {
+  //   GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
+  //   GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
+  //     .then(ready => {
+  //       if (ready) {
+  //         // Request payment token
+  //         console.log('it is ready.', ready);
+  //         GooglePay.requestPayment(requestData)
+  //           .then((token: string) => {
+  //             console.log('token here: ', token);
+  //             // Send a token to your payment gateway
+  //           })
+  //           .catch(error =>
+  //             console.log('payment error: ', error.code, error.message),
+  //           );
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log('error: ', error);
+  //     });
+  // };
 
   const validateForInputs = () => {
     if (email === '') {
@@ -195,17 +195,7 @@ const SigninContainer: FunctionComponent<Props> = props => {
   return (
     <View style={styles.login_main_container}>
       <KeyboardAwareScrollView bounces={false}>
-        <View style={{ paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
-          <TouchableOpacity
-            style={styles.login_back_icon}
-            onPress={() => {
-              navigation.goBack();
-            }}>
-            <Image source={backIcon} style={{ width: 24, height: 24 }} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05 }}>
+        <View style={{marginTop: 47, paddingHorizontal: SCREEN_WIDTH * 0.05}}>
           <AutoHeightImage
             source={signinMainImage}
             width={SCREEN_WIDTH * 0.76}
@@ -269,4 +259,4 @@ const SigninContainer: FunctionComponent<Props> = props => {
     </View>
   );
 };
-export default SigninContainer;
+export default SigninScreen;

@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, View} from 'react-native';
-import {StackedBarChart} from 'react-native-chart-kit';
+import {StyleSheet, Text, View, Platform} from 'react-native';
+import React from 'react';
 import {Dimensions} from 'react-native';
 import {
   VictoryChart,
@@ -12,8 +10,15 @@ import {
   VictoryLabel,
   VictoryPie,
 } from 'victory-native';
+import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {SafeAreaView} from 'react-navigation';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {SCREEN_WIDTH} from '../../../../constants';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
 
-const screenWidth = Dimensions.get('window').width;
+var screenWidth = Dimensions.get('window').width;
+var screenHeight = Dimensions.get('window').height;
 
 const chartConfig = {
   backgroundGradientFrom: '#1E2923',
@@ -27,41 +32,10 @@ const chartConfig = {
 };
 
 export default function ServePracticeRenderGraphScreen({navigation, route}) {
+  useKeepAwake();
+  // Data coming from Firebase
   const {analysis_data} = route.params;
-  // console.log('graphData 1', graphData);
-  // console.log('graphData.labels ', graphData.labels)
-  //     const [data, setData] = useState(graphData);
 
-  // useEffect(() => {
-  //     console.log('graphData ',graphData);
-  //     // const analysisData = JSON.parse(graphData);
-  //     // console.log('analysisData 1', analysisData);
-  //     // setData(JSON.parse(analysisData));
-  // }, [graphData]);
-
-  // const temp_analysis_data = {
-  //         labels: ["Flat", "Kick", "Slice"],
-  //     legend: ["Grade A", "Grade B", "Grade C", "Grade D"],
-  //     data: [
-  //       [1, 1, 1, 1],
-  //       [1, 1, 1, 6],
-  //       [1, 1, 1, 4],
-  //     ],
-  //     barColors: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"],
-  // }
-
-  // const analysis_data = {
-  //   labels: ['Flat', 'Kick', 'Slice'],
-  //   legend: ['Grade A', 'Grade B', 'Grade C', 'Grade D'],
-  //   data: [
-  //     [2, 3, 4, 1],
-  //     [1, 5, 5, 6],
-  //     [0, 2, 6, 4],
-  //   ],
-  //   barColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-  // };
-
-  // Data Format that Victory Graph Receives
   const data_victory = {
     AGrade: [
       {x: 'Flat', y: 30},
@@ -105,15 +79,46 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
 
   console.log(flatServes);
 
-  const pie_data = {
-    data: [
-      {x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`},
-      {x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`},
-      {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
-    ],
-  };
+  var pie_data;
+  var clrs = ['gold', 'cyan', 'gray'];
 
-  // Converting the Data Received from Firebase to the Format that Victory Graph Accepts to form Graph
+  if (flatServes == 0 && kickServes == 0 && sliceServes == 0) {
+    pie_data = {
+      data: [],
+    };
+  } else if (flatServes == 0 && kickServes == 0) {
+    clrs = ['gray'];
+    pie_data = {
+      data: [{x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`}],
+    };
+  } else if (sliceServes == 0 && kickServes == 0) {
+    clrs = ['gold'];
+    pie_data = {
+      data: [{x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`}],
+    };
+  } else if (sliceServes == 0 && flatServes == 0) {
+    clrs = ['cyan'];
+    pie_data = {
+      data: [{x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`}],
+    };
+  } else {
+    pie_data = {
+      data: [
+        {x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`},
+        {x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`},
+        {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
+      ],
+    };
+  }
+
+  // const pie_data = {
+  //   data: [
+  //     {x: 'Flat', y: flatServes, label: `Flat: ${flatServes}`},
+  //     {x: 'Kick', y: kickServes, label: `Kick: ${kickServes}`},
+  //     {x: 'Slice', y: sliceServes, label: `Slice: ${sliceServes}`},
+  //   ],
+  // };
+
   data_victory.AGrade[0].y = analysis_data['data'][0][0];
   data_victory.AGrade[1].y = analysis_data['data'][1][0];
   data_victory.AGrade[2].y = analysis_data['data'][2][0];
@@ -130,90 +135,73 @@ export default function ServePracticeRenderGraphScreen({navigation, route}) {
   data_victory.DGrade[1].y = analysis_data['data'][1][3];
   data_victory.DGrade[2].y = analysis_data['data'][2][3];
 
-  // console.log(data_victory.AGrade[1].y, analysis_data["data"][1][0]);
+  console.log('DataVictory.AGrade', data_victory.AGrade);
 
   return (
-    // Graph Printing
-    <View style={styles.container}>
-      <View style={styles.pieContainer}>
-        <VictoryPie
-          animate={{
-            duration: 1000,
-          }}
-          padding={60}
-          width={500}
-          height={500}
-          colorScale={['tomato', 'orange', 'gold', 'cyan', 'navy']}
-          data={pie_data.data}
-        />
+    <ScreenWrapperWithHeader
+      title="Serve Practice Analysis"
+      navigation={navigation}
+      route={route}
+      logoutcheck={false}>
+      <View style={styles.container}>
+        <View style={styles.pieContainer}>
+          <VictoryPie
+            padding={screenWidth / 3.9}
+            width={screenWidth}
+            height={screenHeight / 2}
+            colorScale={clrs}
+            data={pie_data.data}
+          />
+        </View>
+        <View style={{marginTop: -120}}>
+          <Text>Distibution of Serves Performed</Text>
+        </View>
+        <View style={styles.vectorContainer}>
+          <VictoryChart domainPadding={screenWidth / 4}>
+            <VictoryAxis
+              domain={{y: [0, 8]}}
+              dependentAxis
+              label={'Total Serves'}
+              style={{
+                axisLabel: {paddingRight: 50, paddingLeft: 10},
+              }}></VictoryAxis>
+            <VictoryAxis label={'Type of Serve'}></VictoryAxis>
+            <VictoryGroup offset={screenWidth / 25}>
+              <VictoryBar
+                data={data_victory.AGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+              <VictoryBar
+                data={data_victory.BGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+              <VictoryBar
+                data={data_victory.CGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+              <VictoryBar
+                data={data_victory.DGrade}
+                labels={({datum}) => datum.y}
+                style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
+                labelComponent={<VictoryLabel dy={14} />}></VictoryBar>
+            </VictoryGroup>
+            <VictoryLegend
+              x={Dimensions.get('screen').width / 30}
+              orientation={'horizontal'}
+              gutter={screenWidth / 25}
+              data={[
+                {name: 'A Grade', symbol: {fill: 'blue'}},
+                {name: 'B Grade', symbol: {fill: 'orange'}},
+                {name: 'C Grade', symbol: {fill: 'red'}},
+                {name: 'D Grade', symbol: {fill: 'green'}},
+              ]}></VictoryLegend>
+          </VictoryChart>
+        </View>
       </View>
-      <Text>Distibution of Serves Performed</Text>
-      <View style={styles.vectorContainer}>
-        <VictoryChart domainPadding={80}>
-          <VictoryAxis
-            dependentAxis
-            label={'Total Serves'}
-            style={{axisLabel: {padding: 30}}}></VictoryAxis>
-          <VictoryAxis label={'Type of Serve'}></VictoryAxis>
-          <VictoryGroup offset={30}>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.AGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'blue'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.BGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'orange'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.CGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'red'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-            <VictoryBar
-              animate={{
-                duration: 2000,
-              }}
-              data={data_victory.DGrade}
-              labels={({datum}) => datum.y}
-              style={{data: {fill: 'green'}, labels: {fill: 'white'}}}
-              labelComponent={<VictoryLabel dy={20} />}></VictoryBar>
-          </VictoryGroup>
-          <VictoryLegend
-            x={Dimensions.get('screen').width / 2 - 300}
-            orientation={'horizontal'}
-            gutter={100}
-            data={[
-              {name: 'A Grade', symbol: {fill: 'blue'}},
-              {name: 'B Grade', symbol: {fill: 'orange'}},
-              {name: 'C Grade', symbol: {fill: 'red'}},
-              {name: 'D Grade', symbol: {fill: 'green'}},
-            ]}></VictoryLegend>
-        </VictoryChart>
-      </View>
-    </View>
-    // <View style={styles.container}>
-    //   {data && (
-    //     <StackedBarChart
-    //       // style={graphStyle}
-    //       data={graphData}
-    //       width={screenWidth}
-    //       height={220}
-    //       chartConfig={chartConfig}
-    //     />
-    //   )}
-    //   <StatusBar style="auto" />
-    // </View>
+    </ScreenWrapperWithHeader>
   );
 }
 
@@ -225,17 +213,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  navigationBar: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: 48,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
+  },
+  main_view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 15 : 15,
+    paddingHorizontal: SCREEN_WIDTH * 0.02,
+  },
   pieContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: screenHeight / 1.8,
+    paddingBottom: screenHeight / 10,
   },
   vectorContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: screenHeight / 1.9,
+    paddingLeft: screenWidth / 20,
   },
 
   calibrationContainer: {

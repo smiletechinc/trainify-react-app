@@ -1,7 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {View, FlatList, Text, Alert} from 'react-native';
 import styles from './analysis_screen_style';
-import {connect, useDispatch} from 'react-redux';
 import {ListItem} from '../../../../components/grid/index';
 import EmptyState from '../../../../components/empty_states/colors_empty_state';
 import {fetchVideosService} from './../../../../services/servePracticeServices';
@@ -14,28 +13,73 @@ import {SCREEN_WIDTH} from '../../../../constants';
 type Props = {
   navigation: any;
   route: any;
-  reduxColors: any;
+  reduxVideos: any;
   updated: boolean;
   add: any;
 };
 
 const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
-  const {navigation, route, reduxColors, updated, add} = props;
-  const [isFetching, setIsFetching] = useState(false);
-  const [videos, setVideos] = useState(reduxColors);
-  const [updatingColors, setUpdatingColors] = useState<boolean>(false);
+  const {
+    authUser,
+    authObject,
+    setAuthUser: setUser,
+    logoutUser,
+  } = React.useContext(AuthContext);
+  const {navigation, route, reduxVideos, updated, add} = props;
+  const [videos, setVideos] = useState(reduxVideos);
+  const [dailyVideos, setDailyVideos] = useState(reduxVideos);
+  const [weeklyVideos, setWeeklyVideos] = useState(reduxVideos);
+  const [monthlyVideos, setMonthlyVideos] = useState(reduxVideos);
   const [selectedID, setSelectedID] = useState();
-  const [index, setIndex] = useState(0);
+  const [indexSegment, setSegmentIndex] = useState(0);
+  const [flatListWidth, setFlatListWith] = useState(0);
+  const [NumberOfColumns, setNumberOfColumns] = useState(0);
 
   const fetchVideosFailure = colorsError => {
     console.log('videosError: ', colorsError);
   };
 
   const fetchVideosSuccess = videosData => {
-    console.log('videosData:', Object.values(videosData));
-    const videos = Object.values(videosData);
-    console.log('videos ', videos);
-    setVideos(videos);
+    const videos_ = Object.values(videosData);
+
+    const filterVideos = videos_.filter(
+      video => video.createrId === authObject.id,
+    );
+
+    const filterDayVideos = filterVideos.filter(dayVideo => {
+      const diffDays = Math.round(
+        Math.abs(
+          (new Date(dayVideo.timestamp).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      );
+      if (diffDays <= 1) return dayVideo;
+    });
+
+    const filterWeeklyVideos = filterVideos.filter(weekVideo => {
+      const diffDays = Math.round(
+        Math.abs(
+          (new Date(weekVideo.timestamp).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      );
+
+      if (diffDays <= 7) return weekVideo;
+    });
+
+    const filterMonthlyVideos = filterVideos.filter(monthVideo => {
+      const diffDays = Math.round(
+        Math.abs(
+          (new Date(monthVideo.timestamp).getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24),
+        ),
+      );
+      if (diffDays <= 30) return monthVideo;
+    });
+    setVideos(filterVideos);
+    setDailyVideos(filterDayVideos.reverse());
+    setWeeklyVideos(filterWeeklyVideos.reverse());
+    setMonthlyVideos(filterMonthlyVideos.reverse());
   };
 
   useEffect(() => {
@@ -43,23 +87,40 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     fetchVideosService(fetchVideosSuccess, fetchVideosFailure); //call reducrer action
   }, []);
 
-  const handleOnClickVideo = item => {
-    console.log('ColorID:', item.id);
-    setSelectedID(item.id);
-    console.log('selectedid is :', selectedID);
-    navigation.navigate('VideoPlayerContainer', {video: item});
-  };
-
-  const onRefresh = () => {
-    setIsFetching(!isFetching);
-  };
-
-  const renderItem = ({item}) => {
-    if (item.id === selectedID) {
-      return <ListItem video={item} onPress={() => handleOnClickVideo(item)} />;
+  useEffect(() => {
+    if (SCREEN_WIDTH <= 375) {
+      setNumberOfColumns(3);
     } else {
-      return <ListItem video={item} onPress={() => handleOnClickVideo(item)} />;
+      setNumberOfColumns(4);
     }
+  });
+
+  const handleOnClickVideo = item => {
+    setSelectedID(item.id);
+    navigation.navigate('VideoPlayerContainer', {
+      video: item,
+    });
+  };
+
+  const renderItem = ({item, index}) => {
+    return (
+      <ListItem
+        video={item}
+        index={index + 1}
+        itemWidth={flatListWidth - 11}
+        thumbImageWidth={flatListWidth - 16}
+        thumbTexWidth={(flatListWidth - 13) / 2}
+        itemHeight={100}
+        thumbImageHeight={48}
+        thumbTextHeight={45}
+        onPress={() => handleOnClickVideo(item)}
+      />
+    );
+  };
+
+  const onLayout = event => {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    setFlatListWith(width / NumberOfColumns);
   };
 
   const onLayout = event => {
@@ -68,27 +129,72 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
     console.log('Dimensions : ', x, y, height, width);
   };
   return (
-    <SafeAreaView style={styles.main_view}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-        showsVerticalScrollIndicator={false}>
-        <HeaderWithText text="Analysis Report" navigation={navigation} />
+    <ScreenWrapperWithHeader
+      title="Anaylsis Report"
+      navigation={navigation}
+      route={route}
+      logoutcheck={false}>
+      <View style={styles.main_view}>
         <View style={{marginTop: 32, justifyContent: 'center'}}>
           <SegmentedControl
             values={['Daily', 'Weekly', 'Monthly']}
-            selectedIndex={index}
+            selectedIndex={indexSegment}
             onChange={event => {
-              setIndex(event.nativeEvent.selectedSegmentIndex);
+              setSegmentIndex(event.nativeEvent.selectedSegmentIndex);
             }}
-            tintColor="#0096FF"
+            tintColor="#008EC1"
             backgroundColor="#D3D3D3"
             style={{height: 32}}
           />
         </View>
         <View style={styles.flatcontainer}>
-          {videos && videos.length > 0 ? (
+          {indexSegment === 0 && (
+            <View>
+              {dailyVideos?.length > 0 ? (
+                <FlatList
+                  onLayout={onLayout}
+                  style={styles.listContainer}
+                  data={dailyVideos}
+                  keyExtractor={(item, index) => index.toString()}
+                  extraData={selectedID}
+                  numColumns={NumberOfColumns}
+                  renderItem={renderItem}
+                />
+              ) : (
+                <EmptyState
+                  heading="No videos to show"
+                  description="Please upload videos to be previewd"
+                  buttonTitle="Add COlor"
+                  onPress={handleOnClickVideo}
+                />
+              )}
+            </View>
+          )}
+
+          {indexSegment === 1 && (
+            <View>
+              {weeklyVideos?.length > 0 ? (
+                <FlatList
+                  onLayout={onLayout}
+                  style={styles.listContainer}
+                  data={weeklyVideos}
+                  keyExtractor={(item, index) => index.toString()}
+                  extraData={selectedID}
+                  numColumns={NumberOfColumns}
+                  renderItem={renderItem}
+                />
+              ) : (
+                <EmptyState
+                  heading="No videos to show"
+                  description="Please upload videos to be previewd"
+                  buttonTitle="Add COlor"
+                  onPress={handleOnClickVideo}
+                />
+              )}
+            </View>
+          )}
+
+          {indexSegment === 2 && (
             <View>
               <FlatList
                 onLayout={onLayout}
@@ -100,17 +206,10 @@ const ServePracticeAnalysisGridScreen: FunctionComponent<Props> = props => {
                 renderItem={renderItem}
               />
             </View>
-          ) : (
-            <EmptyState
-              heading="No videos to show"
-              description="Please upload videos to be previewd"
-              buttonTitle="Add COlor"
-              onPress={handleOnClickVideo}
-            />
           )}
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 export default ServePracticeAnalysisGridScreen;

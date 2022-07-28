@@ -5,17 +5,33 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 // import all the components we are going to use
-import {SafeAreaView, StyleSheet, Text, View, Alert} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Platform,
+} from 'react-native';
 
 // Import React Native Video to play video
 import Video from 'react-native-video';
 
-// Media Controls to control Play/Pause/Seek and full screen
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import HeaderWithText from '../../../../global-components/header/HeaderWithText';
+import {SCREEN_WIDTH} from '../../../../constants';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {IconButton} from '../../../../components/buttons';
+import ScreenWrapperWithHeader from '../../../../components/wrappers/screen_wrapper_with_header';
+import {useKeepAwake} from '@sayem314/react-native-keep-awake';
+import {StackActions} from '@react-navigation/native';
+
+const graphIcon = require('../../../../assets/images/graphIcon.png');
 
 const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
+  useKeepAwake();
   const {video} = route.params;
+  console.log('navigation:', route);
   console.log('video, ', video);
   let fileURI = '';
   if (video && video.uri) {
@@ -36,26 +52,23 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   const [paused, setPaused] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
   const [screenType, setScreenType] = useState('content');
+  const [date, setDate] = useState('');
 
   const onSeek = seek => {
-    //Handler for change in seekbar
     videoPlayer.current.seek(seek);
   };
 
   const onPaused = playerState => {
-    //Handler for Video Pause
     setPaused(!paused);
     setPlayerState(playerState);
   };
 
   const onReplay = () => {
-    //Handler for Replay
     setPlayerState(PLAYER_STATES.PLAYING);
     videoPlayer.current.seek(0);
   };
 
   const onProgress = data => {
-    // Video Player will progress continue even if it ends
     if (!isLoading && playerState !== PLAYER_STATES.ENDED) {
       setCurrentTime(data.currentTime);
     }
@@ -87,6 +100,9 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
   useEffect(() => {
     if (video) {
       console.log('video, ', video);
+      console.log('Platform', Platform.OS);
+      const dateTimeArray = video.timestamp.split(',');
+      setDate(dateTimeArray[0]);
     }
   }, [video]);
 
@@ -100,57 +116,61 @@ const ServePracticeVideoPlayerContainer = ({navigation, route}) => {
 
   const handleShowGraphButton = () => {
     navigation.navigate('RenderGraphScreen', {
-      analysis_data: video.analysis_data,
+      analysis_data: video.analysisData,
     });
   };
 
   const renderGraphButton = () => {
     return (
-      <SafeAreaView
-        style={styles.cameraTypeSwitcher}
-        onTouchEnd={handleShowGraphButton}>
-        <Text>Show graph</Text>
+      <SafeAreaView>
+        <IconButton
+          styles={styles.recordIcon}
+          icon={graphIcon}
+          onPress={handleShowGraphButton}
+          transparent={true}
+        />
       </SafeAreaView>
     );
   };
 
   return (
-    <View style={{flex: 1}}>
-      <HeaderWithText
-        text={'Trainify Recorded Video'}
-        hideProfileSection={true}
-        navigation={navigation}
-      />
-      <Video
-        onEnd={onEnd}
-        onLoad={onLoad}
-        onLoadStart={onLoadStart}
-        onProgress={onProgress}
-        paused={paused}
-        ref={videoPlayer}
-        resizeMode={screenType}
-        onFullScreen={isFullScreen}
-        source={{
-          uri: videoURL,
-        }}
-        style={styles.mediaPlayer}
-        volume={10}
-      />
-      <MediaControls
-        duration={duration}
-        isLoading={isLoading}
-        mainColor="#333"
-        onFullScreen={onFullScreen}
-        onPaused={onPaused}
-        onReplay={onReplay}
-        onSeek={onSeek}
-        onSeeking={onSeeking}
-        playerState={playerState}
-        progress={currentTime}
-        toolbar={renderToolbar()}
-      />
-      {renderGraphButton()}
-    </View>
+    <ScreenWrapperWithHeader
+      title={date}
+      navigation={navigation}
+      route={route}
+      logoutcheck={false}>
+      <View style={{height: 750, marginBottom: 64}}>
+        <Video
+          onEnd={onEnd}
+          onLoad={onLoad}
+          onLoadStart={onLoadStart}
+          onProgress={onProgress}
+          paused={paused}
+          ref={videoPlayer}
+          resizeMode={screenType}
+          onFullScreen={isFullScreen}
+          source={{
+            uri: videoURL,
+          }}
+          style={styles.mediaPlayer}
+          volume={10}
+        />
+        <MediaControls
+          duration={duration}
+          isLoading={isLoading}
+          mainColor="#333"
+          onFullScreen={onFullScreen}
+          onPaused={onPaused}
+          onReplay={onReplay}
+          onSeek={onSeek}
+          onSeeking={onSeeking}
+          playerState={playerState}
+          progress={currentTime}
+          toolbar={renderToolbar()}
+        />
+        {renderGraphButton()}
+      </View>
+    </ScreenWrapperWithHeader>
   );
 };
 
@@ -159,6 +179,14 @@ export default ServePracticeVideoPlayerContainer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  main_view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+    minHeight: 48,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
   },
   toolbar: {
     marginTop: 30,
@@ -172,18 +200,32 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   cameraTypeSwitcher: {
     position: 'absolute',
-    top: 30,
-    right: 10,
+    top: 10,
+    right: 20,
     width: 180,
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 2,
+    backgroundColor: 'rgba(240, 230, 230, .9)',
+    borderRadius: 6,
     padding: 8,
-    zIndex: 20,
+    zIndex: 100,
+  },
+  recordIcon: {
+    width: 60,
+    height: 40,
+    borderStyle: 'solid',
+    borderWidth: 2,
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .9)',
+    borderColor: '#008EC1',
+    borderRadius: 6,
+    zIndex: 100,
   },
 });
