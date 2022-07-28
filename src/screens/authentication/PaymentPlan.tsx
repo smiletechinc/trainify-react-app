@@ -182,14 +182,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
         if (purchase.productId === membershipProduct) {
           setValidProduct(true);
           console.log('purchase.productId', purchase.productId);
-          // setSubscriptionPlan(2);
-          // onSuccess();
-          // if (requestedNewPurchase) {
-          //   setSucessCalled(true);
-          //   setRestoredPurchase(false);
-          //   Alert.alert('New purchase success!');
-          // } else {
-          //   setRestoredPurchase(true);
           setSubscriptionDetected(true);
           Alert.alert(
             'Subscription Detected',
@@ -198,7 +190,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
               {
                 text: 'Free Signup',
                 onPress: () => {
-                  // navigation.goBack();
                   setAnimationVisible(false);
                   setSubscriptionStatus('Error');
                   setSubscriptionPlan(1);
@@ -208,7 +199,6 @@ const PaymentPlanContainer: FunctionComponent<Props> = props => {
             ],
             {cancelable: false},
           );
-          // }
         } else {
           setValidProduct(false);
           console.log('error finish purchase.productId', purchase.productId);
