@@ -9,6 +9,7 @@ import SignupFooterComponent from './components/SignupFooterComponent';
 import RadioButtonRN from 'radio-buttons-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CountryPicker from 'react-native-country-picker-modal';
+import {appleAuth} from '@invertase/react-native-apple-authentication';
 
 // Custom Styles
 import globalStyles from '../../global-styles';
@@ -118,7 +119,29 @@ const SignupContainer: FunctionComponent<Props> = props => {
     return true;
   };
 
+  const handleSignInWithApple = async () => {
+    // create login request for apple
+    const appleAuthRequestResponse = await appleAuth.performRequest();
+
+    console.log('appleAuthResoponse', appleAuthRequestResponse);
+    const {identityToken, nonce} = appleAuthRequestResponse;
+    if (identityToken) {
+      //  const appleCredential = firebase.auth.AppleAuthProvider.credential(identityToken, nonce);
+      //  firebase.auth()
+      //     .signInWithCredential(appleCredential)
+      //     .then((user) => {
+      //        // Succeed fully user logs in
+      //     })
+      //     .catch((error) => {
+      //        // Something goes wrong
+      //     });
+    }
+  };
+
   useEffect(() => {
+    const sup = appleAuth.isSupported;
+    console.log('supp', sup);
+    handleSignInWithApple();
     // Alert.alert(handStyle);
   }, [route.params.signupObject.playerstyle]);
   const data = [
